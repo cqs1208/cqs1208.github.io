@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="索引及Explain介绍">
+<meta property="og:url" content="http://example.com/2020/10/26/Mysql/2019-03-09%20%E7%B4%A2%E5%BC%95%E5%8F%8AExplain%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Mysql">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_showindex.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index1.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index1.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index2.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index3.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index4.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index5.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index6.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index7.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index_like.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index8.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_index9.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_explain1.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_explain2.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_explain3.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_explain4.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_explain_type.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_explain_type2.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_explain_type3.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_eq_ref.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_type_ref.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_type_ref2.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_type_range.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_type_index.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_type_all.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_exists_index.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_exists_where.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_exists_usingFilesort.png">
+<meta property="og:image" content="http://example.com/images/mysql/Mysql_exists_usingTemporary.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.283Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Mysql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/mysql/Mysql_showindex.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Mysql/2019-03-09%20%E7%B4%A2%E5%BC%95%E5%8F%8AExplain%E4%BB%8B%E7%BB%8D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>索引及Explain介绍 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Mysql/2019-03-09%20%E7%B4%A2%E5%BC%95%E5%8F%8AExplain%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          索引及Explain介绍
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Mysql</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一般的应用系统，读写比例在10:1左右，而且插入操作和一般的更新操作很少出现性能问题，在生产环境中，我们遇到最多的，也是最容易出问题的，还是一些复杂的查询操作，因此对查询语句的优化显然是重中之重。说起加速查询，就不得不提到索引了。 </p>
+<a id="more"></a> 
+
+<h2 id="1-索引介绍"><a href="#1-索引介绍" class="headerlink" title="1 索引介绍"></a>1 索引介绍</h2><pre><code>索引的目的在于提高查询效率， **本质都是：通过不断地缩小想要获取数据的范围来筛选出最终想要的结果，同时把随机的事件变成顺序的事件，也就是说，有了这种索引机制，我们可以总是用同一种查找方式来锁定数据。**</code></pre>
+<h2 id="2-索引分类"><a href="#2-索引分类" class="headerlink" title="2 索引分类"></a>2 索引分类</h2><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">1.普通索引index</span> :<span class="string">加速查找</span></span><br><span class="line"><span class="attr">2.唯一索引</span></span><br><span class="line">    <span class="meta">主键索引：primary</span> <span class="string">key ：加速查找+约束（不为空且唯一）</span></span><br><span class="line">    <span class="meta">唯一索引：unique：加速查找+约束</span> <span class="string">（唯一）</span></span><br><span class="line"><span class="attr">3.联合索引</span></span><br><span class="line">    <span class="meta">-primary</span> <span class="string">key(id,name):联合主键索引</span></span><br><span class="line">    <span class="meta">-unique(id,name)</span>:<span class="string">联合唯一索引</span></span><br><span class="line">    <span class="meta">-index(id,name)</span>:<span class="string">联合普通索引</span></span><br><span class="line"><span class="meta">4.全文索引fulltext</span> :<span class="string">用于搜索很长一篇文章的时候，效果最好。</span></span><br><span class="line"><span class="meta">5.空间索引spatial</span> :<span class="string">了解就好，几乎不用</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-创建-删除索引的语法"><a href="#2-1-创建-删除索引的语法" class="headerlink" title="2.1 创建/删除索引的语法"></a>2.1 创建/删除索引的语法</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#方法一：创建表时</span></span><br><span class="line">      <span class="meta">　　CREATE</span> <span class="string">TABLE 表名 (</span></span><br><span class="line">                  <span class="meta">字段名1</span>  <span class="string">数据类型 [完整性约束条件…],</span></span><br><span class="line">                  <span class="meta">字段名2</span>  <span class="string">数据类型 [完整性约束条件…],</span></span><br><span class="line">                  <span class="meta">[UNIQUE</span> <span class="string">| FULLTEXT | SPATIAL ]   INDEX | KEY</span></span><br><span class="line">                  <span class="meta">[索引名]</span>  <span class="string">(字段名[(长度)]  [ASC |DESC]) </span></span><br><span class="line">                  <span class="attr">);</span></span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="comment"> #方法二：CREATE在已存在的表上创建索引</span></span><br><span class="line">         <span class="attr">CREATE</span>  <span class="string">[UNIQUE | FULLTEXT | SPATIAL ]  INDEX  索引名 </span></span><br><span class="line">                      <span class="attr">ON</span> <span class="string">表名 (字段名[(长度)]  [ASC |DESC]) ;</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment"> #方法三：ALTER TABLE在已存在的表上创建索引</span></span><br><span class="line">         <span class="attr">ALTER</span> <span class="string">TABLE 表名 ADD  [UNIQUE | FULLTEXT | SPATIAL ] INDEX</span></span><br><span class="line">                              <span class="meta">索引名</span> <span class="string">(字段名[(长度)]  [ASC |DESC]) ;</span></span><br><span class="line">                              </span><br><span class="line"><span class="comment"> #删除索引：DROP INDEX 索引名 ON 表名字;</span></span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">1.创建索引</span></span><br><span class="line">    <span class="attr">-在创建表时就创建（需要注意的几点）</span></span><br><span class="line">    <span class="attr">create</span> <span class="string">table s1(</span></span><br><span class="line">    <span class="attr">id</span> <span class="string">int ,#可以在这加primary key</span></span><br><span class="line"><span class="comment">    #id int index #不可以这样加索引，因为index只是索引，没有约束一说，</span></span><br><span class="line"><span class="comment">    #不能像主键，还有唯一约束一样，在定义字段的时候加索引</span></span><br><span class="line">    <span class="attr">name</span> <span class="string">char(20),</span></span><br><span class="line">    <span class="attr">age</span> <span class="string">int,</span></span><br><span class="line">    <span class="attr">email</span> <span class="string">varchar(30)</span></span><br><span class="line"><span class="comment">    #primary key(id) #也可以在这加</span></span><br><span class="line">    <span class="meta">index(id)</span> <span class="string">#可以这样加</span></span><br><span class="line">    <span class="attr">);</span></span><br><span class="line">    <span class="attr">-在创建表后在创建</span></span><br><span class="line">    <span class="attr">create</span> <span class="string">index name on s1(name); #添加普通索引</span></span><br><span class="line">    <span class="attr">create</span> <span class="string">unique age on s1(age);添加唯一索引</span></span><br><span class="line">    <span class="attr">alter</span> <span class="string">table s1 add primary key(id); #添加住建索引，也就是给id字段增加一个主键约束</span></span><br><span class="line">    <span class="attr">create</span> <span class="string">index name on s1(id,name); #添加普通联合索引</span></span><br><span class="line"><span class="attr">2.删除索引</span></span><br><span class="line">    <span class="attr">drop</span> <span class="string">index id on s1;</span></span><br><span class="line">    <span class="attr">drop</span> <span class="string">index name on s1; #删除普通索引</span></span><br><span class="line">    <span class="attr">drop</span> <span class="string">index age on s1; #删除唯一索引，就和普通索引一样，不用在index前加unique来删，直接就可以删了</span></span><br><span class="line">    <span class="attr">alter</span> <span class="string">table s1 drop primary key; #删除主键(因为它添加的时候是按照alter来增加的，那么我们也用alter来删)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-最左匹配原则"><a href="#2-2-最左匹配原则" class="headerlink" title="2.2 最左匹配原则"></a>2.2 最左匹配原则</h3><pre><code>MySQL中的索引可以以一定顺序引用多个列，这种索引叫做联合索引，一般的，一个联合索引是一个有序元组&lt;a1, a2, …, an&gt;，其中各个元素均为数据表的一列，实际上要严格定义索引需要用到关系代数，但是这里我不想讨论太多关系代数的话题，因为那样会显得很枯燥，所以这里就不再做严格定义。另外，单列索引可以看成联合索引元素数为1的特例。</code></pre>
+<p>测试：准备数据</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. 准备表</span></span><br><span class="line"><span class="attr">create</span> <span class="string">table s1(</span></span><br><span class="line"><span class="attr">id</span> <span class="string">int,</span></span><br><span class="line"><span class="attr">name</span> <span class="string">varchar(20),</span></span><br><span class="line"><span class="attr">gender</span> <span class="string">char(6),</span></span><br><span class="line"><span class="attr">email</span> <span class="string">varchar(50)</span></span><br><span class="line"><span class="attr">);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#2. 创建存储过程，实现批量插入记录</span></span><br><span class="line"><span class="attr">delimiter</span> <span class="string">$$ #声明存储过程的结束符号为$$</span></span><br><span class="line"><span class="attr">create</span> <span class="string">procedure auto_insert1()</span></span><br><span class="line"><span class="attr">BEGIN</span></span><br><span class="line">    <span class="attr">declare</span> <span class="string">i int default 1;</span></span><br><span class="line">    <span class="attr">while(i&lt;3000000)do</span></span><br><span class="line">        <span class="attr">insert</span> <span class="string">into s1 values(i,concat(&#x27;egon&#x27;,i),&#x27;male&#x27;,concat(&#x27;egon&#x27;,i,&#x27;@oldboy&#x27;));</span></span><br><span class="line">        <span class="attr">set</span> <span class="string">i=i+1;</span></span><br><span class="line">    <span class="attr">end</span> <span class="string">while;</span></span><br><span class="line"><span class="meta">END$$</span> <span class="string">#$$结束</span></span><br><span class="line"><span class="attr">delimiter</span> <span class="string">; #重新声明分号为结束符号</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#3. 查看存储过程</span></span><br><span class="line"><span class="attr">show</span> <span class="string">create procedure auto_insert1\G </span></span><br><span class="line"></span><br><span class="line"><span class="comment">#4. 调用存储过程</span></span><br><span class="line"><span class="attr">call</span> <span class="string">auto_insert1();</span></span><br></pre></td></tr></table></figure>
+
+<p>创建联合索引 ：create index index_i_n_e on s1 (id, name, email)</p>
+<p>显示索引： SHOW INDEX FROM s1;</p>
+<p><img src="/images/mysql/Mysql_showindex.png" alt="Mysql_showindex"></p>
+<h4 id="2-1-全列匹配"><a href="#2-1-全列匹配" class="headerlink" title="2.1 全列匹配"></a>2.1 全列匹配</h4><p>EXPLAIN SELECT * FROM s1 WHERE id=1 AND name=’egon1’ AND email=’egon1@oldboy’;</p>
+<p><img src="/images/mysql/Mysql_index1.png" alt="Mysql_index1"></p>
+<pre><code>很明显，当按照索引中所有列进行精确匹配（这里精确匹配指“=”或“IN”匹配）时，索引可以被用到。这里有一点需要注意，理论上索引对顺序是敏感的，但是由于MySQL的查询优化器会自动调整where子句的条件顺序以使用适合的索引，例如我们将where中的条件顺序颠倒：</code></pre>
+<p>EXPLAIN SELECT * FROM s1 WHERE email=’egon1@oldboy’ and id=1 AND name=’egon1’ ;</p>
+<p><img src="/images/mysql/Mysql_index1.png" alt="Mysql_index1"></p>
+<p>效果一样</p>
+<h4 id="2-2-最左前缀匹配"><a href="#2-2-最左前缀匹配" class="headerlink" title="2.2 最左前缀匹配"></a>2.2 最左前缀匹配</h4><p>EXPLAIN SELECT * FROM s1 WHERE id=1 </p>
+<p><img src="/images/mysql/Mysql_index2.png" alt="Mysql_index2"></p>
+<pre><code>当查询条件精确匹配索引的左边连续一个或几个列时，如&lt;id&gt;或&lt;id, name&gt;，所以可以被用到，但是只能用到一部分，即条件所组成的最左前缀。上面的查询从分析结果看用到了PRIMARY索引，但是key_len为5，说明只用到了索引的第一列前缀。</code></pre>
+<h4 id="2-3-中间条件未提供"><a href="#2-3-中间条件未提供" class="headerlink" title="2.3 中间条件未提供"></a>2.3 中间条件未提供</h4><p>EXPLAIN SELECT * FROM s1 WHERE id=1  AND email=’egon1@oldboy’;</p>
+<p><img src="/images/mysql/Mysql_index3.png" alt="Mysql_index3"></p>
+<pre><code>此时索引使用情况和情况二相同，因为name未提供，所以查询只用到了索引的第一列，而后面的email虽然也在索引中，但是由于name不存在而无法和左前缀连接，因此需要对结果进行扫描过滤email（这里由于id唯一，所以不存在扫描）。如果想让email也使用索引而不是where过滤，可以增加一个辅助索引&lt;id, email&gt;，此时上面的查询会使用这个索引。除此之外，还可以使用一种称之为“隔离列”的优化方法，将id与email之间的“坑”填上。</code></pre>
+<p>首先我们看下name一共有几种不同的值：</p>
+<p>SELECT DISTINCT(name) FROM s1;</p>
+<p><img src="/images/mysql/Mysql_index4.png" alt="Mysql_index4"></p>
+<p>只有3种。在这种成为“坑”的列值比较少的情况下，可以考虑用“IN”来填补这个“坑”从而形成最左前缀：</p>
+<p>EXPLAIN SELECT * FROM s1 WHERE email=’egon1@oldboy’ and id=1 AND name in (‘egon1’ , ‘egon2’, ‘egon3’) </p>
+<p><img src="/images/mysql/Mysql_index5.png" alt="Mysql_index5"></p>
+<p>这次key_len为291，说明索引被用全了，但是从type和rows看出IN实际上执行了一个range查询，这里检查了3个key。</p>
+<h4 id="2-4-查询条件没有索引第一列"><a href="#2-4-查询条件没有索引第一列" class="headerlink" title="2.4 查询条件没有索引第一列"></a>2.4 查询条件没有索引第一列</h4><p>EXPLAIN SELECT * FROM s1 WHERE email=’egon1@oldboy’;</p>
+<p><img src="/images/mysql/Mysql_index6.png" alt="Mysql_index6"></p>
+<p>由于不是最左前缀，索引这样的查询显然用不到索引。</p>
+<h4 id="2-5-匹配某列的前缀字符串"><a href="#2-5-匹配某列的前缀字符串" class="headerlink" title="2.5 匹配某列的前缀字符串"></a>2.5 匹配某列的前缀字符串</h4><p>EXPLAIN SELECT * FROM s1 WHERE id= 01 and name like ‘egon1%’;</p>
+<p><img src="/images/mysql/Mysql_index7.png" alt="Mysql_index7"></p>
+<p>此时可以用到索引，如果通配符%不出现在开头，则可以用到索引</p>
+<p>问题:解决like’%字符串%’索引不被使用的方法?</p>
+<p>使用覆盖索引，查询字段必须是建立覆盖索引字段</p>
+<p>explain select name from test  where name like ‘%33%’;</p>
+<p><img src="/images/mysql/Mysql_index_like.png" alt="Mysql_index7"></p>
+<h4 id="2-6-范围查询"><a href="#2-6-范围查询" class="headerlink" title="2.6 范围查询"></a>2.6 范围查询</h4><p>EXPLAIN SELECT * FROM s1 WHERE id &lt; 10 and name = ‘egon1’;</p>
+<p><img src="/images/mysql/Mysql_index8.png" alt="Mysql_index8"></p>
+<pre><code>范围列可以用到索引（必须是最左前缀），但是范围列后面的列无法用到索引。但是，用了“between”并不意味着就是范围查询，例如下面的查询：</code></pre>
+<p>EXPLAIN SELECT * FROM s1 WHERE id between 1 and 10 and name = ‘egon1’ and email=’egon1@oldboy’;</p>
+<p><img src="/images/mysql/Mysql_index9.png" alt="Mysql_index9"></p>
+<p>看起来是用了范围查询，但作用于id上的“BETWEEN”实际上相当于“IN”，也就是说id实际是多值精确匹配。可以看到这个查询用到了索引全部三个列。因此在MySQL中要谨慎地区分多值匹配和范围匹配，否则会对MySQL的行为产生困惑。</p>
+<h2 id="3-explain"><a href="#3-explain" class="headerlink" title="3 explain"></a>3 explain</h2><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>SELECT识别符。这是SELECT的查询序列号</td>
+</tr>
+<tr>
+<td>select_type</td>
+<td>SELECT类型,可以为以下任何一种: <br />   <strong>SIMPLE</strong>:简单SELECT(不使用UNION或子查询)  <br />   <strong>PRIMARY</strong>: 一个需要union操作或者含有子查询的select，位于最外层的单位查询的select_type即为primary。且只有一个   <br />   <strong>UNION</strong>: union连接的两个select查询，第一个查询是dervied派生表，除了第一个表外，第二个以后的表select_type都是union   <br />   <strong>DEPENDENT UNION</strong>: 与union一样，出现在union 或union all语句中，但是这个查询要受到外部查询的影响 <br/>   <strong>UNION RESULT</strong>: 包含union的结果集，在union和union all语句中,因为它不需要参与查询，所以id字段为null   <br />   <strong>SUBQUERY</strong>: 除了from字句中包含的子查询外，其他地方出现的子查询都可能是subquery  <br />   <strong>DEPENDENT SUBQUERY</strong>: 与dependent union类似，表示这个subquery的查询要受到外部表查询的影响   <br />   <strong>DERIVED</strong>: from字句中出现的子查询，也叫做派生表，其他数据库中可能叫做内联视图或嵌套select</td>
+</tr>
+<tr>
+<td>table</td>
+<td>输出的行所引用的表</td>
+</tr>
+<tr>
+<td>type</td>
+<td>联接类型。下面给出各种联接类型,按照从最佳类型到最坏类型进行排序: <br />   <strong>system</strong>: 表中只有一行数据或者是空表 。 且只能用于myisam和memory表。如果是Innodb引擎表，type列在这个情况通常都是all或者index <br />   <strong>const</strong>: 使用唯一索引或者主键，返回记录一定是1行记录的等值where条件时，通常type是const。其他数据库也叫做唯一索引扫描 <br />   <strong>eq_ref</strong>:对于每个来自于前面的表的行组合,从该表中读取一行。这可能是最好的联接类型,除了const类型。<br />   <strong>ref</strong>:对于每个来自于前面的表的行组合,所有有匹配索引值的行将从这张表中读取。<br />   <strong>ref_or_null</strong>:该联接类型如同ref,但是添加了MySQL专门搜索包含NULL值的行。<br />   <strong>index_merge</strong>:该联接类型表示使用了索引合并优化方法。<br />   <strong>unique_subquery</strong>:该类型替换了下面形式的IN子查询的ref: value IN (SELECT    primary_key FROM single_table WHERE some_expr) unique_subquery是一个索引查找函数,可以完全替换子查询,效率更高。<br />   <strong>index_subquery</strong>:该联接类型类似于unique_subquery。可以替换IN子查询,但只适合下列形式的子查询中的非唯一索引: value IN (SELECT key_column FROM single_table WHERE some_expr)<br />   <strong>range</strong>:只检索给定范围的行,使用一个索引来选择行。<br />   <strong>index</strong>:该联接类型与ALL相同,除了只有索引树被扫描。这通常比ALL快,因为索引文件通常比数据文件小。<br />   <strong>ALL</strong>:对于每个来自于先前的表的行组合,进行完整的表扫描</td>
+</tr>
+<tr>
+<td>possible_keys</td>
+<td>指出MySQL能使用哪个索引在该表中找到行</td>
+</tr>
+<tr>
+<td>key</td>
+<td>显示MySQL实际决定使用的键(索引)。如果没有选择索引,键是NULL。</td>
+</tr>
+<tr>
+<td>key_len</td>
+<td>显示MySQL决定使用的键长度。如果键是NULL,则长度为NULL。</td>
+</tr>
+<tr>
+<td>ref</td>
+<td>显示使用哪个列或常数与key一起从表中选择行。</td>
+</tr>
+<tr>
+<td>rows</td>
+<td>显示MySQL认为它执行查询时必须检查的行数。多行之间的数据相乘可以估算要处理的行数。</td>
+</tr>
+<tr>
+<td>filtered</td>
+<td>显示了通过条件过滤出的行数的百分比估计值。</td>
+</tr>
+<tr>
+<td>Extra</td>
+<td>该列包含MySQL解决查询的详细信息 <br />   <strong>Distinct</strong>:MySQL发现第1个匹配行后,停止为当前的行组合搜索更多的行。<br />   <strong>Not exists</strong>:MySQL能够对查询进行LEFT JOIN优化,发现1个匹配LEFT JOIN标准的行后,不再为前面的的行组合在该表内检查更多的行。<br />   <strong>range checked for each record (index map: #)</strong>:MySQL没有发现好的可以使用的索引,但发现如果来自前面的表的列值已知,可能部分索引可以使用。<br />   <strong>Using filesort</strong>:MySQL需要额外的一次传递,以找出如何按排序顺序检索行。<br />   <strong>Using index</strong>:从只使用索引树中的信息而不需要进一步搜索读取实际的行来检索表中的列信息。<br />   <strong>Using temporary</strong>:为了解决查询,MySQL需要创建一个临时表来容纳结果。<br />   <strong>Using where</strong>:WHERE 子句用于限制哪一个行匹配下一个表或发送到客户。<br />   <strong>Using sort_union(…), Using union(…), Using intersect(…)</strong>:这些函数说明如何为index_merge联接类型合并索引扫描。<br />   <strong>Using index for group-by</strong>:类似于访问表的Using index方式,Using index for group-by表示MySQL发现了一个索引,可以用来查 询GROUP BY或DISTINCT查询的所有列,而不要额外搜索硬盘访问实际的表。</td>
+</tr>
+</tbody></table>
+<h3 id="3-1-select-type的说明"><a href="#3-1-select-type的说明" class="headerlink" title="3.1 select_type的说明"></a>3.1 select_type的说明</h3><h4 id="1-1-PRIMARY-和-UNION"><a href="#1-1-PRIMARY-和-UNION" class="headerlink" title="1.1 PRIMARY 和 UNION"></a>1.1 PRIMARY 和 UNION</h4><p>当通过union来连接多个查询结果时，第二个之后的select其select_type为UNION。 </p>
+<p>explain select * from s1 where id = 100 union select * from s1 where id = 200; </p>
+<p><img src="/images/mysql/Mysql_explain1.png" alt="Mysql_explain1"></p>
+<h4 id="1-2-DEPENDENT-UNION和DEPENDENT-SUBQUERY"><a href="#1-2-DEPENDENT-UNION和DEPENDENT-SUBQUERY" class="headerlink" title="1.2 DEPENDENT UNION和DEPENDENT SUBQUERY"></a>1.2 DEPENDENT UNION和DEPENDENT SUBQUERY</h4><p>当union作为子查询时，其中第二个union的select_type就是DEPENDENT UNION。 第一个子查询的select_type则是DEPENDENT SUBQUERY。 </p>
+<p>explain select * from s1 where id in (select id from s1 where id=100 union select id from s1 where id=200); </p>
+<p><img src="/images/mysql/Mysql_explain2.png" alt="Mysql_explain2"></p>
+<h4 id="1-3-SUBQUERY"><a href="#1-3-SUBQUERY" class="headerlink" title="1.3 SUBQUERY"></a>1.3 SUBQUERY</h4><p>子查询中的第一个select其select_type为SUBQUERY。 </p>
+<p> explain select * from s1 where id =(select id from s1 where id = 100); </p>
+<p><img src="/images/mysql/Mysql_explain3.png" alt="Mysql_explain3"></p>
+<h4 id="1-4-DERIVED"><a href="#1-4-DERIVED" class="headerlink" title="1.4 DERIVED"></a>1.4 DERIVED</h4><p>当子查询是from子句时，其select_type为DERIVED。 </p>
+<p>explain select * from ( select id from s1 where id = 100 ) a ;</p>
+<p><img src="/images/mysql/Mysql_explain4.png" alt="Mysql_explain4"></p>
+<h3 id="3-2-type-的说明"><a href="#3-2-type-的说明" class="headerlink" title="3.2 type 的说明"></a>3.2 type 的说明</h3><p>这一列表示关联类型或访问类型，即MySQL决定如何查找表中的行，查找数据行记录的大概范围。<br>依次从最优到最差分别为:<strong>system &gt; const &gt; eq_ref &gt; ref &gt; range &gt; index &gt; ALL</strong>一般来说，得保证查询达到range级别，最好达到ref<br>NULL:mysql能够在优化阶段分解查询语句，在执行阶段用不着再访问表或索引。例如:在<br>索引列中选取最小值，可以单独查找索引来完成，不需要在执行时访问表</p>
+<h4 id="2-1-system，const"><a href="#2-1-system，const" class="headerlink" title="2.1 system，const"></a>2.1 system，const</h4><p>mysql能对查询的某部分进行优化并将其转化成一个常量(可以看show warnings 的结果)。用于 primary key 或 unique key 的所有列与常数比较时，所以表最多有一个匹配行，读取1次，速度比较快。system是const的特例，表里只有一条元组匹配时为system</p>
+<p>explain select * from test2_myisam where id = 1；（myisam引擎）</p>
+<p><img src="/images/mysql/Mysql_explain_type.png" alt="Mysql_explain_type"></p>
+<p>explain select * from test where id = 1</p>
+<p><img src="/images/mysql/Mysql_explain_type2.png" alt="Mysql_explain_type2"></p>
+<p>explain select * from s1 where id = 1</p>
+<p><img src="/images/mysql/Mysql_explain_type3.png" alt="Mysql_explain_type3"></p>
+<h4 id="2-2-eq-ref"><a href="#2-2-eq-ref" class="headerlink" title="2.2 eq_ref"></a>2.2 <strong>eq_ref</strong></h4><p>primary key 或 unique key 索引的所有部分被连接使用 ，最多只会返回一条符合条件的记录。这可能是在 const 之外最好的联接类型了，简单的 select 查询不会出现这种type。</p>
+<p>在s1表中的id是主键，test表中的id也是主键，该表可以认为是订单表的补充信息表，他们的关系是1对1，在下面的例子中可以看到b表的连接类型是eq_ref，这是极快的联接类型。 </p>
+<p>explain select * from s1 a,test b where a.id=b.id; </p>
+<p><img src="/images/mysql/Mysql_eq_ref.png" alt="Mysql_eq_ref"></p>
+<h4 id="2-3-ref"><a href="#2-3-ref" class="headerlink" title="2.3 ref"></a>2.3 ref</h4><p>相比 eq_ref，不使用唯一索引，而是使用普通索引或者唯一性索引的部分前缀，索引要和某个值相比较，可能会找到多个符合条件的行。</p>
+<ol>
+<li>简单 select 查询，name是普通索引(非唯一索引)</li>
+</ol>
+<p>explain select * from test b where b.name = ‘33’;</p>
+<p><img src="/images/mysql/Mysql_type_ref.png" alt="Mysql_type_ref"></p>
+<p>2.关联表查询，idx_film_actor_id是film_id和actor_id的联合索引，这里使用到了film_actor<br>的左边前缀film_id部分。</p>
+<p>explain select film_id from film left join film_actor on film.id =film_actor.film_id;</p>
+<p><img src="/images/mysql/Mysql_type_ref2.png" alt="Mysql_type_ref"></p>
+<h4 id="2-4-range"><a href="#2-4-range" class="headerlink" title="2.4 range"></a>2.4 <strong>range</strong></h4><p>范围扫描通常出现在 in(), between ,&gt; ,&lt;, &gt;= 等操作中。使用一个索引来检索给定范围的行。</p>
+<pre><code> explain select * from s1 where id in (100,200,300); </code></pre>
+<p><img src="/images/mysql/Mysql_type_range.png" alt="Mysql_type_range"></p>
+<h4 id="2-5-index"><a href="#2-5-index" class="headerlink" title="2.5 index"></a>2.5 index</h4><p>扫描全表索引，这通常比ALL快一些。</p>
+<p>explain select count(*) from s1;  </p>
+<p><img src="/images/mysql/Mysql_type_index.png" alt="Mysql_type_index"></p>
+<h4 id="2-6-ALL"><a href="#2-6-ALL" class="headerlink" title="2.6 ALL"></a>2.6 ALL</h4><p>即全表扫描，意味着mysql需要从头到尾去查找所需要的行。通常情况下这需要增加索<br>引来进行优化了</p>
+<p>explain select * from s1; </p>
+<p><img src="/images/mysql/Mysql_type_all.png" alt="Mysql_type_all"></p>
+<h3 id="possible-keys"><a href="#possible-keys" class="headerlink" title="possible_keys"></a>possible_keys</h3><p>这一列显示查询可能使用哪些索引来查找。explain 时可能出现 possible_keys 有列，而 key 显示 NULL 的情况，这种情况是因为表中<br>数据不多，mysql认为索引对此查询帮助不大，选择了全表查询。如果该列是NULL，则没有相关的索引。在这种情况下，可以通过检查 where 子句看是否可以创造一个适当的索引来提高查询性能，然后用 explain 查看效果。</p>
+<h3 id="key"><a href="#key" class="headerlink" title="key"></a>key</h3><p>这一列显示mysql实际采用哪个索引来优化对该表的访问。如果没有使用索引，则该列是 NULL。如果想强制mysql使用或忽视possible_keys列中的索引，在查询中使用 force index、ignore index。</p>
+<h3 id="key-len"><a href="#key-len" class="headerlink" title="key_len"></a>key_len</h3><p>这一列显示了mysql在索引里使用的字节数，通过这个值可以算出具体使用了索引中的哪些列。<br>key_len计算规则如下:</p>
+<ul>
+<li><p>字符串</p>
+<ul>
+<li>char(n):n字节长度</li>
+<li>varchar(n):2字节存储字符串长度，如果是utf-8，则长度 3n+2</li>
+</ul>
+</li>
+<li><p>数值类型</p>
+<ul>
+<li>tinyint:1字节 </li>
+<li>smallint:2字节 </li>
+<li>int:4字节</li>
+<li>bigint:8字节  </li>
+</ul>
+</li>
+<li><p>时间类型 </p>
+<ul>
+<li>date:3字节 </li>
+<li>timestamp:4字节 </li>
+<li>datetime:8字节</li>
+</ul>
+</li>
+<li><p> 如果字段允许为 NULL，需要1字节记录是否为 NULL 索引最大长度是768字节，当字符串过长时，mysql会做一个类似左前缀索引的处理，将前半 部分的字符提取出来做索引。 </p>
+</li>
+</ul>
+<h3 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h3><p>这一列显示了在key列记录的索引中，表查找值所用到的列或常量，常见的有:const(常量)，字段名(例:film.id)</p>
+<h3 id="rows"><a href="#rows" class="headerlink" title="rows"></a>rows</h3><p>这一列是mysql估计要读取并检测的行数，注意这个不是结果集里的行数。</p>
+<h3 id="3-3-extra"><a href="#3-3-extra" class="headerlink" title="3.3 extra"></a>3.3 extra</h3><p>这一列展示的是额外信息。常见的重要值如下:</p>
+<h4 id="Using-index"><a href="#Using-index" class="headerlink" title="Using index"></a>Using index</h4><p>这是性能很高的一种情况。当查询所需的数据可以直接从索引树中检索到时，就会出现 </p>
+<p>explain select id  from test  where id = 2; (id为索引列，查询的列为id)</p>
+<p><img src="/images/mysql/Mysql_exists_index.png" alt="Mysql_exists_usingFilesort"></p>
+<h4 id="Using-where"><a href="#Using-where" class="headerlink" title="Using where"></a>Using where</h4><p>使用 where 语句来处理结果，查询的列未被索引覆盖</p>
+<p>explain select *  from test  where age = 2; (age不为索引列)</p>
+<p><img src="/images/mysql/Mysql_exists_where.png" alt="Mysql_exists_usingFilesort"></p>
+<h3 id="Using-index-condition"><a href="#Using-index-condition" class="headerlink" title="Using index condition"></a>Using index condition</h3><p>查询的列不完全被索引覆盖，where条件中是一个前导列的范围;</p>
+<h4 id="3-4-Using-filesort"><a href="#3-4-Using-filesort" class="headerlink" title="3.4 Using filesort"></a>3.4 Using filesort</h4><p>在有排序子句的情况下很常见的一种情况。此时mysql会根据联接类型浏览所有符合条件的记录，并保存排序关键字和行指针，然后排序关键字并按顺序检索行。</p>
+<p> explain select * from s1 order by email desc limit 10;  （email列没有索引）</p>
+<p><img src="/images/mysql/Mysql_exists_usingFilesort.png" alt="Mysql_exists_usingFilesort"></p>
+<h4 id="3-6-Using-temporary"><a href="#3-6-Using-temporary" class="headerlink" title="3.6 Using temporary"></a>3.6 Using temporary</h4><p>发生这种情况一般都是需要进行优化的。mysql需要创建一张临时表用来处理此类查询。 </p>
+<p>explain select distinct age from test; (age列没有索引)</p>
+<p><img src="/images/mysql/Mysql_exists_usingTemporary.png" alt="Mysql_exists_usingTemporary"></p>
+<h4 id="3-8-Using-index-for-group-by"><a href="#3-8-Using-index-for-group-by" class="headerlink" title="3.8 Using index for group-by"></a>3.8 Using index for group-by</h4><p>表明可以在索引中找到分组所需的所有数据，不需要查询实际的表。 </p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/crazylqy/p/4361406.html">参考链接</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xiaoboluo768/p/5400990.html">参考链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Mysql/2019-03-07%20Mysq%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" rel="prev" title="Mysql执行过程">
+      <i class="fa fa-chevron-left"></i> Mysql执行过程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Mysql/2019-08-07%20mysql%E9%94%81%E4%B8%8E%E4%BA%8B%E7%89%A9/" rel="next" title="mysql锁与事物">
+      mysql锁与事物 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%B4%A2%E5%BC%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">1 索引介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%B4%A2%E5%BC%95%E5%88%86%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">2 索引分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%88%9B%E5%BB%BA-%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95%E7%9A%84%E8%AF%AD%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 创建&#x2F;删除索引的语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E6%9C%80%E5%B7%A6%E5%8C%B9%E9%85%8D%E5%8E%9F%E5%88%99"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 最左匹配原则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%85%A8%E5%88%97%E5%8C%B9%E9%85%8D"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1 全列匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%9C%80%E5%B7%A6%E5%89%8D%E7%BC%80%E5%8C%B9%E9%85%8D"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2 最左前缀匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E4%B8%AD%E9%97%B4%E6%9D%A1%E4%BB%B6%E6%9C%AA%E6%8F%90%E4%BE%9B"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.3 中间条件未提供</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E6%9F%A5%E8%AF%A2%E6%9D%A1%E4%BB%B6%E6%B2%A1%E6%9C%89%E7%B4%A2%E5%BC%95%E7%AC%AC%E4%B8%80%E5%88%97"><span class="nav-number">2.2.4.</span> <span class="nav-text">2.4 查询条件没有索引第一列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E5%8C%B9%E9%85%8D%E6%9F%90%E5%88%97%E7%9A%84%E5%89%8D%E7%BC%80%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">2.2.5.</span> <span class="nav-text">2.5 匹配某列的前缀字符串</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-%E8%8C%83%E5%9B%B4%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.2.6.</span> <span class="nav-text">2.6 范围查询</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-explain"><span class="nav-number">3.</span> <span class="nav-text">3 explain</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-select-type%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 select_type的说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-PRIMARY-%E5%92%8C-UNION"><span class="nav-number">3.1.1.</span> <span class="nav-text">1.1 PRIMARY 和 UNION</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-DEPENDENT-UNION%E5%92%8CDEPENDENT-SUBQUERY"><span class="nav-number">3.1.2.</span> <span class="nav-text">1.2 DEPENDENT UNION和DEPENDENT SUBQUERY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-SUBQUERY"><span class="nav-number">3.1.3.</span> <span class="nav-text">1.3 SUBQUERY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-DERIVED"><span class="nav-number">3.1.4.</span> <span class="nav-text">1.4 DERIVED</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-type-%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 type 的说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-system%EF%BC%8Cconst"><span class="nav-number">3.2.1.</span> <span class="nav-text">2.1 system，const</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-eq-ref"><span class="nav-number">3.2.2.</span> <span class="nav-text">2.2 eq_ref</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-ref"><span class="nav-number">3.2.3.</span> <span class="nav-text">2.3 ref</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-range"><span class="nav-number">3.2.4.</span> <span class="nav-text">2.4 range</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-index"><span class="nav-number">3.2.5.</span> <span class="nav-text">2.5 index</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-ALL"><span class="nav-number">3.2.6.</span> <span class="nav-text">2.6 ALL</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#possible-keys"><span class="nav-number">3.3.</span> <span class="nav-text">possible_keys</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key"><span class="nav-number">3.4.</span> <span class="nav-text">key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key-len"><span class="nav-number">3.5.</span> <span class="nav-text">key_len</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ref"><span class="nav-number">3.6.</span> <span class="nav-text">ref</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rows"><span class="nav-number">3.7.</span> <span class="nav-text">rows</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-extra"><span class="nav-number">3.8.</span> <span class="nav-text">3.3 extra</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Using-index"><span class="nav-number">3.8.1.</span> <span class="nav-text">Using index</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Using-where"><span class="nav-number">3.8.2.</span> <span class="nav-text">Using where</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-index-condition"><span class="nav-number">3.9.</span> <span class="nav-text">Using index condition</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-Using-filesort"><span class="nav-number">3.9.1.</span> <span class="nav-text">3.4 Using filesort</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-Using-temporary"><span class="nav-number">3.9.2.</span> <span class="nav-text">3.6 Using temporary</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-8-Using-index-for-group-by"><span class="nav-number">3.9.3.</span> <span class="nav-text">3.8 Using index for group-by</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="java8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="reduce规约和Collector搜集器">
+<meta property="og:url" content="http://example.com/2020/10/26/java8/2018-09-30-java8-reduce%E5%92%8Ccollector/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="java8">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-26T03:56:48.153Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Java8">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/26/java8/2018-09-30-java8-reduce%E5%92%8Ccollector/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>reduce规约和Collector搜集器 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/java8/2018-09-30-java8-reduce%E5%92%8Ccollector/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          reduce规约和Collector搜集器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java8/" itemprop="url" rel="index"><span itemprop="name">Java8</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">java8</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>reduce规约和collector搜集器的理解</p>
+<a id="more"></a> 
+
+
+<h3 id="1-理解collector的几个函数"><a href="#1-理解collector的几个函数" class="headerlink" title="1  理解collector的几个函数"></a>1  理解collector的几个函数</h3><p>collector接口定义的几个函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Collector</span>&lt;<span class="title">T</span>, <span class="title">A</span>, <span class="title">R</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">Supplier&lt;A&gt; <span class="title">supplier</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">BiConsumer&lt;A, T&gt; <span class="title">accumulator</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">BinaryOperator&lt;A&gt; <span class="title">combiner</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">Function&lt;A, R&gt; <span class="title">finisher</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">Set&lt;Characteristics&gt; <span class="title">characteristics</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-1-建立新的结果容器-supplier方法"><a href="#1-1-建立新的结果容器-supplier方法" class="headerlink" title="1.1 建立新的结果容器 supplier方法"></a>1.1 建立新的结果容器 supplier方法</h4><p>supplier方法必须返回一个结果为空的Supplier，也就是一个无参数函数，在调用时，它会创建一个空的累加器实例，供数据收集过程使用。就个人通俗的理解来说，这个方法定义你如何收集数据，之所以提炼出来就是为了让你可以传lambda表达式来指定收集器。对于toList, 我们直接返回一个空list就好。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Supplier&lt;List&lt;T&gt;&gt; supplier() &#123;</span><br><span class="line">    <span class="keyword">return</span> ArrayList::<span class="keyword">new</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-累加器执行累加的具体实现-accumulator方法"><a href="#1-2-累加器执行累加的具体实现-accumulator方法" class="headerlink" title="1.2 累加器执行累加的具体实现 accumulator方法"></a>1.2 累加器执行累加的具体实现 accumulator方法</h4><p>accumulator方法会返回执行归约操作的函数，该函数将返回void。当遍历到流中第n个元素时，这个函数就会执行。函数有两个参数，第一个参数是累计值，第二参数是第n个元素。累加值与元素n如何做运算就是accumulator做的事情了。比如toList, 累加值就是一个List，对于元素n，当然就是add。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> BiConsumer&lt;List&lt;T&gt;, T&gt; accumulator() &#123;</span><br><span class="line">    <span class="keyword">return</span> List::add;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-对结果容器应用最终转换-finisher方法"><a href="#1-3-对结果容器应用最终转换-finisher方法" class="headerlink" title="1.3 对结果容器应用最终转换 finisher方法"></a>1.3 对结果容器应用最终转换 finisher方法</h4><p>当遍历完流之后，我们需要对结果做一个处理，返回一个我们想要的结果。这就是finisher方法所定义的事情。finisher方法必须返回在累积过程的最后要调用的一个函数，以便将累加器对象转换为整个集合操作的最终结果， 这个返回的函数在执行时，会有个参数，该参数就是累积值，会有一个返回值，返回值就是我们最终要返回的东西。对于toList, 我最后就只要拿到那个收集的List就好，所以直接返回List。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Function&lt;List&lt;T&gt;, List&lt;T&gt;&gt; finisher() &#123;</span><br><span class="line">    <span class="keyword">return</span> (i) -&gt; i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于接收一个参数，返回一个value，我们可以想到Function函数，正如finisher()的返回值。对于这个返回参数本身的做法，Function有个静态方法 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &lt;T&gt; <span class="function">Function&lt;T, T&gt; <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> t -&gt; t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以用<code>Function.identity()</code>代替上述lambda表达式。 </p>
+<h4 id="1-4-合并两个结果容器-combiner"><a href="#1-4-合并两个结果容器-combiner" class="headerlink" title="1.4 合并两个结果容器 combiner"></a>1.4 合并两个结果容器 combiner</h4><p>上面看起来似乎已经可以工作了，这是针对顺序执行的情况。我们知道Stream天然支持并行，但并行却不是毫无代价的。想要并行首先就必然要把任务分段，然后才能并行执行，最后还要合并。虽然Stream底层对我们透明的执行了并行，但如何并行还是需要取决于我们自己。这就是combiner要做的事情。combiner方法会返回一个供归约操作使用的函数，它定义了对流的各个子部分并行处理时，各个字部分归约所得的累加器要如何合并。对于toList而言，Stream会把流自动的分成几个并行的部分，每个部分都执行上述的归约，汇集成一个List。当全部完成后再合并成一个List。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> BinaryOperator&lt;List&lt;T&gt;&gt; combiner() &#123;</span><br><span class="line">    <span class="keyword">return</span> (list1, list2) -&gt; &#123;</span><br><span class="line">        list1.addAll(list2);</span><br><span class="line">        <span class="keyword">return</span> list1;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，就可以对流并行归约了。它会用到Java7引入的分支/合并框架和Spliterator抽象。大概如下所示， </p>
+<ol>
+<li>原始流会以递归方式拆分为子流，直到定义流是否进一步拆分的一个条件为非(如果分布式工作单位太小，并行计算往往比顺序计算要慢，而且要是生成的并行任务比处理器内核数多很多的话就毫无意义了)。</li>
+<li>现在，所有的子流都可以并行处理，即对每个子流应用顺序归约算法。</li>
+<li>最后，使用收集器combiner方法返回的函数，将所有的部分结果两两合并。这时，会把原始流每次拆分得到的子流对应的结果合并起来。</li>
+</ol>
+<h4 id="1-5-characteristics方法"><a href="#1-5-characteristics方法" class="headerlink" title="1.5 characteristics方法"></a>1.5 characteristics方法</h4><p>Characteristics是一个包含三个项目的枚举： 包括是否有明确的finisher，是否需要同步，是否有序</p>
+<ol>
+<li>UNORDERED–(集合是无序的)：表示流中的元素无序。 </li>
+<li>CONCURRENT–(集合的操作需要同步)：表示中间结果只有一个，即使在并行流的情况下。所以只有在并行流且收集器不具备CONCURRENT特性时，combiner方法返回的lambda表达式才会执行（中间结果容器只有一个就无需合并） </li>
+<li>IDENTITY_FINISH–(不用finisher)：表示中间结果容器类型与最终结果类型一致，此时finiser方法不会被调用 </li>
+</ol>
+<h4 id="1-6-说明"><a href="#1-6-说明" class="headerlink" title="1.6 说明"></a>1.6 说明</h4><p>​    我们迄今开发的ToListCollector是IDENTITY_FINISH的，因为用来累积流中元素<br>List已经是我们要的最终结果，用不着进一步转换了，但它并不是UNORDERED，因为用在有序<br>流上的时候，我们还是希望顺序能够保留在得到的List中。最后，它是CONCURRENT的，但我们<br>刚才说过了，仅仅在背后的数据源无序时才会并发处理</p>
+<p>//通过collect代码认识一下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isParallel()</span><br><span class="line"> &amp;&amp; (collector.characteristics().contains(Collector.Characteristics.CONCURRENT))</span><br><span class="line"> &amp;&amp; (!isOrdered() ||collector.characteristics().contains(Collector.Characteristics.UNORDERED)))&#123;<span class="comment">//并发</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>即并发条件:<br>在Collector.Characteristics.CONCURRENT的基础上,收集器Collector具有Characteristics.UNORDERED特性或者原始数据是无序的时才应用并发;</p>
+<h3 id="2-reduce-规约"><a href="#2-reduce-规约" class="headerlink" title="2 reduce 规约"></a>2 reduce 规约</h3><p>Reduce中文含义为：减少、缩小；而Stream中的Reduce方法干的正是这样的活：根据一定的规则将Stream中的元素进行计算后返回一个唯一的值。  </p>
+<p>它有三个变种，输入参数分别是一个参数、二个参数以及三个参数； </p>
+<h4 id="2-1-reduce-涉及的接口"><a href="#2-1-reduce-涉及的接口" class="headerlink" title="2.1 reduce 涉及的接口"></a>2.1 reduce 涉及的接口</h4><ol>
+<li><p>BiFunction  它是一个函数式接口，包含的函数式方法定义如下： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">R <span class="title">apply</span><span class="params">(T t, U u)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>BinaryOperator  它实际上就是继承自BiFunction的一个接口；它的定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BinaryOperator</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">BiFunction</span>&lt;<span class="title">T</span>,<span class="title">T</span>,<span class="title">T</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>BiConsumer 也是一个函数式接口，它的定义如下 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">accept</span><span class="params">(T t, U u)</span></span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4 id="2-2-一个参数的Reduce"><a href="#2-2-一个参数的Reduce" class="headerlink" title="2.2 一个参数的Reduce"></a>2.2 一个参数的Reduce</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Optional&lt;T&gt; <span class="title">reduce</span><span class="params">(BinaryOperator&lt;T&gt; accumulator)</span> </span></span><br></pre></td></tr></table></figure>
+
+<p>reduce在求和、求最大最小值等方面都可以很方便的实现，代码如下，注意其返回的结果是一个Optional对象： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;Integer&gt; s = Stream.of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>);</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 求和，也可以写成Lambda语法：</span></span><br><span class="line"><span class="comment"> * Integer sum = s.reduce((a, b) -&gt; a + b).get();</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">Integer sum = s.reduce(<span class="keyword">new</span> BinaryOperator&lt;Integer&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">apply</span><span class="params">(Integer integer, Integer integer2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> integer + integer2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).get();</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 求最大值，也可以写成Lambda语法：</span></span><br><span class="line"><span class="comment"> * Integer max = s.reduce((a, b) -&gt; a &gt;= b ? a : b).get();</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">Integer max = s.reduce(<span class="keyword">new</span> BinaryOperator&lt;Integer&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">apply</span><span class="params">(Integer integer, Integer integer2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> integer &gt;= integer2 ? integer : integer2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).get(); </span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-两个参数的Reduce"><a href="#2-3-两个参数的Reduce" class="headerlink" title="2.3 两个参数的Reduce"></a>2.3 两个参数的Reduce</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">T <span class="title">reduce</span><span class="params">(T identity, BinaryOperator&lt;T&gt; accumulator)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>如要将一个String类型的Stream中的所有元素连接到一起并在最前面添加[value]后返回： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;String&gt; s = Stream.of(<span class="string">&quot;test&quot;</span>, <span class="string">&quot;t1&quot;</span>, <span class="string">&quot;t2&quot;</span>, <span class="string">&quot;teeeee&quot;</span>, <span class="string">&quot;aaaa&quot;</span>, <span class="string">&quot;taaa&quot;</span>);</span><br><span class="line"><span class="comment">// 以下结果将会是：　[value]testt1t2teeeeeaaaataaa</span></span><br><span class="line"> System.out.println(s.reduce(<span class="string">&quot;[value]&quot;</span>, (s1, s2) -&gt; s1.concat(s2)));</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-三个参数的Reduce"><a href="#2-4-三个参数的Reduce" class="headerlink" title="2.4 三个参数的Reduce"></a>2.4 三个参数的Reduce</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;U&gt; <span class="function">U <span class="title">reduce</span><span class="params">(U identity,</span></span></span><br><span class="line"><span class="function"><span class="params">                 BiFunction&lt;U, ? <span class="keyword">super</span> T, U&gt; accumulator,</span></span></span><br><span class="line"><span class="function"><span class="params">                 BinaryOperator&lt;U&gt; combiner)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>参数分析：</p>
+<ul>
+<li>identity: 一个初始化的值；这个初始化的值其类型是泛型U，与Reduce方法返回的类型一致；注意此时Stream中元素的类型是T，与U可以不一样也可以一样，这样的话操作空间就大了；不管Stream中存储的元素是什么类型，U都可以是任何类型，如U可以是一些基本数据类型的包装类型Integer、Long等；或者是String，又或者是一些集合类型ArrayList等；后面会说到这些用法。</li>
+<li>accumulator: 其类型是BiFunction，输入是U与T两个类型的数据，而返回的是U类型；也就是说返回的类型与输入的第一个参数类型是一样的，而输入的第二个参数类型与Stream中元素类型是一样的。</li>
+<li>combiner: 其类型是BinaryOperator，支持的是对U类型的对象进行操作</li>
+</ul>
+<p>第三个参数combiner主要是使用在并行计算的场景下；如果Stream是非并行时，第三个参数实际上是不生效的。 </p>
+<h5 id="2-4-1-非并行"><a href="#2-4-1-非并行" class="headerlink" title="2.4.1 非并行"></a>2.4.1 非并行</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以下reduce生成的List将会是[aa, ab, c, ad]</span></span><br><span class="line"> Stream&lt;String&gt; s1 = Stream.of(<span class="string">&quot;aa&quot;</span>, <span class="string">&quot;ab&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;ad&quot;</span>);</span><br><span class="line">  System.out.println(s1.reduce(<span class="keyword">new</span> ArrayList&lt;String&gt;(), </span><br><span class="line">                               (r, t) -&gt; &#123;r.add(t); <span class="keyword">return</span> r; &#125;, (r1, r2) -&gt; r1));</span><br></pre></td></tr></table></figure>
+
+<p>也可以进行元素过滤，即模拟Stream中的Filter函数： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;String&gt; s1 = Stream.of(<span class="string">&quot;aa&quot;</span>, <span class="string">&quot;ab&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;ad&quot;</span>);</span><br><span class="line">       Predicate&lt;String&gt; predicate = t -&gt; t.contains(<span class="string">&quot;a&quot;</span>);</span><br><span class="line">       <span class="comment">// 模拟Filter查找其中含有字母a的所有元素，打印结果将是aa ab ad</span></span><br><span class="line">        s1.reduce(<span class="keyword">new</span> ArrayList&lt;String&gt;(),</span><br><span class="line">            (r, t) -&gt; &#123;</span><br><span class="line">                <span class="keyword">if</span> (predicate.test(t)) &#123;</span><br><span class="line">                    r.add(t);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> r;</span><br><span class="line">            &#125;,</span><br><span class="line">           (r1, r2) -&gt; r1).stream().forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-4-2-并行"><a href="#2-4-2-并行" class="headerlink" title="2.4.2 并行"></a>2.4.2 并行</h5><p>示例一：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;Integer&gt; stream = Stream.of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>).parallel();</span><br><span class="line">     System.out.println(stream.reduce(<span class="number">4</span>,</span><br><span class="line">             (s1, s2) -&gt; s1 + s2,</span><br><span class="line">             (s1, s2) -&gt; s1 + s2)</span><br><span class="line">     );</span><br></pre></td></tr></table></figure>
+
+<p>并行时的计算结果是18，而非并行时的计算结果是10！<br>为什么会这样？<br>先分析下非并行时的计算过程；第一步计算4 + 1 = 5，第二步是5 + 2 = 7，第三步是7 + 3 = 10。按1.3.1中所述来理解没有什么疑问。<br>那问题就是非并行的情况与理解有不一致的地方了！<br>先分析下它可能是通过什么方式来并行的？按非并行的方式来看它是分了三步的，每一步都要依赖前一步的运算结果！那应该是没有办法进行并行计算的啊！可实际上现在并行计算出了结果并且关键其结果与非并行时是不一致的！<br>那要不就是理解上有问题，要不就是这种方式在并行计算上存在BUG。<br>暂且认为其不存在BUG，先来看下它是怎么样出这个结果的。猜测初始值4是存储在一个变量result中的；并行计算时，线程之间没有影响，因此每个线程在调用第二个参数BiFunction进行计算时，直接都是使用result值当其第一个参数（由于Stream计算的延迟性，在调用最终方法前，都不会进行实际的运算，因此每个线程取到的result值都是原始的4），因此计算过程现在是这样的：线程1：1 + 4 = 5；线程2：2 + 4 = 6；线程3：3 + 4 = 7；Combiner函数： 5 + 6 + 7 = 18！ </p>
+<p>示例二：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(Stream.of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>).parallel().reduce(<span class="number">4</span>, (s1, s2) -&gt; s1 + s2</span><br><span class="line">                , (s1, s2) -&gt; s1 * s2));</span><br></pre></td></tr></table></figure>
+
+<p>以上示例输出的结果是210！<br>它表示的是，使用4与1、2、3中的所有元素按(s1,s2) -&gt; s1 + s2(accumulator)的方式进行第一次计算，得到结果序列4+1, 4+2, 4+3，即5、6、7；然后将5、6、7按combiner即(s1, s2) -&gt; s1 * s2的方式进行汇总，也就是5 * 6 * 7 = 210。 </p>
+<p>使用函数表示就是：(4+1) * (4+2) * (4+3) = 210;</p>
+<p>下面来理解并行三个参数时的场景，实际上就是第一步使用accumulator进行转换（它的两个输入参数一个是identity, 一个是序列中的每一个元素），由N个元素得到N个结果；第二步是使用combiner对第一步的N个结果做汇总。</p>
+<p>但这里需要注意的是，如果第一个参数的类型是ArrayList等对象而非基本数据类型的包装类或者String，第三个函数的处理上可能容易引起误解，如以下示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;String&gt; s1 = Stream.of(<span class="string">&quot;aa&quot;</span>, <span class="string">&quot;ab&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;ad&quot;</span>);</span><br><span class="line">List&lt;String&gt; listStr = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i&lt; <span class="number">1000</span>; i++)&#123;</span><br><span class="line">            listStr.add(<span class="string">&quot;a&quot;</span> + i);</span><br><span class="line">        &#125;</span><br><span class="line">        Stream&lt;String&gt;  s1 = listStr.stream();</span><br><span class="line">        Predicate&lt;String&gt; predicate = t -&gt; t.contains(<span class="string">&quot;a&quot;</span>);</span><br><span class="line">        <span class="comment">// Vector 模拟Filter查找其中含有字母a的所有元素，打印结果将是aa ab ad</span></span><br><span class="line">        s1.parallel().reduce(<span class="keyword">new</span> ArrayList&lt;String&gt;(),</span><br><span class="line">              (r, t) -&gt; &#123;</span><br><span class="line">                <span class="keyword">if</span> (predicate.test(t)) &#123;</span><br><span class="line">                    r.add(t);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> r;</span><br><span class="line">             &#125;,</span><br><span class="line">             (r1, r2) -&gt; &#123;</span><br><span class="line">                 System.out.println(r1==r2);</span><br><span class="line">                 <span class="keyword">return</span> r2;</span><br><span class="line">             &#125;).stream().forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<p>其中System.out.println(r1==r2)这句打印的结果是什么呢？经过运行后发现是True！ </p>
+<p>为什么会这样？这是因为每次第二个参数也就是accumulator返回的都是第一个参数中New的ArrayList对象！因此combiner中传入的永远都会是这个对象，这样r1与r2就必然是同一样对象！</p>
+<p>因此如果按理解的，combiner是将不同线程操作的结果汇总起来，那么一般情况下上述代码就会这样写:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//模拟Filter查找其中含有字母a的所有元素，由于使用了r1.addAll(r2)，其打印结果将不会是预期的aa ab ad</span></span><br><span class="line">       Stream&lt;String&gt; s1 = Stream.of(<span class="string">&quot;aa&quot;</span>, <span class="string">&quot;ab&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;ad&quot;</span>);</span><br><span class="line">       Predicate&lt;String&gt; predicate = t -&gt; t.contains(<span class="string">&quot;a&quot;</span>);</span><br><span class="line">       s1.parallel().reduce(<span class="keyword">new</span> ArrayList&lt;String&gt;(), </span><br><span class="line">           (r, t) -&gt; &#123;</span><br><span class="line">               <span class="keyword">if</span> (predicate.test(t)) &#123; </span><br><span class="line">                   r.add(t);</span><br><span class="line">               &#125;  </span><br><span class="line">               <span class="keyword">return</span> r; </span><br><span class="line">           &#125;,</span><br><span class="line">           (r1, r2) -&gt; &#123;</span><br><span class="line">               r1.addAll(r2); </span><br><span class="line">               <span class="keyword">return</span> r1; </span><br><span class="line">            &#125;).stream().forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-collect-方法"><a href="#3-collect-方法" class="headerlink" title="3 collect 方法"></a>3 collect 方法</h3><p>collect含义与Reduce有点相似；  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;R&gt; <span class="function">R <span class="title">collect</span><span class="params">(Supplier&lt;R&gt; supplier,</span></span></span><br><span class="line"><span class="function"><span class="params">              BiConsumer&lt;R, ? <span class="keyword">super</span> T&gt; accumulator,</span></span></span><br><span class="line"><span class="function"><span class="params">              BiConsumer&lt;R, R&gt; combiner)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>使用上面Reduce模拟Filter的示例进行演示 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模拟Filter查找其中含有字母a的所有元素，打印结果将是aa ab ad</span></span><br><span class="line">Stream&lt;String&gt; s1 = Stream.of(<span class="string">&quot;aa&quot;</span>, <span class="string">&quot;ab&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;ad&quot;</span>);</span><br><span class="line">Predicate&lt;String&gt; predicate = t -&gt; t.contains(<span class="string">&quot;a&quot;</span>);</span><br><span class="line">System.out.println(s1.parallel().collect(() -&gt; <span class="keyword">new</span> ArrayList&lt;String&gt;(),</span><br><span class="line">        (array, s) -&gt; &#123;<span class="keyword">if</span> (predicate.test(s)) array.add(s); &#125;,</span><br><span class="line">        (array1, array2) -&gt; array1.addAll(array2)));</span><br></pre></td></tr></table></figure>
+
+<p>根据以上分析，这边理解起来就很容易了：每个线程都创建了一个结果容器ArrayList，假设每个线程处理一个元素，那么处理的结果将会是[aa],[ab],[],[ad]四个结果容器（ArrayList）；最终再调用第三个BiConsumer参数将结果全部Put到第一个List中</p>
+<h3 id="4-collector-中Characteristics特性分析"><a href="#4-collector-中Characteristics特性分析" class="headerlink" title="4 collector 中Characteristics特性分析"></a>4 collector 中Characteristics特性分析</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyFromSetToMap</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Collector</span>&lt;<span class="title">T</span>, <span class="title">Set</span>&lt;<span class="title">T</span>&gt;, <span class="title">Map</span>&lt;<span class="title">T</span>, <span class="title">T</span>&gt;&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Supplier&lt;Set&lt;T&gt;&gt; supplier() &#123;</span><br><span class="line">        <span class="keyword">return</span> () -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;supplier start&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> BiConsumer&lt;Set&lt;T&gt;, T&gt; accumulator() &#123;</span><br><span class="line">        <span class="keyword">return</span> (set, item) -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;accumulator start&quot;</span>);</span><br><span class="line">            set.add(item);</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> BinaryOperator&lt;Set&lt;T&gt;&gt; combiner() &#123;</span><br><span class="line">        <span class="keyword">return</span> (set1, set2) -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;combiner start&quot;</span>);</span><br><span class="line">            set1.addAll(set2);</span><br><span class="line">            <span class="keyword">return</span> set1;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Function&lt;Set&lt;T&gt;, Map&lt;T, T&gt;&gt; finisher() &#123;</span><br><span class="line">        <span class="keyword">return</span> (set) -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;finisher start&quot;</span>);</span><br><span class="line">            Map&lt;T, T&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">            set.stream().forEach(item -&gt; map.put(item, item));</span><br><span class="line">            <span class="keyword">return</span> map;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Set&lt;Characteristics&gt; <span class="title">characteristics</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Collections.unmodifiableSet(EnumSet.of( Characteristics.UNORDERED));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test3</span><span class="params">()</span></span>&#123;</span><br><span class="line">       List&lt;String&gt; listStr = Arrays.asList(<span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;lisi&quot;</span>, <span class="string">&quot;wangwu&quot;</span>, <span class="string">&quot;aaaa&quot;</span>, <span class="string">&quot;bbbb&quot;</span>, <span class="string">&quot;cccc&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line">       Set&lt;String&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">       listStr.stream().forEach(item -&gt; set.add(item));</span><br><span class="line">       System.out.println(set);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Map&lt;String, String&gt; map = set.stream().collect(new MyFromSetToMap&lt;&gt;());</span></span><br><span class="line">       Map&lt;String, String&gt; map = set.stream().collect(Collectors.toMap(String::toString, String::toString));</span><br><span class="line">      <span class="comment">// System.out.println(map);</span></span><br><span class="line"></span><br><span class="line">       Map&lt;String, String&gt; map2 = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">       map2.put(<span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java8/" rel="tag"># Java8</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/java8/2018-09-29-java8-stream%E6%B5%81/" rel="prev" title="java8 Stream流">
+      <i class="fa fa-chevron-left"></i> java8 Stream流
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/java8/2019-04-26%20Java8%20Optional/" rel="next" title="java8 Optional">
+      java8 Optional <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%90%86%E8%A7%A3collector%E7%9A%84%E5%87%A0%E4%B8%AA%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">1  理解collector的几个函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%BB%BA%E7%AB%8B%E6%96%B0%E7%9A%84%E7%BB%93%E6%9E%9C%E5%AE%B9%E5%99%A8-supplier%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 建立新的结果容器 supplier方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E7%B4%AF%E5%8A%A0%E5%99%A8%E6%89%A7%E8%A1%8C%E7%B4%AF%E5%8A%A0%E7%9A%84%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0-accumulator%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 累加器执行累加的具体实现 accumulator方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%AF%B9%E7%BB%93%E6%9E%9C%E5%AE%B9%E5%99%A8%E5%BA%94%E7%94%A8%E6%9C%80%E7%BB%88%E8%BD%AC%E6%8D%A2-finisher%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 对结果容器应用最终转换 finisher方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E7%BB%93%E6%9E%9C%E5%AE%B9%E5%99%A8-combiner"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 合并两个结果容器 combiner</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-characteristics%E6%96%B9%E6%B3%95"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 characteristics方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-%E8%AF%B4%E6%98%8E"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 说明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-reduce-%E8%A7%84%E7%BA%A6"><span class="nav-number">2.</span> <span class="nav-text">2 reduce 规约</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-reduce-%E6%B6%89%E5%8F%8A%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 reduce 涉及的接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E4%B8%80%E4%B8%AA%E5%8F%82%E6%95%B0%E7%9A%84Reduce"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 一个参数的Reduce</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E4%B8%A4%E4%B8%AA%E5%8F%82%E6%95%B0%E7%9A%84Reduce"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 两个参数的Reduce</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E4%B8%89%E4%B8%AA%E5%8F%82%E6%95%B0%E7%9A%84Reduce"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 三个参数的Reduce</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-1-%E9%9D%9E%E5%B9%B6%E8%A1%8C"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1 非并行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-2-%E5%B9%B6%E8%A1%8C"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2 并行</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-collect-%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">3 collect 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-collector-%E4%B8%ADCharacteristics%E7%89%B9%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">4 collector 中Characteristics特性分析</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux vi编辑器">
+<meta property="og:url" content="http://example.com/2020/10/26/linux/2019-11-07%20vi%E7%BC%96%E8%BE%91%E5%99%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="linux">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-26T03:56:48.245Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/26/linux/2019-11-07%20vi%E7%BC%96%E8%BE%91%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>linux vi编辑器 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/linux/2019-11-07%20vi%E7%BC%96%E8%BE%91%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux vi编辑器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">linux</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Vi是Linux中最基本的文本编辑</p>
+<a id="more"></a> 
+
+<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h2><p>基本上vi可以分为三种状态，分别是命令模式（command mode）、插入模式（Insert mode）和底行模式（last line mode），各模式的功能区分如下：</p>
+<p><strong>命令行模式(command mode</strong></p>
+<p>控制屏幕光标的移动，字符、字或行的删除，移动复制某区段及进入Insert mode下，或者到 last line mode。</p>
+<p><strong>插入模式(Insert mode)</strong></p>
+<p>只有在Insert mode下，才可以做文字输入，按「ESC」键可回到命令行模式。</p>
+<p><strong>底行模式(last line mode)</strong></p>
+<p>将文件保存或退出vi，也可以设置编辑环境，如寻找字符串、列出行号…等。</p>
+<p>不过一般我们在使用时把vi简化成两个模式，就是将底行模式(last line mode)也算入命令行模式(command mode)。</p>
+<h2 id="2-基本操作"><a href="#2-基本操作" class="headerlink" title="2 基本操作"></a>2 基本操作</h2><h3 id="1-进入vi"><a href="#1-进入vi" class="headerlink" title="1 进入vi"></a>1 进入vi</h3><p>在系统提示符号输入vi及文件名称后，就进入vi全屏幕编辑画面：</p>
+<p>$ vi myfile</p>
+<p>不过有一点要特别注意，就是您进入vi之后，是处于「命令行模式（command mode）」，您要切换到「插入模式（Insert mode）」才能够输入文字。初次使用vi的人都会想先用上下左右键移动光标，结果电脑一直哔哔叫，把自己气个半死，所以进入vi后，先不要乱动，转换到 「插入模式（Insert mode）」再说吧！</p>
+<h3 id="2-切换至插入模式"><a href="#2-切换至插入模式" class="headerlink" title="2 切换至插入模式"></a>2 切换至插入模式</h3><p>在「命令行模式（command mode）」下按一下字母「i」就可以进入「插入模式（Insert mode）」，这时候你就可以开始输入文字了。</p>
+<h3 id="3-Insert-的切换"><a href="#3-Insert-的切换" class="headerlink" title="3 Insert 的切换"></a>3 Insert 的切换</h3><p>您目前处于「插入模式（Insert mode）」，您就只能一直输入文字，如果您发现输错了字！想用光标键往回移动，将该字删除，就要先按一下「ESC」键转到「命令行模式（command mode）」再删除文字。</p>
+<h3 id="4-退出vi及保存文件"><a href="#4-退出vi及保存文件" class="headerlink" title="4 退出vi及保存文件"></a>4 退出vi及保存文件</h3><p>在「命令行模式（command mode）」下，按一下「：」冒号键进入「Last line mode」，例如：</p>
+<dl><dt>: w filename （输入 「w filename」将文章以指定的文件名filename保存）<br>: wq (输入「wq」，存盘并退出vi)</dt><dd>q! (输入q!， 不存盘强制退出vi)</dd></dl><h2 id="3-命令行模式功能键"><a href="#3-命令行模式功能键" class="headerlink" title="3 命令行模式功能键"></a>3 命令行模式功能键</h2><h3 id="1-插入模式"><a href="#1-插入模式" class="headerlink" title="1 插入模式"></a>1 插入模式</h3><p>按「i」切换进入插入模式「insert mode」，按“i”进入插入模式后是从光标当前位置开始输入文件；<br>按「a」进入插入模式后，是从目前光标所在位置的下一个位置开始输入文字；<br>按「o」进入插入模式后，是插入新的一行，从行首开始输入文字。</p>
+<h3 id="2-插入模式切换命令行模式"><a href="#2-插入模式切换命令行模式" class="headerlink" title="2 插入模式切换命令行模式"></a>2 插入模式切换命令行模式</h3><p>按「ESC」键。</p>
+<h3 id="3-移动光标"><a href="#3-移动光标" class="headerlink" title="3 移动光标"></a>3 移动光标</h3><p>vi可以直接用键盘上的光标来上下左右移动，但正规的vi是用小写英文字母「h」、「j」、「k」、「l」，分别控制光标左、下、上、右移一格。</p>
+<p>按「ctrl」+「b」：屏幕往“后”移动一页。<br>按「ctrl」+「f」：屏幕往“前”移动一页。<br>按「ctrl」+「u」：屏幕往“后”移动半页。<br>按「ctrl」+「d」：屏幕往“前”移动半页。<br>按数字「0」：移到文章的开头。<br>按「G」：移动到文章的最后。<br>按「$」：移动到光标所在行的“行尾”。<br>按「^」：移动到光标所在行的“行首”<br>按「w」：光标跳到下个字的开头<br>按「e」：光标跳到下个字的字尾<br>按「b」：光标回到上个字的开头<br>按「#l」：光标移到该行的第#个位置，如：5l,56l。</p>
+<h3 id="4-删除文字"><a href="#4-删除文字" class="headerlink" title="4 删除文字"></a>4 删除文字</h3><p>「x」：每按一次，删除光标所在位置的“后面”一个字符。<br>「#x」：例如，「6x」表示删除光标所在位置的“后面”6个字符。<br>「X」：大写的X，每按一次，删除光标所在位置的“前面”一个字符。<br>「#X」：例如，「20X」表示删除光标所在位置的“前面”20个字符。<br>「dd」：删除光标所在行。<br>「#dd」：从光标所在行开始删除#行</p>
+<h3 id="5-复制"><a href="#5-复制" class="headerlink" title="5 复制"></a>5 复制</h3><p>「yw」：将光标所在之处到字尾的字符复制到缓冲区中。<br>「#yw」：复制#个字到缓冲区<br>「yy」：复制光标所在行到缓冲区。<br>「#yy」：例如，「6yy」表示拷贝从光标所在的该行“往下数”6行文字。<br>「p」：将缓冲区内的字符贴到光标所在位置。注意：所有与“y”有关的复制命令都必须与“p”配合才能完成复制与粘贴功能。</p>
+<h3 id="6-替换"><a href="#6-替换" class="headerlink" title="6 替换"></a>6 替换</h3><p>「r」：替换光标所在处的字符。<br>「R」：替换光标所到之处的字符，直到按下「ESC」键为止。</p>
+<h3 id="7-回复上一次操作"><a href="#7-回复上一次操作" class="headerlink" title="7 回复上一次操作"></a>7 回复上一次操作</h3><p>「u」：如果您误执行一个命令，可以马上按下「u」，回到上一个操作。按多次“u”可以执行多次回复。</p>
+<h3 id="8-更改"><a href="#8-更改" class="headerlink" title="8 更改"></a>8 更改</h3><p>「cw」：更改光标所在处的字到字尾处<br>「<a target="_blank" rel="noopener" href="http://www.2cto.com/kf/ware/cs/">c#</a>w」：例如，「c3w」表示更改3个字</p>
+<h3 id="9-跳至指定的行"><a href="#9-跳至指定的行" class="headerlink" title="9 跳至指定的行"></a>9 跳至指定的行</h3><p>「ctrl」+「g」列出光标所在行的行号。<br>「#G」：例如，「15G」，表示移动光标至文章的第15行行首。</p>
+<h2 id="4-Last-line-mode下命令简介"><a href="#4-Last-line-mode下命令简介" class="headerlink" title="4 Last line mode下命令简介"></a>4 Last line mode下命令简介</h2><p>在使用「last line mode」之前，请记住先按「ESC」键确定您已经处于「command mode」下后，再按「：」冒号即可进入「last line mode」。</p>
+<h3 id="1-列出行号"><a href="#1-列出行号" class="headerlink" title="1 列出行号"></a>1 列出行号</h3><p>「set nu」：输入「set nu」后，会在文件中的每一行前面列出行号。</p>
+<h3 id="2-跳到文件中的某一行"><a href="#2-跳到文件中的某一行" class="headerlink" title="2 跳到文件中的某一行"></a>2 跳到文件中的某一行</h3><p>「#」：「#」号表示一个数字，在冒号后输入一个数字，再按回车键就会跳到该行了，如输入数字15，再回车，就会跳到文章的第15行。</p>
+<h3 id="3-查找字符"><a href="#3-查找字符" class="headerlink" title="3 查找字符"></a>3 查找字符</h3><p>「/关键字」：先按「/」键，再输入您想寻找的字符，如果第一次找的关键字不是您想要的，可以一直按「n」会往后寻找到您要的关键字为止。<br>「?关键字」：先按「?」键，再输入您想寻找的字符，如果第一次找的关键字不是您想要的，可以一直按「n」会往前寻找到您要的关键字为止。</p>
+<h3 id="4-保存文件"><a href="#4-保存文件" class="headerlink" title="4 保存文件"></a>4 保存文件</h3><p>「w」：在冒号输入字母「w」就可以将文件保存起来。</p>
+<h3 id="5-离开vi"><a href="#5-离开vi" class="headerlink" title="5 离开vi"></a>5 离开vi</h3><p>「q」：按「q」就是退出，如果无法离开vi，可以在「q」后跟一个「!」强制离开vi。<br>「qw」：一般建议离开时，搭配「w」一起使用，这样在退出的时候还可以保存文件。</p>
+<h2 id="5-vi命令列表"><a href="#5-vi命令列表" class="headerlink" title="5  vi命令列表"></a>5  vi命令列表</h2><h3 id="1-命令模式功能键"><a href="#1-命令模式功能键" class="headerlink" title="1 命令模式功能键"></a>1 命令模式功能键</h3><p>h 左移光标一个字符<br>l 右移光标一个字符<br>k 光标上移一行<br>j 光标下移一行<br>^ 光标移动至行首<br>0 数字“0”，光标移至文章的开头<br>G 光标移至文章的最后<br>$ 光标移动至行尾<br>Ctrl+f 向前翻屏<br>Ctrl+b 向后翻屏<br>Ctrl+d 向前翻半屏<br>Ctrl+u 向后翻半屏<br>i 在光标位置前插入字符<br>a 在光标所在位置的后一个字符开始增加<br>o 插入新的一行，从行首开始输入<br>ESC 从输入状态退至命令状态<br>x 删除光标后面的字符</p>
+<p>x 删除光标后的＃个字符</p>
+<p>X (大写X)，删除光标前面的字符</p>
+<p>X 删除光标前面的#个字符</p>
+<p>dd 删除光标所在的行</p>
+<p>dd 删除从光标所在行数的#行</p>
+<p>yw 复制光标所在位置的一个字</p>
+<p>yw 复制光标所在位置的#个字</p>
+<p>yy 复制光标所在位置的一行</p>
+<p>yy 复制从光标所在行数的#行</p>
+<p>p 粘贴<br>u 取消操作<br>cw 更改光标所在位置的一个字</p>
+<p>cw 更改光标所在位置的#个字</p>
+<h3 id="2-命令模式下的一些指令"><a href="#2-命令模式下的一些指令" class="headerlink" title="2 命令模式下的一些指令"></a>2 命令模式下的一些指令</h3><p>w filename 储存正在编辑的文件为filename<br>wq filename<br>储存正在编辑的文件为filename，并退出vi<br>q! 放弃所有修改，退出vi<br>set nu 显示行号<br>/或? 查找，在/后输入要查找的内容<br>n 与/或?一起使用，如果查找的内容不是想要找的关键字，按n或向后（与/联用）或向前（与?联用）继续查找，直到找到为止。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/linux/2019-09-10%20shell%E8%84%9A%E6%9C%AC%E7%9F%A5%E8%AF%86/" rel="prev" title="shell 脚本知识">
+      <i class="fa fa-chevron-left"></i> shell 脚本知识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Mac/2-19-05-17%20Mac%E5%BF%AB%E6%8D%B7%E9%94%AE/" rel="next" title="Mac快捷键大全">
+      Mac快捷键大全 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">2 基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BF%9B%E5%85%A5vi"><span class="nav-number">2.1.</span> <span class="nav-text">1 进入vi</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%88%87%E6%8D%A2%E8%87%B3%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">2 切换至插入模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Insert-%E7%9A%84%E5%88%87%E6%8D%A2"><span class="nav-number">2.3.</span> <span class="nav-text">3 Insert 的切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E9%80%80%E5%87%BAvi%E5%8F%8A%E4%BF%9D%E5%AD%98%E6%96%87%E4%BB%B6"><span class="nav-number">2.4.</span> <span class="nav-text">4 退出vi及保存文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%A8%A1%E5%BC%8F%E5%8A%9F%E8%83%BD%E9%94%AE"><span class="nav-number">3.</span> <span class="nav-text">3 命令行模式功能键</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">1 插入模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F%E5%88%87%E6%8D%A2%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">2 插入模式切换命令行模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%A7%BB%E5%8A%A8%E5%85%89%E6%A0%87"><span class="nav-number">3.3.</span> <span class="nav-text">3 移动光标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%88%A0%E9%99%A4%E6%96%87%E5%AD%97"><span class="nav-number">3.4.</span> <span class="nav-text">4 删除文字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%A4%8D%E5%88%B6"><span class="nav-number">3.5.</span> <span class="nav-text">5 复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%9B%BF%E6%8D%A2"><span class="nav-number">3.6.</span> <span class="nav-text">6 替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E5%9B%9E%E5%A4%8D%E4%B8%8A%E4%B8%80%E6%AC%A1%E6%93%8D%E4%BD%9C"><span class="nav-number">3.7.</span> <span class="nav-text">7 回复上一次操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%9B%B4%E6%94%B9"><span class="nav-number">3.8.</span> <span class="nav-text">8 更改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E8%B7%B3%E8%87%B3%E6%8C%87%E5%AE%9A%E7%9A%84%E8%A1%8C"><span class="nav-number">3.9.</span> <span class="nav-text">9 跳至指定的行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Last-line-mode%E4%B8%8B%E5%91%BD%E4%BB%A4%E7%AE%80%E4%BB%8B"><span class="nav-number">4.</span> <span class="nav-text">4 Last line mode下命令简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%97%E5%87%BA%E8%A1%8C%E5%8F%B7"><span class="nav-number">4.1.</span> <span class="nav-text">1 列出行号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%B7%B3%E5%88%B0%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E6%9F%90%E4%B8%80%E8%A1%8C"><span class="nav-number">4.2.</span> <span class="nav-text">2 跳到文件中的某一行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9F%A5%E6%89%BE%E5%AD%97%E7%AC%A6"><span class="nav-number">4.3.</span> <span class="nav-text">3 查找字符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%BF%9D%E5%AD%98%E6%96%87%E4%BB%B6"><span class="nav-number">4.4.</span> <span class="nav-text">4 保存文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%A6%BB%E5%BC%80vi"><span class="nav-number">4.5.</span> <span class="nav-text">5 离开vi</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-vi%E5%91%BD%E4%BB%A4%E5%88%97%E8%A1%A8"><span class="nav-number">5.</span> <span class="nav-text">5  vi命令列表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E5%8A%9F%E8%83%BD%E9%94%AE"><span class="nav-number">5.1.</span> <span class="nav-text">1 命令模式功能键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E4%B8%80%E4%BA%9B%E6%8C%87%E4%BB%A4"><span class="nav-number">5.2.</span> <span class="nav-text">2 命令模式下的一些指令</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

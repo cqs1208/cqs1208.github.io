@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="java8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java8 Lambda表达式">
+<meta property="og:url" content="http://example.com/2020/10/26/java8/2018-09-28-java8-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="java8">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-26T03:56:48.148Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Java8">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/26/java8/2018-09-28-java8-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>java8 Lambda表达式 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/java8/2018-09-28-java8-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java8 Lambda表达式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java8/" itemprop="url" rel="index"><span itemprop="name">Java8</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">java8</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Lambda表达式，维基百科上的解释是一种用于表示匿名函数和闭包的运算符 </p>
+<a id="more"></a> 
+
+<p>Lambda 函数是一个可以接收任意多个参数（包括可选参数）并且返回单个表达式值的匿名函数。</p>
+<h3 id="1-Lambda详细介绍"><a href="#1-Lambda详细介绍" class="headerlink" title="1 Lambda详细介绍"></a>1 Lambda详细介绍</h3><p>​    可以把Lambda表达式理解为简洁地表示可传递的匿名函数的一种方式：它没有名称，但它有参数列表、函数主体、返回类型</p>
+<h4 id="1-1-Lambda表达式的语法"><a href="#1-1-Lambda表达式的语法" class="headerlink" title="1.1 Lambda表达式的语法"></a>1.1 Lambda表达式的语法</h4><p>(parameters) -&gt; expression 或（请注意语句的花括号） (parameters) -&gt; { statements; }</p>
+<p>示例：利用Lambda表达式定义一个Comparator对象 (javalambda_1)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Apple</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> BigDecimal weight;</span><br><span class="line">    <span class="keyword">private</span> String color;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//先前----匿名内部类</span></span><br><span class="line">        Comparator&lt;Apple&gt; byWeight = <span class="keyword">new</span> Comparator&lt;Apple&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Apple o1, Apple o2)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> o1.getWeight().compareTo(o2.getWeight());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//lambda表达式</span></span><br><span class="line">        Comparator&lt;Apple&gt; byWeight2 = (Apple a1, Apple a2) -&gt; a1.getWeight().compareTo(a2.getWeight());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Lambda表达式的组成：</p>
+<ul>
+<li>参数列表——这里它采用了Comparator中compare方法的参数，两个Apple。</li>
+<li>箭头——箭头-&gt;把参数列表与Lambda主体分隔开。</li>
+<li>Lambda主体——比较两个Apple的重量。表达式就是Lambda的返回值了。</li>
+</ul>
+<p>测试Lambda语法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> () -&gt; &#123;&#125;</span><br><span class="line"><span class="number">2.</span> () -&gt; <span class="string">&quot;Raoul&quot;</span></span><br><span class="line"><span class="number">3.</span> () -&gt; &#123;<span class="keyword">return</span> <span class="string">&quot;Mario&quot;</span>;&#125;</span><br><span class="line"><span class="number">4.</span> (Integer i) -&gt; <span class="keyword">return</span> <span class="string">&quot;Alan&quot;</span> + i;</span><br><span class="line"><span class="number">5.</span> (String s) -&gt; &#123;<span class="string">&quot;IronMan&quot;</span>;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-函数式接口"><a href="#2-函数式接口" class="headerlink" title="2 函数式接口"></a>2 函数式接口</h3><p>在函数式编程语言中，Lambda表达式的类型是函数。**而在Java中，Lambda表达式是对象，它们必须依附于一类特别的对象类型——函数式接口(Functional Interface)**。 </p>
+<p><strong>定义：</strong>如果一个接口中，有且只有一个抽象的方法（Object类中的方法不包括在内），那这个接口就可以被看做是函数式接口。 </p>
+<p>示例（Runnable接口）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>来看下Runnable接口的声明，在Java8后，Runnable接口多了一个FunctionalInterface注解，表示该接口是一个函数式接口。但是如果我们不添加FunctionalInterface注解的话，如果接口中有且只有一个抽象方法时，编译器也会把该接口当做函数式接口看待。 </p>
+<p><strong>注：</strong> 使用Lambda表达式可以创建函数式接口的实例。即Lambda表达式返回的是函数式接口类型 </p>
+<h4 id="2-1-函数接口说明"><a href="#2-1-函数接口说明" class="headerlink" title="2.1 函数接口说明"></a>2.1 函数接口说明</h4><p>函数接口可以（可以而不是必须）采用@FunctionalInterface 注解， </p>
+<p><strong>可以</strong>包涵以下成员： </p>
+<ol>
+<li>用default 定义的默认方法，默认方法不是抽象的，其包涵一个默认实现。（也就是有方法体）</li>
+<li>用static 定义的静态方法，静态方法是一个已经实现了的方法，不是抽象方法。</li>
+<li>Object类自带的方法,如toString,equals等方法。</li>
+</ol>
+<p><strong>必须</strong>包含以下 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">必须有一个抽象方法。因为函数接口本质是接口，所以不需要<span class="keyword">abstract</span>修饰。</span><br></pre></td></tr></table></figure>
+
+<p>测试函数式接口语法：(javalambda_3)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Adder</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SmartAdder</span> <span class="keyword">extends</span> <span class="title">Adder</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">double</span> a, <span class="keyword">double</span> b)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Nothing</span></span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TestInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">add</span> <span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object val1)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-常用函数式接口介绍和使用"><a href="#2-2-常用函数式接口介绍和使用" class="headerlink" title="2.2 常用函数式接口介绍和使用"></a>2.2 常用函数式接口介绍和使用</h4><p>java.util.function 包 (javalambda_4)</p>
+<ul>
+<li><p>Predicate （谓词， 断言）</p>
+<p>Predicate<T>接口定义了一个名叫test的抽象方法，它接受泛型T对象，并返回一个boolean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">filter</span><span class="params">(List&lt;T&gt; list, Predicate&lt;T&gt; p)</span> </span>&#123;</span><br><span class="line">       List&lt;T&gt; results = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">       <span class="keyword">for</span>(T s: list)&#123;</span><br><span class="line">           <span class="keyword">if</span>(p.test(s))&#123;</span><br><span class="line">               results.add(s);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> results;</span><br><span class="line">   &#125;</span><br><span class="line">  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">       List&lt;String&gt; listOfStrings = Arrays.asList(<span class="string">&quot;nihao&quot;</span>, <span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>, <span class="string">&quot;welcome&quot;</span>);</span><br><span class="line">       Predicate&lt;String&gt; nonEmptyStringPredicate = (String s) -&gt; s.contains(<span class="string">&quot;h&quot;</span>);</span><br><span class="line">       List&lt;String&gt; nonEmpty = filter(listOfStrings, nonEmptyStringPredicate);</span><br><span class="line">  </span><br><span class="line">      <span class="comment">// nonEmpty.stream().forEach(System.out::println);</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Consumer （消费） </p>
+<p>Consumer<T>定义了一个名叫accept的抽象方法，它接受泛型T的对象，没有返回（void）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">      List&lt;String&gt; listOfStrings = Arrays.asList(<span class="string">&quot;nihao&quot;</span>, <span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>, <span class="string">&quot;welcome&quot;</span>);</span><br><span class="line">  </span><br><span class="line">      Consumer consumer = (item)-&gt; System.out.println(item);</span><br><span class="line">  </span><br><span class="line">      listOfStrings.stream().forEach(consumer);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Function（函数） </p>
+<p>Function&lt;T, R&gt;接口定义了一个叫作apply的方法，它接受一个泛型T的对象，并返回一个泛型R的对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;String&gt; listOfStrings = Arrays.asList(<span class="string">&quot;nihao&quot;</span>, <span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>, <span class="string">&quot;welcome&quot;</span>);</span><br><span class="line"></span><br><span class="line">        Function&lt;String, String&gt; function = (item) -&gt; item + <span class="string">&quot;qingsong&quot;</span>;</span><br><span class="line">        Stream&lt;String&gt; stream = listOfStrings.stream().map(function);</span><br><span class="line"></span><br><span class="line">        Consumer consumer = (item)-&gt; System.out.println(item);</span><br><span class="line">        stream.forEach(consumer);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="2-3-原始类型特化"><a href="#2-3-原始类型特化" class="headerlink" title="2.3 原始类型特化"></a>2.3 原始类型特化</h4><p>​        Java类型要么是引用类型（比如Byte、Integer、Object、List），要么是原始类型（比如int、double、byte、char）。但是泛型（比如Consumer<T>中的T）只能绑定到引用类型。这是由泛型内部的实现方式造成的。①因此，在Java里有一个将原始类型转换为对应的引用类型的机制。这个机制叫作装箱（boxing）。相反的操作，也就是将引用类型转换为对应的原始类型，叫作拆箱（unboxing）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">IntPredicate evenNumbers = (<span class="keyword">int</span> i) -&gt; i % <span class="number">2</span> == <span class="number">0</span>;</span><br><span class="line">evenNumbers.test(<span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">Predicate&lt;Integer&gt; oddNumbers = (Integer i) -&gt; i % <span class="number">2</span> == <span class="number">1</span>;</span><br><span class="line">oddNumbers.test(<span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-函数式接口异常"><a href="#2-4-函数式接口异常" class="headerlink" title="2.4 函数式接口异常"></a>2.4 函数式接口异常</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*  (javalambda_5)</span></span><br><span class="line"><span class="comment">  当一个lambda表达式被转换成一个函数式接口的实例时，请注意处理检查期异常。</span></span><br><span class="line"><span class="comment">  如果你需要Lambda表达式来抛出异常</span></span><br><span class="line"><span class="comment">  有两种办法：定义一个自己的函数式接口，并声明受检异常，或者把Lambda包在一个try/catch块中。</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">BufferedReaderProcessor p = (BufferedReader br) -&gt; br.readLine();</span><br><span class="line"></span><br><span class="line">Function&lt;BufferedReader, String&gt; f = (BufferedReader b) -&gt; &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> b.readLine();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span>(IOException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">BufferedReaderProcessor</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">process</span><span class="params">(BufferedReader b)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-Lambda类型推断"><a href="#3-Lambda类型推断" class="headerlink" title="3 Lambda类型推断"></a>3 Lambda类型推断</h3><p>示例代码：(javalambda_6)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">3</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>);</span><br><span class="line">list.forEach(</span><br><span class="line">    (Integer item) -&gt; &#123;</span><br><span class="line">        System.out.println(item);</span><br><span class="line">    &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>这里参数的类型程序可以根据上下文进行推断，但是并不是所有的类型都可以推断出来，此时就需要我们显示的声明参数类型，当只有一个参数时小括号可以省略。当只有一行代码时，外边的大括号可以省略 </p>
+<p>Collections类的sort()方法。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">sort</span><span class="params">(List&lt;T&gt; list, Comparator&lt;? <span class="keyword">super</span> T&gt; c)</span> </span>&#123;</span><br><span class="line">       list.sort(c);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    假设有这么一个Student类Student implements A, B, C ,因为他实现了A,B,C三个接口，所以我们可以按接口A, B或C中任何一个的特性去排序，但是我比较完之后最终返回的一定是List<Student>这种类型的。我们定义Comparator<A> c，就是按A类型排序；定义Comparator<C> c，就是按C类型排序。也就是我们可以按自己的类型(Student)，或者是他的父类型(A, B, C)这种方式来去进行比较，比较的点或者参照物是不一样的，但我们最终比较完之后返回回来的一定List<Student>这种类型的。 所以&lt;? super T&gt;比<T>从语义上看更宽泛一些</p>
+<p><code>public static &lt;T&gt; void sort(List&lt;T&gt; list, Comparator&lt;? super T&gt; c)</code>里的泛型<code>Comparator&lt;? super T&gt; c</code>语义上更宽泛一些，但实际上比较的就是T类型<strong>本身</strong>。 </p>
+<p>下面这lambda表达式可以直接推断出参数item的类型为String。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; list = Arrays.asList(<span class="string">&quot;nihao&quot;</span>, <span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>, <span class="string">&quot;welcome&quot;</span>);</span><br><span class="line"><span class="comment">//按字符串长度排序</span></span><br><span class="line">Collections.sort(list, (item1, item2) -&gt; item1.length() - item2.length() );</span><br><span class="line">list.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<p>推断不出类型参数的 示例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Collections.sort(list, Comparator.comparing(item -&gt; item.length()).reversed());</span><br><span class="line">list.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<p>​    这里要注意的是，我们这里的比较器是多层的，comparingInt返回一个比较器在调用reversed再返回一个比较器，最终我们需要的比较器是reversed返回的。第一个例子的lambda表达式就是一个比较器，我们直接就传入，java编译器很容易就推断出这个比较器里的类型参数。而第二个例子的lambda表达式仅仅作为第一层比较器comparingInt的参数传进去，它离这个上下文已经很远了，所以它对上下文的感知是很弱很远的，不能感知到集合list里的元素类型是什么！它就只能推断成Object类型</p>
+<p>我们可以验证一下，很简单，现在它是2层，lambda表达式在第一层，我们把reversed去掉，不在第一层了吗？按理java就能感知到它的类型了。  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Collections.sort(list, Comparator.comparing(item -&gt; item.length()));</span><br><span class="line">list.forEach(System.out::println)</span><br></pre></td></tr></table></figure>
+
+<p>​    的确如此，现在编译器就可以推断出类型参数了。说明java编译器它能感知离上下文最近的，第二个reversed离上下文最近，我们可以推断它返回的比较器的类型参数，没问题，但是comparingInt(ToIntFunction&lt;? super T&gt; keyExtractor)里的参数ToIntFunction&lt;? super T&gt; keyExtractor离上下文很远了，无法推断其参数的类型参数</p>
+<h3 id="4-lambda使用局部变量"><a href="#4-lambda使用局部变量" class="headerlink" title="4 lambda使用局部变量"></a>4 lambda使用局部变量</h3><p>局部变量</p>
+<p>局部变量是存储在栈上的，而栈上的内容在当前线程执行完成之后就会被GC回收掉。 </p>
+<p>lambda表达式</p>
+<p>lambda表达式最终被处理为一个额外的线程去执行。绝对不是上面提到的线程。如果上面的线程执行完了，而这个线程又使用到了上面提到的局部变量会出现错误。</p>
+<p><strong>使用局部变量限制说明：</strong>实例变量存在堆中，而局部变量是在栈上分配，Lambda 表达(匿名类) 会在另一个线程中执行。如果在线程中要直接访问一个局部变量，可能线程执行时该局部变量已经被销毁了，而 final 类型的局部变量在 Lambda 表达式(匿名类) 中其实是局部变量的一个拷贝。 </p>
+<h3 id="5-方法引用"><a href="#5-方法引用" class="headerlink" title="5 方法引用"></a>5 方法引用</h3><p>​    方法引用可以被看作仅仅调用特定方法的<strong>Lambda的一种快捷写法</strong>。它的基本思想是，如果一个Lambda代表的只是“直接调用这个方法”，那最好还是用名称来调用它，而不是去描述如何调用它。事实上，方法引用就是让你根据已有的方法实现来创建Lambda表达式。但是，<strong>显式地指明方法的名称，你的代码的可读性会更好。</strong></p>
+<h4 id="5-1-方法引用语法"><a href="#5-1-方法引用语法" class="headerlink" title="5.1 方法引用语法"></a>5.1 方法引用语法</h4><p>使用方法引用时，目标引用放在分隔符::前，方法的名称放在后面</p>
+<p>示例：(javatypelambda_7)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// lambda表达式</span></span><br><span class="line">Comparator&lt;Apple&gt; byWeight3 = Comparator.comparing(item -&gt; item.getWeight());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方法引用</span></span><br><span class="line">Comparator&lt;Apple&gt; byWeight4 = Comparator.comparing(Apple::getWeight);</span><br></pre></td></tr></table></figure>
+
+<p><strong>说明：</strong>Apple::getWeight就是引用了Apple类中定义的方法getWeight。请记住，不需要括号，因为你没有实际调用这个方法。方法引用就是Lambda表达式(Apple a) -&gt; a.getWeight()的快捷写法</p>
+<h4 id="5-2-构建方法引用的方式"><a href="#5-2-构建方法引用的方式" class="headerlink" title="5.2 构建方法引用的方式"></a>5.2 构建方法引用的方式</h4><p>方法引用的标准形式是：<code>类名::方法名</code>。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>引用静态方法</td>
+<td>ContainingClass::staticMethodName</td>
+</tr>
+<tr>
+<td>引用某个对象的实例方法</td>
+<td>containingObject::instanceMethodName</td>
+</tr>
+<tr>
+<td>引用某个类型的任意对象的实例方法</td>
+<td>ContainingType::methodName</td>
+</tr>
+<tr>
+<td>引用构造方法</td>
+<td>ClassName::new</td>
+</tr>
+</tbody></table>
+<ol>
+<li><p><strong>静态方法引用</strong> </p>
+<p>String::valueOf   等价于lambda表达式 (s) -&gt; String.valueOf(s) </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; listArr = Arrays.asList(<span class="number">3</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">2</span>,<span class="number">0</span>);</span><br><span class="line"><span class="comment">// lambda 表示</span></span><br><span class="line">listArr.stream().map(item -&gt; String.valueOf(item));</span><br><span class="line"><span class="comment">// 静态方法引用表示</span></span><br><span class="line">listArr.stream().map(String::valueOf);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>特定实例对象的方法引用</strong> </p>
+<p>String::toString 等价于lambda表达式 (s) -&gt; s.toString() </p>
+<p>实例方法要通过对象来调用，方法引用对应Lambda，Lambda的第一个参数会成为调用实例方法的对象。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//特定实例对象的方法引用</span></span><br><span class="line">List&lt;String&gt; listStr = Arrays.asList(<span class="string">&quot;a&quot;</span>,<span class="string">&quot;d&quot;</span>,<span class="string">&quot;t&quot;</span>,<span class="string">&quot;h&quot;</span>,<span class="string">&quot;m&quot;</span>,<span class="string">&quot;S&quot;</span>,<span class="string">&quot;G&quot;</span>);</span><br><span class="line"><span class="comment">// lambda 表示</span></span><br><span class="line">listStr.stream().map(item -&gt; item.toString());</span><br><span class="line">listStr.stream().map(String::toString);</span><br><span class="line"><span class="comment">// 特定实例对象的方法引用</span></span><br><span class="line">listStr.stream().map(String::toUpperCase);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>任意对象（属于同一个类）的实例方法引用</strong> </p>
+<p>这里引用的是字符串数组中任意一个对象的compareToIgnoreCase方法。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//任意对象（属于同一个类）的实例方法引用</span></span><br><span class="line">String[] stringArray = &#123; <span class="string">&quot;Barbara&quot;</span>, <span class="string">&quot;James&quot;</span>, <span class="string">&quot;Mary&quot;</span>, <span class="string">&quot;John&quot;</span>, <span class="string">&quot;Patricia&quot;</span> &#125;;</span><br><span class="line"><span class="comment">// lambda 表示</span></span><br><span class="line">Arrays.sort(stringArray, (item, item2) -&gt; item.compareToIgnoreCase(item2));</span><br><span class="line"><span class="comment">//任意对象（属于同一个类）的实例方法引用</span></span><br><span class="line">Arrays.sort(stringArray, String::compareToIgnoreCase);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>构造方法引用</strong></p>
+<p><strong>组成语法格式：</strong>Class::<strong>new</strong> </p>
+<p>String::new， 等价于lambda表达式 () -&gt; new String()  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//构造方法引用</span></span><br><span class="line"><span class="comment">//lambda 表达式</span></span><br><span class="line">Supplier&lt;String&gt; supplier = () -&gt; <span class="keyword">new</span> String();</span><br><span class="line"><span class="comment">//构造方法引用</span></span><br><span class="line">Supplier&lt;String&gt; supplier2 = String::<span class="keyword">new</span>;</span><br><span class="line">String aa = supplier2.get();</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="6-java对象和lambda表达式的类型转换"><a href="#6-java对象和lambda表达式的类型转换" class="headerlink" title="6 java对象和lambda表达式的类型转换"></a>6 java对象和lambda表达式的类型转换</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Consumer&lt;Integer&gt; consumer = (item) -&gt; System.out.println(item);</span><br><span class="line">        IntConsumer intConsumer = (item) -&gt; System.out.println(item);</span><br><span class="line"></span><br><span class="line">        test(consumer);</span><br><span class="line">        test((Consumer) intConsumer);</span><br><span class="line">        test(consumer::accept);</span><br><span class="line">        test(intConsumer::accept);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">(Consumer&lt;Integer&gt; consumer)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(consumer <span class="keyword">instanceof</span> Consumer)&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以把lambda表达式看作函数式接口对象传递，而不用考虑函数接口本身的类型</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java8/" rel="tag"># Java8</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Idea/2019-05-16%20Mac%20idea%20%E5%BF%AB%E6%8D%B7%E9%94%AE/" rel="prev" title="Mac idea快捷键">
+      <i class="fa fa-chevron-left"></i> Mac idea快捷键
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/java8/2018-09-29-java8-stream%E6%B5%81/" rel="next" title="java8 Stream流">
+      java8 Stream流 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Lambda%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">1 Lambda详细介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E8%AF%AD%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 Lambda表达式的语法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.</span> <span class="nav-text">2 函数式接口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%87%BD%E6%95%B0%E6%8E%A5%E5%8F%A3%E8%AF%B4%E6%98%8E"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 函数接口说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3%E4%BB%8B%E7%BB%8D%E5%92%8C%E4%BD%BF%E7%94%A8"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 常用函数式接口介绍和使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E5%8E%9F%E5%A7%8B%E7%B1%BB%E5%9E%8B%E7%89%B9%E5%8C%96"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 原始类型特化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3%E5%BC%82%E5%B8%B8"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 函数式接口异常</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Lambda%E7%B1%BB%E5%9E%8B%E6%8E%A8%E6%96%AD"><span class="nav-number">3.</span> <span class="nav-text">3 Lambda类型推断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-lambda%E4%BD%BF%E7%94%A8%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="nav-number">4.</span> <span class="nav-text">4 lambda使用局部变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">5 方法引用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8%E8%AF%AD%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 方法引用语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 构建方法引用的方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-java%E5%AF%B9%E8%B1%A1%E5%92%8Clambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">6.</span> <span class="nav-text">6 java对象和lambda表达式的类型转换</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

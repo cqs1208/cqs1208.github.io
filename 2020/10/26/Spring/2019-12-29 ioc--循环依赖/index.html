@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="spring源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ioc--循环依赖">
+<meta property="og:url" content="http://example.com/2020/10/26/Spring/2019-12-29%20ioc--%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="spring源码">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Spring/Spring_circularReference01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Spring/Spring_bean04.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.372Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="SpringCore">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/Users/admin/Desktop/note/images/Spring/Spring_circularReference01.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Spring/2019-12-29%20ioc--%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ioc--循环依赖 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Spring/2019-12-29%20ioc--%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ioc--循环依赖
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SpringCore/" itemprop="url" rel="index"><span itemprop="name">SpringCore</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">spring源码</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>循环依赖就是循环引用，指两个或多个bean互相持有对方，比如说TestA引用TestB、TestB引用TestA，最终形成一个闭环。</p>
+<a id="more"></a> 
+
+<h2 id="1-循环依赖分类"><a href="#1-循环依赖分类" class="headerlink" title="1 循环依赖分类"></a>1 循环依赖分类</h2><table>
+<thead>
+<tr>
+<th>类别</th>
+<th>是否能解决</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>构造器循环依赖</td>
+<td>无法解决</td>
+</tr>
+<tr>
+<td>setter循环依赖</td>
+<td>可以解决</td>
+</tr>
+<tr>
+<td>prototype范围的依赖</td>
+<td>无法解决</td>
+</tr>
+</tbody></table>
+<h3 id="构造器循环依赖"><a href="#构造器循环依赖" class="headerlink" title="构造器循环依赖"></a>构造器循环依赖</h3><p>表示通过构造器注入构成的循环依赖，此依赖是无解的，强行依赖只能抛出异常（BeanCreationException）；</p>
+<p>Spring容器将每一个正在创建的bean标识符放在一个“当前创建bean池”中，bean标识符在创建过程中将一直保持在这个池中，因此在创建bean的过程中如果发现自己已经在池中，则抛出BeanCurrentlyInCreationException异常表示循环依赖；而对于创建完毕的bean将从“当前创建bean池”中清除掉。</p>
+<p>下面我们通过一段代码来印证上述理论。</p>
+<p>扫描类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 扫描类</span></span><br><span class="line"><span class="meta">@ComponentScan(&quot;com.dependency&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// X类</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">X</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">X</span> <span class="params">(Y y)</span> </span>&#123; <span class="comment">// 构造函数引用了A</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Y类</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Y</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Y</span> <span class="params">(X x)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        AnnotationConfigApplicationContext context = <span class="keyword">new</span> AnnotationConfigApplicationContext();</span><br><span class="line"></span><br><span class="line">        context.register(AppConfig.class);</span><br><span class="line">        context.refresh();</span><br><span class="line">        System.out.println(context.getBean(X.class));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 报错内容：</span></span><br><span class="line">Exception in thread <span class="string">&quot;main&quot;</span> org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name <span class="string">&#x27;x&#x27;</span> defined in file [/Users/admin/IdeaProjects/springmvc-demo/target/classes/com/dependency/service/X.class]: Unsatisfied dependency expressed through constructor parameter <span class="number">0</span>; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name <span class="string">&#x27;y&#x27;</span> defined in file [/Users/admin/IdeaProjects/springmvc-demo/target/classes/com/dependency/service/Y.class]: Unsatisfied dependency expressed through constructor parameter <span class="number">0</span>; nested exception is org.springframework.beans.factory.BeanCurrentlyInCreationException: Error creating bean with name <span class="string">&#x27;x&#x27;</span>: Requested bean is currently in creation: Is there an unresolvable circular reference?</span><br></pre></td></tr></table></figure>
+
+<h3 id="setter循环依赖"><a href="#setter循环依赖" class="headerlink" title="setter循环依赖"></a>setter循环依赖</h3><p>指通过setter注入方式构成的循环依赖。</p>
+<p><strong>解决方式</strong>：Spring容器提前暴露刚完成构造器注入但未完成其他步骤（如setter注入）的bean来完成的。而且只能解决单例作用域的bean循环依赖。通过提前暴露一个单例工厂方法，从而使其他bean能引用到该bean。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 扫描类</span></span><br><span class="line"><span class="meta">@ComponentScan(&quot;com.dependency&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// X类</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">X</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    Y y;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">X</span> <span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;X create ***************&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Y类</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Y</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    X x;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Y</span> <span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Y create ***************&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        AnnotationConfigApplicationContext context = <span class="keyword">new</span> AnnotationConfigApplicationContext();</span><br><span class="line"></span><br><span class="line">        context.register(AppConfig.class);</span><br><span class="line">        context.refresh();</span><br><span class="line">        System.out.println(context.getBean(X.class));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印结果</span></span><br><span class="line">X create ***************</span><br><span class="line">Y create ***************</span><br></pre></td></tr></table></figure>
+
+<h3 id="prototype范围的依赖"><a href="#prototype范围的依赖" class="headerlink" title="prototype范围的依赖"></a>prototype范围的依赖</h3><p>对于prototype作用域bean，spring容器无法完成依赖注入，因为spring容器不进行缓存prototype作用域的bean，因此无法提前暴露一个正在创建中的bean。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 扫描类</span></span><br><span class="line"><span class="meta">@ComponentScan(&quot;com.dependency&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// X类</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Scope(&quot;prototype&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">X</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    Y y;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">X</span> <span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;X create ***************&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Y类</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Scope(&quot;prototype&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Y</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    X x;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Y</span> <span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Y create ***************&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        AnnotationConfigApplicationContext context = <span class="keyword">new</span> AnnotationConfigApplicationContext();</span><br><span class="line"></span><br><span class="line">        context.register(AppConfig.class);</span><br><span class="line">        context.refresh();</span><br><span class="line">        System.out.println(context.getBean(X.class));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 报错结果</span></span><br><span class="line">Exception in thread <span class="string">&quot;main&quot;</span> org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name <span class="string">&#x27;x&#x27;</span>: Unsatisfied dependency expressed through field <span class="string">&#x27;y&#x27;</span>; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name <span class="string">&#x27;y&#x27;</span>: Unsatisfied dependency expressed through field <span class="string">&#x27;x&#x27;</span>; nested exception is org.springframework.beans.factory.BeanCurrentlyInCreationException: Error creating bean with name <span class="string">&#x27;x&#x27;</span>: Requested bean is currently in creation: Is there an unresolvable circular reference?</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>1、构造器注入和prototype类型的field注入发生循环依赖时都无法初始化</p>
+<p>2、field注入单例的bean时，尽管有循环依赖，但bean仍然可以被成功初始化</p>
+<h2 id="2-spring是如何解决循环依赖的"><a href="#2-spring是如何解决循环依赖的" class="headerlink" title="2 spring是如何解决循环依赖的"></a>2 spring是如何解决循环依赖的</h2><p>Spring创建Bean的过程</p>
+<p><img src="/Users/admin/Desktop/note/images/Spring/Spring_circularReference01.png" alt="Spring_circularReference01"></p>
+<p>instantiate(): 利用反射选择合适的构造方法实例化</p>
+<p>populateBean: 填充属性，设置bean之间的依赖关系</p>
+<p>Spring解决循环依赖图解</p>
+<p><img src="/Users/admin/Desktop/note/images/Spring/Spring_bean04.png" alt="Spring_bean04"></p>
+<h3 id="提问"><a href="#提问" class="headerlink" title="提问"></a>提问</h3><ol>
+<li>单例的设值注入bean是如何解决循环依赖问题呢？如果A中注入了B，那么他们初始化的顺序是什么样子的？</li>
+<li>为什么prototype类型的和构造器类型的Spring无法解决循环依赖呢？</li>
+</ol>
+<h3 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h3><p>对于问题1，单例的设值注入，如果A中注入了B，B应该是A中的一个属性，那么猜想应该是A已经被instantiate（实例化）之后，在populateBean（填充A中的属性）时，对B进行初始化。</p>
+<p>对于问题2，instantiate（实例化）其实就是理解成new一个对象的过程，而new的时候肯定要执行构造方法，所以猜想应该是A在instantiate（实例化）时，进行B的初始化。</p>
+<h2 id="3-单例初始化三级缓存"><a href="#3-单例初始化三级缓存" class="headerlink" title="3 单例初始化三级缓存"></a>3 单例初始化三级缓存</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultSingletonBeanRegistry</span> <span class="keyword">extends</span> <span class="title">SimpleAliasRegistry</span> <span class="keyword">implements</span> <span class="title">SingletonBeanRegistry</span> </span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="comment">// 从上至下 分表代表这“三级缓存”</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; singletonObjects = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">256</span>); <span class="comment">//一级缓存</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; earlySingletonObjects = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">16</span>); <span class="comment">// 二级缓存</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">16</span>); <span class="comment">// 三级缓存</span></span><br><span class="line">	...</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/** Names of beans that are currently in creation. */</span></span><br><span class="line">	<span class="comment">// 这个缓存也十分重要：它表示bean创建过程中都会在里面呆着~</span></span><br><span class="line">	<span class="comment">// 它在Bean开始创建时放值，创建完成时会将其移出~</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Set&lt;String&gt; singletonsCurrentlyInCreation = Collections.newSetFromMap(<span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">16</span>));</span><br><span class="line"> </span><br><span class="line">	<span class="comment">/** Names of beans that have already been created at least once. */</span></span><br><span class="line">	<span class="comment">// 当这个Bean被创建完成后，会标记为这个 注意：这里是set集合 不会重复</span></span><br><span class="line">	<span class="comment">// 至少被创建了一次的  都会放进这里~~~~</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Set&lt;String&gt; alreadyCreated = Collections.newSetFromMap(<span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">256</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这三级缓存分别指：</p>
+<p> singletonFactories ： 单例对象工厂的cache<br> earlySingletonObjects ：提前暴光的单例对象的Cache 。【用于检测循环引用，与singletonFactories互斥】<br> singletonObjects：单例对象的cache</p>
+<p>我们在创建bean的时候，首先想到的是从cache中获取这个单例的bean，这个缓存就是singletonObjects。</p>
+<p>DefaultSingletonBeanRegistry#getSingleton</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">getSingleton</span><span class="params">(String beanName, <span class="keyword">boolean</span> allowEarlyReference)</span> </span>&#123;</span><br><span class="line">    Object singletonObject = <span class="keyword">this</span>.singletonObjects.get(beanName);</span><br><span class="line">    <span class="keyword">if</span> (singletonObject == <span class="keyword">null</span> &amp;&amp; isSingletonCurrentlyInCreation(beanName)) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>.singletonObjects) &#123;</span><br><span class="line">            singletonObject = <span class="keyword">this</span>.earlySingletonObjects.get(beanName);</span><br><span class="line">            <span class="keyword">if</span> (singletonObject == <span class="keyword">null</span> &amp;&amp; allowEarlyReference) &#123;</span><br><span class="line">                ObjectFactory&lt;?&gt; singletonFactory = <span class="keyword">this</span>.singletonFactories.get(beanName);</span><br><span class="line">                <span class="keyword">if</span> (singletonFactory != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    singletonObject = singletonFactory.getObject();</span><br><span class="line">                    <span class="keyword">this</span>.earlySingletonObjects.put(beanName, singletonObject);</span><br><span class="line">                    <span class="keyword">this</span>.singletonFactories.remove(beanName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (singletonObject != NULL_OBJECT ? singletonObject : <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码需要解释两个参数：</p>
+<ul>
+<li>isSingletonCurrentlyInCreation()判断当前单例bean是否正在创建中，也就是没有初始化完成(比如A的构造器依赖了B对象所以得先去创建B对象， 或则在A的populateBean过程中依赖了B对象，得先去创建B对象，这时的A就是处于创建中的状态。)</li>
+<li>allowEarlyReference 是否允许从singletonFactories中通过getObject拿到对象</li>
+</ul>
+<p>分析：</p>
+<ul>
+<li>spring首先从一级缓存 singletonObjects 中获取Bean，（如何获取到则直接返回）</li>
+<li>如果一级缓存没有命中Bean，并且要获取的Bean是正在创建中的Bean，则尝试从二级缓存中获取（如果获取到则直接return）</li>
+<li>如果还是获取不到，且允许singletonFactories（allowEarlyReference=true）通过getObject()获取。就从三级缓存singletonFactory.getObject()获取。（如果获取到了就从singletonFactories中移除，并且放进earlySingletonObjects。其实也就是从三级缓存移动到了二级缓存）</li>
+</ul>
+<p>从上面三级缓存的分析，我们可以知道，Spring解决循环依赖的诀窍就在于singletonFactories这个三级cache。这个cache的类型是ObjectFactory，定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ObjectFactory</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">T <span class="title">getObject</span><span class="params">()</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个接口在下面被引用</p>
+<p>DefaultSingletonBeanRegistry#addSingletonFactory</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">addSingletonFactory</span><span class="params">(String beanName, ObjectFactory&lt;?&gt; singletonFactory)</span> </span>&#123;</span><br><span class="line">    Assert.notNull(singletonFactory, <span class="string">&quot;Singleton factory must not be null&quot;</span>);</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>.singletonObjects) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">this</span>.singletonObjects.containsKey(beanName)) &#123;</span><br><span class="line">            <span class="keyword">this</span>.singletonFactories.put(beanName, singletonFactory);</span><br><span class="line">            <span class="keyword">this</span>.earlySingletonObjects.remove(beanName);</span><br><span class="line">            <span class="keyword">this</span>.registeredSingletons.add(beanName);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里就是解决循环依赖的关键，这段代码发生在createBeanInstance之后，也就是说单例对象此时已经被创建出来(调用了构造器)。这个对象已经被生产出来了，虽然还不完美（还没有进行初始化的第二步和第三步），但是已经能被人认出来了（根据对象引用能定位到堆中的对象），所以Spring此时将这个对象提前曝光出来让大家认识，让大家使用。</p>
+<p>注：三级缓存的添加是在设置属性之前的后置处理器中添加</p>
+<h3 id="二级缓存添加-移除"><a href="#二级缓存添加-移除" class="headerlink" title="二级缓存添加/移除"></a>二级缓存添加/移除</h3><p>添加：向里面添加数据只有一个地方，就是上面说的getSingleton()里从三级缓存里挪过来</p>
+<p>移除：addSingleton、addSingletonFactory、removeSingleton从语义中可以看出添加单例、添加单例工厂ObjectFactory的时候都会删除二级缓存里面对应的缓存值，是互斥的</p>
+<h3 id="循环依赖问题解答"><a href="#循环依赖问题解答" class="headerlink" title="循环依赖问题解答"></a>循环依赖问题解答</h3><p>对于问题1：</p>
+<p>假设循环注入是A-B-A：A依赖B(A中autowire了B)，B又依赖A（B中又autowire了A）：</p>
+<ul>
+<li>A首先完成了初始化的第一步，并且将自己提前曝光到singletonFactories中，</li>
+<li>此时进行初始化的第二步，发现自己依赖对象B，</li>
+<li>此时就尝试去get(B)，发现B还没有被create，所以走create流程，B在初始化第一步的时候发现自己依赖了对象A，于是尝试get(A)，</li>
+<li>尝试一级缓存singletonObjects(肯定没有，因为A还没初始化完全)，尝试二级缓存earlySingletonObjects（也没有），尝试三级缓存singletonFactories，</li>
+<li>由于A通过ObjectFactory将自己提前曝光了，所以B能够通过ObjectFactory.getObject拿到A对象(虽然A还没有初始化完全，但是总比没有好呀)，B拿到A对象后顺利完成了初始化阶段1、2、3，完全初始化之后将自己放入到一级缓存singletonObjects中。</li>
+<li>此时返回A中，A此时能拿到B的对象顺利完成自己的初始化阶段2、3，最终A也完成了初始化，进去了一级缓存singletonObjects中，而且更加幸运的是，由于B拿到了A的对象引用，所以B现在hold住的A对象完成了初始化。</li>
+</ul>
+<p>对于当时问题2：</p>
+<p>因为加入singletonFactories三级缓存的前提是执行了构造器，所以构造器的循环依赖没法解决</p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>Spring在InstantiateBean时执行构造器方法，构造出实例，如果是单例的话，会将它放入一个singletonBeanFactory的缓存中，再进行populateBean方法，设置属性。通过一个singletonBeanFactory的缓存解决了循环依赖的问题。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.51cto.com/14049376/2326194">参考链接</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36381855/article/details/79752689">参考链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SpringCore/" rel="tag"># SpringCore</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Spring/2019-12-27%20ioc--BeanFactoryPostProcessor/" rel="prev" title="ioc--BeanFactoryPostProcessor">
+      <i class="fa fa-chevron-left"></i> ioc--BeanFactoryPostProcessor
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Spring/2020-01-02%20aop--springAop%E8%AF%A6%E8%A7%A3/" rel="next" title="aop--Aop详解">
+      aop--Aop详解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E5%88%86%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">1 循环依赖分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%99%A8%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96"><span class="nav-number">1.1.</span> <span class="nav-text">构造器循环依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#setter%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96"><span class="nav-number">1.2.</span> <span class="nav-text">setter循环依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prototype%E8%8C%83%E5%9B%B4%E7%9A%84%E4%BE%9D%E8%B5%96"><span class="nav-number">1.3.</span> <span class="nav-text">prototype范围的依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-spring%E6%98%AF%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E7%9A%84"><span class="nav-number">2.</span> <span class="nav-text">2 spring是如何解决循环依赖的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E9%97%AE"><span class="nav-number">2.1.</span> <span class="nav-text">提问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">问题分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8D%95%E4%BE%8B%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="nav-number">3.</span> <span class="nav-text">3 单例初始化三级缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">3.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98%E6%B7%BB%E5%8A%A0-%E7%A7%BB%E9%99%A4"><span class="nav-number">3.2.</span> <span class="nav-text">二级缓存添加&#x2F;移除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94"><span class="nav-number">3.3.</span> <span class="nav-text">循环依赖问题解答</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">3.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

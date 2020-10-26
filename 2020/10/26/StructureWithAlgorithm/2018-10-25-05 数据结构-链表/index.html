@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据结构与算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="05 数据结构-链表">
+<meta property="og:url" content="http://example.com/2020/10/26/StructureWithAlgorithm/2018-10-25-05%20%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E9%93%BE%E8%A1%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="数据结构与算法">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Structure/Structure_linked.png">
+<meta property="og:image" content="http://example.com/images/Structure/Structure_linkedOne.png">
+<meta property="og:image" content="http://example.com/images/Structure/Structure_linkedOnePush.jpg">
+<meta property="og:image" content="http://example.com/images/Structure/Structure_linkedTwo.png">
+<meta property="og:image" content="http://example.com/images/Structure/Structure_linkedTwo2.png">
+<meta property="og:image" content="http://example.com/images/Structure/Structure_linkedTwoPush.png">
+<meta property="og:image" content="http://example.com/images/Structure/Structure_linkedTwoPush2.jpg">
+<meta property="og:image" content="http://example.com/images/Structure/Structure_linkedTwoDel.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.429Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="StructureAlgorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Structure/Structure_linked.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/StructureWithAlgorithm/2018-10-25-05%20%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E9%93%BE%E8%A1%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>05 数据结构-链表 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/StructureWithAlgorithm/2018-10-25-05%20%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E9%93%BE%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          05 数据结构-链表
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StructureAlgorithm/" itemprop="url" rel="index"><span itemprop="name">StructureAlgorithm</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">数据结构与算法</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>链表是一种插入和删除都比较快的数据结构 ，</p>
+<a id="more"></a> 
+
+<p>缺点是查找比较慢。除非需要频繁的通过下标来随机访问数据，否则在很多使用数组的地方都可以用链表代替 </p>
+<pre><code> 在链表中，每个数据项都包含在“**链结点”**中，一个链结点是某个类的对象。每个链结点对象中都包含一个对下一个链接点的引用，链表本身的对象中有一个字段指向第一个链结点的引用，如下图所示： </code></pre>
+<p><img src="/images/Structure/Structure_linked.png" alt="链表"></p>
+<p>​    在数组中，每一项占用一个特定的位置，这个位置可以用一个下标号直接访问，就像一排房子，你可以凭房间号找到其中特定的意见。在链表中，寻找一个特定元素的唯一方法就是沿着这个元素的链一直找下去，知道发现要找的那个数据项 </p>
+<h3 id="1-单链表"><a href="#1-单链表" class="headerlink" title="1 单链表"></a>1 单链表</h3><p>​    链表的删除指定链结点，是通过将目标链结点的上一个链结点的next指针指向目标链结点的下一个链结点，示意图如下： </p>
+<p><img src="/images/Structure/Structure_linkedOne.png" alt="单链表"></p>
+<p>​    通过这种方法，在链表的指针链中将跳过与删除的元素，达到删除的目的。不过，实际上删除掉的元素的next指针还是指向原来的下一个元素的，只是它不能再被单链表检索到而已，JVM的垃圾回收机制会在一定的时间之后回收它</p>
+<p>​    添加链结点比删除复杂一点，首先我们要使插入位置之前的链结点的next指针指向目标链结点，其次还要将目标链结点的next指针指向插入位置之后的链结点。本例中的插入位置仅限于链表的第一个位置，示意图如下:</p>
+<p><img src="/images/Structure/Structure_linkedOnePush.jpg" alt="单链表插入"></p>
+<p>下面给出单链表的实现类 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//链结点的封装类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Link</span> </span>&#123;</span><br><span class="line">     </span><br><span class="line">      <span class="keyword">public</span> <span class="keyword">int</span> age;</span><br><span class="line">      <span class="keyword">public</span> String name;</span><br><span class="line">      <span class="keyword">public</span> Link next;  <span class="comment">//指向该链结点的下一个链结点</span></span><br><span class="line">     </span><br><span class="line">      <span class="comment">//构造方法</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">Link</span><span class="params">(<span class="keyword">int</span> age,String name)</span></span>&#123;</span><br><span class="line">             <span class="keyword">this</span>.age = age;</span><br><span class="line">             <span class="keyword">this</span>.name = name;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//打印该链结点的信息</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayLink</span><span class="params">()</span></span>&#123;</span><br><span class="line">             System.out.println(<span class="string">&quot;name:&quot;</span>+name+<span class="string">&quot;,age:&quot;</span>+age);</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//链表的封装类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkList</span> </span>&#123;</span><br><span class="line">     </span><br><span class="line">      <span class="keyword">private</span> Link first;  <span class="comment">//指向链表中的第一个链结点</span></span><br><span class="line">     </span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">LinkList</span><span class="params">()</span></span>&#123;</span><br><span class="line">             first = <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//插入到链表的前端</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertFirst</span><span class="params">(Link link)</span></span>&#123;</span><br><span class="line">             link.next = first;</span><br><span class="line">             first = link;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//删除第一个链结点，返回删除的链结点引用</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> Link <span class="title">deleteFirst</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">             <span class="keyword">if</span>(isEmpty())&#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;链表为空！不能进行删除操作&quot;</span>);</span><br><span class="line">             &#125;</span><br><span class="line">             Link temp = first;</span><br><span class="line">             first = first.next;</span><br><span class="line">             <span class="keyword">return</span> temp;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//打印出所有的链表元素</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayList</span><span class="params">()</span></span>&#123;</span><br><span class="line">             Link cur = first;</span><br><span class="line">             <span class="keyword">while</span>(cur != <span class="keyword">null</span>)&#123;  <span class="comment">//循环打印每个链结点</span></span><br><span class="line">                    cur.displayLink();</span><br><span class="line">                    cur= cur.next;</span><br><span class="line">             &#125;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//删除属性为指定值的链结点</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> Link <span class="title">delete</span><span class="params">(<span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">             Link link = <span class="keyword">null</span>;</span><br><span class="line">             Link cur = first;</span><br><span class="line">             Link next = first.next;</span><br><span class="line">             Link previous = <span class="keyword">null</span>;</span><br><span class="line">             <span class="keyword">while</span>(cur != <span class="keyword">null</span>)&#123;</span><br><span class="line">                    <span class="keyword">if</span>(cur.age == key)&#123;  <span class="comment">//找到了要删除的链结点</span></span><br><span class="line">                           link = cur;</span><br><span class="line">                           <span class="comment">//如果当前链结点的前驱为null，证明当其为链表的第一个链结点，删除该链结点后需要对first属性重新赋值</span></span><br><span class="line">                           <span class="keyword">if</span>(previous ==<span class="keyword">null</span>)&#123; </span><br><span class="line">                                  <span class="keyword">this</span>.first =next;</span><br><span class="line">                           &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                                  <span class="comment">//删除操作，即将前驱的next指针指向当前链结点的next，链表中将去当前链结点这一环</span></span><br><span class="line">                                  previous.next= next;</span><br><span class="line">                           &#125;</span><br><span class="line">                           <span class="keyword">break</span>;</span><br><span class="line">                    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(cur.next ==<span class="keyword">null</span>)&#123;  <span class="comment">//当前链结点不是目标且下一个链结点为null，证明没有要删除的链结点</span></span><br><span class="line">                           <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                   </span><br><span class="line">                    <span class="comment">//当前链结点不是要删除的目标，则向后继续寻找</span></span><br><span class="line">                    next = next.next;</span><br><span class="line">                    cur = cur.next;</span><br><span class="line">                    previous = cur;</span><br><span class="line">             &#125;</span><br><span class="line">            </span><br><span class="line">             <span class="keyword">return</span> link;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//查找属性为指定值的链结点</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> Link <span class="title">find</span><span class="params">(<span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">             Link link = <span class="keyword">null</span>;</span><br><span class="line">             Link cur = first;</span><br><span class="line">             Link next = <span class="keyword">null</span>;</span><br><span class="line">             Link previous = <span class="keyword">null</span>;</span><br><span class="line">             <span class="keyword">while</span>(cur != <span class="keyword">null</span>)&#123;</span><br><span class="line">                    <span class="keyword">if</span>(cur.age == key)&#123;</span><br><span class="line">                           link = cur;</span><br><span class="line">                           <span class="keyword">break</span>;</span><br><span class="line">                    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(cur.next == <span class="keyword">null</span>)&#123;<span class="comment">//当前链结点不是要找的目标且下一个链结点为null，则证明没有找到目标</span></span><br><span class="line">                           <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                   </span><br><span class="line">                    <span class="comment">//当前链结点不是要找的目标且存在下一个链结点，则向后继续寻找</span></span><br><span class="line">                    next = next.next;</span><br><span class="line">                    cur = cur.next;</span><br><span class="line">                    previous = cur;</span><br><span class="line">             &#125;</span><br><span class="line">            </span><br><span class="line">             <span class="keyword">return</span> link;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//判空</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>&#123;</span><br><span class="line">             <span class="keyword">return</span> (first == <span class="keyword">null</span>);</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-双端链表"><a href="#2-双端链表" class="headerlink" title="2 双端链表"></a>2 双端链表</h3><p>首先需要注意，<strong>双端链表与双向链表是完全不同的两个概念</strong> </p>
+<p>​    双端链表与单链表的区别在于它不只第一个链结点有引用，还对最后一个链结点有引用，如下图所示： </p>
+<p><img src="/images/Structure/Structure_linkedTwo.png" alt="双端链表"></p>
+<p>​    对最后一个链结点的引用允许像插入表头那样在表尾插入一个链结点，使用双端链表更适合于一些单链表不方便操作的场合，队列的实现就是这样一个情况 </p>
+<p>​    下面是双端链表的实现类，与单链表不同的是DoubleEndList 类多了指向表尾的引用，并且多了插入表尾的操作 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">/双端链表的封装类</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DoubleEndList</span> </span>&#123;</span><br><span class="line">     </span><br><span class="line">      <span class="keyword">private</span> Link first;  <span class="comment">//指向链表中的第一个链结点</span></span><br><span class="line">      <span class="keyword">private</span> Link last;   <span class="comment">//指向链表中最后一个链结点</span></span><br><span class="line">     </span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">DoubleEndList</span><span class="params">()</span></span>&#123;</span><br><span class="line">             first = <span class="keyword">null</span>;</span><br><span class="line">             last = <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//插入到链表的前端</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertFirst</span><span class="params">(Link link)</span></span>&#123;</span><br><span class="line">             <span class="keyword">if</span>(isEmpty())&#123;  <span class="comment">//如果为空链表，则插入的第一个链结点既是表头也是表尾</span></span><br><span class="line">                    last = link;</span><br><span class="line">             &#125;</span><br><span class="line">             link.next = first;</span><br><span class="line">             first = link;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//插入到链表的末端</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertLast</span><span class="params">(Link link)</span></span>&#123;</span><br><span class="line">             <span class="keyword">if</span>(isEmpty())&#123;  <span class="comment">//如果为空链表，则插入的第一个链结点既是表头也是表尾</span></span><br><span class="line">                    first = link;</span><br><span class="line">             &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    last.next = link;</span><br><span class="line">             &#125;</span><br><span class="line">             last = link;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//删除第一个链结点，返回删除的链结点引用</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> Link <span class="title">deleteFirst</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">             <span class="keyword">if</span>(isEmpty())&#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;链表为空！不能进行删除操作&quot;</span>);</span><br><span class="line">             &#125;</span><br><span class="line">             Link temp = first;</span><br><span class="line">             <span class="keyword">if</span>(first.next == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    last = <span class="keyword">null</span>;  <span class="comment">//如果只有一个链结点，则删除后会影响到last指针</span></span><br><span class="line">             &#125;</span><br><span class="line">             first = first.next;</span><br><span class="line">             <span class="keyword">return</span> temp;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//打印出所有的链表元素</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayList</span><span class="params">()</span></span>&#123;</span><br><span class="line">             Link cur = first;</span><br><span class="line">             <span class="keyword">while</span>(cur != <span class="keyword">null</span>)&#123;  <span class="comment">//循环打印每个链结点</span></span><br><span class="line">                    cur.displayLink();</span><br><span class="line">                    cur = cur.next;</span><br><span class="line">             &#125;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//判空</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>&#123;</span><br><span class="line">             <span class="keyword">return</span> (first == <span class="keyword">null</span>);</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    双端链表可以插入表尾，但是仍然不能方便的删除表尾，因为我们没有方法快捷地获取倒数第二个链结点，双端链表没有逆向的指针，这一点就要靠双向链表来解决了 </p>
+<h3 id="3-有序链表"><a href="#3-有序链表" class="headerlink" title="3 有序链表"></a>3 有序链表</h3><p>​    对于某些应用来说，在链表中保持数据有序是很有用的，具有这个特性的链表叫作“有序链表”</p>
+<p>​    通常，有序链表的删除只限于最大值或最小值，不过，有时候也会查找和删除某一特定点，但这种操作对于有序链表来说效率不高</p>
+<p>​    有序链表优于有序数组的地方在于插入的效率更高（不需要像数组那样移动元素），另外链表可以灵活地扩展大小，而数组的大小是固定的。但是这种效率的提高和灵活的优势是以算法的复杂为代价的</p>
+<p>下面我们给出一个有序单链表的实现类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;有序链表的封装类</span><br><span class="line">public class SortedList &#123;</span><br><span class="line">     </span><br><span class="line">      private Link first;  &#x2F;&#x2F;指向链表中的第一个链结点</span><br><span class="line">     </span><br><span class="line">      public SortedList()&#123;</span><br><span class="line">             first &#x3D; null;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      &#x2F;&#x2F;插入</span><br><span class="line">      public void insert(Link link)&#123;</span><br><span class="line">             Link previous &#x3D; null;</span><br><span class="line">             Link cur &#x3D; first;</span><br><span class="line">             while(cur !&#x3D; null &amp;&amp;link.age&gt;cur.age)&#123;  &#x2F;&#x2F;链表由大到小排列</span><br><span class="line">                    previous &#x3D; cur;</span><br><span class="line">                    cur &#x3D; cur.next;</span><br><span class="line">             &#125;</span><br><span class="line">            </span><br><span class="line">             if(previous &#x3D;&#x3D; null)&#123;  &#x2F;&#x2F;如果previous为null，则证明当前链结点为表头</span><br><span class="line">                    this.first &#x3D; link;</span><br><span class="line">             &#125;else&#123;</span><br><span class="line">                    previous.next &#x3D; link;</span><br><span class="line">             &#125;</span><br><span class="line">            </span><br><span class="line">             link.next &#x3D; cur;</span><br><span class="line">            </span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      &#x2F;&#x2F;删除第一个链结点，返回删除的链结点引用</span><br><span class="line">      public Link deleteFirst() throws Exception&#123;</span><br><span class="line">             if(isEmpty())&#123;</span><br><span class="line">                    throw new Exception(&quot;链表为空！不能进行删除操作&quot;);</span><br><span class="line">             &#125;</span><br><span class="line">             Link temp &#x3D; first;</span><br><span class="line">             first &#x3D; first.next;</span><br><span class="line">             return temp;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      &#x2F;&#x2F;打印出所有的链表元素</span><br><span class="line">      public void displayList()&#123;</span><br><span class="line">             Link cur &#x3D; first;</span><br><span class="line">             while(cur !&#x3D; null)&#123;  &#x2F;&#x2F;循环打印每个链结点</span><br><span class="line">                    cur.displayLink();</span><br><span class="line">                    cur &#x3D; cur.next;</span><br><span class="line">             &#125;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      &#x2F;&#x2F;判空</span><br><span class="line">      public boolean isEmpty()&#123;</span><br><span class="line">             return (first &#x3D;&#x3D; null);</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    该实现类与单链表的差别在于插入操作，因为是有序的，所以需要先找到要插入的位置，然后才能进行插入</p>
+<p>​    有序链表可以用于一种高效的排序机制。假设有一个无序数组，如果从这个数组中取出数据插入有序链表，他们会自动按照顺序排列，然后把它们从有序链表中重新放入数组，该数组就变成了有序数组。这种排序方法比在数组中常用的插入排序效率更高，因为这种方式进行的复制次数少一些</p>
+<h3 id="4-双向链表"><a href="#4-双向链表" class="headerlink" title="4 双向链表"></a>4 双向链表</h3><p>​    下面来讨论一种更复杂的链表结构：双向链表。</p>
+<p>​    传统链表存在着一个潜在的问题，就是没有反向引用，由上一个链结点跳到下一个链结点很容易，而从下一个链结点跳到上一个链结点很困难</p>
+<p>​    双向链表提供了这种能力，即允许向前遍历，也允许向后遍历。实现这种特性的关键在于每个链结点既有下一个链结点的引用，也有上一个链结点的引用，如下图所示： </p>
+<p><img src="/images/Structure/Structure_linkedTwo2.png" alt="双向链表"></p>
+<p>​    诚然，双向链表有其自身的优势，但是任何优势都要付出一定的代价，比如双向链表的插入和删除会变得更复杂，因为同时要处理双倍的指针变化。例如，我们在进行表头插入的操作示意图如下： </p>
+<p><img src="/images/Structure/Structure_linkedTwoPush.png" alt="双向列表插入"></p>
+<p>在表尾插入与之类似，是表头插入的镜像操作</p>
+<p>在表头表尾之外的其他位置插入新的链结点的示意图如下：</p>
+<p><img src="/images/Structure/Structure_linkedTwoPush2.jpg" alt="双向链表插入2"></p>
+<p>​    对于删除操作，如果要删除表头或表尾，比较简单，如果要删除指定值的链结点比较复杂，首先需要定位到要删除的链结点，然后改变了其前后链结点的指针，示意图如下： </p>
+<p><img src="/images/Structure/Structure_linkedTwoDel.png" alt="双向链表删除"></p>
+<p>​    下面给出双向链表的实现类，与前面的链表不同的是，链结点的封装类需要做些改变，之前的链结点类只包含向后的引用next，在双向链表中还需要加入向前的引用previous </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//链结点的封装类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Link</span> </span>&#123;</span><br><span class="line">     </span><br><span class="line">      <span class="keyword">public</span> <span class="keyword">int</span> age;</span><br><span class="line">      <span class="keyword">public</span> String name;</span><br><span class="line">      <span class="keyword">public</span> Link next;  <span class="comment">//指向下一个链结点</span></span><br><span class="line">      <span class="keyword">public</span> Link previous;  <span class="comment">//指向前一个链结点</span></span><br><span class="line">     </span><br><span class="line">      <span class="comment">//构造方法</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">Link</span><span class="params">(<span class="keyword">int</span> age,String name)</span></span>&#123;</span><br><span class="line">             <span class="keyword">this</span>.age = age;</span><br><span class="line">             <span class="keyword">this</span>.name = name;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//打印该链结点的信息</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayLink</span><span class="params">()</span></span>&#123;</span><br><span class="line">             System.out.println(<span class="string">&quot;name:&quot;</span>+name+<span class="string">&quot;,age:&quot;</span>+age);</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//双向链表的封装类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DoublelyLinkList</span> </span>&#123;</span><br><span class="line">     </span><br><span class="line">      <span class="keyword">private</span> Link first;  <span class="comment">//指向链表中的第一个链结点</span></span><br><span class="line">      <span class="keyword">private</span> Link last;   <span class="comment">//指向链表中的最后一个链结点</span></span><br><span class="line">     </span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">DoublelyLinkList</span><span class="params">()</span></span>&#123;</span><br><span class="line">             first = <span class="keyword">null</span>;</span><br><span class="line">             last = <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//插入到链表的前端</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertFirst</span><span class="params">(Link link)</span></span>&#123;</span><br><span class="line">             <span class="keyword">if</span>(isEmpty())&#123;  <span class="comment">//如果为空链表，则插入的第一个链结点既是表头也是表尾</span></span><br><span class="line">                    last = link;</span><br><span class="line">             &#125;<span class="keyword">else</span>&#123;  <span class="comment">//如果不是空链表，则将链表的first指针指向该链结点</span></span><br><span class="line">                    first.previous = link;</span><br><span class="line">             &#125;</span><br><span class="line">             link.next = first;</span><br><span class="line">             first = link;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//插入到链表的末端</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertLast</span><span class="params">(Link link)</span></span>&#123;</span><br><span class="line">             <span class="keyword">if</span>(isEmpty())&#123;  <span class="comment">//如果为空链表，则插入的第一个链结点既是表头也是表尾</span></span><br><span class="line">                    first = link;</span><br><span class="line">             &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    last.next = link;</span><br><span class="line">                    link.previous = last;</span><br><span class="line">             &#125;</span><br><span class="line">             last = link;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//删除第一个链结点，返回删除的链结点引用</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> Link <span class="title">deleteFirst</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">             <span class="keyword">if</span>(isEmpty())&#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;链表为空！不能进行删除操作&quot;</span>);</span><br><span class="line">             &#125;</span><br><span class="line">             Link temp = first;</span><br><span class="line">             <span class="keyword">if</span>(first.next == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    last = <span class="keyword">null</span>;  <span class="comment">//如果只有一个链结点，则删除后会影响到last指针</span></span><br><span class="line">             &#125;<span class="keyword">else</span>&#123;  <span class="comment">//如果至少有两个链结点，则将第二个链结点的previous设为null</span></span><br><span class="line">                    first.next.previous = <span class="keyword">null</span>;</span><br><span class="line">             &#125;</span><br><span class="line">             first = first.next;</span><br><span class="line">             <span class="keyword">return</span> temp;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//删除最后一个链结点，返回删除的链结点引用</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> Link <span class="title">deleteLast</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">             <span class="keyword">if</span>(isEmpty())&#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;链表为空！不能进行删除操作&quot;</span>);</span><br><span class="line">             &#125;</span><br><span class="line">             Link temp = last;</span><br><span class="line">             <span class="keyword">if</span>(last.previous == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    first = <span class="keyword">null</span>;  <span class="comment">//如果只有一个链结点，则删除后会影响到first指针</span></span><br><span class="line">             &#125;<span class="keyword">else</span>&#123;  <span class="comment">//如果至少有两个链结点，则将倒数第二个链结点的next设为null</span></span><br><span class="line">                    last.previous.next = <span class="keyword">null</span>;</span><br><span class="line">             &#125;</span><br><span class="line">             last = last.previous;</span><br><span class="line">             <span class="keyword">return</span> temp;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//查找属性为指定值的链结点</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> Link <span class="title">find</span><span class="params">(<span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">             Link cur = first;</span><br><span class="line">             <span class="keyword">while</span>(cur != <span class="keyword">null</span> &amp;&amp;cur.age != key )&#123;</span><br><span class="line">                    <span class="keyword">if</span>(cur.next == <span class="keyword">null</span>)&#123;</span><br><span class="line">                           returnnull;  <span class="comment">//当前链结点不是要找的目标且已到达表尾</span></span><br><span class="line">                    &#125;</span><br><span class="line">                    cur = cur.next;</span><br><span class="line">             &#125;</span><br><span class="line">            </span><br><span class="line">             <span class="keyword">return</span> cur;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//在指定链结点之后插入，操作成功返回true，操作失败返回false</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">insertAfter</span><span class="params">(Link link)</span></span>&#123;</span><br><span class="line">             Link target = find(link.age);</span><br><span class="line">             <span class="keyword">boolean</span> flag = <span class="keyword">true</span>;</span><br><span class="line">             <span class="keyword">if</span>(target == <span class="keyword">null</span>)&#123;  <span class="comment">//没找到插入的参照链结点</span></span><br><span class="line">                    flag = <span class="keyword">false</span>;</span><br><span class="line">             &#125;<span class="keyword">else</span>&#123;  <span class="comment">//找到了插入的参照链结点</span></span><br><span class="line">                    <span class="keyword">if</span>(target.next == <span class="keyword">null</span>)&#123; <span class="comment">//参照链结点为表尾</span></span><br><span class="line">                           insertLast(link);</span><br><span class="line">                    &#125;<span class="keyword">else</span> &#123; <span class="comment">//该链表至少有两个链结点</span></span><br><span class="line">                           target.next.previous= link;</span><br><span class="line">                           link.next =target.next;</span><br><span class="line">                           <span class="comment">//必须执行完上面两步，才能执行下面这两步</span></span><br><span class="line">                           <span class="comment">//上面两步处理了link和它下一个链结点的关系</span></span><br><span class="line">                           <span class="comment">//下面两步处理了link和它上一个链结点的关系</span></span><br><span class="line">                           target.next = link;</span><br><span class="line">                           link.previous =target;</span><br><span class="line">                    &#125;</span><br><span class="line">             &#125;</span><br><span class="line">                   </span><br><span class="line">             <span class="keyword">return</span> flag;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//打印出所有的链表元素</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayList</span><span class="params">()</span></span>&#123;</span><br><span class="line">             Link cur = first;</span><br><span class="line">             <span class="keyword">while</span>(cur != <span class="keyword">null</span>)&#123;  <span class="comment">//循环打印每个链结点</span></span><br><span class="line">                    cur.displayLink();</span><br><span class="line">                    cur = cur.next;</span><br><span class="line">             &#125;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//判空</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>&#123;</span><br><span class="line">             <span class="keyword">return</span> (first == <span class="keyword">null</span>);</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/StructureAlgorithm/" rel="tag"># StructureAlgorithm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/StructureWithAlgorithm/2018-10-24-04%20%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E9%98%9F%E5%88%97/" rel="prev" title="04 数据结构-队列">
+      <i class="fa fa-chevron-left"></i> 04 数据结构-队列
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/StructureWithAlgorithm/2018-10-26-06%20%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="next" title="06 数据结构-二叉树">
+      06 数据结构-二叉树 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8D%95%E9%93%BE%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">1 单链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8F%8C%E7%AB%AF%E9%93%BE%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">2 双端链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9C%89%E5%BA%8F%E9%93%BE%E8%A1%A8"><span class="nav-number">3.</span> <span class="nav-text">3 有序链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8"><span class="nav-number">4.</span> <span class="nav-text">4 双向链表</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

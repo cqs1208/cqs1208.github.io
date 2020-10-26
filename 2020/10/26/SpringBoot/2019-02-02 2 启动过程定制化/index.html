@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="springboot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="02 springboot启动过程定制">
+<meta property="og:url" content="http://example.com/2020/10/26/SpringBoot/2019-02-02%202%20%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E5%AE%9A%E5%88%B6%E5%8C%96/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="springboot">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/SpringBoot/SpringBoot_applicationStartedEvent.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.383Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Springboot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/SpringBoot/SpringBoot_applicationStartedEvent.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/SpringBoot/2019-02-02%202%20%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E5%AE%9A%E5%88%B6%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>02 springboot启动过程定制 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/SpringBoot/2019-02-02%202%20%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E5%AE%9A%E5%88%B6%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          02 springboot启动过程定制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Springboot/" itemprop="url" rel="index"><span itemprop="name">Springboot</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">springboot</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>springboot启动过程中有一些可以定制化，下面将详细介绍</p>
+<a id="more"></a> 
+
+<h2 id="Spring-Boot-启动过程定制化"><a href="#Spring-Boot-启动过程定制化" class="headerlink" title="Spring Boot 启动过程定制化"></a>Spring Boot 启动过程定制化</h2><p>在上一篇文章中，从源码角度介绍了Spring Boot的启动过程。启动的代码虽然只有短短的一行，但是背后所做的工作还真不少，其中有一些可以定制化的部分，主要分为以下几个方面：</p>
+<ol>
+<li>初始化器(Initializer)</li>
+<li>监听器(Listener)</li>
+<li>容器刷新后置Runners(ApplicationRunner或者CommandLineRunner接口的实现类)</li>
+<li>启动期间在Console打印Banner的具体实现类</li>
+</ol>
+<p>本文就来看看如何定制上述几个方面。</p>
+<h2 id="1-初始化器-Initializer"><a href="#1-初始化器-Initializer" class="headerlink" title="1 初始化器(Initializer)"></a>1 初始化器(Initializer)</h2><h3 id="1-1-使用现状"><a href="#1-1-使用现状" class="headerlink" title="1.1 使用现状"></a>1.1 使用现状</h3><p>在添加一个定制的初始化器之前，还是先来回顾一下初始化器在Spring Boot启动过程中是如何被使用的：</p>
+<ol>
+<li>定义：默认的初始化器全部都是定义在每个jar包下的META-INF/spring.factories配置文件中，Key为org.springframework.context.ApplicationContextInitializer</li>
+<li>添加：在实例化SpringApplication的时候，会读取定义并进行实例化，保存到SpringApplication实例的initializers成员变量中。</li>
+<li>执行：在刷新容器前置动作的applyInitializers方法中会遍历执行所有初始化器。</li>
+</ol>
+<h3 id="1-2-添加定制化的初始化器"><a href="#1-2-添加定制化的初始化器" class="headerlink" title="1.2 添加定制化的初始化器"></a>1.2 添加定制化的初始化器</h3><h4 id="1-2-1-一个直观的添加方法"><a href="#1-2-1-一个直观的添加方法" class="headerlink" title="1.2.1 一个直观的添加方法"></a>1.2.1 一个直观的添加方法</h4><p>可以在实例化SpringApplication，执行其run方法之前，添加定制的初始化器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建SpringApplication的实例</span></span><br><span class="line">    SpringApplication app = <span class="keyword">new</span> SpringApplication(Application.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加定制的初始化器</span></span><br><span class="line">    app.addInitializers(<span class="keyword">new</span> CustomApplicationContextInitializer());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 执行SpringApplication实例的run方法</span></span><br><span class="line">    app.run(args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在定制的初始化器中，打印一条日志：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomApplicationContextInitializer</span> <span class="keyword">implements</span> <span class="title">ApplicationContextInitializer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(CustomApplicationContextInitializer.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(ConfigurableApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">        LOGGER.info(<span class="string">&quot;自定义的初始化器的initialize方法被执行了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="更符合Spring-Boot-Style的添加方法"><a href="#更符合Spring-Boot-Style的添加方法" class="headerlink" title="更符合Spring Boot Style的添加方法"></a>更符合Spring Boot Style的添加方法</h4><p>前面已经讨论过，Spring Boot是通过读取META-INF/spring.factories配置文件中Key为org.springframework.context.ApplicationContextInitializer的内容来依次加载初始化器的，因此我们也可以创建一个配置文件用来定义需要添加的初始化器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.context.ApplicationContextInitializer&#x3D;com.example.demo.CustomApplicationContextInitializer1</span><br></pre></td></tr></table></figure>
+
+<p>执行入口类，可以看到打印完了Banner后，马上就会输出上面的日志内容。</p>
+<h2 id="2-监听器-Listener"><a href="#2-监听器-Listener" class="headerlink" title="2 监听器(Listener)"></a>2 监听器(Listener)</h2><h3 id="2-1-使用现状"><a href="#2-1-使用现状" class="headerlink" title="2.1 使用现状"></a>2.1 使用现状</h3><p>同样地，先回顾一下监听器在Spring Boot启动过程中是如何被使用的：</p>
+<ol>
+<li>定义：默认的初始化器全部都是定义在每个jar包下的META-INF/spring.factories配置文件中，Key为org.springframework.context.ApplicationContextInitializer</li>
+<li>添加：在实例化SpringApplication的时候，会读取定义并进行实例化，保存到SpringApplication实例的listeners成员变量中。</li>
+<li>执行：在容器启动过程中会通过SpringApplicationRunListener发布事件，然后相应的监听器就会被执行。</li>
+</ol>
+<h3 id="2-2-自定义监听器"><a href="#2-2-自定义监听器" class="headerlink" title="2.2 自定义监听器"></a>2.2 自定义监听器</h3><p>下面我们来自定义一个监听器，处理感兴趣的事件类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomApplicationListener</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(CustomApplicationListener.class);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationEvent event)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 监听ApplicationStartingEvent</span></span><br><span class="line">        <span class="keyword">if</span> (event <span class="keyword">instanceof</span> ApplicationStartedEvent) &#123;</span><br><span class="line">            logInfo(<span class="string">&quot;ApplicationStartedEvent listened&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 监听ApplicationEnvironmentPreparedEvent</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (event <span class="keyword">instanceof</span> ApplicationEnvironmentPreparedEvent) &#123;</span><br><span class="line">            logInfo(<span class="string">&quot;ApplicationEnvironmentPreparedEvent listened&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 监听ApplicationPreparedEvent</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (event <span class="keyword">instanceof</span> ApplicationPreparedEvent) &#123;</span><br><span class="line">            logInfo(<span class="string">&quot;ApplicationPreparedEvent listened&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 监听ApplicationReadyEvent</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (event <span class="keyword">instanceof</span> ApplicationReadyEvent) &#123;</span><br><span class="line">            logInfo(<span class="string">&quot;ApplicationReadyEvent listened&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 监听ApplicationFailedEvent</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (event <span class="keyword">instanceof</span> ApplicationFailedEvent) &#123;</span><br><span class="line">            logInfo(<span class="string">&quot;ApplicationFailedEvent listened&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">logInfo</span><span class="params">(String log)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (LOGGER.isInfoEnabled()) &#123;</span><br><span class="line">            LOGGER.info(log);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为什么选择监听这几个事件，而不是其它的。主要是因为这几个事件都是由Spring Boot定义的：<img src="/images/SpringBoot/SpringBoot_applicationStartedEvent.png" alt="applicationStartedEvent"></p>
+<p>以上监听的部分事件在容器启动过程中，会由SpringApplicationRunListener的默认实现EventPublishingRunListener完成事件的派发(关于此部分的详情可以参考前面的一篇文章)。</p>
+<p>有了实现类，同样还是需要将它定义到spring.factories中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Application Listeners</span><br><span class="line">org.springframework.context.ApplicationListener&#x3D;\</span><br><span class="line">com.example.demo.CustomApplicationListener123</span><br></pre></td></tr></table></figure>
+
+<p>启动后，可以看到控制台中输出了相关信息(只摘录了相关行)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">2017-08-07 23:40:36.705  INFO 40733 --- [           main] c.e.demo.CustomApplicationListener       : ApplicationEnvironmentPreparedEvent listened</span><br><span class="line"></span><br><span class="line">  .   ____          _            __ _ _</span><br><span class="line"> &#x2F;\\ &#x2F; ___&#39;_ __ _ _(_)_ __  __ _ \ \ \ \</span><br><span class="line">( ( )\___ | &#39;_ | &#39;_| | &#39;_ \&#x2F; _&#96; | \ \ \ \</span><br><span class="line"> \\&#x2F;  ___)| |_)| | | | | || (_| |  ) ) ) )</span><br><span class="line">  &#39;  |____| .__|_| |_|_| |_\__, | &#x2F; &#x2F; &#x2F; &#x2F;</span><br><span class="line"> &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;|_|&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;|___&#x2F;&#x3D;&#x2F;_&#x2F;_&#x2F;_&#x2F;</span><br><span class="line"> :: Spring Boot ::        (v1.5.6.RELEASE)</span><br><span class="line"></span><br><span class="line"> 2017-08-07 23:40:41.858  INFO 40733 --- [           main] c.e.demo.CustomApplicationListener       : ApplicationPreparedEvent listened</span><br><span class="line">2017-08-07 23:40:43.109  INFO 40733 --- [           main] c.e.demo.CustomApplicationListener       : ApplicationReadyEvent listened123456789101112</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，监听的三个事件得到了响应：</p>
+<ol>
+<li>ApplicationEnvironmentPreparedEvent</li>
+<li>ApplicationPreparedEvent</li>
+<li>ApplicationReadyEvent</li>
+</ol>
+<p>没有得到响应的有两个事件：</p>
+<ol>
+<li>ApplicationStartedEvent</li>
+<li>ApplicationFailedEvent</li>
+</ol>
+<p>我们来看看负责事件中转的EventPublishingRunListener，看能够得到一些线索：</p>
+<ol>
+<li>ApplicationStartedEvent</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void starting() &#123;</span><br><span class="line">  this.initialMulticaster.multicastEvent(new ApplicationStartedEvent(this.application, this.args));</span><br><span class="line">&#125;123</span><br></pre></td></tr></table></figure>
+
+<p>上述方法确实会派发一个ApplicationStartedEvent事件，但是没有打印出来日志。是因为在尝试打印这条日志的时候LOGGER.isInfoEnabled()调用返回的是false，因此阻止了日志的输出。</p>
+<p>这是因为日志系统初始化也是基于事件机制的，监听到ApplicationStartedEvent事件的时候日志对象还没有完成初始化，直到监听到ApplicationEnvironmentPreparedEvent后才会初始化。所以即使我们监听到了ApplicationStartedEvent事件，也没法打印相应日志。如果将LOGGER的输出改成System.out.println，就没有问题了。</p>
+<ol>
+<li>ApplicationFailedEvent</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">private SpringApplicationEvent getFinishedEvent( ConfigurableApplicationContext context, Throwable exception) &#123;</span><br><span class="line">    if (exception !&#x3D; null) &#123;</span><br><span class="line">        return new ApplicationFailedEvent(this.application, this.args, context,</span><br><span class="line">                exception);</span><br><span class="line">    &#125;</span><br><span class="line">    return new ApplicationReadyEvent(this.application, this.args, context);</span><br><span class="line">&#125;1234567</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，只有当启动过程中有异常时，才会创建一个ApplicationFailedEvent事件对象。否则创建的是ApplicationReadyEvent。因此，如果想要人为地构造这条日志，可以再启动过程中抛出一个异常，比如就在自定义的初始化器中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public void initialize(ConfigurableApplicationContext configurableApplicationContext) &#123;</span><br><span class="line">  if (LOGGER.isInfoEnabled()) &#123;</span><br><span class="line">    LOGGER.info(&quot;自定义的初始化器的initialize方法被执行了&quot;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  throw new RuntimeException(&quot;人为创造的运行时异常&quot;);</span><br><span class="line">&#125;1234567</span><br></pre></td></tr></table></figure>
+
+<p>然后再次启动，就可以看到这条日志被输出了，同时异常堆栈也会被打印出来。</p>
+<h2 id="3-容器刷新后置Runners"><a href="#3-容器刷新后置Runners" class="headerlink" title="3 容器刷新后置Runners"></a>3 容器刷新后置Runners</h2><p>Runner的实现分为两种，可以选择下面的接口之一进行实现：</p>
+<ol>
+<li>org.springframework.boot.ApplicationRunner</li>
+<li>org.springframework.boot.CommandLineRunner</li>
+</ol>
+<p>它们没有什么本质的区别，除了方法接受的类型不太一样。</p>
+<h3 id="3-1-Runners的执行时机"><a href="#3-1-Runners的执行时机" class="headerlink" title="3.1 Runners的执行时机"></a>3.1 Runners的执行时机</h3><p>这里先回顾一下Runners的执行时机，在容器刷新的后置处理中会找到所有的Runners并依次运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">protected void afterRefresh(ConfigurableApplicationContext context,</span><br><span class="line">            ApplicationArguments args) &#123;</span><br><span class="line">  callRunners(context, args);</span><br><span class="line">&#125;1234</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-ApplicationRunner自定义实现"><a href="#3-2-ApplicationRunner自定义实现" class="headerlink" title="3.2 ApplicationRunner自定义实现"></a>3.2 ApplicationRunner自定义实现</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">@Order(2)</span><br><span class="line">public class CustomApplicationRunner implements ApplicationRunner &#123;</span><br><span class="line"></span><br><span class="line">  private static final Logger LOGGER &#x3D; LoggerFactory.getLogger(CustomApplicationRunner.class);</span><br><span class="line"></span><br><span class="line">  @Override</span><br><span class="line">  public void run(ApplicationArguments arg) &#123;</span><br><span class="line">      if (LOGGER.isInfoEnabled()) &#123;</span><br><span class="line">          LOGGER.info(&quot;自定义ApplicationRunner运行了&quot;);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-CommandLineRunner自定义实现"><a href="#3-3-CommandLineRunner自定义实现" class="headerlink" title="3.3 CommandLineRunner自定义实现"></a>3.3 CommandLineRunner自定义实现</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">@Order(1)</span><br><span class="line">public class CustomCommandLineRunner implements CommandLineRunner &#123;</span><br><span class="line"></span><br><span class="line">  private static final Logger LOGGER &#x3D; LoggerFactory.getLogger(CustomCommandLineRunner.class);</span><br><span class="line"></span><br><span class="line">  @Override</span><br><span class="line">  public void run(String... strings) throws Exception &#123;</span><br><span class="line">      if (LOGGER.isInfoEnabled()) &#123;</span><br><span class="line">          LOGGER.info(&quot;自定义CommandLineRunner运行了&quot;);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自定义Runner的添加方式和上述的初始化器以及监听器有点不同，就是Runners直接通过@Component注解添加即可，借助于包扫描机制，它们会被注册到容器中。至于它们运行的顺序，则可以通过上述的@Order注解来完成标注，数值越小的Runner优先级越高，因此上面代码中，CustomCommandLineRunner将先于CustomApplicationRunner被执行。</p>
+<h3 id="3-4-启动打印Banner"><a href="#3-4-启动打印Banner" class="headerlink" title="3.4 启动打印Banner"></a>3.4 启动打印Banner</h3><p>最后，来看看如何定制Banner，默认的Banner Printer会打印出来Spring Boot的ASCII艺术字：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  .   ____          _            __ _ _</span><br><span class="line"> &#x2F;\\ &#x2F; ___&#39;_ __ _ _(_)_ __  __ _ \ \ \ \</span><br><span class="line">( ( )\___ | &#39;_ | &#39;_| | &#39;_ \&#x2F; _&#96; | \ \ \ \</span><br><span class="line"> \\&#x2F;  ___)| |_)| | | | | || (_| |  ) ) ) )</span><br><span class="line">  &#39;  |____| .__|_| |_|_| |_\__, | &#x2F; &#x2F; &#x2F; &#x2F;</span><br><span class="line"> &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;|_|&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;|___&#x2F;&#x3D;&#x2F;_&#x2F;_&#x2F;_&#x2F;</span><br><span class="line"> :: Spring Boot ::        (v1.5.6.RELEASE)</span><br></pre></td></tr></table></figure>
+
+<p>我们完全根据需求来打印一个更酷炫的图案 <a target="_blank" rel="noopener" href="http://patorjk.com/software/taag">banner链接 </a> </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  __________   ____    ____</span><br><span class="line"> /  ___/  _ \ /    \  / ___\</span><br><span class="line"> \___ (  &lt;_&gt; )   |  \/ /_/  &gt;</span><br><span class="line">/____  &gt;____/|___|  /\___  /</span><br><span class="line">     \/           \<span class="comment">//_____/</span></span><br></pre></td></tr></table></figure>
+
+<p>扩展的方式也很简单，将需要输出的内容放到resources目录下的banner.txt文件中即可。</p>
+<p>当然，这只是最简单的一种扩展方式，如果需要看看还支持什么扩展方式，看看源代码就清楚了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Banner <span class="title">printBanner</span><span class="params">(ConfigurableEnvironment environment)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.bannerMode == Banner.Mode.OFF) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ResourceLoader resourceLoader = <span class="keyword">this</span>.resourceLoader != <span class="keyword">null</span> ? <span class="keyword">this</span>.resourceLoader</span><br><span class="line">            : <span class="keyword">new</span> DefaultResourceLoader(getClassLoader());</span><br><span class="line">    SpringApplicationBannerPrinter bannerPrinter = <span class="keyword">new</span> SpringApplicationBannerPrinter(</span><br><span class="line">            resourceLoader, <span class="keyword">this</span>.banner);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.bannerMode == Mode.LOG) &#123;</span><br><span class="line">        <span class="keyword">return</span> bannerPrinter.print(environment, <span class="keyword">this</span>.mainApplicationClass, logger);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bannerPrinter.print(environment, <span class="keyword">this</span>.mainApplicationClass, System.out);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4 总结"></a>4 总结</h2><p>至此，Spring Boot启动过程的定制化就讨论结束了，在本文中，从四个方面介绍了如何定制Spring Boot的启动过程：</p>
+<ol>
+<li>初始化器(Initializer)</li>
+<li>监听器(Listener)</li>
+<li>容器刷新后置Runners(ApplicationRunner或者CommandLineRunner接口的实现类)</li>
+<li>启动期间在Console打印Banner的具体实现类</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Springboot/" rel="tag"># Springboot</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/SpringBoot/2019-02-01%201%20%E5%90%AF%E5%8A%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="prev" title="01 springboot 启动源码分析">
+      <i class="fa fa-chevron-left"></i> 01 springboot 启动源码分析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/SpringBoot/2019-02-03%203%20%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE/" rel="next" title="03 spring 实现自动配置">
+      03 spring 实现自动配置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring-Boot-%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E5%AE%9A%E5%88%B6%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">Spring Boot 启动过程定制化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96%E5%99%A8-Initializer"><span class="nav-number">2.</span> <span class="nav-text">1 初始化器(Initializer)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%BD%BF%E7%94%A8%E7%8E%B0%E7%8A%B6"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 使用现状</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E6%B7%BB%E5%8A%A0%E5%AE%9A%E5%88%B6%E5%8C%96%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 添加定制化的初始化器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1-%E4%B8%80%E4%B8%AA%E7%9B%B4%E8%A7%82%E7%9A%84%E6%B7%BB%E5%8A%A0%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.2.1 一个直观的添加方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E7%AC%A6%E5%90%88Spring-Boot-Style%E7%9A%84%E6%B7%BB%E5%8A%A0%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.2.</span> <span class="nav-text">更符合Spring Boot Style的添加方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%9B%91%E5%90%AC%E5%99%A8-Listener"><span class="nav-number">3.</span> <span class="nav-text">2 监听器(Listener)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E4%BD%BF%E7%94%A8%E7%8E%B0%E7%8A%B6"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 使用现状</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9B%91%E5%90%AC%E5%99%A8"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 自定义监听器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%AE%B9%E5%99%A8%E5%88%B7%E6%96%B0%E5%90%8E%E7%BD%AERunners"><span class="nav-number">4.</span> <span class="nav-text">3 容器刷新后置Runners</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Runners%E7%9A%84%E6%89%A7%E8%A1%8C%E6%97%B6%E6%9C%BA"><span class="nav-number">4.1.</span> <span class="nav-text">3.1 Runners的执行时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-ApplicationRunner%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.2.</span> <span class="nav-text">3.2 ApplicationRunner自定义实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-CommandLineRunner%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.3.</span> <span class="nav-text">3.3 CommandLineRunner自定义实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E5%90%AF%E5%8A%A8%E6%89%93%E5%8D%B0Banner"><span class="nav-number">4.4.</span> <span class="nav-text">3.4 启动打印Banner</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">4 总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

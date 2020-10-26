@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring--spring注解">
+<meta property="og:url" content="http://example.com/2020/10/26/Spring/2018-05-01%20spring--spring%E6%B3%A8%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="spring">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-26T03:56:48.347Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="SpringCore">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Spring/2018-05-01%20spring--spring%E6%B3%A8%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>spring--spring注解 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Spring/2018-05-01%20spring--spring%E6%B3%A8%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          spring--spring注解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SpringCore/" itemprop="url" rel="index"><span itemprop="name">SpringCore</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">spring</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Spring中提供了各种Aware接口，比较常见的。。。</p>
+<a id="more"></a> 
+
+<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h2><p>Spring中的注解大概可以分为两大类：</p>
+<ol>
+<li>spring的bean容器相关的注解，或者说bean工厂相关的注解；</li>
+<li>springmvc相关的注解。</li>
+</ol>
+<p>spring的bean容器相关的注解，先后有：@Required， @Autowired, @PostConstruct, @PreDestory，还有Spring3.0开始支持的JSR-330标准javax.inject.*中的注解(@Inject, @Named, @Qualifier, @Provider, @Scope, @Singleton).``</p>
+<p>springmvc相关的注解有：@Controller, @RequestMapping, @RequestParam， @ResponseBody等等。</p>
+<p>要理解Spring中的注解，先要理解Java中的注解。</p>
+<h2 id="2-Java中的注解"><a href="#2-Java中的注解" class="headerlink" title="2 Java中的注解"></a>2 Java中的注解</h2><h3 id="1-Override"><a href="#1-Override" class="headerlink" title="1 @Override"></a>1 @Override</h3><p>Java中1.5中开始引入注解，我们最熟悉的应该是：@Override, 它的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.SOURCE)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Override &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<pre><code>从注释，我们可以看出，@Override的作用是，提示编译器，使用了@Override注解的方法必须override父类或者java.lang.Object中的一个同名方法。我们看到@Override的定义中使用到了 @Target, @Retention，它们就是所谓的“**元注解**”——就是定义注解的注解，</code></pre>
+<h3 id="2-Retention"><a href="#2-Retention" class="headerlink" title="2 @Retention"></a>2 @Retention</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Target(ElementType.ANNOTATION_TYPE)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Retention &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns the retention policy.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> the retention policy</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">RetentionPolicy <span class="title">value</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@Retention用于提示注解被保留多长时间，有三种取值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">RetentionPolicy</span> </span>&#123;</span><br><span class="line">    SOURCE,    <span class="comment">//保留在源码级别，被编译器抛弃(@Override就是此类)； </span></span><br><span class="line">    CLASS,     <span class="comment">//被编译器保留在编译后的类文件级别，但是被虚拟机丢弃</span></span><br><span class="line">    RUNTIME    <span class="comment">//保留至运行时，可以被反射读取。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-Target"><a href="#3-Target" class="headerlink" title="3 @Target"></a>3 @Target</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Target(ElementType.ANNOTATION_TYPE)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Target &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns an array of the kinds of elements an annotation type</span></span><br><span class="line"><span class="comment">     * can be applied to.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> an array of the kinds of elements an annotation type</span></span><br><span class="line"><span class="comment">     * can be applied to</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    ElementType[] value();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@Target用于提示该注解使用的地方，取值有：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">ElementType</span> </span>&#123;</span><br><span class="line">    TYPE,          <span class="comment">// 1)类,接口, 注解，enum;</span></span><br><span class="line">    FIELD,         <span class="comment">// 2)属性域；</span></span><br><span class="line">    METHOD,        <span class="comment">// 3）方法；</span></span><br><span class="line">    PARAMETER,     <span class="comment">// 4）参数；</span></span><br><span class="line">    CONSTRUCTOR,   <span class="comment">// 5）构造函数；</span></span><br><span class="line">    LOCAL_VARIABLE,<span class="comment">// 6）局部变量；</span></span><br><span class="line">    ANNOTATION_TYPE,<span class="comment">// 7）注解类型；</span></span><br><span class="line">    PACKAGE,        <span class="comment">// 8）包</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Type parameter declaration</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@since</span> 1.8</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    TYPE_PARAMETER, </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Use of a type</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@since</span> 1.8</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    TYPE_USE        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.SOURCE)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Override &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>表示 @Override 只能使用在方法上，保留在源码级别，被编译器处理，然后抛弃掉。</p>
+<h3 id="4-Documented"><a href="#4-Documented" class="headerlink" title="4 @Documented"></a>4 <strong>@Documented</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Target(ElementType.ANNOTATION_TYPE)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Documented &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>表示注解是否能被 javadoc 处理并保留在文档中。</p>
+<h2 id="3-自定义注解"><a href="#3-自定义注解" class="headerlink" title="3 自定义注解"></a>3 自定义注解</h2><pre><code>有了元注解，那么我就可以使用它来自定义我们需要的注解。结合自定义注解和AOP或者过滤器，是一种十分强大的武器。比如可以使用注解来实现权限的细粒度的控制——在类或者方法上使用权限注解，然后在AOP或者过滤器中进行拦截处理。下面是一个关于登录的权限的注解的实现：</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 不需要登录注解</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target(&#123; ElementType.METHOD, ElementType.TYPE &#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> NoLogin &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<pre><code>我们自定义了一个注解 @NoLogin, 可以被用于 方法 和 类 上，注解一直保留到运行期，可以被反射读取到。该注解的含义是：被 @NoLogin 注解的类或者方法，即使用户没有登录，也是可以访问的。下面就是对注解进行处理了：</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 检查登录拦截器</span></span><br><span class="line"><span class="comment"> * 如不需要检查登录可在方法或者controller上加上<span class="doctag">@NoLogin</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CheckLoginInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = Logger.getLogger(CheckLoginInterceptor.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response,</span></span></span><br><span class="line"><span class="function"><span class="params">                             Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!(handler <span class="keyword">instanceof</span> HandlerMethod)) &#123;</span><br><span class="line">            logger.warn(<span class="string">&quot;当前操作handler不为HandlerMethod=&quot;</span> + handler.getClass().getName() + <span class="string">&quot;,req=&quot;</span></span><br><span class="line">                        + request.getQueryString());</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        HandlerMethod handlerMethod = (HandlerMethod) handler;</span><br><span class="line">        String methodName = handlerMethod.getMethod().getName();</span><br><span class="line">        <span class="comment">// 判断是否需要检查登录</span></span><br><span class="line">        NoLogin noLogin = handlerMethod.getMethod().getAnnotation(NoLogin.class);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != noLogin) &#123;</span><br><span class="line">            <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                logger.debug(<span class="string">&quot;当前操作methodName=&quot;</span> + methodName + <span class="string">&quot;不需要检查登录情况&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        noLogin = handlerMethod.getMethod().getDeclaringClass().getAnnotation(NoLogin.class);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != noLogin) &#123;</span><br><span class="line">            <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                logger.debug(<span class="string">&quot;当前操作methodName=&quot;</span> + methodName + <span class="string">&quot;不需要检查登录情况&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == request.getSession().getAttribute(CommonConstants.SESSION_KEY_USER)) &#123;</span><br><span class="line">            logger.warn(<span class="string">&quot;当前操作&quot;</span> + methodName + <span class="string">&quot;用户未登录,ip=&quot;</span> + request.getRemoteAddr());</span><br><span class="line">            response.getWriter().write(JsonConvertor.convertFailResult(ErrorCodeEnum.NOT_LOGIN).toString()); <span class="comment">// 返回错误信息</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response,</span></span></span><br><span class="line"><span class="function"><span class="params">                           Object handler, ModelAndView modelAndView)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterCompletion</span><span class="params">(HttpServletRequest request, HttpServletResponse response,</span></span></span><br><span class="line"><span class="function"><span class="params">                                Object handler, Exception ex)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面我们定义了一个登录拦截器，首先<strong>使用反射</strong>来判断方法上是否被 @NoLogin 注解：</p>
+<p>NoLogin noLogin = handlerMethod.getMethod().getAnnotation(NoLogin.class);</p>
+<p>然后判断类是否被 @NoLogin 注解：</p>
+<p>noLogin = handlerMethod.getMethod().getDeclaringClass().getAnnotation(NoLogin.class); </p>
+<p>如果被注解了，就返回 true，如果没有被注解，就判断是否已经登录，没有登录则返回错误信息给前台和false. 这是一个简单的使用 注解 和 过滤器 来进行权限处理的例子。扩展开来，那么我们就可以使用注解，来表示某方法或者类，只能被具有某种角色，或者具有某种权限的用户所访问，然后在过滤器中进行判断处理。</p>
+<h2 id="4-spring常用注解"><a href="#4-spring常用注解" class="headerlink" title="4 spring常用注解"></a>4 spring常用注解</h2><h3 id="Configuration-Bean"><a href="#Configuration-Bean" class="headerlink" title="@Configuration @Bean"></a>@Configuration @Bean</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Person(); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意:</strong> 通过@Bean的形式是使用的话， bean的默认名称是方法名，若@Bean(value=”bean的名称”)<br>那么bean的名称是指定的</p>
+<p>去容器中读取Bean的信息(传入配置类)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">( String[] args )</span> </span>&#123;</span><br><span class="line">    AnnotationConfigApplicationContext ctx = <span class="keyword">new</span> AnnotationConfigApplicationContext(MainConfig.class);</span><br><span class="line">    System.out.println(ctx.getBean(<span class="string">&quot;person&quot;</span>)); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="CompentScan"><a href="#CompentScan" class="headerlink" title="@CompentScan"></a>@CompentScan</h3><p>在配置类上写@CompentScan注解来进行包扫描</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan(basePackages = &#123;&quot;com.tuling.testcompentscan&quot;&#125;)</span> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainConfig</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>1:排除用法 excludeFilters(排除@Controller注解的,和TulingService的)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan(basePackages = &#123;&quot;com.tuling.testcompentscan&quot;&#125;,excludeFilters = &#123;</span></span><br><span class="line"><span class="meta">@ComponentScan.Filter(type = FilterType.ANNOTATION,value = &#123;Controller.class&#125;),</span></span><br><span class="line"><span class="meta">@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,value = &#123;TulingService.class&#125;) &#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainConfig</span> </span>&#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>2:包含用法 includeFilters ,注意，若使用包含的用法，需要把useDefaultFilters属性设置为false(true表 示扫描全部的) </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan(basePackages = &#123;&quot;com.tuling.testcompentscan&quot;&#125;,includeFilters = &#123;</span></span><br><span class="line"><span class="meta">@ComponentScan.Filter(type = FilterType.ANNOTATION,value = &#123;Controller.class, Service.class&#125;) &#125;,useDefaultFilters = false)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainConfig</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Scope"><a href="#Scope" class="headerlink" title="@Scope"></a>@Scope</h3><p>配置Bean的作用域对象</p>
+<p>1:在不指定@Scope的情况下，所有的bean都是单实例的bean,而且是饿汉加载(容器启动实例就创建 好了) </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Person(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2:指定@Scope为 prototype 表示为多实例的，而且还是懒汉模式加载(IOC容器启动的时候，并不会创建对象，是<br>在第一次使用的时候才会创建)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@Scope(value = &quot;prototype&quot;)</span> <span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Person(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3:@Scope指定的作用域方法取值</p>
+<p>a) singleton 单实例的(默认)<br>b) prototype 多实例的<br>c) request 同一次请求<br>d) session 同一个会话级别</p>
+<h3 id="Lazy"><a href="#Lazy" class="headerlink" title="@Lazy"></a>@Lazy</h3><p>Bean的懒加载@Lazy(主要针对单实例的bean 容器启动的时候，不创建对象，在第一次使用的时候才会创建该象)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@Lazy</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Person(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Conditional"><a href="#Conditional" class="headerlink" title="@Conditional"></a>@Conditional</h3><p>@Conditional进行条件判断等.</p>
+<p>场景,有二个组件TulingAspect 和TulingLog ，我的TulingLog组件是依赖于TulingAspect的组件</p>
+<p>应用:自己创建一个TulingCondition的类 实现Condition接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TulingCondition</span> <span class="keyword">implements</span> <span class="title">Condition</span> </span>&#123;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> context</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> metadata * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(ConditionContext context, AnnotatedTypeMetadata metadata)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//判断容器中是否有tulingAspect的组件 	</span></span><br><span class="line">    <span class="keyword">if</span>(context.getBeanFactory().containsBean(<span class="string">&quot;tulingAspect&quot;</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>; </span><br><span class="line">    &#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>; </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TulingAspect <span class="title">tulingAspect</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">return</span> <span class="keyword">new</span> TulingAspect(); </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//当切 容器中有tulingAspect的组件，那么tulingLog才会被实例化. @Bean</span></span><br><span class="line">    <span class="meta">@Conditional(value = TulingCondition.class)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TulingLog <span class="title">tulingLog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">return</span> <span class="keyword">new</span> TulingLog(); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="往IOC-容器中添加组件"><a href="#往IOC-容器中添加组件" class="headerlink" title="往IOC 容器中添加组件"></a>往IOC 容器中添加组件</h3><p>1:通过@CompentScan +@Controller @Service @Respository @compent </p>
+<p>​    适用场景: 针对我们自己写的组件可以通过该方式来进行加载到容器中。 </p>
+<p>2:通过@Bean的方式来导入组件(适用于导入第三方组件的类) </p>
+<p>3:通过@Import来导入组件 (导入组件的id为全类名路径) </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Import(value = &#123;Person.class, Car.class&#125;)</span> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainConfig</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过@Import 的ImportSeletor类实现组件的导入 (导入组件的id为全类名路径)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TulingImportSelector</span> <span class="keyword">implements</span> <span class="title">ImportSelector</span> </span>&#123; </span><br><span class="line">  <span class="comment">//可以获取导入类的注解信息</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String[] selectImports(AnnotationMetadata importingClassMetadata) &#123;</span><br><span class="line">    	<span class="keyword">return</span> <span class="keyword">new</span> String[]&#123;<span class="string">&quot;com.tuling.testimport.compent.Dog&quot;</span>&#125;; </span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Import(value = &#123;Person.class, Car.class, TulingImportSelector.class&#125;)</span> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> 	<span class="title">MainConfig</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过@Import的 ImportBeanDefinitionRegister导入组件 (可以指定bean的名称)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TulingBeanDefinitionRegister</span> <span class="keyword">implements</span> <span class="title">ImportBeanDefinitionRegistrar</span> </span>&#123; <span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span> </span>&#123; </span><br><span class="line">    <span class="comment">//创建一个bean定义对象</span></span><br><span class="line">    RootBeanDefinition rootBeanDefinition = <span class="keyword">new</span> RootBeanDefinition(Cat.class);</span><br><span class="line">    <span class="comment">//把bean定义对象导入到容器中</span></span><br><span class="line">    registry.registerBeanDefinition(<span class="string">&quot;cat&quot;</span>,rootBeanDefinition); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="comment">//@Import(value = &#123;Person.class, Car.class&#125;)</span></span><br><span class="line"><span class="comment">//@Import(value = &#123;Person.class, Car.class, TulingImportSelector.class&#125;)</span></span><br><span class="line"><span class="meta">@Import(value = &#123;Person.class, Car.class, TulingImportSelector.class, TulingBeanDefinitionRegister.class&#125;)</span> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainConfig</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4:通过实现FacotryBean接口来实现注册 组件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CarFactoryBean</span> <span class="keyword">implements</span> <span class="title">FactoryBean</span>&lt;<span class="title">Car</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">//返回bean的对象</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Car <span class="title">getObject</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Car(); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//返回bean的类型</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Class&lt;?&gt; getObjectType() &#123;</span><br><span class="line">        <span class="keyword">return</span> Car.class; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//是否为单例</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Bean的初始化和销毁"><a href="#Bean的初始化和销毁" class="headerlink" title="Bean的初始化和销毁"></a>Bean的初始化和销毁</h3><p>bean的创建—–&gt;初始化—–&gt;销毁方法<br>由容器管理Bean的生命周期，我们可以通过自己指定bean的初始化方法和bean的销毁方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainConfig</span> </span>&#123;</span><br><span class="line">    <span class="comment">//指定了bean的生命周期的初始化方法和销毁方法.</span></span><br><span class="line">    <span class="meta">@Bean(initMethod = &quot;init&quot;,destroyMethod = &quot;destroy&quot;)</span> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Car <span class="title">car</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> Car(); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>针对单实例bean的话，容器启动的时候，bean的对象就创建了，而且容器销毁的时候，也会调用Bean的销毁方法 </p>
+<p>针对多实例bean的话,容器启动的时候，bean是不会被创建的而是在获取bean的时候被创建，而且bean的销毁不受 IOC容器的管理. </p>
+<p>2:通过 InitializingBean和DisposableBean 的二个接口实现bean的初始化以及销毁方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">implements</span> <span class="title">InitializingBean</span>,<span class="title">DisposableBean</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        System.out.println(<span class="string">&quot;Person的构造方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">&quot;DisposableBean的destroy()方法 &quot;</span>); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">&quot;InitializingBean的 afterPropertiesSet方法&quot;</span>); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3:通过JSR250规范 提供的注解@PostConstruct 和@ProDestory标注的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Book</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Book</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">&quot;book 的构造方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@PostConstruct</span> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">&quot;book 的PostConstruct标志的方法&quot;</span>); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@PreDestroy</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">&quot;book 的PreDestory标注的方法&quot;</span>); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4:通过Spring的BeanPostProcessor的 bean的后置处理器会拦截所有bean创建过程</p>
+<p>postProcessBeforeInitialization 在init方法之前调用<br>postProcessAfterInitialization 在init方法之后调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TulingBeanPostProcessor</span> <span class="keyword">implements</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> </span>&#123;  			System.out.println(<span class="string">&quot;postProcessBeforeInitialization:&quot;</span>+beanName);</span><br><span class="line">    	<span class="keyword">return</span> bean; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> </span>&#123;</span><br><span class="line"> 		System.out.println(<span class="string">&quot;postProcessAfterInitialization:&quot;</span>+beanName);</span><br><span class="line">    	<span class="keyword">return</span> bean; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>BeanPostProcessor的执行时机</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">populateBean(beanName, mbd, instanceWrapper) </span><br><span class="line">initializeBean&#123;</span><br><span class="line">	applyBeanPostProcessorsBeforeInitialization() invokeInitMethods&#123;</span><br><span class="line">	isInitializingBean.afterPropertiesSet</span><br><span class="line">	自定义的init方法 </span><br><span class="line">    &#125;</span><br><span class="line">applyBeanPostProcessorsAfterInitialization()方法 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Value-PropertySource"><a href="#Value-PropertySource" class="headerlink" title="@Value @PropertySource"></a>@Value @PropertySource</h3><p>注入普通字符</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(&quot;Michael Jackson&quot;)</span></span><br><span class="line">String name;</span><br></pre></td></tr></table></figure>
+
+<p>注入操作系统属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(&quot;#&#123;systemProperties[&#x27;os.name&#x27;]&#125;&quot;)</span></span><br><span class="line">String osName;</span><br></pre></td></tr></table></figure>
+
+<p>注入表达式结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(&quot;#&#123; T(java.lang.Math).random() * 100&#125;&quot;)</span></span><br><span class="line">String randomNumber;</span><br></pre></td></tr></table></figure>
+
+<p>注入其它bean属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(&quot;#&#123;domeClass.name&#125;&quot;)</span></span><br><span class="line">String name;</span><br></pre></td></tr></table></figure>
+
+<p>注入文件资源</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(&quot;#&#123;classpath:com/hgs/hello/test.txt&#125;&quot;)</span></span><br><span class="line">String Resoutce file;</span><br></pre></td></tr></table></figure>
+
+<p>注入网站资源</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(&quot;http://www.cznovel.com&quot;)</span></span><br><span class="line">Resource url;</span><br></pre></td></tr></table></figure>
+
+<p>注入配置文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(&quot;$&#123;book.name&#125;&quot;)</span></span><br><span class="line">Resource url;</span><br></pre></td></tr></table></figure>
+
+<p>注入配置使用方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PropertySource</span> 加载配置文件(类上)</span><br><span class="line"><span class="meta">@PropertySource(&quot;classpath:com/hgs/hello/test.properties&quot;)</span></span><br></pre></td></tr></table></figure>
+
+<p>使用示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line"><span class="comment">//通过普通的方式 @Value(&quot;司马&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String firstName;</span><br><span class="line">    <span class="comment">//spel方式来赋值 </span></span><br><span class="line">    <span class="meta">@Value(&quot;#&#123;28-8&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer age; 通过读取外部配置文件的值 </span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;person.lastName&#125;&quot;)</span> </span><br><span class="line">    <span class="keyword">private</span> String lastName;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@PropertySource(value = &#123;&quot;classpath:person.properties&quot;&#125;)</span> </span><br><span class="line">    <span class="comment">//指定外部文件的位置 public class MainConfig &#123;</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   	 	<span class="keyword">return</span> <span class="keyword">new</span> Person(); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Profile"><a href="#Profile" class="headerlink" title="@Profile"></a>@Profile</h3><p>通过@Profile注解 来根据环境来激活标识不同的Bean</p>
+<p>@Profile标识在类上，那么只有当前环境匹配，整个配置类才会生效<br>@Profile标识在Bean上 ，那么只有当前环境的Bean才会被激活,没有标志为@Profile的bean 不管在什么环境都可以被激活</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@PropertySource(value = &#123;&quot;classpath:ds.properties&quot;&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainConfig</span> <span class="keyword">implements</span> <span class="title">EmbeddedValueResolverAware</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;ds.username&#125;&quot;)</span> </span><br><span class="line">    <span class="keyword">private</span> String userName;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;ds.password&#125;&quot;)</span> </span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line">	<span class="keyword">private</span> String jdbcUrl; </span><br><span class="line">    <span class="keyword">private</span> String classDriver;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmbeddedValueResolver</span><span class="params">(StringValueResolver resolver)</span> </span>&#123;</span><br><span class="line">   		<span class="keyword">this</span>.jdbcUrl = resolver.resolveStringValue(<span class="string">&quot;$&#123;ds.jdbcUrl&#125;&quot;</span>);</span><br><span class="line">    	<span class="keyword">this</span>.classDriver = resolver.resolveStringValue(<span class="string">&quot;$&#123;ds.classDriver&#125;&quot;</span>); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//标识为测试环境才会被装配 @Bean</span></span><br><span class="line">    <span class="meta">@Profile(value = &quot;test&quot;)</span> <span class="function"><span class="keyword">public</span> DataSource <span class="title">testDs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">return</span> buliderDataSource(<span class="keyword">new</span> DruidDataSource()); </span><br><span class="line">     &#125;</span><br><span class="line">    <span class="comment">//标识开发环境才会被激活 @Bean</span></span><br><span class="line">    <span class="meta">@Profile(value = &quot;dev&quot;)</span> <span class="function"><span class="keyword">public</span> DataSource <span class="title">devDs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">return</span> buliderDataSource(<span class="keyword">new</span> DruidDataSource()); </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//标识生产环境才会被激活 @Bean</span></span><br><span class="line">    <span class="meta">@Profile(value = &quot;prod&quot;)</span> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">prodDs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">return</span> buliderDataSource(<span class="keyword">new</span> DruidDataSource()); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> DataSource <span class="title">buliderDataSource</span><span class="params">(DruidDataSource dataSource)</span> </span>&#123;</span><br><span class="line">        dataSource.setUsername(userName); </span><br><span class="line">        dataSource.setPassword(password);</span><br><span class="line">        dataSource.setDriverClassName(classDriver); </span><br><span class="line">        dataSource.setUrl(jdbcUrl);</span><br><span class="line">    	<span class="keyword">return</span> dataSource; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>激活切换环境的方法</p>
+<p>方法一:通过运行时jvm参数来切换 -Dspring.profiles.active=test|dev|prod<br>方法二:通过代码的方式来激活</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    AnnotationConfigApplicationContext ctx = <span class="keyword">new</span> AnnotationConfigApplicationContext(); 		ctx.getEnvironment().setActiveProfiles(<span class="string">&quot;test&quot;</span>,<span class="string">&quot;dev&quot;</span>);</span><br><span class="line">	ctx.register(MainConfig.class); ctx.refresh(); </span><br><span class="line">    printBeanName(ctx);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-切面AOP相关注解"><a href="#4-切面AOP相关注解" class="headerlink" title="4 切面AOP相关注解"></a>4 切面AOP相关注解</h3><p>@Aspect 声明一个切面（类上）</p>
+<p>使用@After、@Before、@Around定义建言（advice），可直接将拦截规则（切点）作为参数。</p>
+<p>@After 在方法执行之后执行（方法上）</p>
+<p>@Before 在方法执行之前执行（方法上）</p>
+<p>@Around 在方法执行之前与之后执行（方法上）</p>
+<p>@PointCut 声明切点</p>
+<p>在java配置类中使用@EnableAspectJAutoProxy注解开启Spring对AspectJ代理的支持（类上）</p>
+<h3 id="Enable-注解说明"><a href="#Enable-注解说明" class="headerlink" title="@Enable*注解说明"></a>@Enable*注解说明</h3><p>这些注解主要用来开启对xxx的支持。</p>
+<p>@EnableAspectJAutoProxy 开启对AspectJ自动代理的支持</p>
+<p>@EnableAsync 开启异步方法的支持</p>
+<p>@EnableScheduling 开启计划任务的支持</p>
+<p>@EnableWebMvc 开启Web MVC的配置支持</p>
+<p>@EnableConfigurationProperties 开启对@ConfigurationProperties注解配置Bean的支持</p>
+<p>@EnableJpaRepositories 开启对SpringData JPA Repository的支持</p>
+<p>@EnableTransactionManagement 开启注解式事务的支持</p>
+<p>@EnableTransactionManagement 开启注解式事务的支持</p>
+<p>@EnableCaching 开启注解式的缓存支持</p>
+<h3 id="11-测试相关注解"><a href="#11-测试相关注解" class="headerlink" title="11 测试相关注解"></a>11 测试相关注解</h3><p>@RunWith 运行器，Spring中通常用于对JUnit的支持</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith(SpringJUnit4ClassRunner.class)</span></span><br></pre></td></tr></table></figure>
+
+<p>@ContextConfiguration 用来加载配置ApplicationContext，其中classes属性用来加载配置类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ContextConfiguration(classes=&#123;TestConfig.class&#125;)</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="5-SpringMVC常用注解"><a href="#5-SpringMVC常用注解" class="headerlink" title="5 SpringMVC常用注解"></a>5 SpringMVC常用注解</h2><p>@EnableWebMvc 在配置类中开启Web MVC的配置支持，如一些ViewResolver或者MessageConverter等，若无此句，重写WebMvcConfigurerAdapter方法（用于对SpringMVC的配置）。</p>
+<p>@Controller 声明该类为SpringMVC中的Controller</p>
+<p>@RequestMapping 用于映射Web请求，包括访问路径和参数（类或方法上）</p>
+<p>@ResponseBody 支持将返回值放在response内，而不是一个页面，通常用户返回json数据（返回值旁或方法上）</p>
+<p>@RequestBody 允许request的参数在request体中，而不是在直接连接在地址后面。（放在参数前）</p>
+<p>@PathVariable 用于接收路径参数，比如@RequestMapping(“/hello/{name}”)申明的路径，将注解放在参数中前，即可获取该值，通常作为Restful的接口实现方法。</p>
+<p>@RestController 该注解为一个组合注解，相当于@Controller和@ResponseBody的组合，注解在类上，意味着，该Controller的所有方法都默认加上了@ResponseBody。</p>
+<p>@ControllerAdvice 通过该注解，我们可以将对于控制器的全局配置放置在同一个位置，注解了@Controller的类的方法可使用@ExceptionHandler、@InitBinder、@ModelAttribute注解到方法上，</p>
+<p>这对所有注解了 @RequestMapping的控制器内的方法有效。</p>
+<p>@ExceptionHandler 用于全局处理控制器里的异常</p>
+<p>@InitBinder 用来设置WebDataBinder，WebDataBinder用来自动绑定前台请求参数到Model中。</p>
+<p>@ModelAttribute 本来的作用是绑定键值对到Model里，在@ControllerAdvice中是让全局的@RequestMapping都能获得在此处设置的键值对。</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/digdeep/p/4525567.html">参考链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SpringCore/" rel="tag"># SpringCore</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Spring/2018-05-01%20ioc--Aware%E6%8E%A5%E5%8F%A3/" rel="prev" title="ioc--aware接口介绍">
+      <i class="fa fa-chevron-left"></i> ioc--aware接口介绍
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Spring/2018-05-02%20spring--%E4%BA%8B%E5%8A%A1/" rel="next" title="aop—事务源码分析">
+      aop—事务源码分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">2 Java中的注解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Override"><span class="nav-number">2.1.</span> <span class="nav-text">1 @Override</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Retention"><span class="nav-number">2.2.</span> <span class="nav-text">2 @Retention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Target"><span class="nav-number">2.3.</span> <span class="nav-text">3 @Target</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Documented"><span class="nav-number">2.4.</span> <span class="nav-text">4 @Documented</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">3 自定义注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="nav-number">4.</span> <span class="nav-text">4 spring常用注解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Configuration-Bean"><span class="nav-number">4.1.</span> <span class="nav-text">@Configuration @Bean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CompentScan"><span class="nav-number">4.2.</span> <span class="nav-text">@CompentScan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scope"><span class="nav-number">4.3.</span> <span class="nav-text">@Scope</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lazy"><span class="nav-number">4.4.</span> <span class="nav-text">@Lazy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Conditional"><span class="nav-number">4.5.</span> <span class="nav-text">@Conditional</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%80IOC-%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%B7%BB%E5%8A%A0%E7%BB%84%E4%BB%B6"><span class="nav-number">4.6.</span> <span class="nav-text">往IOC 容器中添加组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bean%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E9%94%80%E6%AF%81"><span class="nav-number">4.7.</span> <span class="nav-text">Bean的初始化和销毁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Value-PropertySource"><span class="nav-number">4.8.</span> <span class="nav-text">@Value @PropertySource</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Profile"><span class="nav-number">4.9.</span> <span class="nav-text">@Profile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%88%87%E9%9D%A2AOP%E7%9B%B8%E5%85%B3%E6%B3%A8%E8%A7%A3"><span class="nav-number">4.10.</span> <span class="nav-text">4 切面AOP相关注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Enable-%E6%B3%A8%E8%A7%A3%E8%AF%B4%E6%98%8E"><span class="nav-number">4.11.</span> <span class="nav-text">@Enable*注解说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3%E6%B3%A8%E8%A7%A3"><span class="nav-number">4.12.</span> <span class="nav-text">11 测试相关注解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-SpringMVC%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="nav-number">5.</span> <span class="nav-text">5 SpringMVC常用注解</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

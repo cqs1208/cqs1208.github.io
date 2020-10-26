@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="21 备忘录模式">
+<meta property="og:url" content="http://example.com/2020/10/26/DesignPattern/2019-01-07%2021%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="设计模式">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/DesignPattern/DesignPattern_memorandumWhite.png">
+<meta property="og:image" content="http://example.com/images/DesignPattern/DesignPattern_whiteSequential.png">
+<meta property="og:image" content="http://example.com/images/DesignPattern/DesignPattern_memorandumBlack.png">
+<meta property="og:image" content="http://example.com/images/DesignPattern/DesignPattern_multipleCheckpoints.png">
+<meta property="og:image" content="http://example.com/images/DesignPattern/DesignPattern_multipleCheckpoints2.png">
+<meta property="og:image" content="http://example.com/images/DesignPattern/DesignPattern_multipleCheckpoints3.png">
+<meta property="og:image" content="http://example.com/images/DesignPattern/DesignPattern_history.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.064Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="DesignPattern">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/DesignPattern/DesignPattern_memorandumWhite.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/DesignPattern/2019-01-07%2021%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>21 备忘录模式 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/DesignPattern/2019-01-07%2021%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          21 备忘录模式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DesignPattern/" itemprop="url" rel="index"><span itemprop="name">DesignPattern</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">设计模式</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>备忘录（Memento）模式又称标记（Token）模式。GOF给备忘录模式的定义为：在不破坏封装性的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态。这样以后就可将该对象恢复到原先保存的状态。 </p>
+<a id="more"></a> 
+
+<h2 id="备忘录模式"><a href="#备忘录模式" class="headerlink" title="备忘录模式"></a>备忘录模式</h2><h3 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h3><p>​    备忘录模式又叫做快照模式(Snapshot Pattern)或Token模式，是对象的行为模式。</p>
+<p>​    备忘录对象是一个用来存储另外一个对象内部状态的快照的对象。备忘录模式的用意是在不破坏封装的条件下，将一个对象的状态捕捉(Capture)住，并外部化，存储起来，从而可以在将来合适的时候把这个对象还原到存储起来的状态。备忘录模式常常与命令模式和迭代子模式一同使用。</p>
+<h4 id="1-1-角色分类："><a href="#1-1-角色分类：" class="headerlink" title="1.1 角色分类："></a>1.1 角色分类：</h4><ol>
+<li>备忘录Memento角色：</li>
+</ol>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">备忘录角色存储“备忘发起角色”的内部状态。“备忘发起角色”根据需要决定备忘录角色存储“备忘发起角色”的哪些内部状态。为了防止“备忘发起角色”以外的其他对象访问备忘录。备忘录实际上有两个接口，“备忘录管理者角色”只能看到备忘录提供的窄接口——对于备忘录角色中存放的属性是不可见的。“备忘发起角色”则能够看到一个宽接口——能够得到自己放入备忘录角色中属性。</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>备忘发起Originator角色：</li>
+</ol>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">“备忘发起角色”创建一个备忘录，用以记录当前时刻它的内部状态。在需要时使用备忘录恢复内部状态。</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>备忘录管理者（Caretaker）角色：</li>
+</ol>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">负责保存好备忘录。不能对备忘录的内容进行操作或检查。</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-备忘录接口："><a href="#1-2-备忘录接口：" class="headerlink" title="1.2 备忘录接口："></a>1.2 备忘录接口：</h4><p>​    <strong>窄接口：</strong>负责人（Caretaker）对象（和其他除发起人对象之外的任何对象）看到的是备忘录的窄接口(narrow interface)，这个窄接口只允许它把备忘录对象传给其他的对象。</p>
+<p>​    <strong>宽接口：</strong>与负责人对象看到的窄接口相反的是，发起人对象可以看到一个宽接口(wide interface)，这个宽接口允许它读取所有的数据，以便根据这些数据恢复这个发起人对象的内部状态。</p>
+<h4 id="1-3-角色职责："><a href="#1-3-角色职责：" class="headerlink" title="1.3 角色职责："></a>1.3 角色职责：</h4><p>发起人角色<br>　　发起人角色有如下责任：<br>　　（1）创建一个含有当前的内部状态的备忘录对象。<br>　　（2）使用备忘录对象存储其内部状态。<br>负责人角色<br>　　负责人角色有如下责任：<br>　　（1）负责保存备忘录对象。 </p>
+<p>​    （2）不检查备忘录对象的内容。</p>
+<h3 id="2-白箱备忘录"><a href="#2-白箱备忘录" class="headerlink" title="2 白箱备忘录"></a>2 白箱备忘录</h3><p>​    备忘录角色对任何对象都提供一个接口，即宽接口，备忘录角色的内部所存储的状态就对所有对象公开。因此这个实现又叫做“白箱实现”。 </p>
+<p>​    “白箱”实现将发起人角色的状态存储在一个大家都看得到的地方，因此是破坏封装性的。但是通过程序员自律，同样可以在一定程度上实现模式的大部分用意。因此白箱实现仍然是有意义的。 </p>
+<p>下面给出一个示意性的“白箱实现”。 </p>
+<p><img src="/images/DesignPattern/DesignPattern_memorandumWhite.png" alt="备忘录模式-白箱"></p>
+<p>发起人角色类，发起人角色利用一个新创建的备忘录对象将自己的内部状态存储起来。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Originator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String state;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 工厂方法，返回一个新的备忘录对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Memento <span class="title">createMemento</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Memento(state);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将发起人恢复到备忘录对象所记载的状态</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restoreMemento</span><span class="params">(Memento memento)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = memento.getState();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> state;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setState</span><span class="params">(String state)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">        System.out.println(<span class="string">&quot;当前状态：&quot;</span> + <span class="keyword">this</span>.state);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>备忘录角色类，备忘录对象将发起人对象传入的状态存储起来。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Memento</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> String state;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Memento</span><span class="params">(String state)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> state;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setState</span><span class="params">(String state)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>负责人角色类，负责人角色负责保存备忘录对象，但是从不修改（甚至不查看）备忘录对象的内容。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Caretaker</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Memento memento;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 备忘录的取值方法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Memento <span class="title">retrieveMemento</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.memento;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 备忘录的赋值方法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">saveMemento</span><span class="params">(Memento memento)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.memento = memento;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端角色类 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        Originator o = <span class="keyword">new</span> Originator();</span><br><span class="line">        Caretaker c = <span class="keyword">new</span> Caretaker();</span><br><span class="line">        <span class="comment">//改变负责人对象的状态</span></span><br><span class="line">        o.setState(<span class="string">&quot;On&quot;</span>);</span><br><span class="line">        <span class="comment">//创建备忘录对象，并将发起人对象的状态储存起来</span></span><br><span class="line">        c.saveMemento(o.createMemento());</span><br><span class="line">        <span class="comment">//修改发起人的状态</span></span><br><span class="line">        o.setState(<span class="string">&quot;Off&quot;</span>);</span><br><span class="line">        <span class="comment">//恢复发起人对象的状态</span></span><br><span class="line">        o.restoreMemento(c.retrieveMemento());</span><br><span class="line">        </span><br><span class="line">        System.out.println(o.getState());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    在上面的这个示意性的客户端角色里面，首先将发起人对象的状态设置成“On”，并创建一个备忘录对象将这个状态存储起来；然后将发起人对象的状态改成“Off”；最后又将发起人对象恢复到备忘录对象所存储起来的状态，即“On”状态。 </p>
+<p>​    系统的时序图更能够反映出系统各个角色被调用的时间顺序。如下图是将发起人对象的状态存储到白箱备忘录对象中去的时序图。 </p>
+<p><img src="/images/DesignPattern/DesignPattern_whiteSequential.png" alt="备忘录模式-白箱时序图"></p>
+<p>可以看出系统运行的时序是这样的：</p>
+<p>　　（1）将发起人对象的状态设置成“On”。</p>
+<p>　　（2）调用发起人角色的createMemento()方法，创建一个备忘录对象将这个状态存储起来。</p>
+<p>　　（3）将备忘录对象存储到负责人对象中去。</p>
+<h3 id="3-黑箱备忘录"><a href="#3-黑箱备忘录" class="headerlink" title="3 黑箱备忘录"></a>3 黑箱备忘录</h3><p>​    备忘录角色对发起人（Originator）角色对象提供一个宽接口，而为其他对象提供一个窄接口。这样的实现叫做“黑箱实现” </p>
+<p>​    在JAVA语言中，实现双重接口的办法就是将<strong>备忘录角色类</strong>设计成<strong>发起人角色类</strong>的内部成员类。 </p>
+<p>​    将Memento设成Originator类的内部类，从而将Memento对象封装在Originator里面；在外部提供一个标识接口MementoIF给Caretaker以及其他对象。这样，Originator类看到的是Menmento的所有接口，而Caretaker以及其他对象看到的仅仅是标识接口MementoIF所暴露出来的接口。 </p>
+<p>使用内部类实现备忘录模式的类图如下所示。 </p>
+<p><img src="/images/DesignPattern/DesignPattern_memorandumBlack.png" alt="备忘录模式-黑箱类图"></p>
+<p>发起人角色类Originator中定义了一个内部的Memento类。由于此Memento类的全部接口都是私有的，因此只有它自己和发起人类可以调用。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> chen_dz</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> ：2012-6-2 上午10:11:08</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Originator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String state;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> state;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setState</span><span class="params">(String state)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">        System.out.println(<span class="string">&quot;赋值状态：&quot;</span> + state);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 工厂方法，返还一个新的备忘录对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MementoIF <span class="title">createMemento</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Memento(state);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 发起人恢复到备忘录对象记录的状态</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restoreMemento</span><span class="params">(MementoIF memento)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.setState(((Memento)memento).getState());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Memento</span> <span class="keyword">implements</span> <span class="title">MementoIF</span></span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">private</span> String state;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 构造方法</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="title">Memento</span><span class="params">(String state)</span></span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.state = state;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">private</span> String <span class="title">getState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> state;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setState</span><span class="params">(String state)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.state = state;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>窄接口MementoIF，这是一个标识接口，因此它没有定义出任何的方法。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MementoIF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>负责人角色类Caretaker能够得到的备忘录对象是以MementoIF为接口的，由于这个接口仅仅是一个标识接口，因此负责人角色不可能改变这个备忘录对象的内容 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Caretaker</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MementoIF memento;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 备忘录取值方法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MementoIF <span class="title">retrieveMemento</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> memento;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 备忘录赋值方法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">saveMemento</span><span class="params">(MementoIF memento)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.memento = memento;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端角色类 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Originator o = <span class="keyword">new</span> Originator();</span><br><span class="line">        Caretaker c = <span class="keyword">new</span> Caretaker();</span><br><span class="line">        <span class="comment">//改变负责人对象的状态</span></span><br><span class="line">        o.setState(<span class="string">&quot;On&quot;</span>);</span><br><span class="line">        <span class="comment">//创建备忘录对象，并将发起人对象的状态存储起来</span></span><br><span class="line">        c.saveMemento(o.createMemento());</span><br><span class="line">        <span class="comment">//修改发起人对象的状态</span></span><br><span class="line">        o.setState(<span class="string">&quot;Off&quot;</span>);</span><br><span class="line">        <span class="comment">//恢复发起人对象的状态</span></span><br><span class="line">        o.restoreMemento(c.retrieveMemento());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端首先 </p>
+<p>​    （1）将发起人对象的状态设置为“On”。</p>
+<p>　　（2）调用createMemento()方法，创建一个备忘录对象将这个状态存储起来（此时createMemento()方法还回的明显类型是MementoIF接口，真实类型为Originator内部的Memento对象）。</p>
+<p>　　（3）将备忘录对象存储到负责人对象中去。由于负责人对象拿到的仅是MementoIF接口，因此无法读出备忘录对象内部的状态。</p>
+<p>　　（4）将发起人对象的状态设置为“Off”。</p>
+<p>　　（5）调用负责人对象的retrieveMemento()方法将备忘录对象取出。注意此时仅能得到MementoIF接口，因此无法读出此对象的内部状态。</p>
+<p>　　（6）调用发起人对象的restoreMemento()方法将发起人对象的状态恢复成备忘录对象所存储的起来的状态，即“On”状态。由于发起人对象的内部类Memento实现了MementoIF接口，这个内部类是传入的备忘录对象的真实类型，因此发起人对象可以利用内部类Memento的私有接口读出此对象的内部状态。</p>
+<h3 id="4-多重检查点"><a href="#4-多重检查点" class="headerlink" title="4 多重检查点"></a>4 多重检查点</h3><p>​    前面所给出的白箱和黑箱的示意性实现都是只存储一个状态的简单实现，也可以叫做只有一个检查点。常见的系统往往需要存储不止一个状态，而是需要存储多个状态，或者叫做有多个检查点。 </p>
+<p>​    备忘录模式可以将发起人对象的状态存储到备忘录对象里面，备忘录模式可以将发起人对象恢复到备忘录对象所存储的某一个检查点上。下面给出一个示意性的、有多重检查点的备忘录模式的实现。 </p>
+<p><img src="/images/DesignPattern/DesignPattern_multipleCheckpoints.png" alt="备忘录模式-多重检查点"></p>
+<p>发起人角色源代码 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Originator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; states;</span><br><span class="line">    <span class="comment">//检查点指数</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> index;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构造函数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Originator</span><span class="params">()</span></span>&#123;</span><br><span class="line">        states = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        index = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 工厂方法，返还一个新的备忘录对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Memento <span class="title">createMemento</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Memento(states , index);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将发起人恢复到备忘录对象记录的状态上</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restoreMemento</span><span class="params">(Memento memento)</span></span>&#123;</span><br><span class="line">        states = memento.getStates();</span><br><span class="line">        index = memento.getIndex();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 状态的赋值方法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setState</span><span class="params">(String state)</span></span>&#123;</span><br><span class="line">        states.add(state);</span><br><span class="line">        index++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 辅助方法，打印所有状态</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printStates</span><span class="params">()</span></span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(String state : states)&#123;</span><br><span class="line">            System.out.println(state);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>备忘录角色类，这个实现可以存储任意多的状态，外界可以使用检查点指数index来取出检查点上的状态。　 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Memento</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; states;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> index;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构造函数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Memento</span><span class="params">(List&lt;String&gt; states , <span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.states = <span class="keyword">new</span> ArrayList&lt;String&gt;(states);</span><br><span class="line">        <span class="keyword">this</span>.index = index;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">getStates</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> states;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getIndex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> index;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>负责人角色类 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Caretaker</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Originator o;</span><br><span class="line">    <span class="keyword">private</span> List&lt;Memento&gt; mementos = <span class="keyword">new</span> ArrayList&lt;Memento&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> current;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构造函数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Caretaker</span><span class="params">(Originator o)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.o = o;</span><br><span class="line">        current = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建一个新的检查点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">createMemento</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Memento memento = o.createMemento();</span><br><span class="line">        mementos.add(memento);</span><br><span class="line">        <span class="keyword">return</span> current++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将发起人恢复到某个检查点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restoreMemento</span><span class="params">(<span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">        Memento memento = mementos.get(index);</span><br><span class="line">        o.restoreMemento(memento);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将某个检查点删除</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeMemento</span><span class="params">(<span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">        mementos.remove(index);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端角色源代码 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        Originator o = <span class="keyword">new</span> Originator();</span><br><span class="line">        Caretaker c = <span class="keyword">new</span> Caretaker(o);</span><br><span class="line">        <span class="comment">//改变状态</span></span><br><span class="line">        o.setState(<span class="string">&quot;state 0&quot;</span>);</span><br><span class="line">        <span class="comment">//建立一个检查点</span></span><br><span class="line">        c.createMemento();</span><br><span class="line">        <span class="comment">//改变状态</span></span><br><span class="line">        o.setState(<span class="string">&quot;state 1&quot;</span>);</span><br><span class="line">        <span class="comment">//建立一个检查点</span></span><br><span class="line">        c.createMemento();</span><br><span class="line">        <span class="comment">//改变状态</span></span><br><span class="line">        o.setState(<span class="string">&quot;state 2&quot;</span>);</span><br><span class="line">        <span class="comment">//建立一个检查点</span></span><br><span class="line">        c.createMemento();</span><br><span class="line">        <span class="comment">//改变状态</span></span><br><span class="line">        o.setState(<span class="string">&quot;state 3&quot;</span>);</span><br><span class="line">        <span class="comment">//建立一个检查点</span></span><br><span class="line">        c.createMemento();</span><br><span class="line">        <span class="comment">//打印出所有检查点</span></span><br><span class="line">        o.printStates();</span><br><span class="line">        System.out.println(<span class="string">&quot;-----------------恢复检查点-----------------&quot;</span>);</span><br><span class="line">        <span class="comment">//恢复到第二个检查点</span></span><br><span class="line">        c.restoreMemento(<span class="number">2</span>);</span><br><span class="line">        <span class="comment">//打印出所有检查点</span></span><br><span class="line">        o.printStates();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">检查点共有：<span class="number">4</span></span><br><span class="line">state <span class="number">0</span></span><br><span class="line">state <span class="number">1</span></span><br><span class="line">state <span class="number">2</span></span><br><span class="line">state <span class="number">3</span></span><br><span class="line">-----------------恢复检查点-----------------</span><br><span class="line">检查点共有：<span class="number">3</span></span><br><span class="line">state <span class="number">0</span></span><br><span class="line">state <span class="number">1</span></span><br><span class="line">state <span class="number">2</span>    </span><br></pre></td></tr></table></figure>
+
+<p>​    可以看出，客户端角色通过不断改变发起人角色的状态，并将之存储在备忘录里面。通过指明检查点指数可以将发起人角色恢复到相应的检查点所对应的状态上。 </p>
+<p>将发起人的状态存储到备忘录对象中的活动序列图如下： </p>
+<p><img src="/images/DesignPattern/DesignPattern_multipleCheckpoints2.png" alt="备忘录模式-多重检查2"></p>
+<p>　系统运行的时序是这样的：</p>
+<p>　　（1）将发起人对象的状态设置成某个有效状态；</p>
+<p>　　（2）调用负责人角色的createMemento()方法，负责人角色会负责调用发起人角色和备忘录角色，将发起人对象的状态存储起来。</p>
+<p><strong>将发起人对象恢复到某一个备忘录对象的检查点的活动序列图如下：</strong> </p>
+<p><img src="/images/DesignPattern/DesignPattern_multipleCheckpoints3.png" alt="备忘录模式-多重检查点3"></p>
+<p>由于负责人角色的功能被增强了，因此将发起人对象恢复到备忘录对象所记录的状态时，系统运行的时序被简化了：</p>
+<p>　　（1）调用负责人角色的restoreMemento()方法，将发起人恢复到某个检查点。</p>
+<h3 id="5-“自述历史”模式"><a href="#5-“自述历史”模式" class="headerlink" title="5 “自述历史”模式"></a>5 “自述历史”模式</h3><p>​    所谓“自述历史”模式(History-On-Self Pattern)实际上就是备忘录模式的一个变种。在备忘录模式中，发起人(Originator)角色、负责人(Caretaker)角色和备忘录(Memento)角色都是独立的角色。虽然在实现上备忘录类可以成为发起人类的内部成员类，但是备忘录类仍然保持作为一个角色的独立意义。在“自述历史”模式里面，发起人角色自己兼任负责人角色。</p>
+<p> “自述历史”模式的类图如下所示： </p>
+<p><img src="/images/DesignPattern/DesignPattern_history.png" alt="备忘录模式-自述历史模式1"></p>
+<p><strong>备忘录角色有如下责任：</strong></p>
+<p>　　（1）将发起人（Originator）对象的内部状态存储起来。</p>
+<p>　　（2）备忘录可以保护其内容不被发起人（Originator）对象之外的任何对象所读取。</p>
+<p>　　<strong>发起人角色有如下责任：</strong></p>
+<p>　　（1）创建一个含有它当前的内部状态的备忘录对象。</p>
+<p>　　（2）使用备忘录对象存储其内部状态。</p>
+<p>　　客户端角色有负责保存备忘录对象的责任。</p>
+<p>窄接口MementoIF，这是一个标识接口，因此它没有定义出任何的方法。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MementoIF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发起人角色同时还兼任负责人角色，也就是说它自己负责保持自己的备忘录对象。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Originator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String state;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 改变状态</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeState</span><span class="params">(String state)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">        System.out.println(<span class="string">&quot;状态改变为：&quot;</span> + state);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 工厂方法，返还一个新的备忘录对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Memento <span class="title">createMemento</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Memento(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将发起人恢复到备忘录对象所记录的状态上</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restoreMemento</span><span class="params">(MementoIF memento)</span></span>&#123;</span><br><span class="line">        Memento m = (Memento)memento;</span><br><span class="line">        changeState(m.state);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Memento</span> <span class="keyword">implements</span> <span class="title">MementoIF</span></span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">private</span> String state;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 构造方法</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="title">Memento</span><span class="params">(Originator o)</span></span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.state = o.state;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">private</span> String <span class="title">getState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> state;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端角色类 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Originator o = <span class="keyword">new</span> Originator();</span><br><span class="line">        <span class="comment">//修改状态</span></span><br><span class="line">        o.changeState(<span class="string">&quot;state 0&quot;</span>);</span><br><span class="line">        <span class="comment">//创建备忘录</span></span><br><span class="line">        MementoIF memento = o.createMemento();</span><br><span class="line">        <span class="comment">//修改状态</span></span><br><span class="line">        o.changeState(<span class="string">&quot;state 1&quot;</span>);</span><br><span class="line">        <span class="comment">//按照备忘录恢复对象的状态</span></span><br><span class="line">        o.restoreMemento(memento);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于“自述历史”作为一个备忘录模式的特殊实现形式非常简单易懂，它可能是备忘录模式最为流行的实现形式。 </p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/o279642707/article/details/60767258">参考链接</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/java-my-life/archive/2012/06/06/2534942.html">参考链接</a></p>
+<p>​    </p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DesignPattern/" rel="tag"># DesignPattern</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/DesignPattern/2019-01-07%2020%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/" rel="prev" title="20 策略模式">
+      <i class="fa fa-chevron-left"></i> 20 策略模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/DesignPattern/2019-01-07%2022%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="next" title="22 职责链模式">
+      22 职责链模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">备忘录模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">1 概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E8%A7%92%E8%89%B2%E5%88%86%E7%B1%BB%EF%BC%9A"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 角色分类：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%A4%87%E5%BF%98%E5%BD%95%E6%8E%A5%E5%8F%A3%EF%BC%9A"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 备忘录接口：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E8%A7%92%E8%89%B2%E8%81%8C%E8%B4%A3%EF%BC%9A"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 角色职责：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%99%BD%E7%AE%B1%E5%A4%87%E5%BF%98%E5%BD%95"><span class="nav-number">1.2.</span> <span class="nav-text">2 白箱备忘录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%BB%91%E7%AE%B1%E5%A4%87%E5%BF%98%E5%BD%95"><span class="nav-number">1.3.</span> <span class="nav-text">3 黑箱备忘录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%A4%9A%E9%87%8D%E6%A3%80%E6%9F%A5%E7%82%B9"><span class="nav-number">1.4.</span> <span class="nav-text">4 多重检查点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E2%80%9C%E8%87%AA%E8%BF%B0%E5%8E%86%E5%8F%B2%E2%80%9D%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.5.</span> <span class="nav-text">5 “自述历史”模式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

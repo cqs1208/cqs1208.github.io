@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="JavaCore">
+<meta property="og:type" content="article">
+<meta property="og:title" content="序列化">
+<meta property="og:url" content="http://example.com/2020/10/26/JavaCore/2019-01-16%20%E5%BA%8F%E5%88%97%E5%8C%96/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="JavaCore">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/JavaCore/JavaCore_serializableWriteObject.png">
+<meta property="og:image" content="http://example.com/images/JavaCore/JavaCore_serializableReadObject.png">
+<meta property="og:image" content="http://example.com/images/JavaCore/JavaCore_serializable-Ex1.png">
+<meta property="og:image" content="http://example.com/images/JavaCore/JavaCore_serializable-Ex2.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.170Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="JavaCore">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/JavaCore/JavaCore_serializableWriteObject.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/JavaCore/2019-01-16%20%E5%BA%8F%E5%88%97%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>序列化 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/JavaCore/2019-01-16%20%E5%BA%8F%E5%88%97%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          序列化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JavaCore/" itemprop="url" rel="index"><span itemprop="name">JavaCore</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">JavaCore</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <pre><code>序列化，简单说就是为了保存在内存中的各种对象的状态（也就是实例变量，不是方法），并且可以把保存的对象状态再读出来。虽然你可以用你自己的各种各样的方法来保存object states，但是Java给你提供一种应该比你自己好的保存对象状态的机制。 </code></pre>
+<a id="more"></a> 
+
+<h3 id="1-概述"><a href="#1-概述" class="headerlink" title="1  概述"></a>1  概述</h3><p>　　序列化是指把对象转换成有序字节流，以便在网络上传输或者保存在本地文件中。序列化后的字节流保存了Java对 象的状态以及相关的描述信息。客户端从文件中或网络上获得序列化后的对象字节流后，根据字节流中所保存的对象状态及描述信息，通过反序列化重建对象。</p>
+<pre><code>本质 上讲，序列化就是把实体对象状态按照一定的格式写入到有序字节流，反序列化就是从有序字节流重建对象，恢复对象状态。序列化机制的核心作用就是对象状态的 保存与重建。 </code></pre>
+<h3 id="2-序列化机制的用途"><a href="#2-序列化机制的用途" class="headerlink" title="2 序列化机制的用途"></a>2 序列化机制的用途</h3><pre><code> 通过对象的序列化我们可以得到对象状态信息的字节流数据，这些数据代表了当前对象的状态。当对象转化成二进制数据流之后，我们可以通过多种方式处理它，比如可以通过Socket将 数据发送的远程主机，又或者保存的本地文件中以后期用。同时，当我们通过某种方式获取了对象序列化之后的二进制数据之后，通过反序列化机制实现对象的重建，恢复之前对象的状态。由此可知，序列化后的字节流可以应用到任何想要重建对象的地方，您所需要的就是获取这些字节流数据。 </code></pre>
+<h3 id="3-实现序列化的方式"><a href="#3-实现序列化的方式" class="headerlink" title="3 实现序列化的方式"></a>3 实现序列化的方式</h3><p>Java API提供了对序列化的支持，要实现对象的序列化和反序列化，基本上包括两个步骤： </p>
+<p>1.声明对象具有可序列化的能力</p>
+<p>2.通过Java API实现具体的序列化处理</p>
+<pre><code>在Java语言中，声明对象具有可序列化的能力主要有两种方式：其一，实现Serializable接口；其二，实现Externalizable接口。两者既有区别又有联系。 </code></pre>
+<p>Serializable接口在JDK源码中定义如下： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** <span class="doctag">@see</span> java.io.ObjectOutputStream</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> java.io.ObjectInputStream</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> java.io.ObjectOutput</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> java.io.ObjectInput</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> java.io.Externalizable</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span>   JDK1.1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<pre><code>Java从JDK1.1开始支持对象的序列化机制，有上图的源码可知，Serializable接口没有声明任何方法，实现该接口的Java类不需要对任何方法提供实现（默认情况下，定制序列化时除外），因此，该接口仅仅是一个”mark interface”,实现该接口意味着告知JVM该对象可以序列化。Java序列化机制要求所有具备序列化的对象必须实现该接口，否则是不能被序列化的，如果对于没有实现该接口的对象进行序列化时，Java API会抛出异常，无法进行序列化。 
+
+Serializable接 口提供了默认的序列化行为，在默认情况下，开发人员只需实现该接口，无需进行其他额外的操作，即可实现的对象的序列化。当然，所谓默认的处理，必然隐藏着 对序列化对象的默认操作，比如对象的哪些属性被序列化。默认情况下，只对对象中非静态的字段以及非瞬时的字段进行序列化，其他的字段是不允许被序列化的。 这种情况的具体表现就是，在序列化的有序字节流中没有保存不能被序列化的字段的状态，因此，在反序列化时，这些字段状态是不能被重建的。但是有一点需要注 意的是，经过反序列化后的对象，除了对可被序列化的字段状态进行重建之外，其他的没有被序列化的字段作为对象属性的一部分，也在对象重建时得以初始化。但 是这些字段的状态是不被保存的，重建后的这些属性仅仅是系统赋予的默认值，而非保存了对象序列化之前的状态。 </code></pre>
+<p>实现Serializable接口除了提供默认的序列化方式之外，同样允许开发人员定制序列化，即通过实现以下相同签名的方法来实现： </p>
+<p>序列化方法： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">writeObject</span><span class="params">(java.io.ObjectOutputStream out)</span> <span class="keyword">throws</span> IOException</span></span><br></pre></td></tr></table></figure>
+
+<p>反序列化方法： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readObject</span><span class="params">(java.io.ObjectInputStream in)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException</span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中，writeObject方法用于定制序列化，readObject方法用于实现定制反序列化。 </p>
+<p>Externalizable接口集成自Serializable接口，实现该接口意味着对象本身完全掌控自己的序列化方式。该接口JDK源码如下： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">/** <span class="doctag">@author</span>  unascribed</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> java.io.ObjectOutputStream</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> java.io.ObjectInputStream</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> java.io.ObjectOutput</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> java.io.ObjectInput</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> java.io.Serializable</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span>   JDK1.1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Externalizable</span> <span class="keyword">extends</span> <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">writeExternal</span><span class="params">(ObjectOutput out)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">readExternal</span><span class="params">(ObjectInput in)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Externalizable接口定义了两个方法：writeExternal(ObjectOutput out)和readExternal(ObjectInput in)。write方法用于实现定制序列化，read方法用于实现定制反序列化。 </p>
+<pre><code>基于Externalizable接口的定制和基于Serializable接口的定制有所不同。基于Externalizable接口的定制是通过实现上述两个方法实现的，而且方法中操作的参数也不一样，基于Externalizable接口是通过操作ObejectOutput类和ObjectInput类实现的。而基于Serializable接口是通过操作ObjectOutputStream类和ObjectInputStream类实现的。至于两种方式的序列化定制方式会在稍后的示例中进行展示。 </code></pre>
+<h3 id="4-哪些数据被序列化了"><a href="#4-哪些数据被序列化了" class="headerlink" title="4 哪些数据被序列化了"></a>4 哪些数据被序列化了</h3><pre><code>我们采用默认的序列化方式（仅仅直接实现Serializable接口）序列化对象时，默认的，只将非静态的和no-transient字段进行序列化，除此之外的其他域在默认情况下是不进行序列化的，也就是说，在序列化的字节流数据中没有对这两种类型数据的记录。这是为什么呢？如果是从代码级别上分析，从JDK源码可知， JDK源码进行了默认的处理，然后将静态属性和瞬时属性排除在序列化之外,但为什么会选择这样的实现呢？我们都知道，对象序列化的本质是将对象的状态通过有序字节流进行保存或传输，由此，问题的焦点应该是对象的状态。静态变量时类变量，属于整个类，并非专属于每个对象实例，因此，不序列化静态变量时合理的。瞬时变量，指的是被transient关键字修饰的变量，该关键字表示为瞬时的，即不做持久化处理的，以此来控制属性是否被包含进入序列化的字节流中。因此，在序列化时，排除transient关键字修饰的属性也是合理的。 
+
+需要注意的是，没有被序列化的属性不会出现在序列化后的有序字节流中，但是，我们在反 序列化时，是可以访问这些变量的。这是因为，序列化的过程保存了你所期望保存的对象的状态（属性当前值），反序列化就是重建对象的过程，在这个过程中，字 节流中所保存的对象状态被重新赋予了新建的对象。此时，对于没有被序列化的属性也是存在的，因为其实类定义的一部分，在新建的对象中是必然存在的。唯一不 同的是，他们的值是类定义的默认值，而非是来自字节流中保存的状态。这也恰恰反映了序列化的本质：保存对象的状态。 
+
+那么，到底哪些数据被序列化到了有序字节流中呢？字节流数据包含了non-static和non-transient类型的成员数据、类名、类签名、可序列化的基类以及类中引用的其他对象。 </code></pre>
+<ol>
+<li><pre><code>如果基类实现了Serializable接口，则其子类默认的是可序列化的，不必显示声明；</code></pre>
+</li>
+<li><pre><code>如果基类没有实现Serializable接口，在反序列化时，会调用基类的无参构造方法，重建基类对象只不过是不会保留基类对象状态。</code></pre>
+</li>
+</ol>
+<h3 id="5-Serializable序列化"><a href="#5-Serializable序列化" class="headerlink" title="5 Serializable序列化"></a>5 Serializable序列化</h3><p>基于Serializable接口的默认序列化步骤为：首先，进行序列化声明，代码如下： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultSerialObject</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">8743340629265050501L</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">int</span> noSerialVar ; <span class="comment">//该成员不被序列化，但在反序列化构造对象时会重建该属性</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> value;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getNoSerialVar</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> noSerialVar;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNoSerialVar</span><span class="params">(<span class="keyword">int</span> noSerialVar)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.noSerialVar = noSerialVar;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<pre><code>实现了Serializable接口的Java类与我们平时定义Java类没有太大区别，唯一需要注意的是serialVersionUID属性。每个实现Serializable接口的对象都有一个serialVersionUID，长整型，64位，唯一标示了该序列化对象。在类定义中，可以显示的定义该静态变量，也可以不定义。在不定义的情况下，Java编译器会隐式的生成该变量。强烈建议显示定义。那么，该变量有什么用途呢？反序列化兼容控制。serialVersionUID相同才能进行反序列化。例如：远程主机需要反序列化对象C，如果在本地和远程主机内的C对象持有的serialVersionUID不同，即使两个类其它部分完全一样，也是不能成功反序列化话的，会抛出异常。因此，如果对类做了修改，为了保证版本对序列化兼容，该变量的值保持不变。从另一个角度来讲，不期望不同版本的类对序列化兼容，则改变该变量值。 
+
+然后，通过Java API进行实际的序列化处理。我们选择的场景是：将对象进行序列化，然后保存到本地文件中。然后，从本地文件读取序列化后的有序字节流，进行反序列化，重建对象。代码示例如下： </code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultSerialTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="comment">//首先创建一个可以序列化的对象</span></span><br><span class="line">            DefaultSerialObject serialObj = <span class="keyword">new</span> DefaultSerialObject();</span><br><span class="line">            serialObj.setValue(<span class="number">10</span>);</span><br><span class="line">            serialObj.setNoSerialVar(<span class="number">11</span>);</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">&quot;the value of serialObj &quot;</span> + serialObj.getValue());</span><br><span class="line">            <span class="comment">//构造序列化用的输出流</span></span><br><span class="line">            FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(<span class="string">&quot;default_serialization&quot;</span>);</span><br><span class="line">            ObjectOutputStream objectOutputStream = <span class="keyword">new</span> ObjectOutputStream(fileOutputStream);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//写入序列化对象</span></span><br><span class="line">            objectOutputStream.writeObject(serialObj);</span><br><span class="line">            <span class="comment">//关闭输出流</span></span><br><span class="line">            objectOutputStream.close();</span><br><span class="line"></span><br><span class="line">            <span class="comment">//反序列化</span></span><br><span class="line">            <span class="comment">//构造序列化用的输出流</span></span><br><span class="line">            FileInputStream fileInputStream = <span class="keyword">new</span> FileInputStream(<span class="string">&quot;default_serialization&quot;</span>);</span><br><span class="line">            ObjectInputStream objectInputStream = <span class="keyword">new</span> ObjectInputStream(fileInputStream);</span><br><span class="line">            DefaultSerialObject inverseSerialObj = (DefaultSerialObject)objectInputStream.readObject();</span><br><span class="line">            System.out.println(<span class="string">&quot;the value of inverse serialObj &quot;</span> + inverseSerialObj.getValue());</span><br><span class="line">            System.out.println(<span class="string">&quot;the noSerialVar of inverse serialObj &quot;</span> + inverseSerialObj.getNoSerialVar());</span><br><span class="line"></span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.getStackTrace();</span><br><span class="line">            System.out.println(<span class="string">&quot;system error&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>说明：在实际的对象实例化过程中，涉及到的Java类是ObjectOutputStream和ObjectInputStream。这两个类负责对象序列化的主要工作。 </p>
+<h3 id="6-定制序列化"><a href="#6-定制序列化" class="headerlink" title="6 定制序列化"></a>6 定制序列化</h3><pre><code>上面的代码示例中，展示了最为基本的默认的对象序列化和反序列化方式。之所以称之为是基本的，是因为，我们在对自定义的类进行序列化时完全没有进行任何“干涉”， 系统默认的选择了类定义中符合规则的属性进行序列化，因此这是一种默认的方式。与之相对应的是，我们可以定制序列化及反序列化，以满足实际的需要。例如： 序列化的对象一般在网络上进行传输，所以安全性是必须要考虑的问题。大部分情况下，我们期望对类似于密码等这样的敏感信息进行加密处理，以密文的形式在网 络间传输，增强数据的安全性。但是，通过我们上述的方式进行序列化，默认的处理方式是不能保证密码的密文传输的。因此，针对此类问题，我们必须能够定制对 象的序列化和反序列化过程，只有这样才能将我们的业务逻辑加入其中，以满足实际应用的需要。</code></pre>
+<p>如何实现定制呢？</p>
+<p>定制序列化和反序列化与上述序列化方式的不同在于：自定义类的实现。</p>
+<p>​    首先，同样，自定义的类要实现Serializable接口，这是序列化处理的前提。不同的是，在定制序列化时，需要根据我们的实际需要，重写writeObject和readObject方法，完成序列化和反序列化的定制。</p>
+<p>示例代码如下：</p>
+<p><img src="/images/JavaCore/JavaCore_serializableWriteObject.png" alt="SerializableWriteObject"></p>
+<p><img src="/images/JavaCore/JavaCore_serializableReadObject.png" alt="SerializableReadObject"></p>
+<p>说明：定制序列化过程中，序列化和反序列化读取信息的顺序要保持一致，否则会出现意想不到的后果。 </p>
+<h3 id="7-Externalizable-序列化"><a href="#7-Externalizable-序列化" class="headerlink" title="7 Externalizable(序列化)"></a>7 Externalizable(序列化)</h3><p>实现Extenalizable接口的类将完全由自己控制自身的序列化和反序列化。示例代码如下： </p>
+<p><img src="/images/JavaCore/JavaCore_serializable-Ex1.png" alt="Serializable-Ex1"></p>
+<p>对象序列化及反序列化测试代码： </p>
+<p><img src="/images/JavaCore/JavaCore_serializable-Ex2.png" alt="Serializable-Ex2"></p>
+<h3 id="8-序列化带来的问题"><a href="#8-序列化带来的问题" class="headerlink" title="8 序列化带来的问题"></a>8 序列化带来的问题</h3><h4 id="8-1-网络传输的安全性"><a href="#8-1-网络传输的安全性" class="headerlink" title="8.1 网络传输的安全性"></a>8.1 网络传输的安全性</h4><pre><code>对象进行序列化之后转化成有序的字节流在网络上进行传输，如果通过默认的序列化方式， 则代码都是以明文的方式进行传输。这种情况下，部分字段的安全性是不能保障的，特别是像密码这样的安全敏感的信息。因此，如果您需要对部分字段信息进行特 殊的处理，那么应当选择定制对象的序列化方式，例如对密码等敏感信息进行加密处理。 </code></pre>
+<h4 id="8-2-类自身封装的安全性"><a href="#8-2-类自身封装的安全性" class="headerlink" title="8.2 类自身封装的安全性"></a>8.2 类自身封装的安全性</h4><pre><code>对对象进行序列化时，类中所定义的被private、final等 访问控制符所修饰的字段是直接忽略这些访问控制符而直接进行序列化的，因此，原本在本地定义的想要一次控制字段的访问权限的工作都是不起作用的。对于序列 化后的有序字节流来说一切都是可见的，而且是可重建的。这在一定程度上削弱了字段的安全性。因此，如果您需要特别处理这些信息，您可以选择相应的方式对这 些属性进行加密或者其他可行的处理，以尽量保持数据的安全性。 </code></pre>
+<h3 id="9-小结"><a href="#9-小结" class="headerlink" title="9 小结"></a>9 小结</h3><p>1.通过序列化和反序列化实现了对象状态的保存、传输以及对象的重建。在进行对象序列化时，开发人员可以根据自身情况，灵活选择默认方式或者自定义方式实现对象的序列化和反序列化。</p>
+<p>2.序列化机制是Java中对轻量级持久化的支持。</p>
+<p>3.序列化的字节流数据在网上传输的安全问题需要引起大家足够的注意。</p>
+<p>4.序列化破坏了原有类的数据的”安全性“，例如private属性石不起作用的。</p>
+<p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/wxgblogs/p/5849951.html">参考链接</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/nelson2013/p/3256673.html">参考链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaCore/" rel="tag"># JavaCore</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/JavaCore/2019-01-15%20java%E6%B3%9B%E5%9E%8B/" rel="prev" title="java泛型">
+      <i class="fa fa-chevron-left"></i> java泛型
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/JavaCore/2019-01-24%20IO%E6%A8%A1%E5%9E%8B/" rel="next" title="IO模型">
+      IO模型 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">1  概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E7%94%A8%E9%80%94"><span class="nav-number">2.</span> <span class="nav-text">2 序列化机制的用途</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AE%9E%E7%8E%B0%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">3 实现序列化的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%93%AA%E4%BA%9B%E6%95%B0%E6%8D%AE%E8%A2%AB%E5%BA%8F%E5%88%97%E5%8C%96%E4%BA%86"><span class="nav-number">4.</span> <span class="nav-text">4 哪些数据被序列化了</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Serializable%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">5.</span> <span class="nav-text">5 Serializable序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%AE%9A%E5%88%B6%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">6.</span> <span class="nav-text">6 定制序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-Externalizable-%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">7 Externalizable(序列化)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E5%BA%8F%E5%88%97%E5%8C%96%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">8.</span> <span class="nav-text">8 序列化带来的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-1-%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">8.1.</span> <span class="nav-text">8.1 网络传输的安全性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2-%E7%B1%BB%E8%87%AA%E8%BA%AB%E5%B0%81%E8%A3%85%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">8.2.</span> <span class="nav-text">8.2 类自身封装的安全性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E5%B0%8F%E7%BB%93"><span class="nav-number">9.</span> <span class="nav-text">9 小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

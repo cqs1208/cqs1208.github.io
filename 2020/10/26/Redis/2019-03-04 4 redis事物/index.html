@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="04 redis事物">
+<meta property="og:url" content="http://example.com/2020/10/26/Redis/2019-03-04%204%20redis%E4%BA%8B%E7%89%A9/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Redis">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Redis/Redis_transaction.png">
+<meta property="og:image" content="http://example.com/images/Redis/Redis_jobQueue.png">
+<meta property="og:image" content="http://example.com/images/Redis/Redis_monitor1.png">
+<meta property="og:image" content="http://example.com/images/Redis/Redis_monitor2.png">
+<meta property="og:image" content="http://example.com/images/Redis/Redis_monitorChoose.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.320Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Redis/Redis_transaction.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Redis/2019-03-04%204%20redis%E4%BA%8B%E7%89%A9/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>04 redis事物 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Redis/2019-03-04%204%20redis%E4%BA%8B%E7%89%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          04 redis事物
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Redis</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Redis 的事务支持相对简单，MULTI 、 EXEC 、 DISCARD 和 WATCH 这四个命令是 Redis 事务的基础。 </p>
+<a id="more"></a> 
+
+<h3 id="1-开启事物"><a href="#1-开启事物" class="headerlink" title="1 开启事物"></a>1 开启事物</h3><p>MULTI 命令的执行标记着事务的开始： </p>
+<p><img src="/images/Redis/Redis_transaction.png" alt="redis事物1"></p>
+<p>当客户端处于非事务状态下时， 所有发送给服务器端的命令都会立即被服务器执行。 </p>
+<p><strong>Redis 的事务不可嵌套</strong>， 当客户端已经处于事务状态， 而客户端又再向服务器发送 MULTI 时， 服务器只是简单地向客户端发送一个错误， 然后继续等待其他命令的入队。MULTI 命令的发送不会造成整个事务失败， 也不会修改事务队列中已有的数据。 </p>
+<h3 id="2-命令入队"><a href="#2-命令入队" class="headerlink" title="2 命令入队"></a>2 命令入队</h3><p>但是， 当客户端进入事务状态之后， 服务器在收到来自客户端的命令时，不会立即执行命令， 而是将这些命令全部放进一个事务队列里， 然后返回 QUEUED ， 表示命令已入队： </p>
+<p><img src="/images/Redis/Redis_jobQueue.png" alt="redis任务入队1"></p>
+<p>事务队列是一个数组， 每个数组项是都包含三个属性： </p>
+<ol>
+<li>要执行的命令（cmd）。 </li>
+<li>命令的参数（argv）。 </li>
+<li>参数的个数（argc）。 </li>
+</ol>
+<p>例如，客户端执行以下命令： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; MULTI</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SET name <span class="string">&quot;chenlongfei&quot;</span></span><br><span class="line">QUEUED</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; GET name</span><br><span class="line">QUEUED</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SADD tag <span class="string">&quot;master&quot;</span> <span class="string">&quot;Java&quot;</span> <span class="string">&quot;engineer&quot;</span></span><br><span class="line">QUEUED</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SMEMBERS tag</span><br><span class="line">QUEUED</span><br></pre></td></tr></table></figure>
+
+<p>程序将为客户端创建以下事务队列： </p>
+<table>
+<thead>
+<tr>
+<th>数组索引</th>
+<th>命令</th>
+<th>命令参数</th>
+<th>命令个数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>SET</td>
+<td>[name “chenlongfei”]</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>GET</td>
+<td>[name]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>SADD</td>
+<td>[tag “master” “Java” “engineer”]</td>
+<td>4</td>
+</tr>
+<tr>
+<td>3</td>
+<td>SMEMBERS</td>
+<td>[tag]</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<h3 id="3-执行命令"><a href="#3-执行命令" class="headerlink" title="3 执行命令"></a>3 执行命令</h3><p>如果客户端正处于事务状态， 那么当 EXEC 命令执行时， 服务器根据客户端所保存的事务队列， 以先进先出（FIFO）的方式执行事务队列中的命令：最先入队的命令最先执行， 而最后入队的命令最后执行。</p>
+<p>对于上面的命令队列而言，程序会首先执行 SET 命令， 然后执行 GET 命令， 再然后执行 SADD 命令， 最后执行 SMEMBERS 命令。</p>
+<p>执行事务中的命令所得的结果会以FIFO 的顺序保存到一个回复队列中。</p>
+<p>上面给出的事务队列，会得到如下回复队列：</p>
+<table>
+<thead>
+<tr>
+<th>数组索引</th>
+<th>回复类型</th>
+<th>回复内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>status code reply</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>1</td>
+<td>bulk reply</td>
+<td>chenlongfei</td>
+</tr>
+<tr>
+<td>2</td>
+<td>integer reply</td>
+<td>(integer) 3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>multi-bulk reply</td>
+<td>[ “engineer” “Java” “master”]</td>
+</tr>
+</tbody></table>
+<p>当事务队列里的所有命令被执行完之后， EXEC 命令会将回复队列作为自己的执行结果返回给客户端， 客户端从事务状态返回到非事务状态， 至此， 事务执行完毕。 </p>
+<h3 id="4-事务命令与非事务命令"><a href="#4-事务命令与非事务命令" class="headerlink" title="4 事务命令与非事务命令"></a>4 事务命令与非事务命令</h3><p>无论在事务状态下， 还是在非事务状态下， Redis 命令都由同一个函数执行， 所以它们共享很多服务器的一般设置， 比如 AOF 的配置、RDB 的配置，以及内存限制，等等。</p>
+<p>事务中的命令和普通命令在执行上还是有一点区别的，其中最重要的两点是：</p>
+<p>（1）非事务状态下的命令以单个命令为单位执行，前一个命令和后一个命令的客户端不一定是同一个；而事务状态则是以一个事务为单位，执行事务队列中的所有命令，除非当前事务执行完毕，否则服务器不会中断事务，也不会执行其他客户端的其他命令。</p>
+<p>（2）在非事务状态下，执行命令所得的结果会立即被返回给客户端；而事务则是将所有命令的结果集合到回复队列，再作为 EXEC 命令的结果返回给客户端。</p>
+<h3 id="5-取消事务"><a href="#5-取消事务" class="headerlink" title="5 取消事务"></a>5 取消事务</h3><p><strong>DISCARD</strong> 命令用于取消一个事务，它清空客户端的整个事务队列，然后将客户端从事务状态调整回非事务状态，最后返回字符串 OK 给客户端，说明事务已被取消。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SET name chenlongfei  --设置姓名</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; MULTI</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SET name clf  --在事务中更改姓名</span><br><span class="line">QUEUED</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; GET name</span><br><span class="line">QUEUED</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; DISCARD  --取消事务</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; GET name</span><br><span class="line"><span class="string">&quot;cehnlongfei&quot;</span>  --可见姓名并没有被更改</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-WATCH命令"><a href="#6-WATCH命令" class="headerlink" title="6 WATCH命令"></a>6 WATCH命令</h3><p>WATCH 命令用于在事务开始之前监视任意数量的键：当调用 EXEC 命令执行事务时，如果任意一个被监视的键已经被其他客户端修改了，那么整个事务不再执行，直接返回失败。 </p>
+<p>Client1开启watch name并在事务中修改name，但是没有执行exec </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; get name</span><br><span class="line"><span class="string">&quot;huangliu&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; watch name</span><br><span class="line">OK</span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; multi</span><br><span class="line">OK</span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; set name lisi</span><br><span class="line">QUEUED</span><br></pre></td></tr></table></figure>
+
+<p>Client2 修改name </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; get name</span><br><span class="line"><span class="string">&quot;huangliu&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; set name <span class="string">&quot;wangwu&quot;</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; get name</span><br><span class="line"><span class="string">&quot;wangwu&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Client1执行exec </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; exec</span><br><span class="line">(nil)</span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可见，由于被watch的name已经被Client2 修改，所以Client1的事务执行失败，程序需要做的， 就是不断重试这个操作， 直到没有发生碰撞（Crash）为止。对key进行加锁监视的机制类似Java多线程中的锁（synchronized中的监视器对象），被称作乐观锁。</p>
+<p><strong>watch操作说明</strong></p>
+<p>在每个代表数据库的Redis.h/RedisDb结构类型中，保存了一个 watched_keys 字典，字典的键是这个数据库被监视的键，而字典的值则是一个链表，链表中保存了所有监视这个键的客户端。 </p>
+<p><img src="/images/Redis/Redis_monitor1.png" alt="redis监视器1"></p>
+<p>其中，键 key1 正在被client1 、 client2和client5三个客户端监视，其他一些键也分别被其他别的客户端监视着。</p>
+<p>WATCH 命令的作用，就是将当前客户端和要监视的键在 watched_keys 中进行关联。</p>
+<p>例如，如果当前客户端为client10086 ，那么当客户端执行 WATCH key1 key2 时，前面展示的 watched_keys 将被修改成这个样子：</p>
+<p><img src="/images/Redis/Redis_monitor2.png" alt="redis监视器2"></p>
+<p>通过 watched_keys 字典，如果程序想检查某个键是否被监视，那么它只要检查字典中是否存在这个键即可；如果程序要获取监视某个键的所有客户端， 那么只要取出键的值（一个链表），然后对链表进行遍历即可。 </p>
+<p>在任何对数据库键空间（keyspace）进行修改的命令成功执行之后 （比如 FLUSHDB 、 SET 、 DEL 、 LPUSH 、 SADD 、 ZREM ，诸如此类），multi.c/touchWatchedKey 函数都会被调用 —— 它检查数据库的 watched_keys 字典，看是否有客户端在监视已经被命令修改的键，如果有的话， 程序将所有监视这个/这些被修改键的客户端的 REDIS_DIRTY_CAS 选项打开：</p>
+<p><img src="/images/Redis/Redis_monitorChoose.png" alt="redis监视器选项"></p>
+<p>当客户端发送 EXEC 命令、触发事务执行时，服务器会对客户端的状态进行检查：</p>
+<p>如果客户端的 REDIS_DIRTY_CAS选项已经被打开，那么说明被客户端监视的键至少有一个已经被修改了，事务的安全性已经被破坏。服务器会放弃执行这个事务，直接向客户端返回空回复，表示事务执行失败。</p>
+<p>如果 REDIS_DIRTY_CAS选项没有被打开，那么说明所有监视键都安全，服务器正式执行事务。</p>
+<h3 id="7-ACID-性质"><a href="#7-ACID-性质" class="headerlink" title="7  ACID 性质"></a>7  ACID 性质</h3><p>在传统的关系式数据库中，常常用 <strong>ACID</strong>性质来检验事务功能的安全性：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）</p>
+<p><strong>Redis 事务保证了其中的一致性和隔离性，但并不保证原子性和持久性</strong>。</p>
+<h4 id="7-1-原子性（Atomicity）"><a href="#7-1-原子性（Atomicity）" class="headerlink" title="7.1 原子性（Atomicity）"></a>7.1 原子性（Atomicity）</h4><p>单个 Redis 命令的执行是原子性的，但Redis 没有在事务上增加任何维持原子性的机制，所以 Redis 事务的执行并不是原子性的。</p>
+<p>如果一个事务队列中的所有命令都被成功地执行，那么称这个事务执行成功。</p>
+<p>另一方面，如果 Redis 服务器进程在执行事务的过程中被停止 —— 比如接到 KILL 信号、宿主机器停机，等等，那么事务执行失败。</p>
+<p>当事务失败时，Redis 也不会进行任何的重试或者回滚动作。</p>
+<h4 id="7-2-一致性（Consistency）"><a href="#7-2-一致性（Consistency）" class="headerlink" title="7.2 一致性（Consistency）"></a>7.2 一致性（Consistency）</h4><p>Redis 的一致性问题可以分为三部分来讨论：入队错误、执行错误、Redis 进程被终结。</p>
+<p>（1）入队错误</p>
+<p>在命令入队的过程中，如果客户端向服务器发送了错误的命令，比如命令的参数数量不对，等等，服务器将向客户端返回一个出错信息，并且将客户端的事务状态设为REDIS_DIRTY_EXEC 。</p>
+<p>当客户端执行 EXEC 命令时，Redis 会拒绝执行状态为 REDIS_DIRTY_EXEC 的事务，并返回失败信息。</p>
+<p>因此，带有不正确入队命令的事务不会被执行，也不会影响数据库的一致性。</p>
+<p>（2）执行错误</p>
+<p>如果命令在事务执行的过程中发生错误，比如说对一个不同类型的 key 执行了错误的操作，那么 Redis 只会将错误包含在事务的结果中，这不会引起事务中断或整个失败，不会影响已执行事务命令的结果，也不会影响后面要执行的事务命令，所以它对事务的一致性也没有影响。</p>
+<p>（3）Redis 进程被终结</p>
+<p>如果 Redis 服务器进程在执行事务的过程中被其他进程终结，或者被管理员强制杀死，那么根据Redis 所使用的持久化模式，可能有以下情况出现：</p>
+<p>内存模式：如果 Redis 没有采取任何持久化机制，那么重启之后的数据库总是空白的，所以数据总是一致的。</p>
+<p>RDB 模式：在执行事务时，Redis 不会中断事务去执行保存 RDB 的工作，只有在事务执行之后，保存 RDB 的工作才有可能开始。所以当 RDB 模式下的 Redis 服务器进程在事务中途被杀死时，事务内执行的命令，不管成功了多少，都不会被保存到 RDB 文件里。恢复数据库需要使用现有的 RDB 文件，而这个 RDB 文件的数据保存的是最近一次的数据库快照，所以它的数据可能不是最新的，但只要RDB 文件本身没有因为其他问题而出错，那么还原后的数据库就是一致的。</p>
+<p>AOF 模式：因为保存 AOF 文件的工作在后台线程进行，所以即使是在事务执行的中途，保存 AOF 文件的工作也可以继续进行，因此，根据事务语句是否被写入并保存到 AOF 文件，有以下两种情况发生：</p>
+<p>1）如果事务语句未写入到 AOF 文件，或 AOF 未被SYNC 调用保存到磁盘，那么当进程被杀死之后，Redis 可以根据最近一次成功保存到磁盘的 AOF 文件来还原数据库，只要 AOF 文件本身没有因为其他问题而出错，那么还原后的数据库总是一致的，但其中的数据不一定是最新的。</p>
+<p>2）如果事务的部分语句被写入到 AOF 文件，并且 AOF 文件被成功保存，那么不完整的事务执行信息就会遗留在 AOF 文件里，当重启 Redis 时，程序会检测到 AOF 文件并不完整，Redis 会退出，并报告错误。需要使用 Redis-check-aof 工具将部分成功的事务命令移除之后，才能再次启动服务器。还原之后的数据总是一致的，而且数据也是最新的（直到事务执行之前为止）。</p>
+<h4 id="7-3-隔离性（Isolation）"><a href="#7-3-隔离性（Isolation）" class="headerlink" title="7.3 隔离性（Isolation）"></a>7.3 隔离性（Isolation）</h4><p>Redis 是单进程程序，并且它保证在执行事务时，不会对事务进行中断，事务可以运行直到执行完所有事务队列中的命令为止。因此，Redis 的事务是总是带有隔离性的。 </p>
+<h4 id="7-4-持久性（Durability）"><a href="#7-4-持久性（Durability）" class="headerlink" title="7.4 持久性（Durability）"></a>7.4 持久性（Durability）</h4><p>因为事务不过是用队列包裹起了一组 Redis 命令，并没有提供任何额外的持久性功能，所以事务的持久性由 Redis 所使用的持久化模式决定：</p>
+<p>在单纯的内存模式下，事务肯定是不持久的。</p>
+<p>在 RDB 模式下，服务器可能在事务执行之后、RDB 文件更新之前的这段时间失败，所以 RDB 模式下的 Redis 事务也是不持久的。</p>
+<p>在 AOF 的“总是 SYNC ”模式下，事务的每条命令在执行成功之后，都会立即调用 fsync 或 fdatasync 将事务数据写入到 AOF 文件。但是，这种保存是由后台线程进行的，主线程不会阻塞直到保存成功，所以从命令执行成功到数据保存到硬盘之间，还是有一段非常小的间隔，所以这种模式下的事务也是不持久的。</p>
+<p>其他 AOF 模式也和“总是 SYNC ”模式类似，所以它们都是不持久的。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Redis/2019-03-03%203%20redis%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4/" rel="prev" title="03 redis管理命令">
+      <i class="fa fa-chevron-left"></i> 03 redis管理命令
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Redis/2019-03-05%205%20redis%E6%8C%81%E4%B9%85%E5%8C%96/" rel="next" title="05 redis持久化">
+      05 redis持久化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%80%E5%90%AF%E4%BA%8B%E7%89%A9"><span class="nav-number">1.</span> <span class="nav-text">1 开启事物</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%91%BD%E4%BB%A4%E5%85%A5%E9%98%9F"><span class="nav-number">2.</span> <span class="nav-text">2 命令入队</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">3 执行命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%BA%8B%E5%8A%A1%E5%91%BD%E4%BB%A4%E4%B8%8E%E9%9D%9E%E4%BA%8B%E5%8A%A1%E5%91%BD%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">4 事务命令与非事务命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%8F%96%E6%B6%88%E4%BA%8B%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">5 取消事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-WATCH%E5%91%BD%E4%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">6 WATCH命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-ACID-%E6%80%A7%E8%B4%A8"><span class="nav-number">7.</span> <span class="nav-text">7  ACID 性质</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-%E5%8E%9F%E5%AD%90%E6%80%A7%EF%BC%88Atomicity%EF%BC%89"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 原子性（Atomicity）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-%E4%B8%80%E8%87%B4%E6%80%A7%EF%BC%88Consistency%EF%BC%89"><span class="nav-number">7.2.</span> <span class="nav-text">7.2 一致性（Consistency）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-%E9%9A%94%E7%A6%BB%E6%80%A7%EF%BC%88Isolation%EF%BC%89"><span class="nav-number">7.3.</span> <span class="nav-text">7.3 隔离性（Isolation）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-4-%E6%8C%81%E4%B9%85%E6%80%A7%EF%BC%88Durability%EF%BC%89"><span class="nav-number">7.4.</span> <span class="nav-text">7.4 持久性（Durability）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

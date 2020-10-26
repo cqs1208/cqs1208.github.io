@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker+jenkins自动化部署">
+<meta property="og:url" content="http://example.com/2020/10/26/Docker/2019-08-25%20docker/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="docker">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Jenkins/jenkins_01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Jenkins/jenkins_02.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Jenkins/jenkins_03.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Jenkins/jenkins_04.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Jenkins/jenkins_05.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Jenkins/jenkins_06.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_gogs01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_gogs02.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_gogs03.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_gogs04.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins02.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins03.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins06.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins05.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins07.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins04.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins08.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins09.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins10.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins12.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Docker/Docker_jenkins11.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.091Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/Users/admin/Desktop/note/images/Jenkins/jenkins_01.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Docker/2019-08-25%20docker/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>docker+jenkins自动化部署 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Docker/2019-08-25%20docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          docker+jenkins自动化部署
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">docker</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>docker容器技术</p>
+<a id="more"></a> 
+
+<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h2><h3 id="1-1-什么是docker"><a href="#1-1-什么是docker" class="headerlink" title="1.1 什么是docker"></a>1.1 什么是docker</h3><p>Docker属于Linux容器的一种封装，提供简单易用的容器使用接口。<br>Docker将应用程序与该程序的依赖，打包在一个文件里面。运行这个文件，就会生成一个虚拟容器。程序在这个虚拟容器里运行，就好像在真实的物理机上运行一样。有了Docker，就不用担心环境问题。<br>总体来说，Docker的接口相当简单，用户可以方便地创建和使用容器，把自己的应用放入容器。容器还可以进行版本管理、复制、分享、修改，就像管理普通的代码一样。</p>
+<h3 id="1-2-docker概念"><a href="#1-2-docker概念" class="headerlink" title="1.2 docker概念"></a>1.2 docker概念</h3><p>Docker是开发人员和系统管理员使用容器开发、部署和运行应用程序的平台。使用Linux容器来部署应用程序称为集装箱化。使用docker轻松部署应用程序。</p>
+<p>集装箱化的优点：</p>
+<ul>
+<li>灵活：即使是复杂的应用程序也可封装。</li>
+<li>轻量级：容器利用并共享主机内核。</li>
+<li>便携式：您可以在本地构建，部署到云上并在任何地方运行。</li>
+<li>可扩展性：您可以增加和自动分发容器副本。</li>
+<li>可堆叠：您可以垂直堆叠服务并及时并及时堆叠服务。</li>
+</ul>
+<h3 id="1-3-虚拟机"><a href="#1-3-虚拟机" class="headerlink" title="1.3 虚拟机"></a>1.3 虚拟机</h3><p>虚拟机(virtual machine)就是带环境安装的一种解决方案。它可以在一种操作系统里面运行另一种操作系统，比如在Windows系统里面运行Linux系统。应用程序对此毫无感知，因为虚拟机看上去跟真丝系统一模一样，而对于底层系统来说，虚拟机就是一个普通文件，不需要了就删掉，对其它部分毫无影响。</p>
+<p><strong>虚拟机的缺点：</strong></p>
+<ul>
+<li><strong>资源占用多：</strong>虚拟机会独占一部分内存和硬盘空间。它运行的时候，其他程序就不能使用这些资源了。哪怕虚拟机里面的应用程序，真正使用的内存只有1M，虚拟机依然需要几百MB的内容才能运行。</li>
+<li><strong>冗余步骤多：</strong>虚拟机是完整的操作系统，一些系统级别的操作步骤，往往无法跳过，比如用户登录。</li>
+<li><strong>启动慢：</strong>启动操作系统需要多久，启动虚拟机就需要多久。可能要等几分钟，应用陈故乡才能真正运行。</li>
+</ul>
+<h3 id="1-4-Linux容器"><a href="#1-4-Linux容器" class="headerlink" title="1.4 Linux容器"></a>1.4 Linux容器</h3><p>由于虚拟机存在这个缺点，Linux发展出了另一种虚拟化技术：Linux容器(Linux Containers,缩写为LXC)。<br>Linux容器不是模拟一个完整的操作系统，而是对进程进行隔离。或者说，在正常进程的外面套了一个保护层。对于容器里面的进程来说，它接触到的各种资源都是虚拟的，从而实现与底层系统的隔离。<br>由于容器是进程级别的，相比虚拟机又很多优势。</p>
+<ul>
+<li><strong>启动快：</strong>容器里面的应用，直接就是底层系统的一个进程，而不是虚拟机内部的进程。所以，启动容器相当于启动本机的一个进程，而不是启动一个操作系统，速度就快很多。</li>
+<li><strong>资源占用少：</strong>容器只占用需要的资源，不占用那些没有用到的资源；虚拟机由于是完整的操作系统，不可避免要占用所以资源。另外，多个容器可以共享资源，虚拟机都是独享资源。</li>
+<li>体积小：容器只要包含用到的组件即可，而虚拟机是整个操作系统的打包，所以容器文件比虚拟机文件要小很多。总之，容器有点像轻量级的虚拟机，能够提供虚拟化的环境，但是成本开销小得多。</li>
+</ul>
+<h3 id="1-5-Docker的用途"><a href="#1-5-Docker的用途" class="headerlink" title="1.5 Docker的用途"></a>1.5 Docker的用途</h3><p>Docker的主要用途，目前又三大类：</p>
+<ul>
+<li><strong>提供了一次性的环境：</strong>比如，本地测试他人的软件、持续集成的时候提供单元测试和构建的环境。</li>
+<li><strong>提供弹性的云服务：</strong>因为Docker容器可以随开随关，很适合动态扩容和所容。</li>
+<li><strong>组建微服务架构：</strong>通过多个容器，一台机器可以跑多个服务，因此在本机就可以模拟出微服务架构。</li>
+</ul>
+<h3 id="1-6-Docker镜像"><a href="#1-6-Docker镜像" class="headerlink" title="1.6 Docker镜像"></a>1.6 Docker镜像</h3><p>操作系统分为内核和用户空间，对于Linux而言，内核启动后，会挂载root文件系统为其提供用户空间支持。而Docker镜像(Image),就相当于是一个root文件系统。<br>Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数(如匿名卷、环境变量、用户等)。镜像不包含任何动态数据，其内容在构建之后也不会被改变。</p>
+<h3 id="1-7-docker容器"><a href="#1-7-docker容器" class="headerlink" title="1.7 docker容器"></a>1.7 docker容器</h3><p>镜像(image)和容器(container)的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。</p>
+<p>容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的命名空间。因此容器可以拥有自己的root文件系统、自己的网络配置、自己的进程空间，甚至自己的用户ID空间。容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立宿主的系统下操作一样。这种特性使容器封装的应用比直接在宿主运行更加安全。<br>前面讲过镜像使用的是分层储存，容器也是如此。每一个容器运行时，是以镜像为基础层，在其上创建一个当前容器的存储层，可以称这个味容器运行时读写而准备的存储层为容器存储层。<br>容器存储层的生存周期和容器一样，容器消亡时，容器存储层也随之消亡。因此，任何保存于容器存储层的信息都会随容器删除而丢失。<br>按照Docker最佳实践的要求，容器不应该向其存储层写入任何数据，容器存储层要保持无状态化。所有的文件写入操作，都应该使用数据卷(volume)、或者绑定宿主目录，在这些位置的读写会跳过存储层，直接对宿主(或网络存储)发生读写，其性能和稳定性更高。<br>数据卷的生存周期独立于容器，容器消亡，数据卷不会消亡。因此，使用数据卷后，容器删除或者重新运行之后，数据却不会丢失。</p>
+<h3 id="1-8-仓库Docker-Registry"><a href="#1-8-仓库Docker-Registry" class="headerlink" title="1.8 仓库Docker Registry"></a>1.8 仓库Docker Registry</h3><p>镜像构建完成后，可以很容易的在当前宿主机上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry就是这样的服务。<br>一个Docker Registry中可以包含多个仓库(Repository);每个仓库可以包含多个标签(tag)；每个标签对应一个镜像。<br>通常，一个仓库会包含一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过&lt;仓库名&gt;:&lt;标签&gt;的格式来指定具体是这个软件那个版本的镜像。如果不给出标签，将以laest作为默认标签。<br>以ubuntu镜像为例，ubuntu是仓库的名字，其包含有不同的版本标签，如，14.04,16.04。我们可以通过ubuntu:14.04或者ubuntu:16.04来具体指定所需要哪个版本的镜像。如果忽略了标签，比如ubuntu,那将视为ubuntu:latest。<br>仓库名经常以两段式路径形式出现，比如jwilder/nginx-proxy,前者意味着Docker Registry多用户环境下的用户名，后者则往往是对应的软件名。但这并非绝对，取决于所使用的具体Docker Registry的软件或服务。</p>
+<h2 id="2-安装与启动"><a href="#2-安装与启动" class="headerlink" title="2 安装与启动"></a>2 安装与启动</h2><h3 id="2-1-安装docker"><a href="#2-1-安装docker" class="headerlink" title="2.1 安装docker"></a>2.1 安装docker</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install docker-ce    # 安装社区版</span><br><span class="line">docker -v  # 查看docker版本</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-设置USTC的镜像"><a href="#2-2-设置USTC的镜像" class="headerlink" title="2.2 设置USTC的镜像"></a>2.2 设置USTC的镜像</h3><p>编辑文件  /etc/docker/daemon.json 没有的话就创建一个</p>
+<p>在该文件中输入：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> &quot;registry-mirrors&quot;: [&quot;https://docker.mirrors.ustc.edu.cn&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-升级到最新版本"><a href="#2-3-升级到最新版本" class="headerlink" title="2.3 升级到最新版本"></a>2.3 升级到最新版本</h3><ol>
+<li><p>查找主机上关于Docker的软件包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa | grep docker – – 列出包含docker字段的软件的信息</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>yum remove</code>卸载软件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> yum remove docker-1.13.1-53.git774336d.el7.centos.x86_64 </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> yum remove docker-client-1.13.1-53.git774336d.el7.centos.x86_64 </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> yum remove docker-common-1.13.1-53.git774336d.el7.centos.x86_64</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>curl</code>升级到最新版</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://get.docker.com/ | sh</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="4-启动与重启"><a href="#4-启动与重启" class="headerlink" title="4 启动与重启"></a>4 启动与重启</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart docker   # 重启docker</span><br><span class="line">systemctl start docker     # 启动docker</span><br><span class="line">systemctl status docker    # 查看docker状态</span><br><span class="line">systemctl stop docker      # 停止docker服务</span><br><span class="line">systemctl enable docker    # 开机启动</span><br></pre></td></tr></table></figure>
+
+<p>查看版本信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker version    # 查看Docker版本信息</span><br><span class="line">docker info       # 查看Docker系统信息</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-常用命令"><a href="#3-常用命令" class="headerlink" title="3 常用命令"></a>3 常用命令</h2><h3 id="1-镜像相关"><a href="#1-镜像相关" class="headerlink" title="1 镜像相关"></a>1 镜像相关</h3><h4 id="1-1-列出镜像"><a href="#1-1-列出镜像" class="headerlink" title="1.1 列出镜像"></a>1.1 列出镜像</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker images</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">ubuntu              latest              3556258649b2        11 days ago         64.2MB</span><br></pre></td></tr></table></figure>
+
+<p>结构说明：</p>
+<ul>
+<li><strong>REPOSITORY</strong>：仓库名称</li>
+<li><strong>TAG</strong>：标签名称</li>
+<li><strong>IMAGE ID</strong>：镜像ID</li>
+<li><strong>CREATED</strong>：创建时间</li>
+<li><strong>SIZE</strong>：所占用的空间</li>
+</ul>
+<p>值得注意的是，一个镜像可以对象多个标签，判断是否为同一个镜像，我们可以查看它的镜像ID，镜像ID是镜像的唯一标识，如果镜像ID一样，则表示为同一镜像！！！</p>
+<h4 id="1-2-搜索镜像"><a href="#1-2-搜索镜像" class="headerlink" title="1.2 搜索镜像"></a>1.2 搜索镜像</h4><p>格式： docker search [option] keyword</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker search mysql</span><br><span class="line">NAME                              DESCRIPTION                                     STARS               OFFICIAL            AUTOMATED</span><br><span class="line">mysql                             MySQL is a widely used, open-source relation…   8461                [OK]                </span><br><span class="line">mariadb                           MariaDB is a community-developed fork of MyS…   2916                [OK]                </span><br><span class="line">mysql/mysql-server                Optimized MySQL Server Docker images. Create…   626                                     [OK]</span><br><span class="line">centurylink/mysql                 Image containing mysql. Optimized to be link…   60                                      [OK]</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# </span><br></pre></td></tr></table></figure>
+
+<p>格式说明</p>
+<ul>
+<li>-f,  –filter filter   过滤输出的内容</li>
+<li>–help            Print usag</li>
+<li>–limit int       指定搜索内容展示个数 (default 25)</li>
+<li>–no-index        Don’t truncate output</li>
+<li>–no-trunc        Don’t truncate output</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker search --filter=stars=100 mysql</span><br><span class="line">NAME                 DESCRIPTION                                     STARS               OFFICIAL            AUTOMATED</span><br><span class="line">mysql                MySQL is a widely used, open-source relation…   8461                [OK]                </span><br><span class="line">mariadb              MariaDB is a community-developed fork of MyS…   2916                [OK]                </span><br><span class="line">mysql/mysql-server   Optimized MySQL Server Docker images. Create…   626                                     [OK]</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# </span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-获取镜像"><a href="#1-3-获取镜像" class="headerlink" title="1.3 获取镜像"></a>1.3 获取镜像</h4><p>格式： docker pull [OPTIONS] NAME[:TAG|@DIGEST]</p>
+<p>格式说明：</p>
+<ul>
+<li>OPTIONS选项。可以使用如下 OPTIONS<ul>
+<li>-a, –all-tags：从镜像仓库中下载所有被标记的镜像</li>
+<li>–disable-content-trust：跳过验证</li>
+</ul>
+</li>
+<li><strong>NAME</strong>：仓库名</li>
+<li><strong>TAG</strong>：标签</li>
+<li><strong>DIGEST</strong>：数据摘要</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker pull tomcat</span><br><span class="line">Using default tag: latest</span><br><span class="line">latest: Pulling from library/tomcat</span><br><span class="line">a4d8138d0f6b: Pull complete </span><br><span class="line">dbdc36973392: Pull complete </span><br><span class="line">f59d6d019dd5: Pull complete </span><br><span class="line">aaef3e026258: Pull complete </span><br><span class="line">5e86b04a4500: Pull complete </span><br><span class="line">1a6643a2873a: Pull complete </span><br><span class="line">2ad1e30fc17c: Pull complete </span><br><span class="line">16f4e6ee0ca6: Pull complete </span><br><span class="line">928f4d662d23: Pull complete </span><br><span class="line">b8d24294d525: Pull complete </span><br><span class="line">Digest: sha256:2785fac92d1bcd69d98f2461c6799390555a41fd50d3f847b544368d594c637b</span><br><span class="line">Status: Downloaded newer image for tomcat:latest</span><br><span class="line">docker.io/library/tomcat:latest</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-删除镜像"><a href="#1-4-删除镜像" class="headerlink" title="1.4 删除镜像"></a>1.4 删除镜像</h4><p>格式： docker image rm [OPTIONS] IMAGE [IMAGE…]</p>
+<p>按镜像id删除镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi 镜像id</span><br></pre></td></tr></table></figure>
+
+<p>删除所有镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi `docker images -q`</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-容器相关"><a href="#2-容器相关" class="headerlink" title="2 容器相关"></a>2 容器相关</h3><h4 id="1-查看容器"><a href="#1-查看容器" class="headerlink" title="1 查看容器"></a>1 查看容器</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker ps   # 查看正在运行的容器</span><br><span class="line">docker ps -a  # 查看所有容器</span><br><span class="line">docker ps -l  # 查看最后一次运行的容器</span><br><span class="line">docker ps -f status=exited  # 查看停止的容器</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-创建与启动容器"><a href="#2-创建与启动容器" class="headerlink" title="2 创建与启动容器"></a>2 创建与启动容器</h4><p>创建容器参数说明</p>
+<p>创建容器命令：docker run</p>
+<ul>
+<li><p>**-i : **表示运行容器</p>
+</li>
+<li><p>**-t : **表示容器启动后会进入其命令行，加入这两个参数后，容器创建就能登录进去，即分配一个伪终端</p>
+</li>
+<li><p>**–name : **为创建的容器命名</p>
+</li>
+<li><p><strong>-v :</strong> 表示目录映射，（前者是宿主目录，后者是映射到宿主机上的目录），可以使用多个-v做多个目录或文件映射，注意：最好做目录映射，在宿主机上做修改，然后共享到容器上</p>
+</li>
+<li><p>**-d : **在run后面加上-d参数，则会创建一个守护容器在后台运行（这样创建容器后不会自动登录容器，如果只加-i-t两个参数，创建后就会自动进去容器）。</p>
+</li>
+<li><p>**-p : **表示端口映射，前者是宿主机端口，后者是容器的映射端口，可以使用多个端口映射</p>
+</li>
+</ul>
+<p><strong>交互式方式创建容器</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name=myubuntu ubuntu /bin/bash     #--name=容器名称 镜像名称</span><br></pre></td></tr></table></figure>
+
+<p>这时，通过ps查看，发现可以看到容器已启动，</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit;    # 退出当前容器</span><br></pre></td></tr></table></figure>
+
+<p><strong>守护式方式创建容器：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -di --name=myubuntu2 ubuntu   # 守护式启动 (ubutu)</span><br><span class="line">docker exec -it myubuntu2 /bin/bash      # 进入容器(ubuntu)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker run -di --name=myubuntu2 ubuntu </span><br><span class="line">22fe4c60bf8dbe11ee563ead43e1569a5724b5a549c45441debb9f60b85343fd</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS              PORTS               NAMES</span><br><span class="line">22fe4c60bf8d        ubuntu              &quot;/bin/bash&quot;         About a minute ago   Up About a minute                       myubuntu2</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker exec -it myubuntu2 /bin/bash</span><br><span class="line">root@22fe4c60bf8d:/# ls</span><br><span class="line">bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line">root@22fe4c60bf8d:/# exit;</span><br><span class="line">exit</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span><br><span class="line">22fe4c60bf8d        ubuntu              &quot;/bin/bash&quot;         3 minutes ago       Up 3 minutes                            myubuntu2</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# </span><br></pre></td></tr></table></figure>
+
+<h4 id="3-停止与启动容器"><a href="#3-停止与启动容器" class="headerlink" title="3 停止与启动容器"></a>3 停止与启动容器</h4> <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker stop 容器id(或名称)   # 停止容器</span><br><span class="line">docker start 容器id(或名称)  # 启动容器</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-文件拷贝"><a href="#4-文件拷贝" class="headerlink" title="4 文件拷贝"></a>4 文件拷贝</h4><p>将文件拷贝到容器内</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp 需要拷贝的文件或目录   容器名称：容器目录</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker cp /usr/local/project/aa myubuntu2:/usr/local</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker exec -it myubuntu2 /bin/bash</span><br><span class="line">root@22fe4c60bf8d:/# ls</span><br><span class="line">bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line">root@22fe4c60bf8d:/# cd /usr/local</span><br><span class="line">root@22fe4c60bf8d:/usr/local# ls</span><br><span class="line">aa  bin  etc  games  include  lib  man  sbin  share  src</span><br><span class="line">root@22fe4c60bf8d:/usr/local# cat aa</span><br><span class="line">AAAAAAAAAAAAAAA</span><br><span class="line">AAAAAAAAAAAAA</span><br><span class="line">BBBBBBBBBB</span><br><span class="line">root@22fe4c60bf8d:/usr/local# </span><br></pre></td></tr></table></figure>
+
+<p>将文件从容器中拷贝出发</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp  容器名称：容器目录   需要拷贝的文件或目录  </span><br></pre></td></tr></table></figure>
+
+<h4 id="5-目录挂载"><a href="#5-目录挂载" class="headerlink" title="5 目录挂载"></a>5 目录挂载</h4><p>我们在创建容器的时候，将宿主机的目录与容器内的目录进行映射，这样我们就可以通过修改宿主机某个目录的文件从而去影响容器</p>
+<p>创建容器 添加 -v 参数后边为宿主机目录容器：容器目录，例如</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -di --name=myubuntu3 -v /usr/local/myhtml:/usr/local/myhtml ubuntu</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-查看容器IP"><a href="#6-查看容器IP" class="headerlink" title="6 查看容器IP"></a>6 查看容器IP</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker inspect 容器名称(容器id)</span><br></pre></td></tr></table></figure>
+
+<p>也可以直接执行下面的命令直接输出IP地址</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker inspect --format=&#x27;&#123;&#123;.NetworkSettings.IPAddress&#125;&#125;&#x27; 容器名称(容器id)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker inspect --format=&#x27;&#123;&#123;.NetworkSettings.IPAddress&#125;&#125;&#x27; myubuntu3</span><br><span class="line">172.17.0.3</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# </span><br></pre></td></tr></table></figure>
+
+<h4 id="7-删除容器"><a href="#7-删除容器" class="headerlink" title="7 删除容器"></a>7 删除容器</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm 容器名称(容器id)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                         PORTS               NAMES</span><br><span class="line">1f2a33ea890b        ubuntu              &quot;/bin/bash&quot;              About an hour ago   Exited (0) About an hour ago                       myubuntu</span><br><span class="line">45f8ba01d6c2        ubuntu              &quot;echo &#x27;hello ! I an …&quot;   5 days ago          Exited (0) 5 days ago                              focused_knuth</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker rm myubuntu</span><br><span class="line">myubuntu</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                  PORTS               NAMES</span><br><span class="line">45f8ba01d6c2        ubuntu              &quot;echo &#x27;hello ! I an …&quot;   5 days ago          Exited (0) 5 days ago                       focused_knuth</span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz ~]# </span><br></pre></td></tr></table></figure>
+
+<h2 id="4-应用部署"><a href="#4-应用部署" class="headerlink" title="4 应用部署"></a>4 应用部署</h2><h3 id="1-MYSQL部署"><a href="#1-MYSQL部署" class="headerlink" title="1 MYSQL部署"></a>1 MYSQL部署</h3><p>拉取MySQL镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull centos/mysql-57-centos7</span><br></pre></td></tr></table></figure>
+
+<p>创建容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -di --name=test2_mysql -p 33306:3306 -e MYSQL_ROOT_PASSWORD=123456 centos/mysql-57-centos7</span><br></pre></td></tr></table></figure>
+
+<p>-p : 代表端口映射，格式为 宿主机映射端口：容器映射端口</p>
+<p>-e : 代表添加环境变量，MYSQL_ROOT_PASSWORD 是root用户的登录密码</p>
+<p>进入MySQL容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it test2_mysql /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>登录mysql</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
+
+<p>远程登录MySQL</p>
+<p>连接宿主机的IP，指定端口为33306</p>
+<h3 id="2-Tomcat部署"><a href="#2-Tomcat部署" class="headerlink" title="2 Tomcat部署"></a>2 Tomcat部署</h3><p>拉取镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull tomcat:7-jre7</span><br></pre></td></tr></table></figure>
+
+<p>创建容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -di --name=mytomcat -p 8090:8080 -v /usr/local/webapps:/usr/local/tomcat/webapps tomcat</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-Nginx-部署"><a href="#3-Nginx-部署" class="headerlink" title="3 Nginx 部署"></a>3 Nginx 部署</h3><p>拉取镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull nginx</span><br></pre></td></tr></table></figure>
+
+<p>创建容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -di --name=mynginx -p 80:80 nginx</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-Redis-部署"><a href="#4-Redis-部署" class="headerlink" title="4 Redis 部署"></a>4 Redis 部署</h3><p>拉取镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull redis</span><br></pre></td></tr></table></figure>
+
+<p>创建容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -di --name=myredis -p 6379:6379 redis</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-迁移与备份"><a href="#5-迁移与备份" class="headerlink" title="5 迁移与备份"></a>5 迁移与备份</h2><p>容器保存为镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit mynginx mynginx_1</span><br></pre></td></tr></table></figure>
+
+<p>镜像备份</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker save -o mynginx.tar mynginx_1   # 将镜像保存为tar文件</span><br></pre></td></tr></table></figure>
+
+<p>镜像恢复</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker load -i mynginx.tar </span><br></pre></td></tr></table></figure>
+
+<p>-i : 输入的文件</p>
+<h2 id="6-Dockerfile"><a href="#6-Dockerfile" class="headerlink" title="6 Dockerfile"></a>6 Dockerfile</h2><p>Dockerfile 是由一系列命令和参数构成的脚本，这些命令应用于基础镜像并最终创建一个新的镜像。</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FROM</td>
+<td>构造的新镜像是基于哪个镜像例如：FROM centos:v1</td>
+</tr>
+<tr>
+<td>MAINTAINER</td>
+<td>维护者信息   例如：MAINTAINER yanglin</td>
+</tr>
+<tr>
+<td>ENV</td>
+<td>设置容器内环境变量  例如：ENV MYSQL_ROOT_PASSWORD 123456</td>
+</tr>
+<tr>
+<td>RUN</td>
+<td>构建镜像时运行的shell命令例如：RUN [“yum”, “install”, “http”]RUN yum install httpd</td>
+</tr>
+<tr>
+<td>ADD</td>
+<td>拷贝文件或者目录到镜像，如果是URL或者压缩包会自动下载或者自动解压。例如：ADD hom* /mydir/ ADD test relativeDir/</td>
+</tr>
+<tr>
+<td>COPY</td>
+<td>拷贝文件或者目录到镜像，用法同ADD。 例如：COPY ./startup.sh /startup.sh</td>
+</tr>
+<tr>
+<td>WORKDIR</td>
+<td>为RUN,CMD,ENTRYPOINT,COPY和ADD设置工作目录。 例如：WORKDIR /data</td>
+</tr>
+</tbody></table>
+<p>使用脚本创建镜像</p>
+<p>步骤：</p>
+<p>1，创建目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /usr/local/dockerjdk8</span><br></pre></td></tr></table></figure>
+
+<p>2，下载jdk并上传到 /usr/local/dockerjdk8 目录</p>
+<p>3，创建文件Dockerfile vi Dockerfile</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 依赖镜像名称和id(没有会自动下载)</span></span><br><span class="line">FROM centos:7</span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定镜像创建者信息</span></span><br><span class="line">MAINTAINER root</span><br><span class="line"><span class="meta">#</span><span class="bash"> 切换工作目录</span></span><br><span class="line">WORKDIR /usr</span><br><span class="line">RUN mkdir /usr/local/java</span><br><span class="line"><span class="meta">#</span><span class="bash"> ADD后接相对路径， 把Java添加到容器中</span></span><br><span class="line">ADD jdk-8u221-linux-x64.tar.gz /usr/local/java/</span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置Java环境变量</span></span><br><span class="line">ENV JAVA_HOME=/usr/local/java/jdk1.8.0_221</span><br><span class="line">ENV JRE_HOME $JAVA_HOME/jre</span><br><span class="line">ENV CLASSPATH $JAVA_HOME/bin/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH</span><br><span class="line">ENV PATH $JAVA_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+
+<p>4，执行命令构建镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t=&#x27;jdk1.8&#x27; .    # 注意后面的点</span><br></pre></td></tr></table></figure>
+
+<p>5，查看镜像是否创建完成</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-Docker-私有仓库"><a href="#7-Docker-私有仓库" class="headerlink" title="7 Docker 私有仓库"></a>7 Docker 私有仓库</h2><h3 id="7-1-私有仓库搭建与配置"><a href="#7-1-私有仓库搭建与配置" class="headerlink" title="7.1 私有仓库搭建与配置"></a>7.1 私有仓库搭建与配置</h3><p>1，拉取私有仓库镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull registry</span><br></pre></td></tr></table></figure>
+
+<p>2，启动私有仓库容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -di --name=registry -p 5000:5000 registry</span><br></pre></td></tr></table></figure>
+
+<p>3，打开浏览器输入地址：<a target="_blank" rel="noopener" href="http://120.27.71.186:5000/v2/_catalog">http://120.27.71.186:5000/v2/_catalog</a> 看到 <code>&#123;&quot;repositories&quot;:[]&#125;</code>表示私有仓库搭建成功并且内容为空</p>
+<p>4，修改daemon.json</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/docker/daemon.json</span><br></pre></td></tr></table></figure>
+
+<p>添加内容 : “insecure-registries”: [“120.27.71.186:5000”] 此步用于让docker信任私有仓库地址</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/docker/daemon.json</span><br><span class="line">&#123;</span><br><span class="line">&quot;registry-mirrors&quot;: [&quot;https://docker.mirrors.ustc.edu.cn&quot;],</span><br><span class="line">&quot;insecure-registrs&quot;: [&quot;120.27.71.186:5000&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>5，重启docker服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-镜像上传到私有仓库"><a href="#7-2-镜像上传到私有仓库" class="headerlink" title="7.2 镜像上传到私有仓库"></a>7.2 镜像上传到私有仓库</h3><p>1，标记此镜像为私有仓库的镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker tag jdk1.8 120.27.71.186:5000/jdk1.8</span><br></pre></td></tr></table></figure>
+
+<p>2，上传标记的镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push 120.27.71.186:5000/jdk1.8</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-DockerMaven插件"><a href="#8-DockerMaven插件" class="headerlink" title="8 DockerMaven插件"></a>8 DockerMaven插件</h2><h3 id="1-Maven插件自动部署"><a href="#1-Maven插件自动部署" class="headerlink" title="1 Maven插件自动部署"></a>1 Maven插件自动部署</h3><p>修改宿主机docker配置，让其可以远程访问</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /lib/systemd/system/docker.service</span><br></pre></td></tr></table></figure>
+
+<p>其中ExecStart=后添加配置 -H tcp://0.0.0.0:2375 -H unix://var/run/docker.sock</p>
+<p>修改后如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[Service]</span><br><span class="line">Type=notify</span><br><span class="line"><span class="meta">#</span><span class="bash"> the default is not to use systemd <span class="keyword">for</span> cgroups because the delegate issues still</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> exists and systemd currently does not support the cgroup feature <span class="built_in">set</span> required</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="keyword">for</span> containers run by docker</span></span><br><span class="line">ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix://var/run/docker.sock</span><br><span class="line">ExecReload=/bin/kill -s HUP $MAINPID</span><br></pre></td></tr></table></figure>
+
+<p>刷新配置，重启服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload     # 刷新配置</span><br><span class="line">systemctl restart docker    # 重启docker</span><br><span class="line">docker start registry       # 启动镜像仓库</span><br></pre></td></tr></table></figure>
+
+<p>在工程pom.xml增加配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;build&gt;</span><br><span class="line">       &lt;finalName&gt;app&lt;/finalName&gt;</span><br><span class="line">       &lt;plugins&gt;</span><br><span class="line">           &lt;plugin&gt;</span><br><span class="line">               &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">               &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">           &lt;/plugin&gt;</span><br><span class="line"></span><br><span class="line">           &lt;plugin&gt;</span><br><span class="line">               &lt;groupId&gt;com.spotify&lt;/groupId&gt;</span><br><span class="line">               &lt;artifactId&gt;docker-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">               &lt;version&gt;0.4.13&lt;/version&gt;</span><br><span class="line">               &lt;configuration&gt;</span><br><span class="line">                   &lt;!--用于指定镜像名称--&gt;</span><br><span class="line">                   &lt;imageName&gt;120.27.71.186:5000/$&#123;project.artifactId&#125;:$&#123;project.version&#125;&lt;/imageName&gt;</span><br><span class="line">                   &lt;!--用于指定基础镜像，相当于Dockerfile中的FROM指令--&gt;</span><br><span class="line">                   &lt;baseImage&gt;jdk1.8&lt;/baseImage&gt;</span><br><span class="line">                   &lt;!--相当于Dockerfile的ENTRYPOINT指令--&gt;</span><br><span class="line">                   &lt;entryPoint&gt;[&quot;java&quot;, &quot;-jar&quot;, &quot;/$&#123;project.build.finalName&#125;.jar&quot;]&lt;/entryPoint&gt;</span><br><span class="line">                   &lt;!--是否跳过docker build--&gt;</span><br><span class="line">                   &lt;!-- &lt;skipDockerBuild&gt;true&lt;/skipDockerBuild&gt;--&gt;</span><br><span class="line">                   &lt;resources&gt;</span><br><span class="line">                       &lt;resource&gt;</span><br><span class="line">                           &lt;targetPath&gt;/&lt;/targetPath&gt;</span><br><span class="line">                           &lt;!--用于指定需要复制的根目录，$&#123;project.build.directory&#125;表示target目录--&gt;</span><br><span class="line">                           &lt;directory&gt;$&#123;project.build.directory&#125;&lt;/directory&gt;</span><br><span class="line">                           &lt;!--用于指定需要复制的文件。$&#123;project.build.finalName&#125;.jar指的是打包后的jar包文件。--&gt;</span><br><span class="line">                           &lt;include&gt;$&#123;project.build.finalName&#125;.jar&lt;/include&gt;</span><br><span class="line">                       &lt;/resource&gt;</span><br><span class="line">                   &lt;/resources&gt;</span><br><span class="line">                   &lt;dockerHost&gt;http://120.27.71.186:2375&lt;/dockerHost&gt;</span><br><span class="line">               &lt;/configuration&gt;</span><br><span class="line">           &lt;/plugin&gt;</span><br><span class="line">       &lt;/plugins&gt;</span><br><span class="line">   &lt;/build&gt;</span><br></pre></td></tr></table></figure>
+
+<p>以上配置会自动生成Dockerfile</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM jdk1.8</span><br><span class="line">ADD app.jar</span><br><span class="line">ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;/app.jar&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>在项目目录下输入以下命令进行打包和上传镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mvn clean package docker:build              # 生成一个镜像</span><br><span class="line">mvn clean package docker:build -DpushImage  # 生成的镜像推送到镜像注册中心</span><br></pre></td></tr></table></figure>
+
+<p>启动容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -id --name=demo03 -p 9001:9001 120.27.71.186:5000/demo3</span><br></pre></td></tr></table></figure>
+
+<h2 id="9-jenkins-持续集成"><a href="#9-jenkins-持续集成" class="headerlink" title="9 jenkins 持续集成"></a>9 jenkins 持续集成</h2><h3 id="1-JDK安装"><a href="#1-JDK安装" class="headerlink" title="1 JDK安装"></a>1 JDK安装</h3><p>执行命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html     # JDK下载链接</span><br><span class="line">rpm -ivh jdk-8u221-linux-x64.rpm</span><br></pre></td></tr></table></figure>
+
+<p>RPM方式安装JDK，其根目录为：/usr/java/jdk1.8.0_221-amd64</p>
+<h3 id="2-Jenkins安装与启动"><a href="#2-Jenkins安装与启动" class="headerlink" title="2 Jenkins安装与启动"></a>2 Jenkins安装与启动</h3><h4 id="1-下载Jenkins"><a href="#1-下载Jenkins" class="headerlink" title="1  下载Jenkins"></a>1  下载Jenkins</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://pkg.jenkins.io/redhat-stable/   # jenkins下载链接</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-安装"><a href="#2-安装" class="headerlink" title="2  安装"></a>2  安装</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh jenkins-2.186-1.1.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-配置"><a href="#3-配置" class="headerlink" title="3 配置"></a>3 配置</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/sysconfig/jenkins </span><br></pre></td></tr></table></figure>
+
+<h4 id="4-修改用户和端口"><a href="#4-修改用户和端口" class="headerlink" title="4 修改用户和端口"></a>4 修改用户和端口</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">JENKINS_USER=&quot;root&quot;</span><br><span class="line">JENKINS_PORT=&quot;8888&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-启动服务"><a href="#5-启动服务" class="headerlink" title="5 启动服务"></a>5 启动服务</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start jenkins</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-链接配置"><a href="#6-链接配置" class="headerlink" title="6 链接配置"></a>6 链接配置</h4><p>访问：120.27.71.186：8888</p>
+<p><img src="/Users/admin/Desktop/note/images/Jenkins/jenkins_01.png" alt="jenkins_01"></p>
+<p>此时出现填写密码的选型：根据提示进入指定目录取出密码填写</p>
+<p><img src="/Users/admin/Desktop/note/images/Jenkins/jenkins_02.png" alt="jenkins_02"></p>
+<p>选择插件安装   这里安装推荐插件</p>
+<p><img src="/Users/admin/Desktop/note/images/Jenkins/jenkins_03.png" alt="jenkins_03"></p>
+<p>这里进入了主页面</p>
+<h4 id="7-插件安装"><a href="#7-插件安装" class="headerlink" title="7 插件安装"></a>7 插件安装</h4><p>主页面选择–系统管理—插件管理  进入插件安装页面</p>
+<p><img src="/Users/admin/Desktop/note/images/Jenkins/jenkins_04.png" alt="jenkins_04"></p>
+<p>选择需要安装的插件 这里选了<code>Maven Integration plugin</code></p>
+<h4 id="8-全局工具配置"><a href="#8-全局工具配置" class="headerlink" title="8 全局工具配置"></a>8 全局工具配置</h4><p>主页面选择–系统管理—全局工具配置  进入全局工具配置页面</p>
+<p>配置jdk 确保jdk路径配置正确</p>
+<p><img src="/Users/admin/Desktop/note/images/Jenkins/jenkins_05.png" alt="jenkins_05"></p>
+<p>配置maven 确保maven路径配置正确</p>
+<p><img src="/Users/admin/Desktop/note/images/Jenkins/jenkins_06.png" alt="jenkins_06"></p>
+<p>maven 仓库可自定义配置，然后可填充仓库jar包，避免打包时长时间下载jar包</p>
+<h2 id="10-docker-搭建gogs"><a href="#10-docker-搭建gogs" class="headerlink" title="10 docker 搭建gogs"></a>10 docker 搭建gogs</h2><p><strong>1 下载镜像</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull gogs/gogs</span><br></pre></td></tr></table></figure>
+
+<p><strong>2 创建容器</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -id --name=gogs/gogs -p 10022:22 -p 3000:3000 -v /var/gogsdata:/data gogs/gogs</span><br></pre></td></tr></table></figure>
+
+<p><strong>3 配置gogs</strong></p>
+<p>打开浏览器输入：<a target="_blank" rel="noopener" href="http://120.27.71.186:3000/">http://120.27.71.186:3000</a></p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_gogs01.png" alt="Docker_gogs01"></p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_gogs02.png" alt="Docker_gogs02"></p>
+<p>配置信息如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">数据库信息：SQLite3</span><br><span class="line">域名：120.27.71.186</span><br><span class="line">应用URL：http://120.27.71.186:3000/</span><br></pre></td></tr></table></figure>
+
+<h2 id="11-Jenkins-任务配置与启动"><a href="#11-Jenkins-任务配置与启动" class="headerlink" title="11 Jenkins 任务配置与启动"></a>11 Jenkins 任务配置与启动</h2><p><img src="/Users/admin/Desktop/note/images/Docker/Docker_gogs03.png" alt="Docker_gogs03"></p>
+<p>输入任务名称，选择构建maven项目，确定</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_gogs04.png" alt="Docker_gogs04"></p>
+<p>配置描述，源码管理，Build</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 源码管理配置</span></span><br><span class="line">Repository URL : http://120.27.71.186:3000/chenqingsong/demo01.git</span><br><span class="line"><span class="meta">#</span><span class="bash"> build配置</span></span><br><span class="line">Root POM： demo3/pom.xml  # 具体项目的pom文件</span><br><span class="line">Goals and options：clean package docker:build -DpushImage  # maven打包命令</span><br></pre></td></tr></table></figure>
+
+<h2 id="13-Jenkins-docker自动化部署"><a href="#13-Jenkins-docker自动化部署" class="headerlink" title="13 Jenkins+docker自动化部署"></a>13 Jenkins+docker自动化部署</h2><h3 id="1-jenkins构建maven项目"><a href="#1-jenkins构建maven项目" class="headerlink" title="1 jenkins构建maven项目"></a>1 jenkins构建maven项目</h3><p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins01.png" alt="Docker_jenkins01"></p>
+<h3 id="2-填写jenkins配置"><a href="#2-填写jenkins配置" class="headerlink" title="2 填写jenkins配置"></a>2 填写jenkins配置</h3><p>配置Git仓库</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins02.png" alt="Docker_jenkins02"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 此处配置的Git仓库：</span></span><br><span class="line">http://120.27.71.186:3000/chenqingsong/demo01.git</span><br></pre></td></tr></table></figure>
+
+<p>配置pom及maven打包命令</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins03.png" alt="Docker_jenkins03"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 此处配置的pom相对目录及打包命令：</span></span><br><span class="line">demo2/pom.xml</span><br><span class="line">clean package </span><br></pre></td></tr></table></figure>
+
+<h3 id="3-构建"><a href="#3-构建" class="headerlink" title="3 构建"></a>3 构建</h3><p>执行构建，查看Jenkins工作空间下的打包文件</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins06.png" alt="Docker_jenkins06"></p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins05.png" alt="Docker_jenkins05"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 我的Jenkins工作目录：</span></span><br><span class="line">/var/lib/jenkins/workspace/</span><br></pre></td></tr></table></figure>
+
+<p>到此jenkins构建成功 我们可以拿到项目构建的最新jar包（//var/lib/jenkins/workspace/docker-test/docker-test/target/docke-test.jar），接下来就要考虑怎么把jar包自动化部署到docker容器中。</p>
+<h3 id="4-编写Dockerfile文件"><a href="#4-编写Dockerfile文件" class="headerlink" title="4 编写Dockerfile文件"></a>4 编写Dockerfile文件</h3><p>在项目操作的路径（/work/project）下创建Dockerfile文件</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins07.png" alt="Docker_jenkins07"></p>
+<p>编辑Dockerfile文件内容为</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">基于jdk1.8</span></span><br><span class="line">FROM jdk1.8</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定当前操作目录</span></span><br><span class="line">WORKDIR /work/project</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">容器启动后执行的操作</span></span><br><span class="line">CMD java -jar docker-test.jar</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-编写jenkins中打包成功后执行的shell脚本"><a href="#5-编写jenkins中打包成功后执行的shell脚本" class="headerlink" title="5 编写jenkins中打包成功后执行的shell脚本"></a>5 编写jenkins中打包成功后执行的shell脚本</h3><p>打开jenkins中的配置选择 Post Steps  - Add post-build step - 执行shell</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins04.png" alt="Docker_jenkins04"></p>
+<p>脚本值设置为:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">操作/项目路径(Dockerfile存放的路劲)</span></span><br><span class="line">BASE_PATH=/work/project</span><br><span class="line"><span class="meta">#</span><span class="bash"> 源jar路径  </span></span><br><span class="line">SOURCE_PATH=/var/lib/jenkins/workspace  </span><br><span class="line"><span class="meta">#</span><span class="bash">docker 镜像/容器名字或者jar名字 这里都命名为这个</span></span><br><span class="line">SERVER_NAME=docker-test</span><br><span class="line"><span class="meta">#</span><span class="bash">容器id</span></span><br><span class="line">CID=$(docker ps | grep &quot;$SERVER_NAME&quot; | awk &#x27;&#123;print $1&#125;&#x27;)</span><br><span class="line"><span class="meta">#</span><span class="bash">镜像id</span></span><br><span class="line">IID=$(docker images | grep &quot;$SERVER_NAME&quot; | awk &#x27;&#123;print $3&#125;&#x27;)</span><br><span class="line"> </span><br><span class="line">DATE=`date +%Y%m%d%H%M`</span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 最新构建代码 移动到项目环境</span></span><br><span class="line">function transfer()&#123;</span><br><span class="line">    echo &quot;最新构建代码 $SOURCE_PATH/$SERVER_NAME/target/$SERVER_NAME.jar 迁移至 $BASE_PATH ....&quot;</span><br><span class="line">        cp $SOURCE_PATH/$SERVER_NAME/$SERVER_NAME/target/$SERVER_NAME.jar $BASE_PATH </span><br><span class="line">    echo &quot;迁移完成&quot;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 备份</span></span><br><span class="line">function backup()&#123;</span><br><span class="line">	if [ -f &quot;$BASE_PATH/$SERVER_NAME.jar&quot; ]; then</span><br><span class="line">    	echo &quot;$SERVER_NAME.jar 备份...&quot;</span><br><span class="line">        	cp $BASE_PATH/$SERVER_NAME.jar $BASE_PATH/backup/$SERVER_NAME-$DATE.jar</span><br><span class="line">        echo &quot;备份 $SERVER_NAME.jar 完成&quot;</span><br><span class="line">    else</span><br><span class="line">    	echo &quot;$BASE_PATH/$SERVER_NAME.jar不存在，跳过备份&quot;</span><br><span class="line">    fi</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 构建docker镜像</span></span><br><span class="line">function build()&#123;</span><br><span class="line">	if [ -n &quot;$IID&quot; ]; then</span><br><span class="line">		echo &quot;存在$SERVER_NAME镜像，IID=$IID&quot;</span><br><span class="line">	else</span><br><span class="line">		echo &quot;不存在$SERVER_NAME镜像，开始构建镜像&quot;</span><br><span class="line">			cd $BASE_PATH</span><br><span class="line">		docker build -t $SERVER_NAME .</span><br><span class="line">	fi</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 运行docker容器</span></span><br><span class="line">function run()&#123;</span><br><span class="line">	backup</span><br><span class="line">	transfer</span><br><span class="line">	build</span><br><span class="line">	if [ -n &quot;$CID&quot; ]; then</span><br><span class="line">		echo &quot;存在$SERVER_NAME容器，CID=$CID,重启docker容器 ...&quot;</span><br><span class="line">			docker restart $SERVER_NAME </span><br><span class="line">		echo &quot;$SERVER_NAME容器重启完成&quot;</span><br><span class="line">	else</span><br><span class="line">		echo &quot;不存在$SERVER_NAME容器，docker run创建容器...&quot;</span><br><span class="line">			docker run --name $SERVER_NAME -v $BASE_PATH:$BASE_PATH -d -p 8081:8080 $SERVER_NAME</span><br><span class="line">		echo &quot;$SERVER_NAME容器创建完成&quot;</span><br><span class="line">	fi</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash">入口</span></span><br><span class="line">run    </span><br></pre></td></tr></table></figure>
+
+<p>shell脚本流程解释：</p>
+<p><em>a</em>.备份（/work/project）下jar包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /work/project/docker-test.jar /work/project/backup/docker-test-201805171416.jar</span><br></pre></td></tr></table></figure>
+
+<p><em>b</em>.项目构建的最新jar包（/var/lib/jenkins/workspace/docker-test/docker-test/target/docke-test.jar）移动到项目操作的路径（/work/project）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /var/lib/jenkins/workspace/docker-test/docker-test/target/docker-test.jar /work/project</span><br></pre></td></tr></table></figure>
+
+<p><em>c</em>.判断docker镜像是否存在，不存在则进入Dockerfile存放的路径（/work/project）执行docker build操作构建名字为docker-test镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /work/project</span><br><span class="line">docker build -t docker-test .</span><br></pre></td></tr></table></figure>
+
+<p><em>d</em>.判断docker容器是否存在，不存在则执行docker run命令创建容器，存在则docker restart重启容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run --name docker-test -v /work/project/:/work/project/ -d -p 8081:8080 docker-test</span><br><span class="line">docker restart docker-test</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-效果检测"><a href="#6-效果检测" class="headerlink" title="6 效果检测"></a>6 效果检测</h3><p>上步操作脚本写好保存后 点击立即构建查看日志如下图代表项目自动化打包构建成功</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins08.png" alt="Docker_jenkins08"></p>
+<p>查看镜像：</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins09.png" alt="Docker_jenkins09"></p>
+<p>查看容器</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins10.png" alt="Docker_jenkins10"></p>
+<p>接口代码内容：</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins12.png" alt="Docker_jenkins12"></p>
+<p>访问连接：</p>
+<p><img src="/Users/admin/Desktop/note/images/Docker/Docker_jenkins11.png" alt="Docker_jenkins11"></p>
+<p>可以发现项目修改重新自动部署成功<del>~</del></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/DesignPattern/2019-01-07%209%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F/" rel="prev" title="09 组合模式">
+      <i class="fa fa-chevron-left"></i> 09 组合模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Docker/2019-12-21%20docker%E6%90%AD%E5%BB%BAmysql/" rel="next" title="docker搭建MySQL">
+      docker搭建MySQL <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AFdocker"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 什么是docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-docker%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 docker概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 虚拟机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-Linux%E5%AE%B9%E5%99%A8"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 Linux容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-Docker%E7%9A%84%E7%94%A8%E9%80%94"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 Docker的用途</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-Docker%E9%95%9C%E5%83%8F"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 Docker镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-docker%E5%AE%B9%E5%99%A8"><span class="nav-number">1.7.</span> <span class="nav-text">1.7 docker容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8-%E4%BB%93%E5%BA%93Docker-Registry"><span class="nav-number">1.8.</span> <span class="nav-text">1.8 仓库Docker Registry</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85%E4%B8%8E%E5%90%AF%E5%8A%A8"><span class="nav-number">2.</span> <span class="nav-text">2 安装与启动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%AE%89%E8%A3%85docker"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 安装docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E8%AE%BE%E7%BD%AEUSTC%E7%9A%84%E9%95%9C%E5%83%8F"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 设置USTC的镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 升级到最新版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%90%AF%E5%8A%A8%E4%B8%8E%E9%87%8D%E5%90%AF"><span class="nav-number">2.4.</span> <span class="nav-text">4 启动与重启</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">3 常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%95%9C%E5%83%8F%E7%9B%B8%E5%85%B3"><span class="nav-number">3.1.</span> <span class="nav-text">1 镜像相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%88%97%E5%87%BA%E9%95%9C%E5%83%8F"><span class="nav-number">3.1.1.</span> <span class="nav-text">1.1 列出镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E6%90%9C%E7%B4%A2%E9%95%9C%E5%83%8F"><span class="nav-number">3.1.2.</span> <span class="nav-text">1.2 搜索镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F"><span class="nav-number">3.1.3.</span> <span class="nav-text">1.3 获取镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E5%88%A0%E9%99%A4%E9%95%9C%E5%83%8F"><span class="nav-number">3.1.4.</span> <span class="nav-text">1.4 删除镜像</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%B9%E5%99%A8%E7%9B%B8%E5%85%B3"><span class="nav-number">3.2.</span> <span class="nav-text">2 容器相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8"><span class="nav-number">3.2.1.</span> <span class="nav-text">1 查看容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%88%9B%E5%BB%BA%E4%B8%8E%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8"><span class="nav-number">3.2.2.</span> <span class="nav-text">2 创建与启动容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%81%9C%E6%AD%A2%E4%B8%8E%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8"><span class="nav-number">3.2.3.</span> <span class="nav-text">3 停止与启动容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E6%96%87%E4%BB%B6%E6%8B%B7%E8%B4%9D"><span class="nav-number">3.2.4.</span> <span class="nav-text">4 文件拷贝</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E7%9B%AE%E5%BD%95%E6%8C%82%E8%BD%BD"><span class="nav-number">3.2.5.</span> <span class="nav-text">5 目录挂载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8IP"><span class="nav-number">3.2.6.</span> <span class="nav-text">6 查看容器IP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E5%88%A0%E9%99%A4%E5%AE%B9%E5%99%A8"><span class="nav-number">3.2.7.</span> <span class="nav-text">7 删除容器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2"><span class="nav-number">4.</span> <span class="nav-text">4 应用部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-MYSQL%E9%83%A8%E7%BD%B2"><span class="nav-number">4.1.</span> <span class="nav-text">1 MYSQL部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Tomcat%E9%83%A8%E7%BD%B2"><span class="nav-number">4.2.</span> <span class="nav-text">2 Tomcat部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Nginx-%E9%83%A8%E7%BD%B2"><span class="nav-number">4.3.</span> <span class="nav-text">3 Nginx 部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Redis-%E9%83%A8%E7%BD%B2"><span class="nav-number">4.4.</span> <span class="nav-text">4 Redis 部署</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E8%BF%81%E7%A7%BB%E4%B8%8E%E5%A4%87%E4%BB%BD"><span class="nav-number">5.</span> <span class="nav-text">5 迁移与备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-Dockerfile"><span class="nav-number">6.</span> <span class="nav-text">6 Dockerfile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-Docker-%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93"><span class="nav-number">7.</span> <span class="nav-text">7 Docker 私有仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 私有仓库搭建与配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E9%95%9C%E5%83%8F%E4%B8%8A%E4%BC%A0%E5%88%B0%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93"><span class="nav-number">7.2.</span> <span class="nav-text">7.2 镜像上传到私有仓库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-DockerMaven%E6%8F%92%E4%BB%B6"><span class="nav-number">8.</span> <span class="nav-text">8 DockerMaven插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Maven%E6%8F%92%E4%BB%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2"><span class="nav-number">8.1.</span> <span class="nav-text">1 Maven插件自动部署</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-jenkins-%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90"><span class="nav-number">9.</span> <span class="nav-text">9 jenkins 持续集成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-JDK%E5%AE%89%E8%A3%85"><span class="nav-number">9.1.</span> <span class="nav-text">1 JDK安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Jenkins%E5%AE%89%E8%A3%85%E4%B8%8E%E5%90%AF%E5%8A%A8"><span class="nav-number">9.2.</span> <span class="nav-text">2 Jenkins安装与启动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%B8%8B%E8%BD%BDJenkins"><span class="nav-number">9.2.1.</span> <span class="nav-text">1  下载Jenkins</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85"><span class="nav-number">9.2.2.</span> <span class="nav-text">2  安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE"><span class="nav-number">9.2.3.</span> <span class="nav-text">3 配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E5%92%8C%E7%AB%AF%E5%8F%A3"><span class="nav-number">9.2.4.</span> <span class="nav-text">4 修改用户和端口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="nav-number">9.2.5.</span> <span class="nav-text">5 启动服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E9%93%BE%E6%8E%A5%E9%85%8D%E7%BD%AE"><span class="nav-number">9.2.6.</span> <span class="nav-text">6 链接配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="nav-number">9.2.7.</span> <span class="nav-text">7 插件安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-%E5%85%A8%E5%B1%80%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE"><span class="nav-number">9.2.8.</span> <span class="nav-text">8 全局工具配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-docker-%E6%90%AD%E5%BB%BAgogs"><span class="nav-number">10.</span> <span class="nav-text">10 docker 搭建gogs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-Jenkins-%E4%BB%BB%E5%8A%A1%E9%85%8D%E7%BD%AE%E4%B8%8E%E5%90%AF%E5%8A%A8"><span class="nav-number">11.</span> <span class="nav-text">11 Jenkins 任务配置与启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-Jenkins-docker%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2"><span class="nav-number">12.</span> <span class="nav-text">13 Jenkins+docker自动化部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-jenkins%E6%9E%84%E5%BB%BAmaven%E9%A1%B9%E7%9B%AE"><span class="nav-number">12.1.</span> <span class="nav-text">1 jenkins构建maven项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%A1%AB%E5%86%99jenkins%E9%85%8D%E7%BD%AE"><span class="nav-number">12.2.</span> <span class="nav-text">2 填写jenkins配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9E%84%E5%BB%BA"><span class="nav-number">12.3.</span> <span class="nav-text">3 构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%BC%96%E5%86%99Dockerfile%E6%96%87%E4%BB%B6"><span class="nav-number">12.4.</span> <span class="nav-text">4 编写Dockerfile文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%BC%96%E5%86%99jenkins%E4%B8%AD%E6%89%93%E5%8C%85%E6%88%90%E5%8A%9F%E5%90%8E%E6%89%A7%E8%A1%8C%E7%9A%84shell%E8%84%9A%E6%9C%AC"><span class="nav-number">12.5.</span> <span class="nav-text">5 编写jenkins中打包成功后执行的shell脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%95%88%E6%9E%9C%E6%A3%80%E6%B5%8B"><span class="nav-number">12.6.</span> <span class="nav-text">6 效果检测</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

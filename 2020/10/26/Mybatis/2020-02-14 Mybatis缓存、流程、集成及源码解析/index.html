@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Mybatis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis缓存、流程、集成及源码解析">
+<meta property="og:url" content="http://example.com/2020/10/26/Mybatis/2020-02-14%20Mybatis%E7%BC%93%E5%AD%98%E3%80%81%E6%B5%81%E7%A8%8B%E3%80%81%E9%9B%86%E6%88%90%E5%8F%8A%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Mybatis">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mybatis/Mybatis_cache01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mybatis/Mybatis_invoke01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mybatis/Mybatis_invoke02.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mybatis/Mybatis_invoke03.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mybatis/Mybatis_invoke04.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.267Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Mybatis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/Users/admin/Desktop/note/images/Mybatis/Mybatis_cache01.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Mybatis/2020-02-14%20Mybatis%E7%BC%93%E5%AD%98%E3%80%81%E6%B5%81%E7%A8%8B%E3%80%81%E9%9B%86%E6%88%90%E5%8F%8A%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Mybatis缓存、流程、集成及源码解析 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Mybatis/2020-02-14%20Mybatis%E7%BC%93%E5%AD%98%E3%80%81%E6%B5%81%E7%A8%8B%E3%80%81%E9%9B%86%E6%88%90%E5%8F%8A%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Mybatis缓存、流程、集成及源码解析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mybatis/" itemprop="url" rel="index"><span itemprop="name">Mybatis</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Mybatis</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>mybatis一二级缓存详解</p>
+<a id="more"></a> 
+
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Mybatis 为我们提供了一级缓存和二级缓存，可以通过下图来理解</p>
+<p><img src="/Users/admin/Desktop/note/images/Mybatis/Mybatis_cache01.png" alt="Mybatis_cache01"></p>
+<p><strong>一级缓存</strong>： 是SqlSession级别的缓存。在操作数据库时需要构造sqlSession对象，在对象中有一个数据结构（HashMap）用于存储缓存数据。不同的sqlSession之间的缓存数据区域（HashMap）是互相不影响的。</p>
+<p><strong>二级缓存</strong>： 是mapper级别的缓存，多个SqlSession去操作同一个Mapper的sql语句，多个SqlSession可以共用二级缓存，二级缓存是跨SqlSession的。</p>
+<h2 id="一级缓存"><a href="#一级缓存" class="headerlink" title="一级缓存"></a>一级缓存</h2><h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><p>mybatis的config配置</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">configuration</span></span></span><br><span class="line"><span class="meta">        <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="meta-string">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">settings</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;mapUnderscoreToCamelCase&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span> <span class="attr">interceptor</span>=<span class="string">&quot;com.tuling.mybatis.interceptor.PageInterceptor&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;databaseType&quot;</span> <span class="attr">value</span>=<span class="string">&quot;Mysql&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span> <span class="attr">interceptor</span>=<span class="string">&quot;com.tuling.mybatis.interceptor.LogInterceptor&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;development&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;development&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span>=<span class="string">&quot;POOLED&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;com.mysql.jdbc.Driver&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;jdbc:mysql://47.96.118.93:3306/tuling&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;root&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;chen1208&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">environments</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">mappers</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">&quot;com/tuling/mybatis/dao/UserMapper.xml&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;qingsong-mybatis.xml&quot;</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line">        UserMapper userMapper = session.getMapper(UserMapper.class);</span><br><span class="line">        User result1 = userMapper.selectByid(<span class="number">1</span>);</span><br><span class="line">        User result2 = userMapper.selectByid(<span class="number">1</span>);</span><br><span class="line">        System.out.println(result1 == result2);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用条件"><a href="#使用条件" class="headerlink" title="使用条件"></a>使用条件</h3><p>1，必须是相同的SQL和参数</p>
+<p>2，必须是相同的会话</p>
+<p>3，必须是相同的namespace 即同一个mapper</p>
+<p>4，必须是相同的statement 即同一个mapper 接口中的同一个方法</p>
+<p>5，查询语句中间没有执行session.clearCache() 方法</p>
+<p>6，查询语句中间没有执行 insert update delete 方法（无论变动记录是否与 缓存数据有无关系）</p>
+<h3 id="源码解析链路"><a href="#源码解析链路" class="headerlink" title="源码解析链路"></a>源码解析链路</h3><p>缓存获取 ：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">mapper.mapper.selectById(23)</span></span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.session.defaults.DefaultSqlSession<span class="comment">#selectList()</span></span></span><br><span class="line"><span class="meta">  &gt;</span><span class="bash">org.apache.ibatis.executor.CachingExecutor<span class="comment">#query()</span></span></span><br><span class="line"><span class="meta">   &gt;</span><span class="bash">org.apache.ibatis.executor.BaseExecutor<span class="comment">#query() </span></span></span><br><span class="line">    &gt;org.apache.ibatis.cache.impl.PerpetualCache#getObject </span><br></pre></td></tr></table></figure>
+
+<p>缓存的存储：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">mapper.mapper.selectById(23)</span></span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.session.defaults.DefaultSqlSession<span class="comment">#selectList()</span></span></span><br><span class="line"><span class="meta">  &gt;</span><span class="bash">org.apache.ibatis.executor.CachingExecutor<span class="comment">#query()</span></span></span><br><span class="line"><span class="meta">   &gt;</span><span class="bash">org.apache.ibatis.executor.BaseExecutor<span class="comment">#query() </span></span></span><br><span class="line">    &gt;org.apache.ibatis.executor.BaseExecutor#queryFromDatabase</span><br><span class="line">     &gt;org.apache.ibatis.cache.impl.PerpetualCache#putObject</span><br></pre></td></tr></table></figure>
+
+<h2 id="二级缓存"><a href="#二级缓存" class="headerlink" title="二级缓存"></a>二级缓存</h2><h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CacheNamespace()</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LabelMapper</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Select(&quot;select * from t_label where id =#&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="function">Label <span class="title">getById</span><span class="params">(Integer id)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CacheNamespace注解说明：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CacheNamespace(</span></span><br><span class="line"><span class="meta">    implementation = PerpetualCache.**class**, //  缓存实现 Cache接口 实现类</span></span><br><span class="line"><span class="meta">    eviction = LruCache.**class**,// 缓存算法</span></span><br><span class="line"><span class="meta">    flushInterval = 60000, // 刷新间隔时间 毫秒</span></span><br><span class="line"><span class="meta">    size = 1024,   // 最大缓存引用对象</span></span><br><span class="line"><span class="meta">    readWrite = **true**, // 是否可写</span></span><br><span class="line"><span class="meta">    blocking = false  // 是否阻塞</span></span><br><span class="line"><span class="meta">)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用条件-1"><a href="#使用条件-1" class="headerlink" title="使用条件"></a>使用条件</h3><p>1,当会话提交或关闭之后才会填充二级缓存</p>
+<p>2,必须是在同一个命名空间之下</p>
+<p>3,必须是相同的statement 即同一个mapper 接口中的同一个方法</p>
+<p>4,必须是相同的SQL语句和参数</p>
+<p>5,如果readWrite=true ，实体对像必须实现Serializable 接口</p>
+<h3 id="清除条件"><a href="#清除条件" class="headerlink" title="清除条件"></a>清除条件</h3><p>1,xml中配置的update 不能清空 @CacheNamespace 中的缓存数据</p>
+<p>2,只有修改会话提交之后 才会执行清空操作</p>
+<p>3,任何一种增删改操作 都会清空整个namespace 中的缓存</p>
+<h3 id="源码解析链路-1"><a href="#源码解析链路-1" class="headerlink" title="源码解析链路"></a>源码解析链路</h3><p>清除缓存</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;org.apache.ibatis.session.defaults.DefaultSqlSession#selectList() </span><br><span class="line">  &gt;org.apache.ibatis.executor.CachingExecutor#query()</span><br><span class="line">    &gt;org.apache.ibatis.executor.CachingExecutor#query()</span><br><span class="line">     &gt;org.apache.ibatis.executor.CachingExecutor#flushCacheIfRequired() </span><br></pre></td></tr></table></figure>
+
+<p>获取缓存</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;org.apache.ibatis.cache.TransactionalCacheManager#getObject </span><br><span class="line">  &gt;org.apache.ibatis.cache.decorators.TransactionalCache#getObject</span><br><span class="line">    &gt;org.apache.ibatis.cache.decorators.SynchronizedCache#getObject</span><br><span class="line">      &gt;org.apache.ibatis.cache.decorators.LoggingCache#getObject</span><br><span class="line">       &gt;org.apache.ibatis.cache.decorators.SerializedCache#getObject</span><br><span class="line">         &gt;org.apache.ibatis.cache.decorators.ScheduledCache#getObject</span><br><span class="line">          &gt;org.apache.ibatis.cache.decorators.LruCache#getObject</span><br><span class="line">           &gt;org.apache.ibatis.cache.impl.PerpetualCache#getObject</span><br></pre></td></tr></table></figure>
+
+<p>保存二级缓存</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> &gt;org.apache.ibatis.executor.CachingExecutor#close</span><br><span class="line">   &gt;org.apache.ibatis.cache.TransactionalCacheManager#commit</span><br><span class="line">     &gt;org.apache.ibatis.cache.decorators.TransactionalCache#flushPendingEntries</span><br><span class="line">       &gt;org.apache.ibatis.cache.decorators.SynchronizedCache#putObject</span><br><span class="line">         &gt;org.apache.ibatis.cache.decorators.LoggingCache#putObject</span><br><span class="line">          &gt;org.apache.ibatis.cache.decorators.SerializedCache#putObject</span><br><span class="line">           &gt;org.apache.ibatis.cache.decorators.ScheduledCache#putObject</span><br><span class="line">            &gt;org.apache.ibatis.cache.decorators.LruCache#putObject</span><br><span class="line">             &gt;org.apache.ibatis.cache.impl.PerpetualCache#putObject</span><br></pre></td></tr></table></figure>
+
+<h2 id="执行流程解析"><a href="#执行流程解析" class="headerlink" title="执行流程解析"></a>执行流程解析</h2><h3 id="配置文件解析"><a href="#配置文件解析" class="headerlink" title="配置文件解析"></a>配置文件解析</h3><p>配置文件基本结构</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">mybatis-config.xml</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;properties/&gt;</span><br><span class="line">  &lt;settting/&gt;</span><br><span class="line">  &lt;typeHandlers/&gt;</span><br><span class="line">  &lt;..../&gt;</span><br><span class="line">  &lt;mappers/&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br><span class="line"></span><br><span class="line">mybatis-mapper.xml</span><br><span class="line">&lt;mapper &gt; </span><br><span class="line">  &lt;cache/&gt;</span><br><span class="line">  &lt;resultMap/&gt;</span><br><span class="line">  &lt;select/&gt;  </span><br><span class="line">  &lt;update/&gt; </span><br><span class="line">  &lt;delete/&gt; </span><br><span class="line">  &lt;insert/&gt; </span><br><span class="line">&lt;/mapper&gt;</span><br></pre></td></tr></table></figure>
+
+<p>配置文件的解析流程即是将上述XML描述元素转换成对应的JAVA对像过程，其最终转换对像及其关系如下图：</p>
+<p><img src="/Users/admin/Desktop/note/images/Mybatis/Mybatis_invoke01.png" alt="Mybatis_invoke01"></p>
+<p>配置元素解析构建器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">org.apache.ibatis.builder.xml.XMLConfigBuilder</span></span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.builder.xml.XMLMapperBuilder</span></span><br><span class="line"><span class="meta">  &gt;</span><span class="bash">org.apache.ibatis.builder.xml.XMLStatementBuilder</span></span><br><span class="line"><span class="meta">   &gt;</span><span class="bash">org.apache.ibatis.builder.SqlSourceBuilder</span></span><br><span class="line">    &gt;org.apache.ibatis.scripting.xmltags.XMLScriptBuilder</span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.builder.annotation.MapperAnnotationBuilder</span></span><br></pre></td></tr></table></figure>
+
+<p>sql statement 构建流程源码链路</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">org.apache.ibatis.session.SqlSessionFactoryBuilder<span class="comment">#build()</span></span></span><br><span class="line"></span><br><span class="line">//1.Config.xml 文件解析</span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.builder.xml.XMLConfigBuilder<span class="comment">#parse()</span></span></span><br><span class="line"><span class="meta">  &gt;</span><span class="bash">org.apache.ibatis.builder.xml.XMLConfigBuilder<span class="comment">#parseConfiguration()</span></span></span><br><span class="line"><span class="meta">   &gt;</span><span class="bash">org.apache.ibatis.builder.xml.XMLConfigBuilder<span class="comment">#mapperElement()</span></span></span><br><span class="line">   </span><br><span class="line">// 2.Mapper.xml 文件解析</span><br><span class="line">    &gt;org.apache.ibatis.builder.xml.XMLMapperBuilder#parse()</span><br><span class="line">     &gt;org.apache.ibatis.builder.xml.XMLMapperBuilder#configurationElement()</span><br><span class="line">      &gt;org.apache.ibatis.builder.xml.XMLMapperBuilder#buildStatementFromContext()</span><br><span class="line">      </span><br><span class="line">//3.Statemen sql块解析</span><br><span class="line">       &gt;org.apache.ibatis.builder.xml.XMLStatementBuilder#parseStatementNode</span><br><span class="line">        &gt;org.apache.ibatis.builder.MapperBuilderAssistant#addMappedStatement()</span><br><span class="line">        </span><br><span class="line">// 4.动态SQL脚本解析</span><br><span class="line"><span class="meta">	&gt;</span><span class="bash">org.apache.ibatis.scripting.xmltags.XMLLanguageDriver<span class="comment">#createSqlSource()</span></span></span><br><span class="line"><span class="meta">	&gt;</span><span class="bash">org.apache.ibatis.scripting.xmltags.XMLScriptBuilder<span class="comment">#parseScriptNode()</span></span></span><br><span class="line"><span class="meta">	&gt;</span><span class="bash">org.apache.ibatis.scripting.xmltags.XMLScriptBuilder<span class="comment">#parseDynamicTags()</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="会话创建-SqlSession"><a href="#会话创建-SqlSession" class="headerlink" title="会话创建 SqlSession"></a>会话创建 SqlSession</h3><p>会话对像的组成结构如下图</p>
+<p><img src="/Users/admin/Desktop/note/images/Mybatis/Mybatis_invoke02.png" alt="Mybatis_invoke02"></p>
+<p>会话构建源码解析</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">org.apache.ibatis.session.defaults.DefaultSqlSessionFactory<span class="comment">#openSession(boolean)</span></span></span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.session.defaults.DefaultSqlSessionFactory<span class="comment">#openSessionFromDataSource</span></span></span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory<span class="comment">#newTransaction()</span></span></span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.session.Configuration<span class="comment">#newExecutor()</span></span></span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.executor.SimpleExecutor<span class="comment">#SimpleExecutor</span></span></span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.executor.CachingExecutor<span class="comment">#CachingExecutor</span></span></span><br><span class="line"> </span><br><span class="line"> //执行器插件包装</span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.plugin.InterceptorChain<span class="comment">#pluginAll(executor)</span></span></span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.session.defaults.DefaultSqlSession<span class="comment">#DefaultSqlSession()</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="方法执行-StatementHandler"><a href="#方法执行-StatementHandler" class="headerlink" title="方法执行 StatementHandler"></a>方法执行 StatementHandler</h3><p><img src="/Users/admin/Desktop/note/images/Mybatis/Mybatis_invoke03.png" alt="Mybatis_invoke03"></p>
+<p>StatementHandler 源码解析链路</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">org.apache.ibatis.session.defaults.DefaultSqlSession<span class="comment">#selectList()</span></span></span><br><span class="line"><span class="meta"> &gt;</span><span class="bash">org.apache.ibatis.executor.CachingExecutor<span class="comment">#query()</span></span></span><br><span class="line"><span class="meta">  &gt;</span><span class="bash">org.apache.ibatis.executor.BaseExecutor<span class="comment">#query()</span></span></span><br><span class="line"><span class="meta">   &gt;</span><span class="bash">org.apache.ibatis.executor.BaseExecutor<span class="comment">#queryFromDatabase</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">org.apache.ibatis.session.Configuration<span class="comment">#newStatementHandler</span></span></span><br><span class="line">org.apache.ibatis.executor.statement.BaseStatementHandler#BaseStatementHandler</span><br><span class="line">org.apache.ibatis.session.Configuration#newParameterHandler</span><br><span class="line">org.apache.ibatis.plugin.InterceptorChain#pluginAll(parameterHandler)</span><br><span class="line">org.apache.ibatis.session.Configuration#newResultSetHandler</span><br><span class="line">org.apache.ibatis.plugin.InterceptorChain#pluginAll(resultSetHandler)</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">org.apache.ibatis.plugin.InterceptorChain<span class="comment">#pluginAll(statementHandler)</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">org.apache.ibatis.executor.BaseExecutor<span class="comment">#getConnection</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">org.apache.ibatis.executor.statement.PreparedStatementHandler<span class="comment">#instantiateStatement</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">org.apache.ibatis.executor.statement.PreparedStatementHandler<span class="comment">#parameterize</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">org.apache.ibatis.scripting.defaults.DefaultParameterHandler<span class="comment">#setParameters</span></span></span><br><span class="line">org.apache.ibatis.type.BaseTypeHandler#setParameter</span><br><span class="line">org.apache.ibatis.type.UnknownTypeHandler#setNonNullParameter</span><br><span class="line">org.apache.ibatis.type.IntegerTypeHandler#setNonNullParameter</span><br></pre></td></tr></table></figure>
+
+<h2 id="spring-集成myBatis"><a href="#spring-集成myBatis" class="headerlink" title="spring 集成myBatis"></a>spring 集成myBatis</h2><h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p>1、配置 SqlSessionFactoryBean</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;</span><br><span class="line">    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2、配置 MapperFactoryBean</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id=&quot;userMapper&quot; class=&quot;org.mybatis.spring.mapper.MapperFactoryBean&quot;&gt;</span><br><span class="line">    &lt;property name=&quot;mapperInterface&quot; value=&quot;com.tuling.mybatis.dao.UserMapper&quot;/&gt;</span><br><span class="line">    &lt;property name=&quot;sqlSessionFactory&quot; ref=&quot;sqlSessionFactory&quot;/&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+
+<p> 3、获取mapper 对像执行业务方法</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);</span><br><span class="line">UserMapper mapper = context.getBean(UserMapper.class);</span><br><span class="line">System.out.println(mapper.selectByid(1));</span><br></pre></td></tr></table></figure>
+
+<p>对像说明:</p>
+<p><strong>FactoryBean：</strong>工厂Bean 用于 自定义生成Bean对像，当在ioc 中配置FactoryBean 的实例时，最终通过bean id 对应的是FactoryBean.getObject()实例，而非FactoryBean 实例本身<br><strong>SqlSessionFactoryBean：</strong>生成SqlSessionFactory 实例，该为单例对像，作用于整个应用生命周期。常用属性如下：</p>
+<ul>
+<li>dataSource：   数据源(必填)</li>
+<li>configLocation：指定mybatis-config.xml 的内容，但其设置的<dataSource> <properties> <environments> 将会失效(选填)</li>
+<li>mapperLocations：指定mapper.xml 的路径，相当于mybatis-config.xml 中<mappers> 元素配置，(选填)</li>
+</ul>
+<p><strong>MapperFactoryBean：</strong>生成对应的Mapper对像，通常为单例，作用于整个应用生命周期。常用属性如下：</p>
+<ul>
+<li>mapperInterface：mapper 接口      (必填)</li>
+<li>sqlSessionFactory：会话工厂实例 引用 (必填)</li>
+</ul>
+<h3 id="核心流程解析"><a href="#核心流程解析" class="headerlink" title="核心流程解析"></a>核心流程解析</h3><p><img src="/Users/admin/Desktop/note/images/Mybatis/Mybatis_invoke04.png" alt="Mybatis_invoke04"></p>
+<p>// 创建 会话模板 SqlSessionTemplate</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">com.tuling.mybatis.dao.UserMapper<span class="comment">#selectByid</span></span></span><br><span class="line"><span class="meta">  &gt;</span><span class="bash">org.apache.ibatis.binding.MapperProxy<span class="comment">#invoke</span></span></span><br><span class="line"><span class="meta">   &gt;</span><span class="bash">org.mybatis.spring.SqlSessionTemplate<span class="comment">#selectOne(java.lang.String)</span></span></span><br><span class="line">    &gt;org.mybatis.spring.SqlSessionTemplate#sqlSessionProxy#selectOne(java.lang.String)</span><br><span class="line">     &gt;org.mybatis.spring.SqlSessionTemplate.SqlSessionInterceptor#invoke</span><br><span class="line">      &gt;org.mybatis.spring.SqlSessionUtils#getSqlSession()</span><br><span class="line">       &gt;org.apache.ibatis.session.SqlSessionFactory#openSession()</span><br><span class="line">       &gt;org.apache.ibatis.session.defaults.DefaultSqlSession#selectOne()</span><br></pre></td></tr></table></figure>
+
+<h3 id="事物使用"><a href="#事物使用" class="headerlink" title="事物使用"></a>事物使用</h3><p>spring 事物没有针对myBatis的配置，都是一些常规事物配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--添加事物配置--&gt;</span><br><span class="line">&lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;</span><br><span class="line">    &lt;constructor-arg ref=&quot;dataSource&quot;/&gt;</span><br><span class="line">&lt;/bean&gt;</span><br><span class="line">&lt;!--事物注解配置--&gt;</span><br><span class="line">&lt;tx:annotation-driven/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>添加事物注解：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Transactional()</span><br><span class="line">public User getUser2(Integer id) &#123;</span><br><span class="line">    userMapper.selectByid(id);</span><br><span class="line">    return userMapper.selectByid(id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行测试发现 当调用getUser2 方法时两次查询不在重复创建 sqlSession。而是共用一个直到getUser2 方法结束。</p>
+<p>**事物与SqlSession 集成原理： **<br>其原理前面讲查询流程时有所涉及。每次执行SQL操作前都会通过 getSqlSession 来获取会话。其主要逻辑是 如果当前线程存在事物，并且存在相关会话，就从ThreadLocal中取出 。如果没就从创建一个 SqlSession 并存储到ThreadLocal 当中，共下次查询使用。<br>相关源码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">org.mybatis.spring.SqlSessionUtils#getSqlSession()</span><br><span class="line">org.springframework.transaction.support.TransactionSynchronizationManager#getResource</span><br><span class="line">org.mybatis.spring.SqlSessionUtils#sessionHolder</span><br><span class="line">org.apache.ibatis.session.SqlSessionFactory#openSession()</span><br><span class="line">org.mybatis.spring.SqlSessionUtils#registerSessionHolder</span><br><span class="line">org.springframework.transaction.support.TransactionSynchronizationManager#isSynchronizationActive</span><br><span class="line">org.springframework.transaction.support.TransactionSynchronizationManager#bindResource</span><br></pre></td></tr></table></figure>
+
+<h3 id="简化Mapper-配置"><a href="#简化Mapper-配置" class="headerlink" title="简化Mapper 配置"></a>简化Mapper 配置</h3><p>如果每个mapper 接口都配置*MapperFactoryBean *相当麻烦 可以通过 如下配置进行自动扫描</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"> &lt;mybatis:scan base-package&#x3D;&quot;com.tuling.mybatis.dao&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其与 spring bean 注解扫描机制类似，所以得加上注解扫描开关的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:annotation-config&#x2F;&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mybatis/" rel="tag"># Mybatis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Mybatis/2019-12-21%20Mybatis%E5%88%86%E9%A1%B5%E6%8F%92%E4%BB%B6/" rel="prev" title="Mybatis分页插件(Plugin+Interceptor)">
+      <i class="fa fa-chevron-left"></i> Mybatis分页插件(Plugin+Interceptor)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Mysql/2019-02-26%20Mysq%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/" rel="next" title="Mysql存储引擎">
+      Mysql存储引擎 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">一级缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">使用条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E9%93%BE%E8%B7%AF"><span class="nav-number">2.3.</span> <span class="nav-text">源码解析链路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="nav-number">3.</span> <span class="nav-text">二级缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6-1"><span class="nav-number">3.2.</span> <span class="nav-text">使用条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%85%E9%99%A4%E6%9D%A1%E4%BB%B6"><span class="nav-number">3.3.</span> <span class="nav-text">清除条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E9%93%BE%E8%B7%AF-1"><span class="nav-number">3.4.</span> <span class="nav-text">源码解析链路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">执行流程解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90"><span class="nav-number">4.1.</span> <span class="nav-text">配置文件解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E5%88%9B%E5%BB%BA-SqlSession"><span class="nav-number">4.2.</span> <span class="nav-text">会话创建 SqlSession</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E6%89%A7%E8%A1%8C-StatementHandler"><span class="nav-number">4.3.</span> <span class="nav-text">方法执行 StatementHandler</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-%E9%9B%86%E6%88%90myBatis"><span class="nav-number">5.</span> <span class="nav-text">spring 集成myBatis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">5.1.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90"><span class="nav-number">5.2.</span> <span class="nav-text">核心流程解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E7%89%A9%E4%BD%BF%E7%94%A8"><span class="nav-number">5.3.</span> <span class="nav-text">事物使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8C%96Mapper-%E9%85%8D%E7%BD%AE"><span class="nav-number">5.4.</span> <span class="nav-text">简化Mapper 配置</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

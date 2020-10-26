@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="07 redis集群">
+<meta property="og:url" content="http://example.com/2020/10/26/Redis/2019-03-07%207%20redis%E9%9B%86%E7%BE%A4/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Redis">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Redis/Redis_cluster.png">
+<meta property="og:image" content="http://example.com/images/Redis/Redis_cluster2.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.328Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Redis/Redis_cluster.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Redis/2019-03-07%207%20redis%E9%9B%86%E7%BE%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>07 redis集群 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Redis/2019-03-07%207%20redis%E9%9B%86%E7%BE%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          07 redis集群
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Redis</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>redis包含三种集群策略  </p>
+<ul>
+<li>主从复制</li>
+<li>哨兵</li>
+<li>集群</li>
+</ul>
+<a id="more"></a> 
+
+<h3 id="1-主从模式"><a href="#1-主从模式" class="headerlink" title="1 主从模式"></a>1 主从模式</h3><p>​    Slave从节点服务启动并连接到Master之后，它将主动发送一个SYNC命令。Master服务主节点收到同步命令后将启动后台存盘进程，同时收集所有接收到的用于修改数据集的命令，在后台进程执行完毕后，Master将传送整个数据库文件到Slave，以完成一次完全同步。而Slave从节点服务在接收到数据库文件数据之后将其存盘并加载到内存中。此后，Master主节点继续将所有已经收集到的修改命令，和新的修改命令依次传送给Slaves，Slave将在本次执行这些数据修改命令，从而达到最终的数据同步。 </p>
+<p>​    如果Master和Slave之间的链接出现断连现象，Slave可以自动重连Master，但是在连接成功之后，一次完全同步将被自动执行。 </p>
+<p><strong>主从配置示例（采用一主一从）</strong></p>
+<p>准备：</p>
+<ol>
+<li><p>redis的bin目录：/usr/local/redis/bin</p>
+</li>
+<li><p>redis的bin目录结构：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# ll</span><br><span class="line">total <span class="number">21916</span></span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root       <span class="number">0</span> Jan  <span class="number">8</span> <span class="number">13</span>:<span class="number">34</span> appendonly.aof</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root      <span class="number">93</span> Dec <span class="number">28</span> <span class="number">15</span>:<span class="number">08</span> dump.rdb</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root     <span class="number">114</span> Jan  <span class="number">8</span> <span class="number">13</span>:<span class="number">34</span> nodes_7000.conf</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root     <span class="number">114</span> Jan  <span class="number">8</span> <span class="number">13</span>:<span class="number">35</span> nodes_7001.conf</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root     <span class="number">114</span> Jan  <span class="number">8</span> <span class="number">13</span>:<span class="number">36</span> nodes_7002.conf</span><br><span class="line">-rwxr-xr-x <span class="number">1</span> root root <span class="number">2451640</span> Dec <span class="number">27</span> <span class="number">21</span>:<span class="number">55</span> redis-benchmark</span><br><span class="line">-rwxr-xr-x <span class="number">1</span> root root <span class="number">5775928</span> Dec <span class="number">27</span> <span class="number">21</span>:<span class="number">55</span> redis-check-aof</span><br><span class="line">-rwxr-xr-x <span class="number">1</span> root root <span class="number">5775928</span> Dec <span class="number">27</span> <span class="number">21</span>:<span class="number">55</span> redis-check-rdb</span><br><span class="line">-rwxr-xr-x <span class="number">1</span> root root <span class="number">2617720</span> Dec <span class="number">27</span> <span class="number">21</span>:<span class="number">55</span> redis-cli</span><br><span class="line">drwxr-xr-x <span class="number">5</span> root root    <span class="number">4096</span> Jan  <span class="number">8</span> <span class="number">11</span>:<span class="number">48</span> redis_cluster</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root      <span class="number">33</span> Dec <span class="number">28</span> <span class="number">15</span>:<span class="number">00</span> redis.conf</span><br><span class="line">lrwxrwxrwx <span class="number">1</span> root root      <span class="number">12</span> Dec <span class="number">27</span> <span class="number">21</span>:<span class="number">55</span> redis-sentinel -&gt; redis-server</span><br><span class="line">-rwxr-xr-x <span class="number">1</span> root root <span class="number">5775928</span> Dec <span class="number">27</span> <span class="number">21</span>:<span class="number">55</span> redis-server</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4 id="1-1-主节点配置"><a href="#1-1-主节点配置" class="headerlink" title="1.1 主节点配置"></a>1.1 主节点配置</h4><p>redis提供给我们了一个默认的配置文件redis.conf  把它复制到<code>/usr/local/redis/conf</code>目录下，并改名为<code>6379.conf</code> </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp redis.conf  /usr/local/redis/bin/conf/<span class="number">6379.</span>conf</span><br></pre></td></tr></table></figure>
+
+<p>修改如下配置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">daemonize no </span><br><span class="line">修改为：</span><br><span class="line"><span class="function">daemonize <span class="title">yes</span>  <span class="params">(后台程序方式运行)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">pidfile /<span class="keyword">var</span>/run/redis_6379.pid</span></span><br><span class="line"><span class="function">修改为：</span></span><br><span class="line"><span class="function">pidfile /usr/local/redis/bin/redis_6379.pid</span></span><br><span class="line"><span class="function"><span class="params">(把pidfile生成到有权限的目录下)</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-从节点配置"><a href="#1-2-从节点配置" class="headerlink" title="1.2 从节点配置"></a>1.2 从节点配置</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp <span class="number">6379.</span>conf <span class="number">6380.</span>conf</span><br></pre></td></tr></table></figure>
+
+<p>修改6380.conf  修改对应的端口和pid配置  然后加入<code>slaveof 127.0.0.1 6379</code> </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">port <span class="number">6379</span></span><br><span class="line">修改为：</span><br><span class="line">port <span class="number">6380</span></span><br><span class="line"></span><br><span class="line">pidfile /usr/local/redis/redis_6379.pid</span><br><span class="line">修改为：</span><br><span class="line">pidfile /usr/local/redis/redis_6380.pid</span><br><span class="line"></span><br><span class="line">增加一行：</span><br><span class="line">slaveof <span class="number">127.0</span>.<span class="number">0.1</span> <span class="number">6379</span></span><br></pre></td></tr></table></figure>
+
+<p>如果master设置了密码。需要配置： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">masterauth</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-启动服务及查看"><a href="#1-3-启动服务及查看" class="headerlink" title="1.3 启动服务及查看"></a>1.3 启动服务及查看</h4><p>启动：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./redis-server /usr/local/redis/bin/conf/<span class="number">6379.</span>conf </span><br><span class="line">./redis-server /usr/local/redis/bin/conf/<span class="number">6380.</span>conf </span><br></pre></td></tr></table></figure>
+
+<p>查看服务：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# ps -ef | grep redis</span><br><span class="line">root     <span class="number">14366</span>     <span class="number">1</span>  <span class="number">0</span> <span class="number">13</span>:<span class="number">57</span> ?        <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ./redis-server *:<span class="number">6379</span></span><br><span class="line">root     <span class="number">14367</span>     <span class="number">1</span>  <span class="number">0</span> <span class="number">13</span>:<span class="number">57</span> ?        <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ./redis-server *:<span class="number">6380</span></span><br><span class="line">root     <span class="number">14377</span> <span class="number">14126</span>  <span class="number">0</span> <span class="number">13</span>:<span class="number">57</span> pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> grep --color=auto redis</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-启动客户端"><a href="#1-4-启动客户端" class="headerlink" title="1.4 启动客户端"></a>1.4 启动客户端</h4><p>连接6379那个实例 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/redis/bin/</span><br><span class="line">./redis-cli -h <span class="number">127.0</span>.<span class="number">0.1</span> -p <span class="number">6379</span></span><br></pre></td></tr></table></figure>
+
+<p>查看服务信息：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">info replication</span><br><span class="line">NOAUTH Authentication required.</span><br><span class="line">auth &quot;redis&quot;                        # 密码验证</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">role:master                                                         # 本机是『主』</span><br><span class="line">connected_slaves:1                                                  # 有1个『奴隶』</span><br><span class="line">slave0:ip=127.0.0.1,port=6380,state=online,offset=11957,lag=1       # &quot;从&quot;服务器iP地址和端口是</span><br></pre></td></tr></table></figure>
+
+<p>新增 读取</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; set name zhangsan</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; get name</span><br><span class="line"><span class="string">&quot;zhangsan&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>连接6380那个实例 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./redis-cli -h <span class="number">127.0</span>.<span class="number">0.1</span> -p <span class="number">6380</span></span><br></pre></td></tr></table></figure>
+
+<p>读取 新增</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6380</span>&gt; get name</span><br><span class="line"><span class="string">&quot;zhangsan&quot;</span></span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6380</span>&gt; set name lisi</span><br><span class="line">(error) READONLY You can<span class="string">&#x27;t write against a read only slave.</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-哨兵模式"><a href="#2-哨兵模式" class="headerlink" title="2 哨兵模式"></a>2 哨兵模式</h3><h4 id="2-1-添加sentinel-conf配置文件"><a href="#2-1-添加sentinel-conf配置文件" class="headerlink" title="2.1 添加sentinel.conf配置文件"></a>2.1 添加sentinel.conf配置文件</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#sentinel端口</span><br><span class="line">port <span class="number">26379</span></span><br><span class="line">#工作路径，注意路径不要和主重复</span><br><span class="line">dir <span class="string">&quot;/usr/local/redis-6379&quot;</span></span><br><span class="line"># 守护进程模式</span><br><span class="line">daemonize yes</span><br><span class="line">#关闭保护模式</span><br><span class="line"><span class="keyword">protected</span>-mode no</span><br><span class="line"># 指明日志文件名</span><br><span class="line">logfile <span class="string">&quot;./sentinel.log&quot;</span></span><br><span class="line">#哨兵监控的master，主从配置一样，这里只用输入redis主节点的ip/port和法定人数。</span><br><span class="line">sentinel monitor mymaster <span class="number">192.168</span>.<span class="number">125.128</span> <span class="number">6379</span> <span class="number">1</span></span><br><span class="line"># master或slave多长时间（默认30秒）不能使用后标记为s_down状态。</span><br><span class="line">sentinel down-after-milliseconds mymaster <span class="number">5000</span></span><br><span class="line">#若sentinel在该配置值内未能完成failover操作（即故障时master/slave自动切换），则认为本次failover失败。</span><br><span class="line">sentinel failover-timeout mymaster <span class="number">18000</span></span><br><span class="line">#设置master和slaves验证密码</span><br><span class="line">sentinel auth-pass mymaster <span class="number">123456</span> </span><br><span class="line">sentinel parallel-syncs mymaster <span class="number">1</span><span class="comment">//指定了在执行故障转移时， 最多可以有多少个从服务器同时对新的主服务器进行同步</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-启动哨兵"><a href="#2-2-启动哨兵" class="headerlink" title="2.2 启动哨兵"></a>2.2 启动哨兵</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">方式一：redis-sentinel /path/to/sentinel.conf（推荐，这种方式启动和redis实例没有任何关系）</span><br><span class="line">方式二：redis-server /path/to/sentinel.conf --sentinel</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-启动客户端查看集群信息"><a href="#2-3-启动客户端查看集群信息" class="headerlink" title="2.3 启动客户端查看集群信息"></a>2.3 启动客户端查看集群信息</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sentinel master mymaster<span class="comment">//查看master的状态 </span></span><br><span class="line">SENTINEL slaves mymaster <span class="comment">//查看salves的状态</span></span><br><span class="line">SENTINEL sentinels mymaster <span class="comment">//查看哨兵的状态</span></span><br><span class="line">SENTINEL get-master-addr-by-name mymaster<span class="comment">//获取当前master的地址</span></span><br><span class="line">info sentinel<span class="comment">//查看哨兵信息</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-哨兵的作用"><a href="#2-4-哨兵的作用" class="headerlink" title="2.4 哨兵的作用"></a>2.4 哨兵的作用</h4><p>哨兵的作用是监控 redis系统的运行状况，他的功能如下：  </p>
+<ol>
+<li>监控主从数据库是否正常运行  </li>
+<li>master出现故障时，自动将slave转化为master  </li>
+<li>多哨兵配置的时候，哨兵之间也会自动监控  </li>
+<li>多个哨兵可以监控同一个redis </li>
+</ol>
+<h4 id="2-5-哨兵工作机制"><a href="#2-5-哨兵工作机制" class="headerlink" title="2.5 哨兵工作机制"></a>2.5 哨兵工作机制</h4><p>​    哨兵进程启动时会读取配置文件的内容，通过sentinel monitor master-name ip port quorum查找到master的ip端口。一个哨兵可以监控多个master数据库，只需要提供多个该配置项即可。</p>
+<p>同时配置文件还定义了与监控相关的参数，比如master多长时间无响应即即判定位为下线。</p>
+<p>哨兵启动后，会与要监控的master建立俩条连接：</p>
+<ol>
+<li>一条连接用来订阅master的<em>sentinel</em>:hello频道与获取其他监控该master的哨兵节点信息</li>
+<li>另一条连接定期向master发送INFO等命令获取master本身的信息</li>
+</ol>
+<p>与master建立连接后，哨兵会执行三个操作，这三个操作的发送频率都可以在配置文件中配置：</p>
+<ol>
+<li>定期向master和slave发送INFO命令</li>
+<li>定期向master个slave的sentinel:hello频道发送自己的信息</li>
+<li>定期向master、slave和其他哨兵发送PING命令 </li>
+</ol>
+<p>这三个操作的意义非常重大，发送INFO命令可以获取当前数据库的相关信息从而实现新节点的自动发现。所以说哨兵只需要配置master数据库信息就可以自动发现其slave信息。获取到slave信息后，哨兵也会与slave建立俩条连接执行监控。通过INFO命令，哨兵可以获取主从数据库的最新信息，并进行相应的操作，比如角色变更等</p>
+<p>​        当实现了自动发现slave和其他哨兵节点后，哨兵就可以通过定期发送PING命令定时监控这些数据库和节点有没有停止服务。发送频率可以配置，但是最长间隔时间为1s，可以通过<code>sentinel down-after-milliseconds mymaster 600</code>设置。 </p>
+<p>​         如果被ping的数据库或者节点超时未回复，哨兵任务其主观下线。如果下线的是master，哨兵会向其他哨兵点发送命令询问他们是否也认为该master主观下线，如果达到一定数目（即配置文件中的quorum）投票，哨兵会认为该master已经客观下线，并选举领头的哨兵节点对主从系统发起故障恢复</p>
+<p>如上文所说，哨兵认为master客观下线后，故障恢复的操作需要由选举的领头哨兵执行，选举采用Raft算法： </p>
+<ol>
+<li><p>发现master下线的哨兵节点（我们称他为A）向每个哨兵发送命令，要求对方选自己为领头哨兵 </p>
+</li>
+<li><p>如果目标哨兵节点没有选过其他人，则会同意选举A为领头哨兵 </p>
+</li>
+<li><p>如果有超过一半的哨兵同意选举A为领头，则A当选 </p>
+</li>
+<li><p>如果有多个哨兵节点同时参选领头，此时有可能存在一轮投票无竞选者胜出，此时每个参选的节点等待一个随机时间后再次发起参选请求，进行下一轮投票精选，直至选举出领头哨兵<br>选出领头哨兵后，领头者开始对进行故障恢复，从出现故障的master的从数据库中挑选一个来当选新的master,选择规则如下：</p>
+</li>
+<li><p>所有在线的slave中选择优先级最高的，优先级可以通过slave-priority配置</p>
+</li>
+<li><p>如果有多个最高优先级的slave，则选取复制偏移量最大（即复制越完整）的当选</p>
+</li>
+<li><p>如果以上条件都一样，选取id最小的slave</p>
+</li>
+</ol>
+<p>​        挑选出需要继任的slaver后，领头哨兵向该数据库发送命令使其升格为master，然后再向其他slave发送命令接受新的master，最后更新数据。将已经停止的旧的master更新为新的master的从数据库，使其恢复服务后以slave的身份继续运行。 </p>
+<h3 id="3-集群模式"><a href="#3-集群模式" class="headerlink" title="3 集群模式"></a>3 集群模式</h3><p>​    Redis 是一个开源的 key-value 存储系统，由于出众的性能，大部分互联网企业都用来做服务器端缓存。Redis 在3.0版本前只支持单实例模式，虽然支持主从模式、哨兵模式部署来解决单点故障，但是现在互联网企业动辄大几百G的数据，可完全是没法满足业务的需求，所以，Redis 在 3.0 版本以后就推出了集群模式。</p>
+<p>​    Redis 集群采用了P2P的模式，完全去中心化。Redis 把所有的 Key 分成了 16384 个 slot，每个 Redis 实例负责其中一部分 slot 。集群中的所有信息（节点、端口、slot等），都通过节点之间定期的数据交换而更新。<br>Redis 客户端可以在任意一个 Redis 实例发出请求，如果所需数据不在该实例中，通过重定向命令引导客户端访问所需的实例。</p>
+<p><code>Redis</code>集群提供了以下两个好处：</p>
+<ul>
+<li>将数据自动切分<code>split</code>到多个节点的能力。</li>
+<li>当集群中的一部分节点失效或者无法进行通讯时， 仍然可以继续处理命令请求的能力。</li>
+</ul>
+<h4 id="3-0-集群原理"><a href="#3-0-集群原理" class="headerlink" title="3.0 集群原理"></a>3.0 集群原理</h4><p><img src="/images/Redis/Redis_cluster.png" alt="Redis_cluster"></p>
+<ol>
+<li>所有的<code>redis</code>节点彼此互联(<code>PING</code>-<code>PONG</code>机制),内部使用二进制协议优化传输速度和带宽。</li>
+<li>节点的<code>fail</code>是通过集群中超过半数的节点检测失效时才生效。</li>
+<li>客户端与<code>redis</code>节点直连,不需要中间<code>proxy</code>层.客户端不需要连接集群所有节点,连接集群中任何一个可用节点即可。</li>
+<li><code>redis-cluster</code>把所有的物理节点映射到[<code>0-16383</code>]<code>slot</code>上,<code>cluster</code> 负责维护<code>node</code>&lt;-&gt;<code>slot</code>&lt;-&gt;<code>value</code></li>
+</ol>
+<p>​        <code>Redis</code>集群中内置了 <code>16384</code> 个哈希槽，当需要在 <code>Redis</code> 集群中放置一个 <code>key-value</code> 时，<code>redis</code> 先对<code>key</code> 使用 <code>crc16</code> 算法算出一个结果，然后把结果对 <code>16384</code> 求余数，这样每个 <code>key</code> 都会对应一个编号在 <code>0-16383</code> 之间的哈希槽，<code>redis</code> 会根据节点数量大致均等的将哈希槽映射到不同的节点 </p>
+<p><strong>redis-cluster投票:容错</strong></p>
+<p><img src="/images/Redis/Redis_cluster2.png" alt="Redis_cluster"></p>
+<ol>
+<li>投票过程是集群中所有<code>master</code>参与,如果半数以上<code>master</code>节点与<code>master</code>节点通信超时(<code>cluster-node-timeout</code>),认为当前<code>master</code>节点挂掉. </li>
+<li>什么时候整个集群不可用(<code>cluster_state:fail</code>)? <ol>
+<li>如果集群任意<code>master</code>挂掉,且当前<code>master</code>没有<code>slave</code>.集群进入<code>fail</code>状态,也可以理解成集群的<code>slot</code>映射[<code>0-16383</code>]不完整时进入fail状态.  </li>
+<li>如果集群超过半数以上<code>master</code>挂掉，无论是否有<code>slave</code>，集群进入<code>fail</code>状态.</li>
+</ol>
+</li>
+</ol>
+<p><strong>搭建一个集群</strong></p>
+<h4 id="3-1-创建文件夹"><a href="#3-1-创建文件夹" class="headerlink" title="3.1 创建文件夹"></a>3.1 <strong>创建文件夹</strong></h4><p>集群中 Redis 节点的端口号为 <code>9001-9006</code> ，端口号即集群下各实例文件夹。数据存放在 <code>端口号/data</code> 文件夹中。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/local/redis-cluster</span><br><span class="line">cd redis-cluster/</span><br><span class="line">mkdir -p <span class="number">9001</span>/data <span class="number">9002</span>/data <span class="number">9003</span>/data <span class="number">9004</span>/data <span class="number">9005</span>/data <span class="number">9006</span>/data</span><br></pre></td></tr></table></figure>
+
+<p>查看文件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz redis]# cd redis-cluster/</span><br><span class="line">[root@izbp12c0zpe8t4yri0xphiz redis-cluster]# ll</span><br><span class="line">total <span class="number">27564</span></span><br><span class="line">drwxr-xr-x <span class="number">3</span> root root    <span class="number">4096</span> Jan  <span class="number">8</span> <span class="number">16</span>:<span class="number">50</span> <span class="number">9001</span></span><br><span class="line">drwxr-xr-x <span class="number">3</span> root root    <span class="number">4096</span> Jan  <span class="number">8</span> <span class="number">16</span>:<span class="number">50</span> <span class="number">9002</span></span><br><span class="line">drwxr-xr-x <span class="number">3</span> root root    <span class="number">4096</span> Jan  <span class="number">8</span> <span class="number">16</span>:<span class="number">50</span> <span class="number">9003</span></span><br><span class="line">drwxr-xr-x <span class="number">3</span> root root    <span class="number">4096</span> Jan  <span class="number">8</span> <span class="number">16</span>:<span class="number">50</span> <span class="number">9004</span></span><br><span class="line">drwxr-xr-x <span class="number">3</span> root root    <span class="number">4096</span> Jan  <span class="number">8</span> <span class="number">16</span>:<span class="number">50</span> <span class="number">9005</span></span><br><span class="line">drwxr-xr-x <span class="number">3</span> root root    <span class="number">4096</span> Jan  <span class="number">8</span> <span class="number">16</span>:<span class="number">50</span> <span class="number">9006</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-复制执行脚本"><a href="#3-2-复制执行脚本" class="headerlink" title="3.2 复制执行脚本"></a>3.2 <strong>复制执行脚本</strong></h4><p>在 对应的文件夹下新建相对应的redis.conf文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp redis.conf /usr/local/redis-cluster/<span class="number">9001</span>/redis</span><br></pre></td></tr></table></figure>
+
+<p>注意，修改 <code>redis.conf</code> 配置和单点唯一区别是下图部分，其余还是常规的这几项： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">port 9001                                                       #（每个节点的端口号）</span><br><span class="line">daemonize yes</span><br><span class="line">bind 192.168.119.131                                            #（绑定当前机器 IP）</span><br><span class="line">dir /usr/local/redis-cluster/9001/data/                         #（数据文件存放位置）</span><br><span class="line">pidfile /var/run/redis_9001.pid                                 #（pid 9001和port要对应）</span><br><span class="line">cluster-enabled yes                                             #（启动集群模式）</span><br><span class="line">cluster-config-file nodes9001.conf                              #（9001和port要对应）</span><br><span class="line">cluster-node-timeout <span class="number">15000</span></span><br><span class="line">appendonly yes</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-其余-redis-conf-文件"><a href="#3-3-其余-redis-conf-文件" class="headerlink" title="3.3 其余 redis.conf 文件"></a>3.3 <strong>其余 redis.conf 文件</strong></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim redis.conf</span><br><span class="line">:%s/<span class="number">9001</span>/<span class="number">9002</span>g</span><br></pre></td></tr></table></figure>
+
+<p>其实我们也就是替换了下面这四行： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">port <span class="number">9002</span></span><br><span class="line">dir /usr/local/redis-cluster/<span class="number">9002</span>/data/</span><br><span class="line">cluster-config-file nodes-<span class="number">9002.</span>conf</span><br><span class="line">pidfile /<span class="keyword">var</span>/run/redis_9002.pid</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-4-启动-9001-9006-六个节点"><a href="#3-4-启动-9001-9006-六个节点" class="headerlink" title="3.4 启动 9001-9006 六个节点"></a>3.4 <strong>启动 9001-9006 六个节点</strong></h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# ./redis-server ../redis-cluster/9002/redis.conf </span><br><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# ./redis-server ../redis-cluster/9003/redis.conf </span><br><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# ./redis-server ../redis-cluster/9004/redis.conf </span><br><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# ./redis-server ../redis-cluster/9005/redis.conf </span><br><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# ./redis-server ../redis-cluster/9006/redis.conf </span><br></pre></td></tr></table></figure>
+
+<p>查看服务配置情况：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# ps -ef | grep redis</span><br><span class="line">root     <span class="number">14895</span>     <span class="number">1</span>  <span class="number">0</span> <span class="number">17</span>:<span class="number">11</span> ?        <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ./redis-server <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9001</span> [cluster]</span><br><span class="line">root     <span class="number">14911</span>     <span class="number">1</span>  <span class="number">0</span> <span class="number">17</span>:<span class="number">13</span> ?        <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ./redis-server <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9002</span> [cluster]</span><br><span class="line">root     <span class="number">14916</span>     <span class="number">1</span>  <span class="number">0</span> <span class="number">17</span>:<span class="number">13</span> ?        <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ./redis-server <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9003</span> [cluster]</span><br><span class="line">root     <span class="number">14921</span>     <span class="number">1</span>  <span class="number">0</span> <span class="number">17</span>:<span class="number">13</span> ?        <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ./redis-server <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9004</span> [cluster]</span><br><span class="line">root     <span class="number">14926</span>     <span class="number">1</span>  <span class="number">0</span> <span class="number">17</span>:<span class="number">13</span> ?        <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ./redis-server <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9005</span> [cluster]</span><br><span class="line">root     <span class="number">14931</span>     <span class="number">1</span>  <span class="number">0</span> <span class="number">17</span>:<span class="number">13</span> ?        <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ./redis-server <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9006</span> [cluster]</span><br><span class="line">root     <span class="number">14936</span> <span class="number">14760</span>  <span class="number">0</span> <span class="number">17</span>:<span class="number">13</span> pts/<span class="number">5</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> grep --color=auto redis</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-5-节点测试"><a href="#3-5-节点测试" class="headerlink" title="3.5 节点测试"></a>3.5 节点测试</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# ./redis-cli -h 127.0.0.1 -p 9001</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9001</span>&gt; set name chen</span><br><span class="line">(error) CLUSTERDOWN Hash slot not served</span><br></pre></td></tr></table></figure>
+
+<p>​    虽然我们配置并启动了 Redis 集群服务，但是他们暂时还并不在一个集群中，互相直接发现不了，而且还没有可存储的位置，就是所谓的<strong>slot（槽）</strong>。 </p>
+<h4 id="3-6-安装集群所需软件"><a href="#3-6-安装集群所需软件" class="headerlink" title="3.6 安装集群所需软件"></a>3.6 <strong>安装集群所需软件</strong></h4><p>由于 Redis 集群需要使用 ruby 命令，所以我们需要安装 ruby 和相关接口。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install ruby</span><br><span class="line">yum install rubygems</span><br><span class="line">gem install redis </span><br></pre></td></tr></table></figure>
+
+<p>该命令可能出现的报错：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# yum install rubygems</span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line">Package rubygems-<span class="number">2.0</span>.<span class="number">14.1</span>-<span class="number">34.</span>el7_6.noarch already installed and latest version</span><br><span class="line">Nothing to <span class="keyword">do</span></span><br><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# gem install redis</span><br><span class="line">Fetching: redis-<span class="number">4.1</span>.<span class="number">0.</span>gem (<span class="number">100</span>%)</span><br><span class="line">ERROR:  Error installing redis:</span><br><span class="line">	redis <span class="keyword">requires</span> Ruby version &gt;= <span class="number">2.2</span>.<span class="number">2.</span></span><br></pre></td></tr></table></figure>
+
+<p>​     redis requires Ruby version &gt;= 2.2.2的报错，查了资料发现是Centos默认支持ruby到2.0.0，可gem 安装<a target="_blank" rel="noopener" href="http://lib.csdn.net/base/redis">redis</a>需要最低是2.2.2</p>
+<p>解决办法是 先安装rvm，再把ruby版本提升至2.3.3</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>安装curl </span><br><span class="line">yum install curl</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>安装RVM </span><br><span class="line">curl -L get.rvm.io | bash -s stable    # 该命令可能出现报错的解决方案参考 (4.gpg无对应公钥问题)</span><br><span class="line">    </span><br><span class="line"><span class="number">3</span></span><br><span class="line">source /usr/local/rvm/scripts/rvm</span><br><span class="line"></span><br><span class="line"><span class="number">4</span> 查看rvm库中已知的ruby版本</span><br><span class="line">rvm list known</span><br><span class="line"></span><br><span class="line"><span class="number">5.</span>安装一个ruby版本 </span><br><span class="line">rvm install <span class="number">2.3</span>.<span class="number">3</span></span><br><span class="line">    </span><br><span class="line"><span class="number">6.</span>使用一个ruby版本 </span><br><span class="line">rvm use <span class="number">2.3</span>.<span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="number">7.</span>卸载一个已知版本</span><br><span class="line">rvm remove <span class="number">2.0</span>.<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="number">8.</span>查看当前版本</span><br><span class="line">ruby --version</span><br><span class="line"></span><br><span class="line"><span class="number">9.</span>再安装redis</span><br><span class="line">gem install redis</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-7-创建集群"><a href="#3-7-创建集群" class="headerlink" title="3.7 创建集群"></a>3.7 创建集群</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./redis-trib.rb create --replicas <span class="number">1</span> <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9001</span> <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9002</span> <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9003</span> <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9004</span> <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9005</span> <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9006</span></span><br></pre></td></tr></table></figure>
+
+<p>该命令执行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz src]# ./redis-trib.rb create --replicas 1 127.0.0.1:9001 127.0.0.1:9002 127.0.0.1:9003 127.0.0.1:9004 127.0.0.1:9005 127.0.0.1:9006</span><br><span class="line">&gt;&gt;&gt; Creating cluster</span><br><span class="line">&gt;&gt;&gt; Performing hash slots allocation on <span class="number">6</span> nodes...</span><br><span class="line">Using <span class="number">3</span> masters:</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9001</span></span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9002</span></span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9003</span></span><br><span class="line">Adding replica <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9005</span> to <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9001</span></span><br><span class="line">Adding replica <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9006</span> to <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9002</span></span><br><span class="line">Adding replica <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9004</span> to <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9003</span></span><br><span class="line">&gt;&gt;&gt; Trying to optimize slaves allocation <span class="keyword">for</span> anti-affinity</span><br><span class="line">[WARNING] Some slaves are in the same host as their master</span><br><span class="line">M: ea16e1218bb5eb0ae35b1d5de17362ac7d223007 <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9001</span></span><br><span class="line">   slots:<span class="number">0</span>-<span class="number">5460</span> (<span class="number">5461</span> slots) master</span><br><span class="line">M: c0cf115bc513aa6ed07045c73866d18f4a72ef08 <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9002</span></span><br><span class="line">   slots:<span class="number">5461</span>-<span class="number">10922</span> (<span class="number">5462</span> slots) master</span><br><span class="line">M: a45b310b0957f33f1156ce20493ec1d02f15c7da <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9003</span></span><br><span class="line">   slots:<span class="number">10923</span>-<span class="number">16383</span> (<span class="number">5461</span> slots) master</span><br><span class="line">S: <span class="number">8f</span>1a9ad5408edd85037651e82882c00587e0c409 <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9004</span></span><br><span class="line">   replicates ea16e1218bb5eb0ae35b1d5de17362ac7d223007</span><br><span class="line">S: <span class="number">19f</span>23f64e28dbd9138689eb8a39609f0074cd2c7 <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9005</span></span><br><span class="line">   replicates c0cf115bc513aa6ed07045c73866d18f4a72ef08</span><br><span class="line">S: <span class="number">8950</span>edb8b990b3dc4ee4c01e48d70df8b8820116 <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9006</span></span><br><span class="line">   replicates a45b310b0957f33f1156ce20493ec1d02f15c7da</span><br><span class="line">Can I set the above configuration? (type <span class="string">&#x27;yes&#x27;</span> to accept): </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>简单解释一下这个命令：调用 ruby 命令来进行创建集群，<code>--replicas 1</code> 表示主从复制比例为 1:1，即一个主节点对应一个从节点；然后，默认给我们分配好了每个主节点和对应从节点服务，以及 solt 的大小，因为在 Redis 集群中有且仅有 16383 个 solt ，默认情况会给我们平均分配，当然你可以指定，后续的增减节点也可以重新分配。</p>
+<p><code>M: 10222dee93f6a1700ede9f5424fccd6be0b2fb73</code> 为主节点Id</p>
+<p><code>S: 9ce697e49f47fec47b3dc290042f3cc141ce5aeb 192.168.119.131:9004 replicates 10222dee93f6a1700ede9f5424fccd6be0b2fb73</code> 从节点下对应主节点Id</p>
+<p>目前来看，<code>9001-9003</code> 为主节点，<code>9004-9006</code> 为从节点，并向你确认是否同意这么配置。</p>
+<p>输入 <code>yes</code> 后，会开始集群创建。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Can I set the above configuration? (type <span class="string">&#x27;yes&#x27;</span> to accept): yes</span><br><span class="line">&gt;&gt;&gt; Nodes configuration updated</span><br><span class="line">&gt;&gt;&gt; Assign a different config epoch to each node</span><br><span class="line">&gt;&gt;&gt; Sending CLUSTER MEET messages to join the cluster</span><br><span class="line">Waiting <span class="keyword">for</span> the cluster to join.....</span><br><span class="line">&gt;&gt;&gt; <span class="function">Performing Cluster <span class="title">Check</span> <span class="params">(using node <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">9001</span>)</span></span></span><br><span class="line"><span class="function">M: ea16e1218bb5eb0ae35b1d5de17362ac7d223007 127.0.0.1:9001</span></span><br><span class="line"><span class="function">   slots:0-5460 <span class="params">(<span class="number">5461</span> slots)</span> master</span></span><br><span class="line"><span class="function">   1 additional <span class="title">replica</span><span class="params">(s)</span></span></span><br><span class="line"><span class="function">S: 8950edb8b990b3dc4ee4c01e48d70df8b8820116 127.0.0.1:9006</span></span><br><span class="line"><span class="function">   slots: <span class="params">(<span class="number">0</span> slots)</span> slave</span></span><br><span class="line"><span class="function">   replicates a45b310b0957f33f1156ce20493ec1d02f15c7da</span></span><br><span class="line"><span class="function">M: a45b310b0957f33f1156ce20493ec1d02f15c7da 127.0.0.1:9003</span></span><br><span class="line"><span class="function">   slots:10923-16383 <span class="params">(<span class="number">5461</span> slots)</span> master</span></span><br><span class="line"><span class="function">   1 additional <span class="title">replica</span><span class="params">(s)</span></span></span><br><span class="line"><span class="function">S: 19f23f64e28dbd9138689eb8a39609f0074cd2c7 127.0.0.1:9005</span></span><br><span class="line"><span class="function">   slots: <span class="params">(<span class="number">0</span> slots)</span> slave</span></span><br><span class="line"><span class="function">   replicates c0cf115bc513aa6ed07045c73866d18f4a72ef08</span></span><br><span class="line"><span class="function">M: c0cf115bc513aa6ed07045c73866d18f4a72ef08 127.0.0.1:9002</span></span><br><span class="line"><span class="function">   slots:5461-10922 <span class="params">(<span class="number">5462</span> slots)</span> master</span></span><br><span class="line"><span class="function">   1 additional <span class="title">replica</span><span class="params">(s)</span></span></span><br><span class="line"><span class="function">S: 8f1a9ad5408edd85037651e82882c00587e0c409 127.0.0.1:9004</span></span><br><span class="line"><span class="function">   slots: <span class="params">(<span class="number">0</span> slots)</span> slave</span></span><br><span class="line"><span class="function">   replicates ea16e1218bb5eb0ae35b1d5de17362ac7d223007</span></span><br><span class="line"><span class="function">[OK] All nodes agree about slots configuration.</span></span><br><span class="line"><span class="function">&gt;&gt;&gt; Check <span class="keyword">for</span> open slots...</span></span><br><span class="line"><span class="function">&gt;&gt;&gt; Check slots coverage...</span></span><br><span class="line"><span class="function">[OK] All 16384 slots covered.</span></span><br><span class="line"><span class="function"></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-8-验证"><a href="#3-8-验证" class="headerlink" title="3.8 验证"></a>3.8 <strong>验证</strong></h4><p>依然是通过客户端命令连接上，通过集群命令看一下状态和节点信息等 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./redis-cli -c -h <span class="number">127.0</span>.<span class="number">0.1</span> -p <span class="number">9001</span></span><br><span class="line">cluster info</span><br><span class="line">cluster nodes</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz src]# ./redis-cli -c -h 127.0.0.1 -p 9001</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9001</span>&gt; cluster info</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:<span class="number">16384</span></span><br><span class="line">cluster_slots_ok:<span class="number">16384</span></span><br><span class="line">cluster_slots_pfail:<span class="number">0</span></span><br><span class="line">cluster_slots_fail:<span class="number">0</span></span><br><span class="line">cluster_known_nodes:<span class="number">6</span></span><br><span class="line">cluster_size:<span class="number">3</span></span><br><span class="line">cluster_current_epoch:<span class="number">6</span></span><br><span class="line">cluster_my_epoch:<span class="number">1</span></span><br><span class="line">cluster_stats_messages_ping_sent:<span class="number">202</span></span><br><span class="line">cluster_stats_messages_pong_sent:<span class="number">195</span></span><br><span class="line">cluster_stats_messages_sent:<span class="number">397</span></span><br><span class="line">cluster_stats_messages_ping_received:<span class="number">190</span></span><br><span class="line">cluster_stats_messages_pong_received:<span class="number">202</span></span><br><span class="line">cluster_stats_messages_meet_received:<span class="number">5</span></span><br><span class="line">cluster_stats_messages_received:<span class="number">397</span></span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9001</span>&gt; cluster nodes</span><br><span class="line"><span class="number">8950</span>edb8b990b3dc4ee4c01e48d70df8b8820116 <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9006</span>@<span class="number">19006</span> slave a45b310b0957f33f1156ce20493ec1d02f15c7da <span class="number">0</span> <span class="number">1546942881000</span> <span class="number">6</span> connected</span><br><span class="line">a45b310b0957f33f1156ce20493ec1d02f15c7da <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9003</span>@<span class="number">19003</span> master - <span class="number">0</span> <span class="number">1546942883000</span> <span class="number">3</span> connected <span class="number">10923</span>-<span class="number">16383</span></span><br><span class="line"><span class="number">19f</span>23f64e28dbd9138689eb8a39609f0074cd2c7 <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9005</span>@<span class="number">19005</span> slave c0cf115bc513aa6ed07045c73866d18f4a72ef08 <span class="number">0</span> <span class="number">1546942882765</span> <span class="number">5</span> connected</span><br><span class="line">ea16e1218bb5eb0ae35b1d5de17362ac7d223007 <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9001</span>@<span class="number">19001</span> myself,master - <span class="number">0</span> <span class="number">1546942882000</span> <span class="number">1</span> connected <span class="number">0</span>-<span class="number">5460</span></span><br><span class="line">c0cf115bc513aa6ed07045c73866d18f4a72ef08 <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9002</span>@<span class="number">19002</span> master - <span class="number">0</span> <span class="number">1546942882000</span> <span class="number">2</span> connected <span class="number">5461</span>-<span class="number">10922</span></span><br><span class="line"><span class="number">8f</span>1a9ad5408edd85037651e82882c00587e0c409 <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9004</span>@<span class="number">19004</span> slave ea16e1218bb5eb0ae35b1d5de17362ac7d223007 <span class="number">0</span> <span class="number">1546942883766</span> <span class="number">4</span> connected</span><br></pre></td></tr></table></figure>
+
+<p>通过命令，可以详细的看出集群信息和各个节点状态，主从信息以及连接数、槽信息等。这么看到，我们已经把 Redis 集群搭建部署成功！ </p>
+<p>**设置一个 key **</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9001</span>&gt; set name mafly</span><br><span class="line">-&gt; Redirected to slot [<span class="number">5798</span>] located at <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">9002</span></span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<p>当我们 <code>set name mafly</code> 时，出现了 <code>Redirected to slot</code> 信息并自动连接到了<code>9002</code>节点。这也是集群的一个数据分配特性。 </p>
+<p>###4 gpg无对应公钥问题</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz bin]# curl -L get.rvm.io | bash -s stable </span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line"><span class="number">100</span>   <span class="number">194</span>  <span class="number">100</span>   <span class="number">194</span>    <span class="number">0</span>     <span class="number">0</span>     <span class="number">37</span>      <span class="number">0</span>  <span class="number">0</span>:<span class="number">00</span>:<span class="number">05</span>  <span class="number">0</span>:<span class="number">00</span>:<span class="number">05</span> --:--:--    <span class="number">53</span></span><br><span class="line"><span class="number">100</span> <span class="number">24173</span>  <span class="number">100</span> <span class="number">24173</span>    <span class="number">0</span>     <span class="number">0</span>   <span class="number">2003</span>      <span class="number">0</span>  <span class="number">0</span>:<span class="number">00</span>:<span class="number">12</span>  <span class="number">0</span>:<span class="number">00</span>:<span class="number">12</span> --:--:--  <span class="number">7523</span></span><br><span class="line">Downloading https:<span class="comment">//github.com/rvm/rvm/archive/1.29.7.tar.gz</span></span><br><span class="line">Downloading https:<span class="comment">//github.com/rvm/rvm/releases/download/1.29.7/1.29.7.tar.gz.asc</span></span><br><span class="line">gpg: Signature made Fri <span class="number">04</span> Jan <span class="number">2019</span> <span class="number">06</span>:<span class="number">01</span>:<span class="number">48</span> AM CST using RSA key ID <span class="number">39499</span>BDB</span><br><span class="line">gpg: Can<span class="string">&#x27;t check signature: No public key</span></span><br><span class="line"><span class="string">GPG signature verification failed for &#x27;</span>/usr/local/rvm/archives/rvm-<span class="number">1.29</span>.<span class="number">7.</span>tgz<span class="string">&#x27; - &#x27;</span>https:<span class="comment">//github.com/rvm/rvm/releases/download/1.29.7/1.29.7.tar.gz.asc&#x27;! Try to install GPG v2 and then fetch the public key:</span></span><br><span class="line"></span><br><span class="line">    gpg2 --keyserver hkp:<span class="comment">//pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB</span></span><br><span class="line"></span><br><span class="line">or <span class="keyword">if</span> it fails:</span><br><span class="line"></span><br><span class="line">    command curl -sSL https:<span class="comment">//rvm.io/mpapis.asc | gpg2 --import -</span></span><br><span class="line">    command curl -sSL https:<span class="comment">//rvm.io/pkuczynski.asc | gpg2 --import -</span></span><br><span class="line"></span><br><span class="line">In <span class="keyword">case</span> of further problems with validation please refer to https:<span class="comment">//rvm.io/rvm/security</span></span><br></pre></td></tr></table></figure>
+
+<p>错误信息提示 ，无法检查签名：无公钥 </p>
+<p>解决方法如下（下载公钥）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpg --keyserver hkp:<span class="comment">//keyserver.ubuntu.com:80 --recv-keys 2B2458BF</span></span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/mafly/p/redis_cluster.html">参考博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/carryping/p/7447823.html">参考博客</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Redis/2019-03-06%206%20redis%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3/" rel="prev" title="06 redis配置文件详解">
+      <i class="fa fa-chevron-left"></i> 06 redis配置文件详解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Redis/2019-03-08%208%20redis%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" rel="next" title="08 redis性能问题排查">
+      08 redis性能问题排查 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%B8%BB%E4%BB%8E%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">1 主从模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%B8%BB%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 主节点配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E4%BB%8E%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 从节点配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%8F%8A%E6%9F%A5%E7%9C%8B"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 启动服务及查看</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E5%90%AF%E5%8A%A8%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 启动客户端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">2 哨兵模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E6%B7%BB%E5%8A%A0sentinel-conf%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 添加sentinel.conf配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%90%AF%E5%8A%A8%E5%93%A8%E5%85%B5"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 启动哨兵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E5%90%AF%E5%8A%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%9F%A5%E7%9C%8B%E9%9B%86%E7%BE%A4%E4%BF%A1%E6%81%AF"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 启动客户端查看集群信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E5%93%A8%E5%85%B5%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 哨兵的作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E5%93%A8%E5%85%B5%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 哨兵工作机制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">3 集群模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-0-%E9%9B%86%E7%BE%A4%E5%8E%9F%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">3.0 集群原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">3.2.</span> <span class="nav-text">3.1 创建文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%A4%8D%E5%88%B6%E6%89%A7%E8%A1%8C%E8%84%9A%E6%9C%AC"><span class="nav-number">3.3.</span> <span class="nav-text">3.2 复制执行脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E5%85%B6%E4%BD%99-redis-conf-%E6%96%87%E4%BB%B6"><span class="nav-number">3.4.</span> <span class="nav-text">3.3 其余 redis.conf 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E5%90%AF%E5%8A%A8-9001-9006-%E5%85%AD%E4%B8%AA%E8%8A%82%E7%82%B9"><span class="nav-number">3.5.</span> <span class="nav-text">3.4 启动 9001-9006 六个节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95"><span class="nav-number">3.6.</span> <span class="nav-text">3.5 节点测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-%E5%AE%89%E8%A3%85%E9%9B%86%E7%BE%A4%E6%89%80%E9%9C%80%E8%BD%AF%E4%BB%B6"><span class="nav-number">3.7.</span> <span class="nav-text">3.6 安装集群所需软件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4"><span class="nav-number">3.8.</span> <span class="nav-text">3.7 创建集群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-8-%E9%AA%8C%E8%AF%81"><span class="nav-number">3.9.</span> <span class="nav-text">3.8 验证</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

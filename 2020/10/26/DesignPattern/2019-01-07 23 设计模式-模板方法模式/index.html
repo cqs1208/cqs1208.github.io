@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="DesignPattern">
+<meta property="og:type" content="article">
+<meta property="og:title" content="23 模板方法模式">
+<meta property="og:url" content="http://example.com/2020/10/26/DesignPattern/2019-01-07%2023%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="DesignPattern">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-26T03:56:48.069Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="DesignPattern">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/26/DesignPattern/2019-01-07%2023%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>23 模板方法模式 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/DesignPattern/2019-01-07%2023%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          23 模板方法模式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DesignPattern/" itemprop="url" rel="index"><span itemprop="name">DesignPattern</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">DesignPattern</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​    模板方法模式是所有模式中最为常见的几个模式之一，是基于继承的代码复用的基本技术 。。。</p>
+<a id="more"></a> 
+
+<h2 id="模板方法模式"><a href="#模板方法模式" class="headerlink" title="模板方法模式"></a>模板方法模式</h2><h3 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h3><p><strong>什么是模板方法模式?</strong></p>
+<p>​    定义一个操作中算法的骨架，而将这些步骤延迟到子类中，模板方法使得子类可以不改变一个算法的结构即可重新定义该算法的某些特定步骤。</p>
+<h3 id="2-示例"><a href="#2-示例" class="headerlink" title="2 示例"></a>2 示例</h3><p>这里我们可以抽象化的想象下饮料在机器里的制作过程 </p>
+<p>大致我们可以分成4个步骤</p>
+<p>①烧水　　②冲泡饮料　　③把饮料倒入杯中　　④加入调料</p>
+<p>例如：</p>
+<p>咖啡：烧开热水–&gt;加入咖啡粉冲泡–&gt;把饮料倒入杯中–&gt;加入少许糖</p>
+<p>奶茶：烧开热水–&gt;加入奶茶粉冲泡–&gt;把饮料加入杯中–&gt;加入椰果/珍珠</p>
+<p>不难发现，饮料制作过程中的步骤中的①烧水、③把饮料倒入杯中是重复工作，制泡哪种饮料都一样，那么也就是重复工作，我们可以把它设定为通用性操作。</p>
+<p>我们只需要去关心步骤②和步骤④即可</p>
+<p>由于制泡饮料的步骤就是这4步，所以我们可以把它抽象成一个”制作饮料模板”出来，下面就以上面这个例子，我用代码来说明</p>
+<p> <strong>DrinkTemplate.java(模板类)</strong></p>
+<p>这是一个制作饮料的模板类，也就是制作所有饮料的基类</p>
+<p>我们可以把这4个步骤封装到一个模板方法里，并实现里面的通用步骤</p>
+<p>​    由于避免继承它的子类去修改整体制作架构，所以这个方法用了final修饰符来修饰，好比著名的”好莱坞原则”:Don’t call us, we’ll call you 子类需要听从父类的安排</p>
+<p>​    由于步骤②和步骤④需要根据具体制泡的饮料来确定，所以需要延迟到子类去实现，这里采用了protected修饰符以便子类可以复写，其他方法就可以直接写”死”掉，用private修饰符修饰，这样的使得代码工作人员能够更加关注自身的工作，而不必去考虑一些其他因素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">DrinkTemplate</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">      <span class="comment">/**抽象基类</span></span><br><span class="line"><span class="comment">       * </span></span><br><span class="line"><span class="comment">       * 制作饮料方法模板</span></span><br><span class="line"><span class="comment">       * 4个步骤    1、烧水 2、冲泡饮料 3、把饮料倒入杯中 4、加调料</span></span><br><span class="line"><span class="comment">       * 由于步骤1、3是通用的步骤，适合于制作任何饮料，所以可以把它写死</span></span><br><span class="line"><span class="comment">      * 2和4步骤，针对不同的饮料有不同的选择，所以可以把它延迟到子类去复写实现（注意访问修饰符）</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">drinkTempLate</span><span class="params">()</span></span>&#123;</span><br><span class="line">         boilWater();<span class="comment">//烧水</span></span><br><span class="line">         brew();<span class="comment">//冲泡饮料</span></span><br><span class="line">         pourInCup();<span class="comment">//把饮料倒入杯中</span></span><br><span class="line">         addCondiments();<span class="comment">//加调料</span></span><br><span class="line">     &#125;</span><br><span class="line">    </span><br><span class="line"> 	<span class="comment">//加调料，由于饮料所加调料各不相同，所以可以延迟到子类实现</span></span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">addCondiments</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line">     <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pourInCup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         System.out.println(<span class="string">&quot;把饮料倒入杯中...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">    </span><br><span class="line">	 <span class="comment">//冲泡饮料 ，由于饮料所用的材料各不相同，所以可以延迟到子类实现</span></span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">brew</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line">     <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">boilWater</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         System.out.println(<span class="string">&quot;烧水步骤进行中...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>**MakeCoffee.java(冲泡咖啡类) **</p>
+<p>这个没啥好说的，就是继承了抽象基类，并复写了它的抽象方法 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * </span></span><br><span class="line"><span class="comment">   * <span class="doctag">@author</span> Balla_兔子</span></span><br><span class="line"><span class="comment">   * 冲泡咖啡</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MakeCoffee</span> <span class="keyword">extends</span> <span class="title">DrinkTemplate</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">     <span class="meta">@Override</span></span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">addCondiments</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         System.out.println(<span class="string">&quot;加糖...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line">     <span class="meta">@Override</span></span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">brew</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         System.out.println(<span class="string">&quot;加入咖啡粉冲泡...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>**MakeMilkTea.java(冲泡奶茶类) **</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 冲泡奶茶</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@author</span> Balla_兔子</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MakeMilkTea</span> <span class="keyword">extends</span> <span class="title">DrinkTemplate</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">addCondiments</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         System.out.println(<span class="string">&quot;加椰果...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line">     <span class="meta">@Override</span></span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">brew</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         System.out.println(<span class="string">&quot;加入奶茶粉冲泡...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>**Test.java(测试类) **</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">      <span class="comment">/**</span></span><br><span class="line"><span class="comment">       * <span class="doctag">@author</span> Balla_兔子</span></span><br><span class="line"><span class="comment">       */</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">         DrinkTemplate coffee=<span class="keyword">new</span> MakeCoffee();</span><br><span class="line">         coffee.drinkTempLate();</span><br><span class="line">         System.out.println(<span class="string">&quot;*******************************&quot;</span>);</span><br><span class="line">         DrinkTemplate milkTea=<span class="keyword">new</span> MakeMilkTea();</span><br><span class="line">         milkTea.drinkTempLate();</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行效果： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">烧水步骤进行中...</span><br><span class="line">加入咖啡粉冲泡...</span><br><span class="line">把饮料倒入杯中...</span><br><span class="line">加糖...</span><br><span class="line">*******************************    </span><br><span class="line">烧水步骤进行中...</span><br><span class="line">加入奶茶粉冲泡...</span><br><span class="line">把饮料倒入杯中...</span><br><span class="line">加椰果...    </span><br></pre></td></tr></table></figure>
+
+
+
+<p>这样的实现类写起来很清晰明了，只需要去复写我们需要关心的方法即可，大大提高了代码的复用性。</p>
+<p>但这里有个问题就暴露出来了，冲泡咖啡的实现固然没错，但总有些人喝咖啡是不加糖的，这是该怎么办呢？</p>
+<p>这里就引入了一个”钩子”hook概念</p>
+<h3 id="3-钩子"><a href="#3-钩子" class="headerlink" title="3 钩子"></a>3 钩子</h3><p>​    我们可以在某个具体实现方法前后分别加入钩子，就好比是前置方法或者后置方法，就像日志技术一样，在每完成一个业务动作前都需要记录日志</p>
+<p>而这个前置方法，我们可以利用一个布尔来做判断，并给它一个默认，来看看具体实现方法</p>
+<p>**DrinkTemplate.java(模板类) **</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">DrinkTemplate</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">      <span class="comment">/**抽象基类</span></span><br><span class="line"><span class="comment">       * </span></span><br><span class="line"><span class="comment">       * 制作饮料方法模板</span></span><br><span class="line"><span class="comment">       * 4个步骤    1、烧水 2、冲泡饮料 3、把饮料倒入杯中 4、加调料</span></span><br><span class="line"><span class="comment">       * 由于步骤1、3是通用的步骤，适合于制作任何饮料，所以可以把它写死</span></span><br><span class="line"><span class="comment">      * 2和4步骤，针对不同的饮料有不同的选择，所以可以把它延迟到子类去复写实现（注意访问修饰符）</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">drinkTempLate</span><span class="params">()</span></span>&#123;</span><br><span class="line">         boilWater();<span class="comment">//烧水</span></span><br><span class="line">         brew();<span class="comment">//冲泡饮料</span></span><br><span class="line">         pourInCup();<span class="comment">//把饮料倒入杯中</span></span><br><span class="line">         <span class="keyword">if</span>(condition()==<span class="keyword">true</span>)&#123;<span class="comment">//若条件允许，则加入调料，默认允许</span></span><br><span class="line">             addCondiments();<span class="comment">//加调料</span></span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">condition</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//加调料，由于饮料所加调料各不相同，所以可以延迟到子类实现</span></span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">addCondiments</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line">     <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pourInCup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         System.out.println(<span class="string">&quot;把饮料倒入杯中...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">brew</span><span class="params">()</span></span>;<span class="comment">//冲泡饮料 ，由于饮料所用的材料各不相同，所以可以延迟到子类实现</span></span><br><span class="line"> </span><br><span class="line">     <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">boilWater</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         System.out.println(<span class="string">&quot;烧水步骤进行中...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>**Test.java(测试类) **</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">      <span class="comment">/**</span></span><br><span class="line"><span class="comment">       */</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">          DrinkTemplate coffee=<span class="keyword">new</span> MakeCoffee();</span><br><span class="line">         coffee.drinkTempLate();</span><br><span class="line">         System.out.println(<span class="string">&quot;咖啡制作完毕！&quot;</span>);</span><br><span class="line">         System.out.println(<span class="string">&quot;*******************************&quot;</span>);</span><br><span class="line">         DrinkTemplate milkTea=<span class="keyword">new</span> MakeMilkTea();</span><br><span class="line">         milkTea.drinkTempLate();</span><br><span class="line">         System.out.println(<span class="string">&quot;奶茶制作完毕！&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">烧水步骤进行中...</span><br><span class="line">加入咖啡粉冲泡...</span><br><span class="line">把饮料倒入杯中...</span><br><span class="line">咖啡制作完毕！</span><br><span class="line">*******************************</span><br><span class="line">烧水步骤进行中...</span><br><span class="line">加入奶茶粉冲泡...</span><br><span class="line">把饮料倒入杯中...</span><br><span class="line">加椰果...</span><br><span class="line">奶茶制作完毕！</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>​    </p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DesignPattern/" rel="tag"># DesignPattern</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/DesignPattern/2019-01-07%2022%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="prev" title="22 职责链模式">
+      <i class="fa fa-chevron-left"></i> 22 职责链模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/DesignPattern/2019-01-07%203%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" rel="next" title="03 单例模式">
+      03 单例模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">模板方法模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">1 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.2.</span> <span class="nav-text">2 示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%92%A9%E5%AD%90"><span class="nav-number">1.3.</span> <span class="nav-text">3 钩子</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

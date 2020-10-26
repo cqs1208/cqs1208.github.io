@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据结构与算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="03 数据结构-栈">
+<meta property="og:url" content="http://example.com/2020/10/26/StructureWithAlgorithm/2018-10-23-03%20%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%A0%88/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="数据结构与算法">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Structure/Structure_stackPush.jpg">
+<meta property="og:image" content="http://example.com/images/Structure/Structure_stackPush.jpg">
+<meta property="article:published_time" content="2020-10-26T03:56:48.424Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="StructureAlgorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Structure/Structure_stackPush.jpg">
+
+<link rel="canonical" href="http://example.com/2020/10/26/StructureWithAlgorithm/2018-10-23-03%20%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%A0%88/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>03 数据结构-栈 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/StructureWithAlgorithm/2018-10-23-03%20%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%A0%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          03 数据结构-栈
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StructureAlgorithm/" itemprop="url" rel="index"><span itemprop="name">StructureAlgorithm</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">数据结构与算法</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>栈的主要机制可用数组来实现，也可以用链表来实现。优先级队列的内部实现可以用数组或者一种特别的树——堆来实现。 </p>
+<a id="more"></a> 
+
+<h3 id="1-栈的基本概念"><a href="#1-栈的基本概念" class="headerlink" title="1 栈的基本概念"></a>1 栈的基本概念</h3><p>​    数组、链表、树等数据结构适用于存储数据库应用中的数据记录，它们常常用于记录那些现实世界的对象和活动的数据，便与数据的访问：插入、删除和查找特定数据项 </p>
+<p>​    而栈和队列更多的是作为程序员的工具来使用。他们主要作为构思算法的辅助工具，而不是完全的数据存储工具。这些数据结构的生命周期比那些数据库类型的结构要短很多。在程序操作执行期间它们才被创建，通常它们去执行某项特殊的任务，当任务完成后就被销毁 </p>
+<p>​    栈和队列的访问是受限制的，即在特定时刻只有一个数据项可以被读取或删除 </p>
+<p>​    栈和队列是比数组和其他数据结构更加抽象的结构，是站在更高的层面对数据进行组织和维护 </p>
+<p>​    栈的主要机制可用数组来实现，也可以用链表来实现。优先级队列的内部实现可以用数组或者一种特别的树——堆来实现。 </p>
+<p>先来了解栈的概念和实例，然后分别深入理解队列和优先级队列 </p>
+<p>​    栈只允许访问一个数据项：即最后插入的数据。移除这个数据项后才能访问倒数第二个插入的数据项。它是一种“<strong>后进先出</strong>”的数据结构 </p>
+<p>​    栈最基本的操作是<strong>出栈</strong>（Pop）、<strong>入栈</strong>（Push），还有其他扩展操作，如查看栈顶元素，判断栈是否为空、是否已满，读取栈的大小等 </p>
+<h3 id="2-基本的栈操作封装类"><a href="#2-基本的栈操作封装类" class="headerlink" title="2 基本的栈操作封装类"></a>2 基本的栈操作封装类</h3><p>下面我们就用数组来写一个栈操作的封装类 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Stack</span> </span>&#123;</span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">int</span> size;                 <span class="comment">//栈的大小</span></span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">int</span> top;                  <span class="comment">//栈顶元素的下标</span></span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">int</span> [] stackArray;   <span class="comment">//栈的容器</span></span><br><span class="line">     </span><br><span class="line">      <span class="comment">//构造函数</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">Stack</span><span class="params">(<span class="keyword">int</span> size)</span></span>&#123;</span><br><span class="line">             stackArray = <span class="keyword">new</span> <span class="keyword">int</span> [size];</span><br><span class="line">             top = -<span class="number">1</span>; <span class="comment">//初始化栈的时候，栈内无元素，栈顶下标设为-1</span></span><br><span class="line">             <span class="keyword">this</span>.size = size;</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//入栈，同时，栈顶元素的下标加一</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> elem)</span></span>&#123;</span><br><span class="line">             stackArray[++top] = elem; <span class="comment">//插入栈顶</span></span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//出栈，删除栈顶元素，同时，栈顶元素的下标减一</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">pop</span><span class="params">()</span></span>&#123;</span><br><span class="line">             <span class="keyword">return</span> stackArray[top--];</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//查看栈顶元素，但不删除</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">peek</span><span class="params">()</span></span>&#123;</span><br><span class="line">             <span class="keyword">return</span> stackArray[top];</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//判空</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>&#123;</span><br><span class="line">             <span class="keyword">return</span> (top == -<span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">//判满</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">()</span></span>&#123;</span><br><span class="line">             <span class="keyword">return</span> (top == size-<span class="number">1</span>);</span><br><span class="line">      &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上例中，没有对可能的异常进行处理，需要由编程人员保证程序的正确性，比如，才出栈前需要应该保证栈中有元素，在入栈前应保证栈没有满 </p>
+<h3 id="3-入栈出栈示意图"><a href="#3-入栈出栈示意图" class="headerlink" title="3 入栈出栈示意图"></a>3 入栈出栈示意图</h3><p>入栈示意图：</p>
+<p><img src="/images/Structure/Structure_stackPush.jpg" alt="入栈示意图"></p>
+<p>出栈示意图：</p>
+<p><img src="/images/Structure/Structure_stackPush.jpg" alt="出栈示意图"></p>
+<p>栈通常用于解析某种类型的文本串。通常，文本串是用计算机语言写的代码行，而解析它们的程序就是编译器 </p>
+<h3 id="4-栈的应用-中缀表达式转为后缀表达式计算四则运算"><a href="#4-栈的应用-中缀表达式转为后缀表达式计算四则运算" class="headerlink" title="4 栈的应用-中缀表达式转为后缀表达式计算四则运算"></a>4 栈的应用-中缀表达式转为后缀表达式计算四则运算</h3><h4 id="4-1-前，中，后缀表达式"><a href="#4-1-前，中，后缀表达式" class="headerlink" title="4.1 前，中，后缀表达式"></a>4.1 前，中，后缀表达式</h4><ol>
+<li>前缀表达式(Prefix Notation)是指将运算符写在前面操作数写在后面的不包含括号的表达式，而且为了纪念其发明者波兰数学家Jan Lukasiewicz所以前缀表达式也     叫做“波兰表达式”。比如- 1 + 2 3</li>
+<li>后缀表达式(Postfix Notation)与之相反，是指运算符写在操作数后面的不含括号的算术表达式，也叫做逆波兰表达式。比如1 2 3 + -</li>
+</ol>
+<p>​    不包含括号，运算符放在两个运算对象的后面，所有的计算按运算符出现的顺序，严格从左向右进行（不再考虑运算符的优先规则，如：2 1 + 3 *</p>
+<ol start="3">
+<li>中缀表达式(Infix Notation)就是常用的将操作符放在操作数中间的算术表达式。前缀表达式和后缀表达式相对于中缀表达式最大的不同就是去掉了表示运算优先级       的括号，比如1-2+3</li>
+</ol>
+<p>​      在中缀表达式的情况下求值，既要考虑括号，优先级，还要考虑操作出现的先后顺序。但是，作为计算机，其计算过程就显的比较复杂，对于一个中缀表达式，需要不停地对表达式进行多次遍历，来查找相应的计算的信息。这样从算法复杂度上来说，是不可取的。前缀表达式和后缀表达式相对于人们常用的中缀表达式最大的不同就在于表达式中的运算符是按照一定的顺序出现（接下来会具体讲解），所以求值过程中并不需要在表达式中使用括号来指定运算顺序，也不需要在计算过程中其中考虑运算符号的优先级。在采用辅助数据结构的情况下，只需要对表达式进行一次遍历即可计算出结果，大大降低了算法复杂度，也更加符合传统计算机的工作方式。</p>
+<h4 id="4-2-采用中缀表达式的算法分析"><a href="#4-2-采用中缀表达式的算法分析" class="headerlink" title="4.2 采用中缀表达式的算法分析"></a>4.2 采用中缀表达式的算法分析</h4><h5 id="4-2-1-将中缀表达式转换为后缀表达式：eg"><a href="#4-2-1-将中缀表达式转换为后缀表达式：eg" class="headerlink" title="4.2.1 将中缀表达式转换为后缀表达式：eg:"></a>4.2.1 将中缀表达式转换为后缀表达式：eg:</h5><ol>
+<li><p>当读到数字直接送至输出队列中； </p>
+</li>
+<li><p>当读到运算符t时： </p>
+<p>a.将栈中所有优先级高于或等于t的运算符弹出，送到输出队列中； </p>
+<p>​    这句话不好理解，可以说成这样，从栈顶开始，依次弹出比当前处理的运算符优先级高的运算符，直到一个比它优先级低的或者遇到了一个左括号就停止。 </p>
+<p>b.t进栈； </p>
+</li>
+<li><p>读到左括号时总是将它压入栈中； </p>
+</li>
+<li><p>读到右括号时，将靠近栈顶的第一个左括号上面的运算符全部依次弹出，送至输出队列后，再丢弃左括号； </p>
+</li>
+<li><p>中缀表达式全部读完后，若栈中仍有运算符，将其送到输出队列中。</p>
+</li>
+</ol>
+<h5 id="4-2-2-中缀表达式转换为后缀表达式的过程："><a href="#4-2-2-中缀表达式转换为后缀表达式的过程：" class="headerlink" title="4.2.2 中缀表达式转换为后缀表达式的过程："></a>4.2.2 中缀表达式转换为后缀表达式的过程：</h5><p>运算示例： 3+(2-5)*6/3 ：</p>
+<table>
+<thead>
+<tr>
+<th>后缀表达式</th>
+<th>栈</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>+</td>
+</tr>
+<tr>
+<td>3</td>
+<td>+（</td>
+</tr>
+<tr>
+<td>32</td>
+<td>+（</td>
+</tr>
+<tr>
+<td>32</td>
+<td>+（ -</td>
+</tr>
+<tr>
+<td>325</td>
+<td>+（ -</td>
+</tr>
+<tr>
+<td>325-</td>
+<td>+</td>
+</tr>
+<tr>
+<td>325-</td>
+<td>+*</td>
+</tr>
+<tr>
+<td>325-6</td>
+<td>+*</td>
+</tr>
+<tr>
+<td>325-6*</td>
+<td>+/</td>
+</tr>
+<tr>
+<td>325-6*3</td>
+<td>+/</td>
+</tr>
+<tr>
+<td>325-6*3/+</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>最终后缀表达式为：325-6*3/+ </p>
+<h5 id="4-2-3-运用后缀表达式进行计算："><a href="#4-2-3-运用后缀表达式进行计算：" class="headerlink" title="4.2.3 运用后缀表达式进行计算："></a>4.2.3 运用后缀表达式进行计算：</h5><ol>
+<li>建立一个栈S； </li>
+<li>从左到右读后缀表达式，读到数字就将它转换为数值压入栈S中，读到运算符则从栈中依次弹出两个数分别到Y和X，然后以“X 运算符 Y”的形式计算机出结果，再压加栈S中； </li>
+<li>如果后缀表达式未读完，就重复上面过程，最后输出栈顶的数值则为结束。 </li>
+</ol>
+<p>3+(2-5)<em>6/3=-3 ,其后缀表达式为：325-6</em>3/+ </p>
+<p>运算过程如下： </p>
+<table>
+<thead>
+<tr>
+<th>栈</th>
+<th>运算</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3 2 5</td>
+<td>325入栈</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2-5=-3</td>
+</tr>
+<tr>
+<td>3 -3</td>
+<td>运算结果进栈</td>
+</tr>
+<tr>
+<td>3 -3 6</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>-3*6=-18</td>
+</tr>
+<tr>
+<td>3 -18 3</td>
+<td>-18/3=-6</td>
+</tr>
+<tr>
+<td>3 -6</td>
+<td>3+(-6)=-3</td>
+</tr>
+<tr>
+<td>-3</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="5-代码示例"><a href="#5-代码示例" class="headerlink" title="5 代码示例"></a>5 代码示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Stack;</span><br><span class="line"><span class="keyword">import</span> java.util.regex.Pattern;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.util.regex.Pattern.*;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 将中缀表达式字符串转换为后缀表达式</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringToArithmetic</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 默认构造</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringToArithmetic</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将中缀表达式字符串计算得到结果</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> <span class="title">stringToArithmetic</span><span class="params">(String string)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> suffixToArithmetic(infixToSuffix(string));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将中缀表达式转换为后缀表达式</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">infixToSuffix</span><span class="params">(String exp)</span> </span>&#123;</span><br><span class="line">         <span class="comment">// 创建操作符堆栈</span></span><br><span class="line">         Stack&lt;Character&gt; s = <span class="keyword">new</span> Stack&lt;Character&gt;();</span><br><span class="line">         <span class="comment">// 要输出的后缀表达式字符串</span></span><br><span class="line">         String suffix = <span class="string">&quot;&quot;</span>;</span><br><span class="line">         <span class="keyword">int</span> length = exp.length(); <span class="comment">// 输入的中缀表达式的长度</span></span><br><span class="line">         <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</span><br><span class="line">             <span class="keyword">char</span> temp;<span class="comment">// 临时字符变量</span></span><br><span class="line">             <span class="comment">// 获取该中缀表达式的每一个字符并进行判断</span></span><br><span class="line">             <span class="keyword">char</span> ch = exp.charAt(i);</span><br><span class="line">             <span class="keyword">switch</span> (ch) &#123;</span><br><span class="line">                 <span class="comment">// 忽略空格</span></span><br><span class="line">                 <span class="keyword">case</span> <span class="string">&#x27; &#x27;</span>:</span><br><span class="line">                         <span class="keyword">break</span>;</span><br><span class="line">                 <span class="comment">// 如果是左括号直接压入堆栈</span></span><br><span class="line">                 <span class="keyword">case</span> <span class="string">&#x27;(&#x27;</span>:</span><br><span class="line">                         s.push(ch);</span><br><span class="line">                         <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                 <span class="comment">// 碰到&#x27;+&#x27; &#x27;-&#x27;，将栈中的所有运算符全部弹出去，直至碰到左括号为止，输出到队列中去</span></span><br><span class="line">                 <span class="keyword">case</span> <span class="string">&#x27;+&#x27;</span>:</span><br><span class="line">                     <span class="keyword">case</span> <span class="string">&#x27;-&#x27;</span>:</span><br><span class="line">                         <span class="keyword">while</span> (s.size() != <span class="number">0</span>) &#123;</span><br><span class="line">                                 temp = s.pop();</span><br><span class="line">                                 <span class="keyword">if</span> (temp == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                                         <span class="comment">// 重新将左括号放回堆栈，终止循环</span></span><br><span class="line">                                         s.push(<span class="string">&#x27;(&#x27;</span>);</span><br><span class="line">                                         <span class="keyword">break</span>;</span><br><span class="line">                                     &#125;</span><br><span class="line">                                 suffix += temp;</span><br><span class="line">                             &#125;</span><br><span class="line">                         <span class="comment">// 没有进入循环说明是当前为第一次进入或者其他前面运算都有括号等情况导致栈已经为空,此时需要将符号进栈</span></span><br><span class="line">                         s.push(ch);</span><br><span class="line">                         <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                 <span class="comment">// 如果是乘号或者除号，则弹出所有序列，直到碰到加好、减号、左括号为止，最后将该操作符压入堆栈</span></span><br><span class="line">                 <span class="keyword">case</span> <span class="string">&#x27;*&#x27;</span>:</span><br><span class="line">                     <span class="keyword">case</span> <span class="string">&#x27;/&#x27;</span>:</span><br><span class="line">                         <span class="keyword">while</span> (s.size() != <span class="number">0</span>) &#123;</span><br><span class="line">                                 temp = s.pop();</span><br><span class="line">                                 <span class="comment">// 只有比当前优先级高的或者相等的才会弹出到输出队列，遇到加减左括号，直接停止当前循环</span></span><br><span class="line">                                 <span class="keyword">if</span> (temp == <span class="string">&#x27;+&#x27;</span> || temp == <span class="string">&#x27;-&#x27;</span> || temp == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                                         s.push(temp);</span><br><span class="line">                                         <span class="keyword">break</span>;</span><br><span class="line">                                     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                                         suffix += temp;</span><br><span class="line">                                     &#125;</span><br><span class="line">                             &#125;</span><br><span class="line">                         <span class="comment">// 没有进入循环说明是当前为第一次进入或者其他前面运算都有括号等情况导致栈已经为空,此时需要将符号进栈</span></span><br><span class="line">                         s.push(ch);</span><br><span class="line">                         <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                 <span class="comment">// 如果碰到的是右括号，则距离栈顶的第一个左括号上面的所有运算符弹出栈并抛弃左括号</span></span><br><span class="line">                 <span class="keyword">case</span> <span class="string">&#x27;)&#x27;</span>:</span><br><span class="line">                         <span class="comment">// 这里假设一定会遇到左括号了，此为自己改进版，已经验证可以过</span></span><br><span class="line">                         <span class="comment">// while ((temp = s.pop()) != &#x27;(&#x27;) &#123;</span></span><br><span class="line">                         <span class="comment">// suffix += temp;</span></span><br><span class="line">                         <span class="comment">// &#125;</span></span><br><span class="line">                         <span class="keyword">while</span> (!s.isEmpty()) &#123;</span><br><span class="line">                                 temp = s.pop();</span><br><span class="line">                                 <span class="keyword">if</span> (temp == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                                         <span class="keyword">break</span>;</span><br><span class="line">                                     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                                         suffix += temp;</span><br><span class="line">                                     &#125;</span><br><span class="line">                             &#125;</span><br><span class="line">                         <span class="keyword">break</span>;</span><br><span class="line">                 <span class="comment">// 默认情况，如果读取到的是数字，则直接送至输出序列</span></span><br><span class="line">                 <span class="keyword">default</span>:</span><br><span class="line">                         suffix += ch;</span><br><span class="line">                         <span class="keyword">break</span>;</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;</span><br><span class="line">         <span class="comment">// 如果堆栈不为空，则把剩余运算符一次弹出，送至输出序列</span></span><br><span class="line">         <span class="keyword">while</span> (s.size() != <span class="number">0</span>) &#123;</span><br><span class="line">                 suffix += s.pop();</span><br><span class="line">             &#125;</span><br><span class="line">         <span class="comment">//</span></span><br><span class="line">         <span class="keyword">return</span> suffix;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 将后缀表达式的进行计算得到运算结果 eg:325-6*3/+</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> <span class="title">suffixToArithmetic</span><span class="params">(String exp)</span> </span>&#123;</span><br><span class="line">         <span class="comment">// 使用正则表达式匹配数字</span></span><br><span class="line">         Pattern pattern = compile(<span class="string">&quot;\\d+||(\\d+\\.\\d+)&quot;</span>);</span><br><span class="line">         <span class="comment">// 将后缀表达式分割成字符串数组,此处直接使用空白也可以对字符串进行分割！！</span></span><br><span class="line">         String[] strings = exp.split(<span class="string">&quot;&quot;</span>);</span><br><span class="line">         Stack&lt;Double&gt; stack = <span class="keyword">new</span> Stack&lt;Double&gt;();</span><br><span class="line">         <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; strings.length; i++) &#123;</span><br><span class="line">                 <span class="comment">// 这里最好是进行判断彻底消除空格，在该数组的第一位为一个隐形的空格，这里一定要注意在使用exp.split(&quot;&quot;)剔除空白&quot;&quot;</span></span><br><span class="line">                 <span class="comment">// 由于使用的是&quot;&quot;截取导致在数组第一位上面的值为空白</span></span><br><span class="line">                 <span class="keyword">if</span> (strings[i].equals(<span class="string">&quot;&quot;</span>)) &#123;</span><br><span class="line">                         <span class="keyword">continue</span>;</span><br><span class="line">                     &#125;</span><br><span class="line">                 <span class="comment">// 如果遇到了数字则直接进栈</span></span><br><span class="line">                 <span class="keyword">if</span> (pattern.matcher(strings[i]).matches()) &#123;</span><br><span class="line">                         stack.push(Double.parseDouble(strings[i]));</span><br><span class="line">                     &#125;</span><br><span class="line">                 <span class="comment">// 如果是运算符，则弹出栈顶的两个数进行计算</span></span><br><span class="line">                 <span class="keyword">else</span> &#123;</span><br><span class="line">                         <span class="comment">// ！！！这里需要注意，先弹出的那个数其实是第二个计算数值，这里记作y！</span></span><br><span class="line">                         <span class="comment">// 自己书写的时候出错</span></span><br><span class="line">                         <span class="keyword">double</span> y = stack.pop();</span><br><span class="line">                         <span class="keyword">double</span> x = stack.pop();</span><br><span class="line">                         <span class="comment">// 将运算结果重新压栈</span></span><br><span class="line">                         stack.push(calculate(x, y, strings[i]));</span><br><span class="line">                     &#125;</span><br><span class="line">             &#125;</span><br><span class="line">         <span class="comment">// 弹出栈顶元素就是最终结果</span></span><br><span class="line">         <span class="keyword">return</span> stack.pop();</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Double <span class="title">calculate</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y, String string)</span> </span>&#123;</span><br><span class="line">         <span class="comment">// 其实使用case逻辑也可以</span></span><br><span class="line">         <span class="keyword">if</span> (string.trim().equals(<span class="string">&quot;+&quot;</span>)) &#123;</span><br><span class="line">                 <span class="keyword">return</span> x + y;</span><br><span class="line">             &#125;</span><br><span class="line">         <span class="keyword">if</span> (string.trim().equals(<span class="string">&quot;-&quot;</span>)) &#123;</span><br><span class="line">                 <span class="keyword">return</span> x - y;</span><br><span class="line">             &#125;</span><br><span class="line">         <span class="keyword">if</span> (string.trim().equals(<span class="string">&quot;*&quot;</span>)) &#123;</span><br><span class="line">                 <span class="keyword">return</span> x * y;</span><br><span class="line">             &#125;</span><br><span class="line">         <span class="keyword">if</span> (string.trim().equals(<span class="string">&quot;/&quot;</span>)) &#123;</span><br><span class="line">                 <span class="keyword">return</span> x / y;</span><br><span class="line">             &#125;</span><br><span class="line">         <span class="keyword">return</span> (<span class="keyword">double</span>) <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 后缀表达式为： 325-6*3/+</span></span><br><span class="line">        String str = <span class="string">&quot;3+(8-5)*6/3&quot;</span>;</span><br><span class="line">        String str2 = <span class="string">&quot;3+2-5&quot;</span>;</span><br><span class="line"></span><br><span class="line">        System.out.println(StringToArithmetic.infixToSuffix(str));</span><br><span class="line">        System.out.println(StringToArithmetic.stringToArithmetic(str));</span><br><span class="line"></span><br><span class="line"><span class="comment">//        System.out.println(StringToArithmetic.infixToSuffix(str2));</span></span><br><span class="line"><span class="comment">//        System.out.println(StringToArithmetic.stringToArithmetic(str2));</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/StructureAlgorithm/" rel="tag"># StructureAlgorithm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/StructureWithAlgorithm/2018-10-22-02%20%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%95%B0%E7%BB%84/" rel="prev" title="02 数据结构-数组">
+      <i class="fa fa-chevron-left"></i> 02 数据结构-数组
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/StructureWithAlgorithm/2018-10-24-04%20%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E9%98%9F%E5%88%97/" rel="next" title="04 数据结构-队列">
+      04 数据结构-队列 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%88%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">1 栈的基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9F%BA%E6%9C%AC%E7%9A%84%E6%A0%88%E6%93%8D%E4%BD%9C%E5%B0%81%E8%A3%85%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">2 基本的栈操作封装类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%85%A5%E6%A0%88%E5%87%BA%E6%A0%88%E7%A4%BA%E6%84%8F%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">3 入栈出栈示意图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A8-%E4%B8%AD%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%BD%AC%E4%B8%BA%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97"><span class="nav-number">4.</span> <span class="nav-text">4 栈的应用-中缀表达式转为后缀表达式计算四则运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E5%89%8D%EF%BC%8C%E4%B8%AD%EF%BC%8C%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 前，中，后缀表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E9%87%87%E7%94%A8%E4%B8%AD%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 采用中缀表达式的算法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-1-%E5%B0%86%E4%B8%AD%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F%EF%BC%9Aeg"><span class="nav-number">4.2.1.</span> <span class="nav-text">4.2.1 将中缀表达式转换为后缀表达式：eg:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-2-%E4%B8%AD%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">4.2.2.</span> <span class="nav-text">4.2.2 中缀表达式转换为后缀表达式的过程：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-3-%E8%BF%90%E7%94%A8%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%BF%9B%E8%A1%8C%E8%AE%A1%E7%AE%97%EF%BC%9A"><span class="nav-number">4.2.3.</span> <span class="nav-text">4.2.3 运用后缀表达式进行计算：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">5 代码示例</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

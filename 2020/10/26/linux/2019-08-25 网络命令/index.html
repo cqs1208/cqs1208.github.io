@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="nginx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux网络命令">
+<meta property="og:url" content="http://example.com/2020/10/26/linux/2019-08-25%20%E7%BD%91%E7%BB%9C%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="nginx">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-26T03:56:48.234Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/26/linux/2019-08-25%20%E7%BD%91%E7%BB%9C%E5%91%BD%E4%BB%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linux网络命令 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/linux/2019-08-25%20%E7%BD%91%E7%BB%9C%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux网络命令
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">nginx</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Linux网络命令</p>
+<a id="more"></a> 
+
+<h2 id="1-netstat命令详解"><a href="#1-netstat命令详解" class="headerlink" title="1 netstat命令详解"></a>1 netstat命令详解</h2><h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h3><p>Netstat 命令用于显示各种网络相关信息，如网络连接，路由表，接口状态 (Interface Statistics)，masquerade 连接，多播成员 (Multicast Memberships) 等等。</p>
+<p>信息含义</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat | more</span><br><span class="line">Active Internet connections (w/o servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State      </span><br><span class="line">tcp        0      0 izbp12c0zpe8t4yri:53078 100.100.45.106:https    TIME_WAIT  </span><br><span class="line">tcp        0     36 izbp12c0zpe8t4yri0x:ssh 115.236.53.21:opnet-smp ESTABLISHED</span><br><span class="line">tcp        0      0 izbp12c0zpe8t4yri:42882 100.100.100.200:http    TIME_WAIT  </span><br><span class="line">tcp        0      0 izbp12c0zpe8t4yri:53074 100.100.45.106:https    TIME_WAIT  </span><br><span class="line">Active UNIX domain sockets (w/o servers)</span><br><span class="line">Proto RefCnt Flags       Type       State         I-Node   Path</span><br><span class="line">unix  2      [ ]         DGRAM                    9635     /run/systemd/shutdownd</span><br><span class="line">unix  2      [ ]         DGRAM                    16671    </span><br><span class="line">unix  3      [ ]         STREAM     CONNECTED     18590    </span><br><span class="line">unix  3      [ ]         STREAM     CONNECTED     16504    /run/systemd/journal/stdout</span><br></pre></td></tr></table></figure>
+
+<p><strong>Active Internet connections，</strong>称为有源TCP连接，其中”Recv-Q”和”Send-Q”指%0A的是接收队列和发送队列。这些数字一般都应该是0。如果不是则表示软件包正在队列中堆积。这种情况只能在非常少的情况见到。</p>
+<p><strong>Active UNIX domain sockets，</strong>称为有源Unix域套接口(和网络套接字一样，但是只能用于本机通信，性能可以提高一倍)。</p>
+<ul>
+<li><p>Proto显示连接使用的协议,</p>
+</li>
+<li><p>RefCnt表示连接到本套接口上的进程号,</p>
+</li>
+<li><p>Types显示套接口的类型,</p>
+</li>
+<li><p>State显示套接口当前的状态,</p>
+</li>
+<li><p>Path表示连接到套接口的其它进程使用的路径名。</p>
+</li>
+</ul>
+<p>常用参数：</p>
+<p><strong>-a (all) ：</strong>显示所有选项，默认不显示LISTEN相关<br>**-t (tcp) ：<strong>仅显示tcp相关选项<br>**-u (udp) ：</strong>仅显示udp相关选项<br>**-n ：** 拒绝显示别名，能显示数字的全部转化成数字。<br>**-l ：** 仅列出有在 Listen (监听) 的服務状态</p>
+<p><strong>-p ：</strong> 显示建立相关链接的程序名<br>**-r ：** 显示路由信息，路由表<br>**-e ：** 显示扩展信息，例如uid等<br>**-s ：** 按各个协议进行统计<br>**-c ：**  每隔一个固定时间，执行该netstat命令。</p>
+<p>提示：LISTEN和LISTENING的状态只有用-a或者-l才能看到</p>
+<h3 id="2-示例"><a href="#2-示例" class="headerlink" title="2 示例"></a>2 示例</h3><h4 id="1-列出所有连接"><a href="#1-列出所有连接" class="headerlink" title="1 列出所有连接"></a>1 列出所有连接</h4><p>netstat -a</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -a</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State      </span><br><span class="line">tcp        0      0 0.0.0.0:35435           0.0.0.0:*               LISTEN    </span><br><span class="line">tcp        0      0 izbp12c0zpe8t4yri:51328 47.96.118.93:mysql      ESTABLISHED                           </span><br><span class="line">Active UNIX domain sockets (servers and established)</span><br><span class="line">Proto RefCnt Flags       Type       State         I-Node   Path</span><br><span class="line">unix  2      [ ACC ]     STREAM     LISTENING     17518    /tmp/Aegis-&lt;Guid(5A2C30A2-A87D-490A-9281-6765EDAD7CBA)&gt;</span><br><span class="line">unix  2      [ ACC ]     SEQPACKET  LISTENING     9759     /run/udev/control</span><br><span class="line">unix  2      [ ACC ]     STREAM     LISTENING     9761     /run/lvm/lvmetad.socket</span><br><span class="line">unix  2      [ ACC ]     STREAM     LISTENING     18588    public/pickup</span><br></pre></td></tr></table></figure>
+
+<p>上述命令列出 tcp, udp 和 unix 协议下所有套接字的所有连接。然而这些信息还不够详细，管理员往往需要查看某个协议或端口的具体连接情况。</p>
+<h4 id="2-列出-TCP-或-UDP-协议连接"><a href="#2-列出-TCP-或-UDP-协议连接" class="headerlink" title="2 列出 TCP 或 UDP 协议连接"></a>2 列出 TCP 或 UDP 协议连接</h4><p>使用 <strong>-t</strong> 选项列出 TCP 协议的连接： netstat -at</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -at</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State      </span><br><span class="line">tcp        0      0 0.0.0.0:35435           0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:webcache        0.0.0.0:*               LISTEN      </span><br><span class="line">tcp        0      0 izbp12c0zpe8t4yri0x:ssh 115.236.53.21:opnet-smp ESTABLISHED</span><br><span class="line">tcp        0      0 izbp12c0zpe8t4yri:51346 47.96.118.93:mysql      ESTABLISHED</span><br><span class="line">tcp        0     36 izbp12c0zpe8t4yri0x:ssh 115.236.53.211:pacom    ESTABLISHED</span><br></pre></td></tr></table></figure>
+
+<p>使用 <strong>-u</strong> 选项列出 UDP 协议的连接：netstat -au</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -au</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State      </span><br><span class="line">udp        0      0 izbp12c0zpe8t4yri0x:ntp 0.0.0.0:*                          </span><br><span class="line">udp        0      0 localhost:ntp           0.0.0.0:*                          </span><br><span class="line">udp        0      0 0.0.0.0:ntp             0.0.0.0:*                          </span><br><span class="line">udp6       0      0 [::]:ntp                [::]:*  </span><br></pre></td></tr></table></figure>
+
+<p>上面同时显示了 IPv4 和 IPv6 的连接。</p>
+<h4 id="3-禁用反向域名解析"><a href="#3-禁用反向域名解析" class="headerlink" title="3 禁用反向域名解析"></a>3 禁用反向域名解析</h4><p>默认情况下 netstat 会通过反向域名解析技术查找每个 IP 地址对应的主机名。这会降低查找速度。如果你觉得 IP 地址已经足够，而没有必要知道主机名，就使用 <strong>-n</strong> 选项禁用域名解析功能  : netstat -ant</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -ant</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State      </span><br><span class="line">tcp        0      0 0.0.0.0:35435           0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:8080            0.0.0.0:*               LISTEN       </span><br><span class="line">tcp        0      0 127.0.0.1:8005          0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:45831           0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:8009            0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:8585            0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 172.16.34.2:22          115.236.53.211:3433     ESTABLISHED</span><br><span class="line">tcp        0      0 172.16.34.2:51346       47.96.118.93:3306       ESTABLISHED</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-只列出监听中的连接"><a href="#4-只列出监听中的连接" class="headerlink" title="4 只列出监听中的连接"></a>4 只列出监听中的连接</h4><p>任何网络服务的后台进程都会打开一个端口，用于监听接入的请求。这些正在监听的套接字也和连接的套接字一样，也能被 netstat 列出来。使用 <strong>-l</strong> 选项列出正在监听的套接字    : netstat -tnl</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -lnt</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State      </span><br><span class="line">tcp        0      0 0.0.0.0:35435           0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:8080            0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:25              0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 127.0.0.1:8005          0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:45831           0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:8009            0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0      0 0.0.0.0:8585            0.0.0.0:*               LISTEN     </span><br><span class="line">tcp6       0      0 :::3306                 :::*                    LISTEN  </span><br></pre></td></tr></table></figure>
+
+<p>现在我们可以看到处于监听状态的 TCP 端口和连接。如果你查看所有监听端口，去掉 <strong>-t</strong> 选项。如果你只想查看 UDP 端口，使用 -u 选项，代替 <strong>-t</strong> 选项。</p>
+<p>注意：不要使用 <strong>-a</strong> 选项，否则 netstat 会列出所有连接，而不仅仅是监听端口。</p>
+<h4 id="5-获取进程名、进程号、用户-ID"><a href="#5-获取进程名、进程号、用户-ID" class="headerlink" title="5 获取进程名、进程号、用户 ID"></a>5 获取进程名、进程号、用户 ID</h4><p>查看端口和连接的信息时，能查看到它们对应的进程名和进程号对系统管理员来说是非常有帮助的。举个栗子，Apache 的 httpd 服务开启80端口，如果你要查看 http 服务是否已经启动，或者 http 服务是由 apache 还是 nginx 启动的，这时候你可以看看进程名。</p>
+<p>使用 <strong>-p</strong> 选项查看进程信息  ： netstat -nlpt</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -nlpt</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 0.0.0.0:35435           0.0.0.0:*               LISTEN      2642/java           </span><br><span class="line">tcp        0      0 0.0.0.0:8080            0.0.0.0:*               LISTEN      2642/java           </span><br><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      2395/nginx: master  </span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      2432/sshd           </span><br><span class="line">tcp        0      0 0.0.0.0:25              0.0.0.0:*               LISTEN      2304/master         </span><br><span class="line">tcp        0      0 127.0.0.1:8005          0.0.0.0:*               LISTEN      2642/java           </span><br><span class="line">tcp        0      0 0.0.0.0:45831           0.0.0.0:*               LISTEN      2642/java           </span><br><span class="line">tcp        0      0 0.0.0.0:8009            0.0.0.0:*               LISTEN      2642/java           </span><br><span class="line">tcp        0      0 0.0.0.0:8585            0.0.0.0:*               LISTEN      2642/java           </span><br><span class="line">tcp6       0      0 :::3306                 :::*                    LISTEN      2286/mysqld </span><br></pre></td></tr></table></figure>
+
+<p>使用 <strong>-p</strong> 选项时，netstat 必须运行在 root 权限之下，不然它就不能得到运行在 root 权限下的进程名，而很多服务包括 http 和 ftp 都运行在 root 权限之下。</p>
+<p>相比进程名和进程号而言，查看进程的拥有者会更有用。使用 <strong>-ep</strong> 选项可以同时查看进程名和用户名。</p>
+<p>netstat -ltpe</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -ltpe</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       User       Inode      PID/Program name    </span><br><span class="line">tcp        0      0 0.0.0.0:35435           0.0.0.0:*               LISTEN      root       21941      2642/java           </span><br><span class="line">tcp        0      0 0.0.0.0:webcache        0.0.0.0:*               LISTEN      root       21942      2642/java           </span><br><span class="line">tcp        0      0 0.0.0.0:http            0.0.0.0:*               LISTEN      root       19276      2395/nginx: master  </span><br><span class="line">tcp        0      0 0.0.0.0:ssh             0.0.0.0:*               LISTEN      root       20056      2432/sshd           </span><br><span class="line">tcp        0      0 0.0.0.0:smtp            0.0.0.0:*               LISTEN      root       18585      2304/master         </span><br><span class="line">tcp        0      0 localhost:mxi           0.0.0.0:*               LISTEN      root       22410      2642/java           </span><br><span class="line">tcp        0      0 0.0.0.0:45831           0.0.0.0:*               LISTEN      root       21937      2642/java           </span><br><span class="line">tcp        0      0 0.0.0.0:8009            0.0.0.0:*               LISTEN      root       21944      2642/java           </span><br><span class="line">tcp        0      0 0.0.0.0:8585            0.0.0.0:*               LISTEN      root       21938      2642/java           </span><br><span class="line">tcp6       0      0 [::]:mysql              [::]:*                  LISTEN      mysql      18947      2286/mysqld </span><br></pre></td></tr></table></figure>
+
+<p>上面列出 TCP 协议下的监听套接字，同时显示进程信息和一些额外信息。</p>
+<p>这些额外的信息包括用户名和进程的索引节点号。这个命令对网管来说很有用。</p>
+<p><strong>注意</strong> – 假如你将 -n 和 <strong>-e</strong> 选项一起使用，User 列的属性就是用户的 ID 号，而不是用户名。</p>
+<h4 id="6-打印统计数据"><a href="#6-打印统计数据" class="headerlink" title="6 打印统计数据"></a>6 打印统计数据</h4><p>netstat 可以打印出网络统计数据，包括某个协议下的收发包数量。</p>
+<p>下面列出所有网络包的统计情况：netstat -s</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -s</span><br><span class="line">Ip:</span><br><span class="line">    548702 total packets received</span><br><span class="line">    0 forwarded</span><br><span class="line">    0 incoming packets discarded</span><br><span class="line">    548691 incoming packets delivered</span><br><span class="line">    577332 requests sent out</span><br><span class="line">    6 dropped because of missing route</span><br><span class="line">Icmp:</span><br><span class="line">    533 ICMP messages received</span><br><span class="line">    2 input ICMP message failed.</span><br><span class="line">    ICMP input histogram:</span><br><span class="line">        destination unreachable: 55</span><br><span class="line">        timeout in transit: 1</span><br><span class="line">        echo requests: 476</span><br><span class="line">        echo replies: 1</span><br><span class="line">    477 ICMP messages sent</span><br><span class="line">    0 ICMP messages failed</span><br><span class="line">    ICMP output histogram:</span><br><span class="line">        destination unreachable: 1</span><br><span class="line">        echo replies: 476</span><br></pre></td></tr></table></figure>
+
+<p>如果想只打印出 TCP 或 UDP 协议的统计数据，只要加上对应的选项（**-t** 和 <strong>-u</strong>）即可</p>
+<h4 id="7-显示内核路由信息"><a href="#7-显示内核路由信息" class="headerlink" title="7 显示内核路由信息"></a>7 显示内核路由信息</h4><p>使用 <strong>-r</strong> 选项打印内核路由信息。打印出来的信息与 route 命令输出的信息一样。我们也可以使用 <strong>-n</strong> 选项禁止域名解析。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -rn</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface</span><br><span class="line">0.0.0.0         172.16.47.253   0.0.0.0         UG        0 0          0 eth0</span><br><span class="line">169.254.0.0     0.0.0.0         255.255.0.0     U         0 0          0 eth0</span><br><span class="line">172.16.32.0     0.0.0.0         255.255.240.0   U         0 0          0 eth0</span><br></pre></td></tr></table></figure>
+
+<h4 id="8-打印网络接口"><a href="#8-打印网络接口" class="headerlink" title="8 打印网络接口"></a>8 打印网络接口</h4><p>netstat 也能打印网络接口信息，**-i** 选项就是为这个功能而生。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -i</span><br><span class="line">Kernel Interface table</span><br><span class="line">Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg</span><br><span class="line">eth0      1500   586316      0      0 0        581869      0      0      0 BMRU</span><br><span class="line">lo       65536        0      0      0 0             0      0      0      0 LRU</span><br></pre></td></tr></table></figure>
+
+<p>上面输出的信息比较原始。我们将 <strong>-e</strong> 选项和 <strong>-i</strong> 选项搭配使用，可以输出用户友好的信息。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp12c0zpe8t4yri0xphiz ~]# netstat -ie</span><br><span class="line">Kernel Interface table</span><br><span class="line">eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 172.16.34.2  netmask 255.255.240.0  broadcast 172.16.47.255</span><br><span class="line">        ether 00:16:3e:0c:7e:4a  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 586327  bytes 118600028 (113.1 MiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 581878  bytes 238034322 (227.0 MiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br></pre></td></tr></table></figure>
+
+<p>上面的输出信息与 ifconfig 输出的信息一样。</p>
+<h2 id="2-top-命令详解"><a href="#2-top-命令详解" class="headerlink" title="2 top 命令详解"></a>2 top 命令详解</h2><h3 id="1-命令使用"><a href="#1-命令使用" class="headerlink" title="1 命令使用"></a>1 命令使用</h3><p>格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top [-] [d] [p] [q] [c] [C] [S] [s] [n]</span><br></pre></td></tr></table></figure>
+
+<p>参数说明</p>
+<ul>
+<li>**d : **指定每两次屏幕信息刷新之间的时间间隔。当然用户可以使用s交互命令来改变之。 </li>
+<li>**p : ** 通过指定监控进程ID来仅仅监控某个进程的状态。 </li>
+<li>**q : ** 该选项将使top没有任何延迟的进行刷新。如果调用程序有超级用户权限，那么top将以尽可能高的优先级运行。 </li>
+<li><strong>S ：</strong> 指定累计模式 </li>
+<li><strong>s ：</strong> 使top命令在安全模式中运行。这将去除交互命令所带来的潜在危险。 </li>
+<li><strong>i ：</strong> 使top不显示任何闲置或者僵死进程。 </li>
+<li><strong>c ：</strong> 显示整个命令行而不只是显示命令名 </li>
+</ul>
+<p>常用命令说明</p>
+<p>下面介绍在top命令执行过程中可以使用的一些交互命令。从使用角度来看，熟练的掌握这些命令比掌握选项还重要一些。这些命令都是单字母的，如果在命令行选项中使用了s选项，则可能其中一些命令会被屏蔽掉。</p>
+<ul>
+<li><strong>Ctrl+L ：</strong> 擦除并且重写屏幕。 </li>
+<li><strong>h或者? ：</strong> 显示帮助画面，给出一些简短的命令总结说明。 </li>
+<li><strong>k ：</strong>       终止一个进程。系统将提示用户输入需要终止的进程PID，以及需要发送给该进程什么样的信号。一般的终止进程可以使用15信号；如果不能正常结束那就使用信号9强制结束该进程。默认值是信号15。在安全模式中此命令被屏蔽。 </li>
+<li><strong>i ：</strong> 忽略闲置和僵死进程。这是一个开关式命令。 </li>
+<li><strong>q ：</strong> 退出程序。 </li>
+<li><strong>r ：</strong> 重新安排一个进程的优先级别。系统提示用户输入需要改变的进程PID以及需要设置的进程优先级值。输入一个正值将使优先级降低，反之则可以使该进程拥有更高的优先权。默认值是10。 </li>
+<li><strong>S ：</strong> 切换到累计模式。 </li>
+<li><strong>s ：</strong> 改变两次刷新之间的延迟时间。系统将提示用户输入新的时间，单位为s。如果有小数，就换算成m s。输入0值则系统将不断刷新，默认值是5 s。需要注意的是如果设置太小的时间，很可能会引起不断刷新，从而根本来不及看清显示的情况，而且系统负载也会大大增加。 </li>
+<li><strong>f或者F ：</strong> 从当前显示中添加或者删除项目。 </li>
+<li><strong>o或者O ：</strong> 改变显示项目的顺序。 </li>
+<li><strong>l ：</strong> 切换显示平均负载和启动时间信息。 </li>
+<li><strong>m ：</strong> 切换显示内存信息。 </li>
+<li><strong>t ：</strong> 切换显示进程和CPU状态信息。 </li>
+<li><strong>c ：</strong> 切换显示命令名称和完整命令行。 </li>
+<li><strong>M ：</strong> 根据驻留内存大小进行排序。 </li>
+<li><strong>P ：</strong> 根据CPU使用百分比大小进行排序。 </li>
+<li><strong>T ：</strong> 根据时间/累计时间进行排序。 </li>
+<li><strong>W ：</strong> 将当前设置写入~/.toprc文件中。这是写top配置文件的推荐方法。</li>
+</ul>
+<h3 id="2-参数含义"><a href="#2-参数含义" class="headerlink" title="2 参数含义"></a>2 参数含义</h3><p>输入top</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">top - 10:25:48 up 44 days, 14:33,  2 users,  load average: 0.21, 0.07, 0.06</span><br><span class="line">Tasks:  75 total,   2 running,  73 sleeping,   0 stopped,   0 zombie</span><br><span class="line"><span class="meta">%</span><span class="bash">Cpu(s):  1.3 us,  1.0 sy,  0.0 ni,97.3 id,  0.0 wa,  0.3 hi,  0.0 si,  0.0 st</span></span><br><span class="line">KiB Mem :  1016164 total,    71696 free,   291808 used,   652660 buff/cache</span><br><span class="line">KiB Swap:        0 total,        0 free,        0 used.   551348 avail Mem </span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND     </span><br><span class="line">20023 root       0 -20  131044  12088   5108 S  0.3  1.2  91:03.75 AliYunDun   </span><br><span class="line">    1 root      20   0   43460   3464   2192 S  0.0  0.3   0:37.34 systemd     </span><br><span class="line">    2 root      20   0       0      0      0 S  0.0  0.0   0:00.10 kthreadd    </span><br><span class="line">    3 root      20   0       0      0      0 S  0.0  0.0   0:04.62 ksoftirqd/0 </span><br></pre></td></tr></table></figure>
+
+<h4 id="1-系统运行时间和平均负载"><a href="#1-系统运行时间和平均负载" class="headerlink" title="1 系统运行时间和平均负载"></a>1 系统运行时间和平均负载</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top - 10:25:48 up 44 days, 14:33,  2 users,  load average: 0.21, 0.07, 0.06</span><br></pre></td></tr></table></figure>
+
+<p>10:25:48 — <strong>当前系统时间</strong><br>up 44 days, 14:33 — <strong>系统已经运行了44天14小时33分钟（在这期间没有重启过）</strong><br>2 users — <strong>当前有2个用户登录系统</strong><br>load average: 0.21, 0.07, 0.06 — <strong>load average后面的三个数分别是5分钟、10分钟、15分钟的负载情况。</strong></p>
+<h4 id="2-任务"><a href="#2-任务" class="headerlink" title="2 任务"></a>2 任务</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Tasks:  75 total,   2 running,  73 sleeping,   0 stopped,   0 zombie</span><br></pre></td></tr></table></figure>
+
+<p>Tasks — 任务（进程），系统现在共有75个进程，其中处于运行中的有2个，73个在休眠（sleep），stoped状态的有0个，zombie状态（僵尸）的有0个。</p>
+<h4 id="3-cpu状态"><a href="#3-cpu状态" class="headerlink" title="3 cpu状态"></a>3 cpu状态</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">%</span><span class="bash">Cpu(s):  1.3 us,  1.0 sy,  0.0 ni,97.3 id,  0.0 wa,  0.3 hi,  0.0 si,  0.0 st</span></span><br></pre></td></tr></table></figure>
+
+<p>1.3% us — <strong>用户空间占用CPU的百分比。</strong><br>1.0% sy — <strong>内核空间占用CPU的百分比。</strong><br>0.0% ni — <strong>改变过优先级的进程占用CPU的百分比</strong><br>97.3% id — <strong>空闲CPU百分比</strong><br>0.0% wa — <strong>IO等待占用CPU的百分比</strong><br>0.3% hi — <strong>硬中断（Hardware IRQ）占用CPU的百分比</strong><br>0.0% si — <strong>软中断（Software Interrupts）占用CPU的百分比</strong></p>
+<h4 id="4-内存使用"><a href="#4-内存使用" class="headerlink" title="4 内存使用"></a>4 内存使用</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">KiB Mem :  1016164 total,    71696 free,   291808 used,   652660 buff/cache</span><br><span class="line">KiB Swap:        0 total,        0 free,        0 used.   551348 avail Mem </span><br></pre></td></tr></table></figure>
+
+<p>接下来两行显示内存使用率，有点像’free’命令。第一行是物理内存使用，第二行是虚拟内存使用(交换空间)。</p>
+<p>物理内存显示如下:全部可用内存、已使用内存、空闲内存、缓冲内存。相似地：交换部分显示的是：全部、已使用、空闲和缓冲交换空间。</p>
+<p>内存显示可以用’m’命令切换。</p>
+<p>1016164 total — 物理内存总量（1016M）<br>291808 used — 使用中的内存总量（291M）<br>71696 free — 空闲内存总量（71M）<br>652660 buffers — 缓存的内存量 （652M）</p>
+<p>swap交换分区<br>0 total — 交换区总量（0M）<br>0 used — 使用的交换区总量（0M）<br>0 free — 空闲交换区总量（0M）</p>
+<h4 id="5-各进程（任务）的状态监控"><a href="#5-各进程（任务）的状态监控" class="headerlink" title="5 各进程（任务）的状态监控"></a>5 各进程（任务）的状态监控</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND     </span><br><span class="line">20023 root       0 -20  131044  12088   5108 S  0.3  1.2  91:03.75 AliYunDun   </span><br><span class="line">    1 root      20   0   43460   3464   2192 S  0.0  0.3   0:37.34 systemd     </span><br><span class="line">    2 root      20   0       0      0      0 S  0.0  0.0   0:00.10 kthreadd    </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>PID：进程ID，进程的唯一标识符</p>
+</li>
+<li><p>USER：进程所有者的实际用户名。</p>
+</li>
+<li><p>PR：进程的调度优先级。这个字段的一些值是’rt’。这意味这这些进程运行在实时态。</p>
+</li>
+<li><p>NI：进程的nice值（优先级）。越小的值意味着越高的优先级。负值表示高优先级，正值表示低优先级</p>
+</li>
+<li><p>VIRT：进程使用的虚拟内存。进程使用的虚拟内存总量，单位kb。VIRT=SWAP+RES</p>
+</li>
+<li><p>RES：驻留内存大小。驻留内存是任务使用的非交换物理内存大小。进程使用的、未被换出的物理内存大小，单位kb。RES=CODE+DATA</p>
+</li>
+<li><p>SHR：SHR是进程使用的共享内存。共享内存大小，单位kb</p>
+</li>
+<li><p>S：这个是进程的状态。它有以下不同的值:</p>
+<ul>
+<li><p>D - 不可中断的睡眠态。</p>
+</li>
+<li><p>R – 运行态</p>
+</li>
+<li><p>S – 睡眠态</p>
+</li>
+<li><p>T – 被跟踪或已停止</p>
+</li>
+<li><p>Z – 僵尸态</p>
+</li>
+</ul>
+</li>
+<li><p>%CPU：自从上一次更新时到现在任务所使用的CPU时间百分比。</p>
+</li>
+<li><p>%MEM：进程使用的可用物理内存百分比。</p>
+</li>
+<li><p>TIME+：任务启动后到现在所使用的全部CPU时间，精确到百分之一秒。</p>
+</li>
+<li><p>COMMAND：运行进程所使用的命令。进程名称（命令名/命令行）</p>
+</li>
+</ul>
+<h3 id="3-常用操作"><a href="#3-常用操作" class="headerlink" title="3 常用操作"></a>3 常用操作</h3><p>top   //每隔5秒显式所有进程的资源占用情况<br>top -d 2  //每隔2秒显式所有进程的资源占用情况<br>top -c  //每隔5秒显式进程的资源占用情况，并显示进程的命令行参数(默认只有进程名)<br>top -p 12345 -p 6789//每隔5秒显示pid是12345和pid是6789的两个进程的资源占用情况<br>top -d 2 -c -p 123456 //每隔2秒显示pid是12345的进程的资源使用情况，并显式该进程启动的命令行参数</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/linux/2019-08-25%20%E5%90%AF%E7%94%A8%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/" rel="prev" title="启用虚拟内存">
+      <i class="fa fa-chevron-left"></i> 启用虚拟内存
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/linux/2019-09-03%20%E6%96%87%E4%BB%B6%E7%BC%96%E8%BE%91%E3%80%81%E6%9F%A5%E6%89%BE%E3%80%81%E6%9F%A5%E7%9C%8B/" rel="next" title="文件管理 文件编辑、查找、查看、传输">
+      文件管理 文件编辑、查找、查看、传输 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-netstat%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">1 netstat命令详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.2.</span> <span class="nav-text">2 示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.2.1.</span> <span class="nav-text">1 列出所有连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%88%97%E5%87%BA-TCP-%E6%88%96-UDP-%E5%8D%8F%E8%AE%AE%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.2.2.</span> <span class="nav-text">2 列出 TCP 或 UDP 协议连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E7%A6%81%E7%94%A8%E5%8F%8D%E5%90%91%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90"><span class="nav-number">1.2.3.</span> <span class="nav-text">3 禁用反向域名解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%8F%AA%E5%88%97%E5%87%BA%E7%9B%91%E5%90%AC%E4%B8%AD%E7%9A%84%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.2.4.</span> <span class="nav-text">4 只列出监听中的连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E8%8E%B7%E5%8F%96%E8%BF%9B%E7%A8%8B%E5%90%8D%E3%80%81%E8%BF%9B%E7%A8%8B%E5%8F%B7%E3%80%81%E7%94%A8%E6%88%B7-ID"><span class="nav-number">1.2.5.</span> <span class="nav-text">5 获取进程名、进程号、用户 ID</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E6%89%93%E5%8D%B0%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE"><span class="nav-number">1.2.6.</span> <span class="nav-text">6 打印统计数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E6%98%BE%E7%A4%BA%E5%86%85%E6%A0%B8%E8%B7%AF%E7%94%B1%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.7.</span> <span class="nav-text">7 显示内核路由信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-%E6%89%93%E5%8D%B0%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.2.8.</span> <span class="nav-text">8 打印网络接口</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-top-%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">2 top 命令详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">1 命令使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8F%82%E6%95%B0%E5%90%AB%E4%B9%89"><span class="nav-number">2.2.</span> <span class="nav-text">2 参数含义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%B3%BB%E7%BB%9F%E8%BF%90%E8%A1%8C%E6%97%B6%E9%97%B4%E5%92%8C%E5%B9%B3%E5%9D%87%E8%B4%9F%E8%BD%BD"><span class="nav-number">2.2.1.</span> <span class="nav-text">1 系统运行时间和平均负载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BB%BB%E5%8A%A1"><span class="nav-number">2.2.2.</span> <span class="nav-text">2 任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-cpu%E7%8A%B6%E6%80%81"><span class="nav-number">2.2.3.</span> <span class="nav-text">3 cpu状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8"><span class="nav-number">2.2.4.</span> <span class="nav-text">4 内存使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E5%90%84%E8%BF%9B%E7%A8%8B%EF%BC%88%E4%BB%BB%E5%8A%A1%EF%BC%89%E7%9A%84%E7%8A%B6%E6%80%81%E7%9B%91%E6%8E%A7"><span class="nav-number">2.2.5.</span> <span class="nav-text">5 各进程（任务）的状态监控</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">2.3.</span> <span class="nav-text">3 常用操作</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Mybatis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis分页插件(Plugin+Interceptor)">
+<meta property="og:url" content="http://example.com/2020/10/26/Mybatis/2019-12-21%20Mybatis%E5%88%86%E9%A1%B5%E6%8F%92%E4%BB%B6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Mybatis">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-26T03:56:48.266Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Mybatis">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Mybatis/2019-12-21%20Mybatis%E5%88%86%E9%A1%B5%E6%8F%92%E4%BB%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Mybatis分页插件(Plugin+Interceptor) | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Mybatis/2019-12-21%20Mybatis%E5%88%86%E9%A1%B5%E6%8F%92%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Mybatis分页插件(Plugin+Interceptor)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mybatis/" itemprop="url" rel="index"><span itemprop="name">Mybatis</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Mybatis</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Mybatis的拦截器实现机制,使用的是JDK的InvocationHandler</p>
+<a id="more"></a> 
+
+<h2 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h2><p>拦截器：PageInterceptor</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Intercepts(&#123; @Signature(method = &quot;prepare&quot;, type = StatementHandler.class, args = &#123;Connection.class, Integer.class&#125;) &#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PageInterceptor</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 数据库类型，不同的数据库有不同的分页方法 */</span></span><br><span class="line">    <span class="keyword">private</span> String databaseType;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Invocation invocation)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        RoutingStatementHandler handler = (RoutingStatementHandler) invocation.getTarget();</span><br><span class="line">        StatementHandler delegate = (StatementHandler) ReflectUtil.getFieldValue(handler, <span class="string">&quot;delegate&quot;</span>);</span><br><span class="line">        BoundSql boundSql = delegate.getBoundSql();</span><br><span class="line">        Object obj = boundSql.getParameterObject();</span><br><span class="line">        <span class="keyword">if</span> (obj <span class="keyword">instanceof</span> Page&lt;?&gt;) &#123;</span><br><span class="line">            Page&lt;?&gt; page = (Page&lt;?&gt;) obj;</span><br><span class="line">            MappedStatement mappedStatement = (MappedStatement) ReflectUtil.getFieldValue(delegate, <span class="string">&quot;mappedStatement&quot;</span>);</span><br><span class="line">            Connection connection = (Connection) invocation.getArgs()[<span class="number">0</span>];</span><br><span class="line">            String sql = boundSql.getSql();</span><br><span class="line">            String sortFild = page.getSortField();</span><br><span class="line">            String sortValue = page.getSortValue();</span><br><span class="line">            page.setSortField(<span class="keyword">null</span>);</span><br><span class="line">            page.setSortValue(<span class="keyword">null</span>);</span><br><span class="line">            <span class="keyword">if</span>(page.isPage()) &#123;</span><br><span class="line">            	<span class="keyword">this</span>.settotalCount(page, mappedStatement, connection);</span><br><span class="line">            &#125;</span><br><span class="line">			<span class="keyword">this</span>.setTimestamp(page, connection);</span><br><span class="line">            page.setSortField(sortFild);</span><br><span class="line">            page.setSortValue(sortValue);</span><br><span class="line">            String pageSql = <span class="keyword">this</span>.getPageSql(page, sql);</span><br><span class="line">            ReflectUtil.setFieldValue(boundSql, <span class="string">&quot;sql&quot;</span>, pageSql);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> invocation.proceed();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 拦截器对应的封装原始对象的方法</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">plugin</span><span class="params">(Object target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Plugin.wrap(target, <span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置注册拦截器时设定的属性</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setProperties</span><span class="params">(Properties properties)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.databaseType = properties.getProperty(<span class="string">&quot;databaseType&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据page对象获取对应的分页查询Sql语句，这里只做了两种数据库类型，Mysql和Oracle 其它的数据库都 没有进行分页</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> page 分页对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> sql 原sql语句</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getPageSql</span><span class="params">(Page&lt;?&gt; page, String sql)</span> </span>&#123;</span><br><span class="line">        StringBuffer sqlBuffer = <span class="keyword">new</span> StringBuffer(sql);</span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;mysql&quot;</span>.equalsIgnoreCase(databaseType)) &#123;</span><br><span class="line">            <span class="keyword">return</span> getMysqlPageSql(page, sqlBuffer);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;oracle&quot;</span>.equalsIgnoreCase(databaseType)) &#123;</span><br><span class="line">            <span class="keyword">return</span> getOraclePageSql(page, sqlBuffer);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sqlBuffer.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取Mysql数据库的分页查询语句</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> page 分页对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> sqlBuffer 包含原sql语句的StringBuffer对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Mysql数据库分页语句</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getMysqlPageSql</span><span class="params">(Page&lt;?&gt; page, StringBuffer sqlBuffer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> offset = (page.getPageNo() - <span class="number">1</span>) * page.getPageSize();</span><br><span class="line">        <span class="keyword">if</span>(page.isPage())&#123;</span><br><span class="line">            sqlBuffer.append(<span class="string">&quot; limit &quot;</span>).append(offset).append(<span class="string">&quot;,&quot;</span>).append(page.getPageSize());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sqlBuffer.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取Oracle数据库的分页查询语句</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> page 分页对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> sqlBuffer 包含原sql语句的StringBuffer对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Oracle数据库的分页查询语句</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getOraclePageSql</span><span class="params">(Page&lt;?&gt; page, StringBuffer sqlBuffer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> offset = (page.getPageNo() - <span class="number">1</span>) * page.getPageSize() + <span class="number">1</span>;</span><br><span class="line">        sqlBuffer.insert(<span class="number">0</span>, <span class="string">&quot;select u.*, rownum r from (&quot;</span>).append(<span class="string">&quot;) u where rownum &lt; &quot;</span>).append(offset</span><br><span class="line">                                                                                                        + page.getPageSize());</span><br><span class="line">        sqlBuffer.insert(<span class="number">0</span>, <span class="string">&quot;select * from (&quot;</span>).append(<span class="string">&quot;) where r &gt;= &quot;</span>).append(offset);</span><br><span class="line">        <span class="keyword">return</span> sqlBuffer.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 给当前的参数对象page设置总记录数</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> page Mapper映射语句对应的参数对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> mappedStatement Mapper映射语句</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> connection 当前的数据库连接</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">settotalCount</span><span class="params">(Page&lt;?&gt; page, MappedStatement mappedStatement, Connection connection)</span> </span>&#123;</span><br><span class="line">        BoundSql boundSql = mappedStatement.getBoundSql(page);</span><br><span class="line">        String sql = boundSql.getSql();</span><br><span class="line">        String countSql = <span class="keyword">this</span>.getCountSql(sql);</span><br><span class="line">        List&lt;ParameterMapping&gt; parameterMappings = boundSql.getParameterMappings();</span><br><span class="line">        BoundSql countBoundSql = <span class="keyword">new</span> BoundSql(mappedStatement.getConfiguration(), countSql, parameterMappings, page);</span><br><span class="line">        ParameterHandler parameterHandler = <span class="keyword">new</span> DefaultParameterHandler(mappedStatement, page, countBoundSql);</span><br><span class="line">        PreparedStatement pstmt = <span class="keyword">null</span>;</span><br><span class="line">        ResultSet rs = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            pstmt = connection.prepareStatement(countSql);</span><br><span class="line">            parameterHandler.setParameters(pstmt);</span><br><span class="line">            rs = pstmt.executeQuery();</span><br><span class="line">            <span class="keyword">if</span> (rs.next()) &#123;</span><br><span class="line">                <span class="keyword">int</span> totalCount = rs.getInt(<span class="number">1</span>);</span><br><span class="line">                page.setTotalCount(totalCount);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (rs != <span class="keyword">null</span>) rs.close();</span><br><span class="line">                <span class="keyword">if</span> (pstmt != <span class="keyword">null</span>) pstmt.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setTimestamp</span><span class="params">(Page&lt;?&gt; page, Connection connection)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		Statement stmt = <span class="keyword">null</span>;</span><br><span class="line">		ResultSet rs = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span></span><br><span class="line">		&#123;</span><br><span class="line">			stmt = connection.createStatement();</span><br><span class="line">			rs = stmt.executeQuery(getTimestampSql());</span><br><span class="line">			<span class="keyword">if</span> (rs.next())</span><br><span class="line">			&#123;</span><br><span class="line">				Date timestamp = rs.getTime(<span class="number">1</span>);</span><br><span class="line">				page.setTimestamp(<span class="keyword">new</span> SimpleDateFormat(<span class="string">&quot;yyyyMMddHHmmss&quot;</span>).format(timestamp));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (SQLException e)</span><br><span class="line">		&#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">finally</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">try</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (rs != <span class="keyword">null</span>)</span><br><span class="line">					rs.close();</span><br><span class="line">				<span class="keyword">if</span> (stmt != <span class="keyword">null</span>)</span><br><span class="line">					stmt.close();</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span> (SQLException e)</span><br><span class="line">			&#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据原Sql语句获取对应的查询总记录数的Sql语句</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> sql</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getCountSql</span><span class="params">(String sql)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;select count(1) from ( &quot;</span> + sql+<span class="string">&quot;) aaa&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> String <span class="title">getTimestampSql</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="string">&quot;mysql&quot;</span>.equalsIgnoreCase(databaseType))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="string">&quot;select now()&quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;oracle&quot;</span>.equalsIgnoreCase(databaseType))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="string">&quot;select sysdate from dual&quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="string">&quot;select now()&quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 利用反射进行操作的一个工具类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ReflectUtil</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 利用反射获取指定对象的指定属性</span></span><br><span class="line"><span class="comment">         * </span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> obj 目标对象</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> fieldName 目标属性</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@return</span> 目标属性的值</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">getFieldValue</span><span class="params">(Object obj, String fieldName)</span> </span>&#123;</span><br><span class="line">            Object result = <span class="keyword">null</span>;</span><br><span class="line">            Field field = ReflectUtil.getField(obj, fieldName);</span><br><span class="line">            <span class="keyword">if</span> (field != <span class="keyword">null</span>) &#123;</span><br><span class="line">                field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    result = field.get(obj);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IllegalArgumentException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 利用反射获取指定对象里面的指定属性</span></span><br><span class="line"><span class="comment">         * </span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> obj 目标对象</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> fieldName 目标属性</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@return</span> 目标字段</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Field <span class="title">getField</span><span class="params">(Object obj, String fieldName)</span> </span>&#123;</span><br><span class="line">            Field field = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">for</span> (Class&lt;?&gt; clazz = obj.getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    field = clazz.getDeclaredField(fieldName);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (NoSuchFieldException e) &#123;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> field;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 利用反射设置指定对象的指定属性为指定的值</span></span><br><span class="line"><span class="comment">         * </span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> obj 目标对象</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> fieldName 目标属性</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> fieldValue 目标值</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setFieldValue</span><span class="params">(Object obj, String fieldName, String fieldValue)</span> </span>&#123;</span><br><span class="line">            Field field = ReflectUtil.getField(obj, fieldName);</span><br><span class="line">            <span class="keyword">if</span> (field != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">                    field.set(obj, fieldValue);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IllegalArgumentException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Page 对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Page</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Paginable</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">8933698230226183372L</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span>   DEFAULT_PAGE_SIZE = <span class="number">15</span>;                  <span class="comment">// 默认每页记录数</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span>   PAGE_COUNT        = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">int</span>               pageNo            = <span class="number">1</span>;                   <span class="comment">// 页码</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>               pageSize          = DEFAULT_PAGE_SIZE;   <span class="comment">// 每页记录数</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>               totalCount        = <span class="number">0</span>;                   <span class="comment">// 总记录数</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>               totalPage         = <span class="number">0</span>;                   <span class="comment">// 总页数</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> String 			  timestamp 		= <span class="keyword">null</span>;                <span class="comment">// 查询时间戳</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> 		  full				= <span class="keyword">true</span>;				   <span class="comment">// 是否全量更新 </span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span>			  isPage		    = <span class="keyword">true</span>;				   <span class="comment">// 是否分页</span></span><br><span class="line">	<span class="keyword">private</span> String            sortField;                               <span class="comment">//排序字段</span></span><br><span class="line">	<span class="keyword">private</span> String            sortValue;                               <span class="comment">//排序值 asc/desc</span></span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getSortField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> sortField;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSortField</span><span class="params">(String sortField)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.sortField = sortField;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getSortValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> sortValue;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSortValue</span><span class="params">(String sortValue)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.sortValue = sortValue;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPageNo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> pageNo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPageNo</span><span class="params">(<span class="keyword">int</span> pageNo)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.pageNo = pageNo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPageSize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> pageSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPageSize</span><span class="params">(<span class="keyword">int</span> pageSize)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.pageSize = pageSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTotalCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> totalCount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTotalCount</span><span class="params">(<span class="keyword">int</span> totalCount)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.totalCount = totalCount;</span><br><span class="line">        <span class="keyword">int</span> totalPage = totalCount % pageSize == <span class="number">0</span> ? totalCount / pageSize : totalCount / pageSize + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">this</span>.setTotalPage(totalPage);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTotalPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> totalPage;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTotalPage</span><span class="params">(<span class="keyword">int</span> totalPage)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.totalPage = totalPage;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFirstPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> pageNo &lt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isLastPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> pageNo &gt;= totalPage;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getNextPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> isLastPage() ? pageNo : (pageNo + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPrePage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> isFirstPage() ? pageNo : (pageNo - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getBeginIndex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (pageNo &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> (pageSize * (pageNo - <span class="number">1</span>));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getEndIndex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (pageNo &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> Math.min(pageSize * pageNo, totalCount);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getBeginPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (pageNo &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> (PAGE_COUNT * ((pageNo - <span class="number">1</span>) / PAGE_COUNT)) + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getEndPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (pageNo &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> Math.min(PAGE_COUNT * ((pageNo - <span class="number">1</span>) / PAGE_COUNT + <span class="number">1</span>), getTotalPage());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> full;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFull</span><span class="params">(<span class="keyword">boolean</span> full)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.full = full;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getTimestamp</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> timestamp;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTimestamp</span><span class="params">(String timestamp)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.timestamp = timestamp;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> isPage;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setIsPage</span><span class="params">(<span class="keyword">boolean</span> isPage)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.isPage = isPage;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Paginable 注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Paginable</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line">    <span class="comment">/** 总记录数 */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getTotalCount</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">/** 总页数 */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getTotalPage</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">/** 每页记录数 */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getPageSize</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">/** 当前页号 */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getPageNo</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">/** 是否第一页 */</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isFirstPage</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">/** 是否最后一页 */</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isLastPage</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">/** 返回下页的页号 */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getNextPage</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">/** 返回上页的页号 */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getPrePage</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">/** 取得当前页显示的项的起始序号 */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getBeginIndex</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">/** 取得当前页显示的末项序号 */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getEndIndex</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getBeginPage</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getEndPage</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      String resource = <span class="string">&quot;qingsong-mybatis.xml&quot;</span>;</span><br><span class="line">      InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">      SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">      SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line">      UserMapper userMapper = session.getMapper(UserMapper.class);</span><br><span class="line">      User result = userMapper.selectByid(<span class="number">1</span>);</span><br><span class="line">      System.out.println(result.toString());</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>分页插件执行步骤：</p>
+<p>1，PageInterceptor：注册到Configuration的拦截器链上，拦截所有查询</p>
+<p>2，判断是否是分页查询对象<code>if (obj instanceof Page&lt;?&gt;)</code> 如果是，则利用反射拿出<code>StatementHandler</code>先拼接sql查询出总条数，封装到page对象中，之后在原sql语句上拼接limit参数，再执行后续流程</p>
+<h2 id="注解说明"><a href="#注解说明" class="headerlink" title="注解说明"></a>注解说明</h2><p>@Intercepts 在实现Interceptor接口的类声明,使该类注册成为拦截器<br>  Signature[] value//定义需要拦截哪些类,哪些方法<br>@Signature 定义哪些类(4种)，方法，参数需要被拦截<br>  Class<?> type()//ParameterHandler,ResultSetHandler,StatementHandler,Executor
+  String method()//
+  Class<?>[] args()//</p>
+<h2 id="调用分析"><a href="#调用分析" class="headerlink" title="调用分析"></a>调用分析</h2><p>当我们调用ParameterHandler,ResultSetHandler,StatementHandler,Executor的对象的时候,实际上使用的是Plugin这个代理类的对象,</p>
+<p>Plugin类实现了InvocationHandler接口.,在调用上述被代理类的方法的时候,就会执行Plugin的invoke方法.<br>Plugin在invoke方法中根据@Intercepts的配置信息(方法名,参数等)动态判断是否需要拦截该方法.<br>再然后使用需要拦截的方法Method封装成Invocation,并调用Interceptor的proceed方法.</p>
+<p><strong>执行大概是这样的流程:拦截器代理类对象-&gt;拦截器-&gt;目标方法</strong></p>
+<p><strong>Executor  -&gt;  Plugin  -&gt;  Interceptor  -&gt;  InvocationExecutor.Method  -&gt;  Plugin.invoke  -&gt;  Interceptor.intercept  -&gt;  Invocation.proceed  -&gt;  method.invoke</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mybatis/" rel="tag"># Mybatis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/MQ/2019-11-12%20MQ%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%B9%82%E7%AD%89%E6%80%A7/" rel="prev" title="MQ如何保证幂等性">
+      <i class="fa fa-chevron-left"></i> MQ如何保证幂等性
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Mybatis/2020-02-14%20Mybatis%E7%BC%93%E5%AD%98%E3%80%81%E6%B5%81%E7%A8%8B%E3%80%81%E9%9B%86%E6%88%90%E5%8F%8A%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="next" title="Mybatis缓存、流程、集成及源码解析">
+      Mybatis缓存、流程、集成及源码解析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">示例：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E8%A7%A3%E8%AF%B4%E6%98%8E"><span class="nav-number">2.</span> <span class="nav-text">注解说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">调用分析</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

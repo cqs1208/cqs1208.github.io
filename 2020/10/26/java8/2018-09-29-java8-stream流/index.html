@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="java8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java8 Stream流">
+<meta property="og:url" content="http://example.com/2020/10/26/java8/2018-09-29-java8-stream%E6%B5%81/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="java8">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Java8/Java8_streamInherit.png">
+<meta property="og:image" content="http://example.com/images/Java8/Java8_stream.png">
+<meta property="og:image" content="http://example.com/images/Java8/Java8_streamSink.jpg">
+<meta property="og:image" content="http://example.com/images/Java8/Java8_streamSink2.jpg">
+<meta property="article:published_time" content="2020-10-26T03:56:48.150Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Java8">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Java8/Java8_streamInherit.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/java8/2018-09-29-java8-stream%E6%B5%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>java8 Stream流 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/java8/2018-09-29-java8-stream%E6%B5%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java8 Stream流
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java8/" itemprop="url" rel="index"><span itemprop="name">Java8</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">java8</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Stream 使用一种类似用 SQL 语句从数据库查询数据的直观方式来提供一种对Java集合运算和表达的高阶抽象。 </p>
+<a id="more"></a> 
+
+<p>​    这种风格将要处理的元素集合看作一种流， 流在管道中传输， 并且可以在管道的节点上进行处理， 比如筛选， 排序，聚合等。元素流在管道中经过中间操作（intermediate operation）的处理，最后由最终操作(terminal operation)得到前面处理的结果。 </p>
+<h3 id="1-什么是-Stream？"><a href="#1-什么是-Stream？" class="headerlink" title="1 什么是 Stream？"></a>1 什么是 Stream？</h3><p>Stream（流）是一个来自数据源的元素队列并支持聚合操作 </p>
+<ul>
+<li>元素是特定类型的对象，形成一个队列。 Java中的Stream并不会存储元素，而是按需计算。</li>
+<li>数据源流的来源。可以是集合，数组，I/O channel， 产生器generator等 </li>
+<li>聚合操作类似SQL语句一样的操作，比如filter, map, reduce, find, match, sorted等。</li>
+</ul>
+<p>Stream操作还有两个基础的特征：  </p>
+<ul>
+<li><strong>Pipelining:</strong> 中间操作都会返回流对象本身。这样多个操作可以串联成一个管道，如同流式风格（fluent style）。 这样做可以对操作进行优化，比如延迟执行(laziness)和短路( short-circuiting)。 </li>
+<li><strong>内部迭代：</strong>以前对集合遍历都是通过Iterator或者For-Each的方式, 显式的在集合外部进行迭代，这叫做外部迭代。 Stream提供了内部迭代的方式，通过访问者模式(Visitor)实现。 </li>
+</ul>
+<h3 id="2-Stream流操作API分类"><a href="#2-Stream流操作API分类" class="headerlink" title="2 Stream流操作API分类"></a>2 Stream流操作API分类</h3><p>在 Java 8 中, 集合接口有两个方法来生成流：  </p>
+<ul>
+<li>stream() − 为集合创建串行流。 </li>
+<li>parallelStream() − 为集合创建并行流。 </li>
+</ul>
+<p>流的操作其实可以分为两类：<strong>处理操作、聚合操作</strong>。 </p>
+<ul>
+<li><p>处理操作(中间操作)：诸如filter、map等处理操作将Stream一层一层的进行抽离，返回一个流给下一层使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">有状态 sorted(),必须等上一步操作完拿到全部元素后才可操作</span><br><span class="line">无状态 filter(),该操作的元素不受上一步操作的影响 </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>聚合操作(终端操作)：从最后一次流中生成一个结果给调用方，foreach只做处理不做返回。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">短路操作findFirst(),找到一个则返回,也就是<span class="keyword">break</span>当前的循环</span><br><span class="line">非短路操作forEach(),遍历全部元素</span><br></pre></td></tr></table></figure>
+
+<p><strong>中间操作:</strong> 中间操作只是一种标记，只有结束操作才会触发实际计算。中间操作又可以分为无状态的(Stateless)和有状态的(Stateful)，无状态中间操作是指元素的处理不受前面元素的影响，而有状态的中间操作必须等到所有元素处理之后才知道最终结果，比如排序是有状态操作，在读取所有元素之前并不能确定排序结果； </p>
+</li>
+</ul>
+<p><strong>结束操作:</strong>  结束操作又可以分为短路操作和非短路操作，短路操作是指不用处理全部元素就可以返回结果，比如找到第一个满足条件的元素。之所以要进行如此精细的划分，是因为底层对每一种情况的处理方式不同。</p>
+<h3 id="3-Stream流水线执行原理分析"><a href="#3-Stream流水线执行原理分析" class="headerlink" title="3 Stream流水线执行原理分析"></a>3 Stream流水线执行原理分析</h3><p>问题：</p>
+<ol>
+<li>操作是如何记录下来的?</li>
+<li>操作是如何叠加的?</li>
+<li>叠加完如何执行的?</li>
+<li>执行完如何收集结果的?</li>
+</ol>
+<p>Stream相关类和接口的继承 关系图：</p>
+<p><img src="/images/Java8/Java8_streamInherit.png" alt="stream继承关系图"></p>
+<p>图中Head用于表示第一个Stage，即调用调用诸如Collection.stream()方法产生的Stage，很显然这个Stage里不包含任何操作；StatelessOp和StatefulOp分别表示无状态和有状态的Stage</p>
+<p><img src="/images/Java8/Java8_stream.png" alt="stream流水线组织结构示意图">  </p>
+<p>操作记录过程：</p>
+<ul>
+<li>Head记录Stream起始操作 ，</li>
+<li> StatelessOp记录中间操作，  </li>
+<li> StatefulOp记录有状态的中间操作 </li>
+</ul>
+<p>这三个操作实例化会指向其父类AbstractPipeline,也就是在AbstractPipeline中建立了双向链表。</p>
+<h4 id="3-1-记录操作–流源构建分析"><a href="#3-1-记录操作–流源构建分析" class="headerlink" title="3.1 记录操作–流源构建分析"></a>3.1 记录操作–流源构建分析</h4><p> 首先看下面一段代码，下面将以这一段代码来进行分析： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>);</span><br><span class="line">list.stream().filter(i -&gt; i % <span class="number">2</span> == <span class="number">0</span>)</span><br><span class="line">        .map(String::valueOf)</span><br><span class="line">        .forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<p>首先<code>list.stream()</code>会返回一个Stream对象。我们可以跟进去，看看返回的到底是个什么对象。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">default</span> Stream&lt;E&gt; <span class="title">stream</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> StreamSupport.stream(spliterator(), <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继续跟到<code>StreamSupport.stream</code>: </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Stream&lt;T&gt; <span class="title">stream</span><span class="params">(Spliterator&lt;T&gt; spliterator, <span class="keyword">boolean</span> parallel)</span> </span>&#123;</span><br><span class="line">       Objects.requireNonNull(spliterator);</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> ReferencePipeline.Head&lt;&gt;(spliterator,</span><br><span class="line">                                           StreamOpFlag.fromCharacteristics(spliterator),</span><br><span class="line">                                           parallel);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>head是ReferencePipeline的一个源阶段</strong> </p>
+<h4 id="3-2-记录操作–AbstractPipeline"><a href="#3-2-记录操作–AbstractPipeline" class="headerlink" title="3.2 记录操作–AbstractPipeline"></a>3.2 记录操作–AbstractPipeline</h4><p>​    AbstractPipeline表示流管道的初始部分，封装了流源和零个或多个中间操作。每个 AbstractPipeline对象通常被称为<em>stage</em> ，其中每个<em>stage</em>都描述流源或中间操作，到这里大家就可以想象出流管道的本质就是双向链表。下面来看看它的几个属性： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**官方的定义：反向链接到管道链的头部，流的源头（如果本身是源stage,这里就为self）*/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> AbstractPipeline sourceStage;</span><br><span class="line"><span class="comment">/** 流管道的上游，若是源stage则为null,其实就是双向链表的前指针*/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> AbstractPipeline previousStage;</span><br><span class="line"><span class="comment">/** 流管道的下游，若是最后一个中间操作，则为null*/</span></span><br><span class="line"><span class="keyword">private</span> AbstractPipeline nextStage;</span><br><span class="line"><span class="comment">/** 深度 */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> depth;</span><br><span class="line"><span class="comment">/** 如果此管道已连接或使用，则为真*/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> linkedOrConsumed;</span><br><span class="line"><span class="comment">/** 数据源的Spliterator,只对管道头有效*/</span></span><br><span class="line"><span class="keyword">private</span> Spliterator&lt;?&gt; sourceSpliterator;</span><br><span class="line"><span class="comment">/** 与sourceSpliterator相反，两者有一个为空 */</span></span><br><span class="line"><span class="keyword">private</span> Spliterator&lt;?&gt; sourceSpliterator;</span><br></pre></td></tr></table></figure>
+
+<p>构造方法一(ReferencePipeline的源阶段)：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">AbstractPipeline(Spliterator&lt;?&gt; source, <span class="keyword">int</span> sourceFlags, <span class="keyword">boolean</span> parallel) &#123;</span><br><span class="line">        <span class="keyword">this</span>.previousStage = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">this</span>.sourceSpliterator = source;</span><br><span class="line">        <span class="keyword">this</span>.sourceStage = <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">this</span>.sourceOrOpFlags = sourceFlags &amp; StreamOpFlag.STREAM_MASK;</span><br><span class="line">        <span class="keyword">this</span>.combinedFlags = (~(sourceOrOpFlags &lt;&lt; <span class="number">1</span>)) &amp; StreamOpFlag.INITIAL_OPS_VALUE;</span><br><span class="line">        <span class="keyword">this</span>.depth = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">this</span>.parallel = parallel;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>构造方法二：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">AbstractPipeline(AbstractPipeline&lt;?, E_IN, ?&gt; previousStage, <span class="keyword">int</span> opFlags) &#123;</span><br><span class="line">        previousStage.linkedOrConsumed = <span class="keyword">true</span>;</span><br><span class="line">        previousStage.nextStage = <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">this</span>.previousStage = previousStage;</span><br><span class="line">        <span class="keyword">this</span>.sourceOrOpFlags = opFlags &amp; StreamOpFlag.OP_MASK;</span><br><span class="line">        <span class="keyword">this</span>.combinedFlags = StreamOpFlag.combineOpFlags(opFlags, previousStage.combinedFlags);</span><br><span class="line">        <span class="keyword">this</span>.sourceStage = previousStage.sourceStage;</span><br><span class="line">        <span class="keyword">if</span> (opIsStateful()) sourceStage.sourceAnyStateful = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">this</span>.depth = previousStage.depth + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-操作叠加–sink"><a href="#3-3-操作叠加–sink" class="headerlink" title="3.3 操作叠加–sink"></a>3.3 操作叠加–sink</h4><p>​    stage中记录了每一步操作，并没有执行。但是stage只是保存了当前的操作，并不能确定下一个stage需要何种操作，何种数据 。</p>
+<p>​    <strong>sink就是每个操作具体的行为操作,也可以叫做回调</strong> 。Sink用于协调相邻的stage之间的数据调用</p>
+<p>​    通过begin end accept方法 以及cancellationRequested短路标志位来控制处理流程,对数据进行管控</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>void begin(long size)</td>
+<td>开始遍历元素之前调用该方法，通知Sink做好准备。</td>
+</tr>
+<tr>
+<td>void end()</td>
+<td>所有元素遍历完成之后调用，通知Sink没有更多的元素了。</td>
+</tr>
+<tr>
+<td>boolean cancellationRequested()</td>
+<td>是否可以结束操作，可以让短路操作尽早结束。</td>
+</tr>
+<tr>
+<td>void accept(T t)</td>
+<td>遍历元素时调用，接受一个待处理元素，并对元素进行处理。Stage把自己包含的操作和回调方法封装到该方法里，前一个Stage只需要调用当前Stage.accept(T t)方法就行了</td>
+</tr>
+</tbody></table>
+<p>​    每个Stage都会将自己的操作封装到一个Sink里，前一个Stage只需调用后一个Stage的accept()方法即可，并不需要知道其内部是如何处理的。当然对于有状态的操作，Sink的begin()和end()方法也是必须实现的。比如Stream.sorted()是一个有状态的中间操作，其对应的Sink.begin()方法可能创建一个存放结果的容器，而accept()方法负责将元素添加到该容器，最后end()负责对容器进行排序。对于短路操作，Sink.cancellationRequested()也是必须实现的，比如Stream.findFirst()是短路操作，只要找到一个元素，cancellationRequested()就应该返回true，以便调用者尽快结束查找。Sink的四个接口方法常常相互协作，共同完成计算任务。实际上Stream API内部实现的的本质，就是如何重载Sink的这四个接口方法。</p>
+<p>​    有了Sink对操作的包装，Stage之间的调用问题就解决了，执行时只需要从流水线的head开始对数据源依次调用每个Stage对应的Sink.{begin(), accept(), cancellationRequested(), end()}方法就可以了。一种可能的Sink.accept()方法流程是这样的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">accept</span><span class="params">(U u)</span></span>&#123;</span><br><span class="line">    <span class="number">1.</span> 使用当前Sink包装的回调函数处理u</span><br><span class="line">    <span class="number">2.</span> 将处理结果传递给流水线下游的Sink</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Sink接口的其他几个方法也是按照这种 <strong>[处理-&gt;转发]</strong> 的模型实现。 </p>
+<p>Sink.ChainedReference源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">final</span> Sink&lt;? <span class="keyword">super</span> E_OUT&gt; downstream;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ChainedReference</span><span class="params">(Sink&lt;? <span class="keyword">super</span> E_OUT&gt; downstream)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.downstream = Objects.requireNonNull(downstream);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">begin</span><span class="params">(<span class="keyword">long</span> size)</span> </span>&#123;</span><br><span class="line">    downstream.begin(size);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">end</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    downstream.end();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">cancellationRequested</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> downstream.cancellationRequested();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查看Stream.map()源码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> &lt;R&gt; <span class="function">Stream&lt;R&gt; <span class="title">map</span><span class="params">(Function&lt;? <span class="keyword">super</span> P_OUT, ? extends R&gt; mapper)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StatelessOp&lt;P_OUT, R&gt;(<span class="keyword">this</span>, StreamShape.REFERENCE,</span><br><span class="line">                                 StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) &#123;</span><br><span class="line">        <span class="meta">@Override</span> <span class="comment">/*opWripSink()方法返回由回调函数包装而成Sink*/</span></span><br><span class="line">        <span class="function">Sink&lt;P_OUT&gt; <span class="title">opWrapSink</span><span class="params">(<span class="keyword">int</span> flags, Sink&lt;R&gt; downstream)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Sink.ChainedReference&lt;P_OUT, R&gt;(downstream) &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(P_OUT u)</span> </span>&#123;</span><br><span class="line">                    R r = mapper.apply(u);<span class="comment">// 1. 使用当前Sink包装的回调函数mapper处理u</span></span><br><span class="line">                    downstream.accept(r);<span class="comment">// 2. 将处理结果传递给流水线下游的Sink</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    上述代码看似复杂，其实逻辑很简单，就是将回调函数mapper包装到一个Sink当中。由于Stream.map()是一个无状态的中间操作，所以map()方法返回了一个StatelessOp内部类对象（一个新的Stream），调用这个新Stream的opWripSink()方法将得到一个包装了当前回调函数的Sink。</p>
+<p><img src="/images/Java8/Java8_streamSink.jpg" alt="stage与sink之间的关系1"></p>
+<p>Stream.sorted()方法将对Stream中的元素进行排序，显然这是一个有状态的中间操作，因为读取所有元素之前是没法得到最终顺序的。抛开模板代码直接进入问题本质，sorted()方法是如何将操作封装成Sink的呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Stream.sort()方法用到的Sink实现</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RefSortingSink</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractRefSortingSink</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> ArrayList&lt;T&gt; list;<span class="comment">// 存放用于排序的元素</span></span><br><span class="line">    RefSortingSink(Sink&lt;? <span class="keyword">super</span> T&gt; downstream, Comparator&lt;? <span class="keyword">super</span> T&gt; comparator) &#123;</span><br><span class="line">        <span class="keyword">super</span>(downstream, comparator);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">begin</span><span class="params">(<span class="keyword">long</span> size)</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">// 创建一个存放排序元素的列表</span></span><br><span class="line">        list = (size &gt;= <span class="number">0</span>) ? <span class="keyword">new</span> ArrayList&lt;T&gt;((<span class="keyword">int</span>) size) : <span class="keyword">new</span> ArrayList&lt;T&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">end</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        list.sort(comparator);<span class="comment">// 只有元素全部接收之后才能开始排序</span></span><br><span class="line">        downstream.begin(list.size());</span><br><span class="line">        <span class="keyword">if</span> (!cancellationWasRequested) &#123;<span class="comment">// 下游Sink不包含短路操作</span></span><br><span class="line">            list.forEach(downstream::accept);<span class="comment">// 2. 将处理结果传递给流水线下游的Sink</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;<span class="comment">// 下游Sink包含短路操作</span></span><br><span class="line">            <span class="keyword">for</span> (T t : list) &#123;<span class="comment">// 每次都调用cancellationRequested()询问是否可以结束处理。</span></span><br><span class="line">                <span class="keyword">if</span> (downstream.cancellationRequested()) <span class="keyword">break</span>;</span><br><span class="line">                downstream.accept(t);<span class="comment">// 2. 将处理结果传递给流水线下游的Sink</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        downstream.end();</span><br><span class="line">        list = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(T t)</span> </span>&#123;</span><br><span class="line">        list.add(t);<span class="comment">// 1. 使用当前Sink包装动作处理t，只是简单的将元素添加到中间列表当中</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>sorted的end方法中,其依赖上一次操作的结果集,按照调用链来说结果集必须在accept()调用完才会产生.那也就说明sorted操作需要在end中,然后再重新开启调用链.那么就相当于sorted给原有操作断路了一次,然后又重新接上,再次遍历</p>
+<p><img src="/images/Java8/Java8_streamSink2.jpg" alt="stage与sink之间的关系2"></p>
+<p>上述代码完美的展现了Sink的四个接口方法是如何协同工作的：</p>
+<ol>
+<li>首先beging()方法告诉Sink参与排序的元素个数，方便确定中间结果容器的的大小；</li>
+<li>之后通过accept()方法将元素添加到中间结果当中，最终执行时调用者会不断调用该方法，直到遍历所有元素；</li>
+<li>最后end()方法告诉Sink所有元素遍历完毕，启动排序步骤，排序完成后将结果传递给下游的Sink；</li>
+<li>如果下游的Sink是短路操作，将结果传递给下游时不断询问下游cancellationRequested()是否可以结束处理</li>
+</ol>
+<h4 id="3-4-执行操作–终端操作调用链"><a href="#3-4-执行操作–终端操作调用链" class="headerlink" title="3.4 执行操作–终端操作调用链"></a>3.4 执行操作–终端操作调用链</h4><p>​    Sink完美封装了Stream每一步操作，并给出了[处理-&gt;转发]的模式来叠加操作。这一连串的齿轮已经咬合，就差最后一步拨动齿轮启动执行。是什么启动这一连串的操作呢？也许你已经想到了启动的原始动力就是结束操作(Terminal Operation)，一旦调用某个结束操作，就会触发整个流水线的执行。 </p>
+<p>​    结束操作之后不能再有别的操作，所以结束操作不会创建新的流水线阶段(Stage)，直观的说就是流水线的链表不会在往后延伸了。结束操作会创建一个包装了自己操作的Sink，这也是流水线中最后一个Sink，这个Sink只需要处理数据而不需要将结果传递给下游的Sink（因为没有下游）。对于Sink的[处理-&gt;转发]模型，结束操作的Sink就是调用链的出口。 </p>
+<p>​    我们再来考察一下上游的Sink是如何找到下游Sink的。一种可选的方案是在<em>PipelineHelper</em>中设置一个Sink字段，在流水线中找到下游Stage并访问Sink字段即可。但Stream类库的设计者没有这么做，而是设置了一个<code>Sink AbstractPipeline.opWrapSink(int flags, Sink downstream)</code>方法来得到Sink，该方法的作用是返回一个新的包含了当前Stage代表的操作以及能够将结果传递给downstream的Sink对象。为什么要产生一个新对象而不是返回一个Sink字段？这是因为使用opWrapSink()可以将当前操作与下游Sink（上文中的downstream参数）结合成新Sink。试想只要从流水线的最后一个Stage开始，不断调用上一个Stage的opWrapSink()方法直到最开始（不包括stage0，因为stage0代表数据源，不包含操作），就可以得到一个代表了流水线上所有操作的Sink，用代码表示就是这样： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AbstractPipeline.wrapSink()</span></span><br><span class="line"><span class="comment">// 从下游向上游不断包装Sink。如果最初传入的sink代表结束操作，</span></span><br><span class="line"><span class="comment">// 函数返回时就可以得到一个代表了流水线上所有操作的Sink。</span></span><br><span class="line"><span class="keyword">final</span> &lt;P_IN&gt; <span class="function">Sink&lt;P_IN&gt; <span class="title">wrapSink</span><span class="params">(Sink&lt;E_OUT&gt; sink)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">for</span> (AbstractPipeline p=AbstractPipeline.<span class="keyword">this</span>; p.depth &gt; <span class="number">0</span>; p=p.previousStage) &#123;</span><br><span class="line">        sink = p.opWrapSink(p.previousStage.combinedFlags, sink);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (Sink&lt;P_IN&gt;) sink;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在流水线上从开始到结束的所有的操作都被包装到了一个Sink里，执行这个Sink就相当于执行整个流水线，执行Sink的代码如下： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AbstractPipeline.copyInto(), 对spliterator代表的数据执行wrappedSink代表的操作。</span></span><br><span class="line"><span class="keyword">final</span> &lt;P_IN&gt; <span class="function"><span class="keyword">void</span> <span class="title">copyInto</span><span class="params">(Sink&lt;P_IN&gt; wrappedSink, Spliterator&lt;P_IN&gt; spliterator)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (!StreamOpFlag.SHORT_CIRCUIT.isKnown(getStreamAndOpFlags())) &#123;</span><br><span class="line">        wrappedSink.begin(spliterator.getExactSizeIfKnown());<span class="comment">// 通知开始遍历</span></span><br><span class="line">        spliterator.forEachRemaining(wrappedSink);<span class="comment">// 迭代</span></span><br><span class="line">        wrappedSink.end();<span class="comment">// 通知遍历结束</span></span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码首先调用wrappedSink.begin()方法告诉Sink数据即将到来，然后调用spliterator.forEachRemaining()方法对数据进行迭代（Spliterator是容器的一种迭代器，<a target="_blank" rel="noopener" href="https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/3-Lambda%20and%20Collections.md#spliterator">参阅</a>），最后调用wrappedSink.end()方法通知Sink数据处理结束。</p>
+<h4 id="3-5-Stream-forEach源码调用链"><a href="#3-5-Stream-forEach源码调用链" class="headerlink" title="3.5 Stream forEach源码调用链"></a>3.5 Stream forEach源码调用链</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">forEach</span><span class="params">(Consumer&lt;? <span class="keyword">super</span> P_OUT&gt; action)</span> </span>&#123;</span><br><span class="line">        evaluate(ForEachOps.makeRef(action, <span class="keyword">false</span>));  <span class="comment">//执行开关</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> &lt;R&gt; <span class="function">R <span class="title">evaluate</span><span class="params">(TerminalOp&lt;E_OUT, R&gt; terminalOp)</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">assert</span> <span class="title">getOutputShape</span><span class="params">()</span> </span>== terminalOp.inputShape();</span><br><span class="line">        <span class="keyword">if</span> (linkedOrConsumed)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(MSG_STREAM_LINKED);</span><br><span class="line">        linkedOrConsumed = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> isParallel()  <span class="comment">//区分串行和并行，执行相应函数</span></span><br><span class="line">               ? terminalOp.evaluateParallel(<span class="keyword">this</span>, sourceSpliterator(terminalOp.getOpFlags()))</span><br><span class="line">               : terminalOp.evaluateSequential(<span class="keyword">this</span>,sourceSpliterator(terminalOp.getOpFlags()));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> &lt;P_IN, S extends Sink&lt;E_OUT&gt;&gt; <span class="function">S <span class="title">wrapAndCopyInto</span><span class="params">(S sink, Spliterator&lt;P_IN&gt; spliterator)</span> </span>&#123;</span><br><span class="line">        copyInto(wrapSink(Objects.requireNonNull(sink)), spliterator);</span><br><span class="line">        <span class="keyword">return</span> sink;</span><br><span class="line">     <span class="comment">// wrapSink(Objects.requireNonNull(sink) 得到一个代表了流水线上所有操作的Sink</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-Stream运行流程原理总结"><a href="#4-Stream运行流程原理总结" class="headerlink" title="4 Stream运行流程原理总结"></a>4 Stream运行流程原理总结</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Stream体系是一组接口家族,AbstractPipeline 是接口的实现,PipelineHelper 是管道的辅助类,StreamSupport是流的低级工具类</span><br><span class="line"> </span><br><span class="line">使用stage来抽象流水线上的每个操作</span><br><span class="line">其实每个stage就是一个stream 也就是AbstractPipeline几个子类的  内部子类  Head StatelessOp statefulOp</span><br><span class="line">StreamSupport用于创建生成Stream 对应的是Head类</span><br><span class="line">其他的中间操作分为有状态和无状态的,中间操作通过方法比如 filter map 等返回的是StatelessOp  或者 statefulOp </span><br><span class="line">多个stage组合称为双向链表的形式 从而成了整个流水线</span><br><span class="line"> </span><br><span class="line">有了流水线,相邻两个操作阶段之间如何协调运算?</span><br><span class="line">于是又有了sink的概念,又来协调相邻的stage之间计算运行</span><br><span class="line">他的模式是begin  accept end 还有短路标记</span><br><span class="line">他的accept就是封装了回调方法</span><br><span class="line"> </span><br><span class="line">所以说每个操作stage, StatelessOp  或者 statefulOp中又封装了Sink</span><br><span class="line">通过AbstractPipeline提供的opWrapSink方法可以获取这个sink</span><br><span class="line">调用这个sink的accept方法就可以调用当前操作的方法</span><br><span class="line"> </span><br><span class="line">那么如何串联起来呢?关键点在于opWrapSink方法 ,他接收一个Sink作为参数</span><br><span class="line">在调用accept方法中  可以调用这个入参sink的accept方法</span><br><span class="line">这样子从当前就能调用下一个,也就是说有了推动的动作</span><br><span class="line">那么只需要找到开始,每个处理了之后都推动下一个,就顺序完成了所有的操作了</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java8/" rel="tag"># Java8</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/java8/2018-09-28-java8-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="prev" title="java8 Lambda表达式">
+      <i class="fa fa-chevron-left"></i> java8 Lambda表达式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/java8/2018-09-30-java8-reduce%E5%92%8Ccollector/" rel="next" title="reduce规约和Collector搜集器">
+      reduce规约和Collector搜集器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF-Stream%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">1 什么是 Stream？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Stream%E6%B5%81%E6%93%8D%E4%BD%9CAPI%E5%88%86%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">2 Stream流操作API分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Stream%E6%B5%81%E6%B0%B4%E7%BA%BF%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">3 Stream流水线执行原理分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E8%AE%B0%E5%BD%95%E6%93%8D%E4%BD%9C%E2%80%93%E6%B5%81%E6%BA%90%E6%9E%84%E5%BB%BA%E5%88%86%E6%9E%90"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 记录操作–流源构建分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E8%AE%B0%E5%BD%95%E6%93%8D%E4%BD%9C%E2%80%93AbstractPipeline"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 记录操作–AbstractPipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E6%93%8D%E4%BD%9C%E5%8F%A0%E5%8A%A0%E2%80%93sink"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 操作叠加–sink</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E6%89%A7%E8%A1%8C%E6%93%8D%E4%BD%9C%E2%80%93%E7%BB%88%E7%AB%AF%E6%93%8D%E4%BD%9C%E8%B0%83%E7%94%A8%E9%93%BE"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 执行操作–终端操作调用链</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-Stream-forEach%E6%BA%90%E7%A0%81%E8%B0%83%E7%94%A8%E9%93%BE"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 Stream forEach源码调用链</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Stream%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">4 Stream运行流程原理总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="02 redis数据类型及存储结构">
+<meta property="og:url" content="http://example.com/2020/10/26/Redis/2019-03-02%202%20redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Redis">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Redis/Redis_dataStructure.png">
+<meta property="og:image" content="http://example.com/images/Redis/Redis_list.jpg">
+<meta property="og:image" content="http://example.com/images/Redis/Redis_lpushAndLpop.jpg">
+<meta property="article:published_time" content="2020-10-26T03:56:48.314Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Redis/Redis_dataStructure.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Redis/2019-03-02%202%20redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>02 redis数据类型及存储结构 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Redis/2019-03-02%202%20redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          02 redis数据类型及存储结构
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Redis</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Redis支持五中数据类型：String（字符串），Hash（哈希），List（列表），Set（集合）及zset(sortedset：有序集合)。 </p>
+<a id="more"></a> 
+
+<p>Redis内部使用一个redisObject对象来表示所有的key和value。redisObject主要的信息包括数据类型（type）、编码方式(encoding)、数据指针（ptr）、虚拟内存（vm）等。type代表一个value对象具体是何种数据类型，encoding是不同数据类型在redis内部式。 </p>
+<p><img src="/images/Redis/Redis_dataStructure.png" alt="redis数据结构"></p>
+<h3 id="1-字符串"><a href="#1-字符串" class="headerlink" title="1 字符串"></a>1 字符串</h3><p>String是Redis最基本的数据类型，结构为一个key对应一个value。</p>
+<p>String类型是二进制安全的，意味着可以包含任何数据，比如jpg图片或者序列化的对象。</p>
+<p>String类型的最大能存储512M。</p>
+<h4 id="1-1-常用命令"><a href="#1-1-常用命令" class="headerlink" title="1.1 常用命令"></a>1.1 常用命令</h4><h5 id="set-get"><a href="#set-get" class="headerlink" title="set get"></a>set get</h5><p>set——设置key对应的值为String类型的value</p>
+<p>get——获取key对应的值</p>
+<p>比如我们想设置往Redis中存放一个用户名，用String类型存储： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SET name chenqingsong</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<p>“OK”是Redis返回的响应，代表设置成功。 </p>
+<p>取出这个name的值： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; GET name</span><br><span class="line"><span class="string">&quot;chenqingsong&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>想修改name的值为“clf”，重新SET一遍，覆盖掉原来的值： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SET name clf</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; GET name</span><br><span class="line"><span class="string">&quot;clf&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="mget"><a href="#mget" class="headerlink" title="mget"></a>mget</h5><p>mget——批量获取多个key的值，如果可以不存在则返回nil </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; mget name name1</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;zhangsan&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;wangwu&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; mget name name1 name2</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;zhangsan&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;wangwu&quot;</span></span><br><span class="line"><span class="number">3</span>) (nil)</span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="incr-amp-amp-incrby"><a href="#incr-amp-amp-incrby" class="headerlink" title="incr &amp;&amp; incrby"></a>incr &amp;&amp; incrby</h5><p>incr &amp;&amp; incrby——incr对key对应的值进行加加操作，并返回新的值;incrby加指定值 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; get age</span><br><span class="line"><span class="string">&quot;20&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; incr age</span><br><span class="line">(integer) <span class="number">21</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; set age1 <span class="string">&quot;20&quot;</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; get age1</span><br><span class="line"><span class="string">&quot;20&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; incr age1</span><br><span class="line">(integer) <span class="number">21</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; incrby age <span class="number">3</span></span><br><span class="line">(integer) <span class="number">24</span></span><br></pre></td></tr></table></figure>
+
+<p>从上面的结果可以看出，我们对int型的age和string型的age1都能进行incr操作时，</p>
+<p>实际上type=string代表value存储的是一个普通字符串，那么对应的encoding可以是raw或者是int，如果是int则代表实际redis内部是按数值型类存储和表示这个字符串的，当然前提是这个字符串本身可以用数值表示，比如”20”这样的字符串，当遇到incr、decr等操作时会转成数值型进行计算，此时redisObject的encoding字段为int。如果你试图对name进行incr操作则报错。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; incr name</span><br><span class="line">(error) ERR value is not an integer or out of range</span><br></pre></td></tr></table></figure>
+
+<h5 id="decr-amp-amp-decrby"><a href="#decr-amp-amp-decrby" class="headerlink" title="decr &amp;&amp; decrby"></a>decr &amp;&amp; decrby</h5><p>decr &amp;&amp; decrby——decr对key对应的值进行减减操作，并返回新的值;decrby减指定值 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; DEL name</span><br><span class="line">(integer) <span class="number">1</span>   --该数字代表影响的记录总数</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; GET name</span><br><span class="line">(nil)     --nil代表为空，不存在该对象</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-命令汇总"><a href="#1-2-命令汇总" class="headerlink" title="1.2 命令汇总"></a>1.2 命令汇总</h4><table>
+<thead>
+<tr>
+<th>命令格式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SET</strong> key value</td>
+<td>设置指定 key 的值</td>
+</tr>
+<tr>
+<td><strong>GET</strong> key</td>
+<td>获取指定 key 的值</td>
+</tr>
+<tr>
+<td><strong>SETNX</strong> key value</td>
+<td>（<strong>Set</strong> if <strong>N</strong>ot E<strong>x</strong>ist）只有在 key 不存在时设置 key 的值</td>
+</tr>
+<tr>
+<td><strong>SETRANGE</strong> key offset value</td>
+<td>用 value 参数覆写给定 key 所储存的字符串值，从偏移量 offset 开始</td>
+</tr>
+<tr>
+<td><strong>GETRANGE</strong> key start end</td>
+<td>返回 key 中字符串值的子字符</td>
+</tr>
+<tr>
+<td><strong>GETSET</strong> key value</td>
+<td>将给定 key 的值设为 value ，并返回 key 的旧值</td>
+</tr>
+<tr>
+<td><strong>MSET</strong> key value [key value …]</td>
+<td>（<strong>M</strong>ulti <strong>Set</strong>）同时设置一个或多个 key-value 对</td>
+</tr>
+<tr>
+<td><strong>MGET</strong> key1 [key2..]</td>
+<td>获取所有(一个或多个)给定 key 的值</td>
+</tr>
+<tr>
+<td><strong>APPEND</strong> key value</td>
+<td>如果 key 已经存在并且是一个字符串， APPEND 命令将 value 追加到 key 原来的值的末尾</td>
+</tr>
+<tr>
+<td><strong>SETEX</strong> key seconds value</td>
+<td>（<strong>Set Ex</strong>pire）将值 value 关联到 key ，并将 key 的过期时间设为 seconds (以秒为单位)</td>
+</tr>
+<tr>
+<td><strong>PSETEX</strong> key milliseconds value</td>
+<td>（<strong>P</strong>recise <strong>Set Ex</strong>pire）这个命令和 SETEX 命令相似，但它以毫秒为单位设置 key 的生存时间，而不是像 SETEX 命令那样，以秒为单位</td>
+</tr>
+<tr>
+<td><strong>STRLEN</strong> key</td>
+<td>返回 key 所储存的字符串值的长度</td>
+</tr>
+<tr>
+<td><strong>INCR</strong> key</td>
+<td>将 key 中储存的数字值增一，前提是value是一个数字</td>
+</tr>
+<tr>
+<td><strong>INCRBY</strong> key increment</td>
+<td>将 key 所储存的值加上给定的增量值，前提是value是一个数字</td>
+</tr>
+<tr>
+<td><strong>INCRBYFLOAT</strong> key increment</td>
+<td>将 key 所储存的值加上给定的浮点增量值，前提是value是一个数字</td>
+</tr>
+<tr>
+<td><strong>DECR</strong> key</td>
+<td>将 key 中储存的数字值减一，前提是value是一个数字</td>
+</tr>
+<tr>
+<td><strong>DECRBY</strong> key decrement</td>
+<td>key 所储存的值减去给定的减量值，前提是value是一个数字</td>
+</tr>
+</tbody></table>
+<h3 id="2-哈希"><a href="#2-哈希" class="headerlink" title="2 哈希"></a>2 哈希</h3><p>Redis的哈希是field和value之间的映射，即键值对的集合，所以特别适合用于存储对象。</p>
+<p>Redis 中每个 hash 最多可以存储 232 - 1 键值对（40多亿）。</p>
+<h4 id="2-1-常用命令"><a href="#2-1-常用命令" class="headerlink" title="2.1 常用命令"></a>2.1 常用命令</h4><h5 id="hset-hget"><a href="#hset-hget" class="headerlink" title="hset hget"></a>hset hget</h5><p>hset——设置key对应的HashMap中的field的value</p>
+<p>hget——获取key对应的HashMap中的field的value</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; hset myhash name zhangsan</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; hset myhash age <span class="number">20</span></span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; hget myhash name</span><br><span class="line"><span class="string">&quot;zhangsan&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; hget myhash age</span><br><span class="line"><span class="string">&quot;20&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="hgetall"><a href="#hgetall" class="headerlink" title="hgetall"></a>hgetall</h5><p>hgetall——获取key对应的HashMap中的所有field的value </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; hgetall myhash</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;name&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;zhangsan&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;age&quot;</span></span><br><span class="line"><span class="number">4</span>) <span class="string">&quot;20&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-命令汇总"><a href="#2-2-命令汇总" class="headerlink" title="2.2 命令汇总"></a>2.2 命令汇总</h4><table>
+<thead>
+<tr>
+<th><strong>命令格式</strong></th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>HMSET</strong> key field1 value1 [field2 value2… ]</td>
+<td>（<strong>H</strong>ash <strong>M</strong>ulti <strong>Set</strong>）同时将多个 field-value 对设置到哈希表 key 中</td>
+</tr>
+<tr>
+<td><strong>HMGET</strong> key field1 [field2…]</td>
+<td>获取所有给定字段的值</td>
+</tr>
+<tr>
+<td><strong>HSET</strong> key field value</td>
+<td>将哈希表 key 中的字段 field 的值设为 value</td>
+</tr>
+<tr>
+<td><strong>HGET</strong> key field</td>
+<td>获取存储在哈希表中指定字段的值</td>
+</tr>
+<tr>
+<td><strong>HGETALL</strong> key</td>
+<td>获取在哈希表中指定 key 的所有字段和值</td>
+</tr>
+<tr>
+<td><strong>HDEL</strong> key field2 [field2]</td>
+<td>删除一个或多个哈希表字段</td>
+</tr>
+<tr>
+<td><strong>HSETNX</strong> key field value</td>
+<td>只有在字段 field 不存在时，设置哈希表字段的值</td>
+</tr>
+<tr>
+<td><strong>HKEYS</strong> key</td>
+<td>获取所有哈希表中的字段</td>
+</tr>
+<tr>
+<td><strong>HVALS</strong> key</td>
+<td>获取哈希表中所有值</td>
+</tr>
+<tr>
+<td><strong>HEXISTS</strong> key field</td>
+<td>查看哈希表 key 中，指定的字段是否存在</td>
+</tr>
+<tr>
+<td><strong>HLEN</strong> key</td>
+<td>获取哈希表中字段的数量</td>
+</tr>
+<tr>
+<td><strong>HINCRBY</strong> key field increment</td>
+<td>为哈希表 key 中的指定字段的整数值加上增量</td>
+</tr>
+<tr>
+<td><strong>HINCRBYFLOAT</strong> key field increment</td>
+<td>为哈希表 key 中的指定字段的浮点数值加上增量</td>
+</tr>
+</tbody></table>
+<h3 id="3-列表"><a href="#3-列表" class="headerlink" title="3 列表"></a>3 列表</h3><p>Redis的List类型其实就是每一个元素都是String类型的双向链表。我们可以从链表的头部和尾部添加或者删除元素。这样的List既可以作为栈，也可以作为队列使用。 </p>
+<p><img src="/images/Redis/Redis_list.jpg" alt="redis列表"></p>
+<h4 id="3-1-常用命令"><a href="#3-1-常用命令" class="headerlink" title="3.1 常用命令"></a>3.1 常用命令</h4><h5 id="lpush-lrange-lpop"><a href="#lpush-lrange-lpop" class="headerlink" title="lpush  lrange  lpop"></a>lpush  lrange  lpop</h5><p>lpush——在key对应的list的头部添加一个元素。</p>
+<p>lrange——获取key对应的list的指定下标范围的元素，-1表示获取所有元素。</p>
+<p>lpop——从key对应的list的尾部删除一个元素，并返回该元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; lpush newlist news1 news2 news3</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; lrange newlist <span class="number">0</span> -<span class="number">1</span></span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;news3&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;news2&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;news1&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; lpop newlist</span><br><span class="line"><span class="string">&quot;news3&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; lrange newlist <span class="number">0</span> -<span class="number">1</span></span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;news2&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;news1&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Redis/Redis_lpushAndLpop.jpg" alt="redis lpushandlpop"></p>
+<h5 id="rpush-rpop"><a href="#rpush-rpop" class="headerlink" title="rpush  rpop"></a>rpush  rpop</h5><p>rpush——在key对应的list的尾部添加一个元素。</p>
+<p>rpop——从key对应的list的尾部删除一个元素，并返回该元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; rpush newlist2 news1 news2 news3</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; lrange newlist2 <span class="number">0</span> -<span class="number">1</span></span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;news1&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;news2&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;news3&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; rpop newlist2</span><br><span class="line"><span class="string">&quot;news3&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Redis列表虽然名为列表，其实从特性上来讲更像是栈，以最近放进去的元素为头，以最早放进去的元素为尾，所以，Redis列表的下标呈倒序排列。上例中依次放进去的五个元素：Asia、Africa、America、Oceania、Antarctica，下标分别为4、3、2、1、0。这与Java中List的概念完全不一样，需要特别注意。</p>
+<p>与栈类似，当执行POP操作时，Redis列表弹出的是最新放进去的元素，类似于栈顶元素。</p>
+<p>Redis列表还支持一种阻塞式操作，比如BLPOP（Blockd List Pop之缩写），移出并获取列表的第一个元素，如果列表没有元素（或列表不存在）会阻塞列表直到等待超时或发现可弹出元素为止。</p>
+<p>例如，我们对一个不存在的列表“myList”执行BLPOP命令：</p>
+<p>BLPOPmyList 20 – 弹出myList列表的第一个元素，如果没有，阻塞20秒</p>
+<p>该客户端会进入阻塞状态，如果20秒之内该列表存入了元素，则弹出：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">27.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; BLPOP myList <span class="number">20</span> --若无元素则进入阻塞状态，限时<span class="number">20</span>秒</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;myList&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;hello&quot;</span></span><br><span class="line">(<span class="number">6.20</span>s)</span><br></pre></td></tr></table></figure>
+
+<p>如果超时后仍然没有等到元素，则结束阻塞，返回nil： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; BLPOP myList <span class="number">20</span></span><br><span class="line">(nil)</span><br><span class="line">(<span class="number">20.07</span>s)</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-命令汇总"><a href="#3-2-命令汇总" class="headerlink" title="3.2 命令汇总"></a>3.2 命令汇总</h4><table>
+<thead>
+<tr>
+<th><strong>命令格式</strong></th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LPUSH</strong> key value1 [value2…]</td>
+<td>将一个或多个值插入到列表头部</td>
+</tr>
+<tr>
+<td><strong>LPOP</strong> key</td>
+<td>移出并获取列表的第一个元素</td>
+</tr>
+<tr>
+<td><strong>LPUSHX</strong> key value</td>
+<td>（<strong>L</strong>ist <strong>Push</strong> if e<strong>x</strong>ist）将一个或多个值插入到已存在的列表头部</td>
+</tr>
+<tr>
+<td><strong>LINDEX</strong> key index</td>
+<td>通过索引获取列表中的元素</td>
+</tr>
+<tr>
+<td><strong>LRANGE</strong> key start stop</td>
+<td>获取列表指定范围内的元素</td>
+</tr>
+<tr>
+<td><strong>LSET</strong> key index value</td>
+<td>通过索引设置列表元素的值</td>
+</tr>
+<tr>
+<td><strong>LTRIM</strong> key start stop</td>
+<td>只保留指定区间内的元素，不在指定区间之内的元素都将被删除</td>
+</tr>
+<tr>
+<td><strong>RPOP key</strong></td>
+<td>（<strong>R</strong>ear <strong>Pop</strong>）移除并获取列表最后一个元素</td>
+</tr>
+<tr>
+<td><strong>RPUSH</strong> key value1 [value2…]</td>
+<td>将一个或多个值插入到列表尾部</td>
+</tr>
+<tr>
+<td><strong>RPUSHX</strong> key value</td>
+<td>将一个或多个值插入到已存在的列表尾部</td>
+</tr>
+<tr>
+<td><strong>LREM</strong> key count value</td>
+<td>从列表中删除字段值为value的元素，删除count的绝对值个value后结束，count &gt; 0 从表头删除；count &lt; 0 从表尾删除；count=0 全部删除</td>
+</tr>
+<tr>
+<td><strong>RPOPLPUSH</strong> source destination</td>
+<td>移除列表的最后一个元素，并将该元素添加到另一个列表并返回</td>
+</tr>
+<tr>
+<td><strong>BLPOP</strong> key1 [key2… ] timeout</td>
+<td>移出并获取列表的第一个元素， 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止，如果timeout为0则一直等待下去</td>
+</tr>
+<tr>
+<td><strong>BRPOP</strong> key1 [key2… ] timeout</td>
+<td>移出并获取列表的最后一个元素， 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止，如果timeout为0则一直等待下去</td>
+</tr>
+<tr>
+<td><strong>LINSERT</strong> key <strong>BEFORE</strong> | <strong>AFTER</strong>pivot value</td>
+<td>在key 列表中寻找pivot，并在pivot值之前|之后插入value</td>
+</tr>
+<tr>
+<td><strong>LLEN</strong> key</td>
+<td>获取列表长度</td>
+</tr>
+</tbody></table>
+<h3 id="4-集合"><a href="#4-集合" class="headerlink" title="4 集合"></a>4 集合</h3><p>Redis集合是String类型的无序集合。<strong>集合成员是唯一的</strong>，这就意味着集合中不能出现重复的数据。</p>
+<p>Redis集合是通过哈希表实现的，所以添加，删除，查找的复杂度都是O(1)。</p>
+<p>集合中最大的成员数为 232- 1 ，即每个集合最多可存储40多亿个成员。</p>
+<p>集合的一大特点就是不能有重复元素，如果插入重复元素，Redis会忽略该操作： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SADD direction east west south north</span><br><span class="line">(integer) <span class="number">4</span></span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SMEMBERS direction</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;west&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;east&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;north&quot;</span></span><br><span class="line"><span class="number">4</span>) <span class="string">&quot;south&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SADD direction east</span><br><span class="line">(integer) <span class="number">0</span>  --east元素已经存在，该操作无效</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; SMEMBERS direction</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;west&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;east&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;north&quot;</span></span><br><span class="line"><span class="number">4</span>) <span class="string">&quot;south&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Redis集合还有两大特点，一是支持随机获取元素，二是支持集合间的取差集、交集与并集操作。 </p>
+<h4 id="4-1-常用命令"><a href="#4-1-常用命令" class="headerlink" title="4.1 常用命令"></a>4.1 常用命令</h4><h5 id="sadd-smembers-spop"><a href="#sadd-smembers-spop" class="headerlink" title="sadd  smembers  spop"></a>sadd  smembers  spop</h5><p>sadd——在key对应的set中添加一个元素。</p>
+<p>smembers——获取key对应的set的所有元素。</p>
+<p>spop——随机返回并删除key对应的set中的一个元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; sadd myset news1 news2 news3</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; smembers myset</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;news3&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;news2&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;news1&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; spop myset</span><br><span class="line"><span class="string">&quot;news3&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="sdiff"><a href="#sdiff" class="headerlink" title="sdiff"></a>sdiff</h5><p>sdiff——求给定key对应的set与第一个key对应的set的差集 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; smembers myset</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;news3&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;news2&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;news1&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; sadd myset2 news3 news4 news5</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; smembers myset2</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;news4&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;news3&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;news5&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; sdiff myset myset2</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;news1&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;news2&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="suion"><a href="#suion" class="headerlink" title="suion"></a>suion</h5><p>suion——求给定key对应的set并集 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; sunion myset myset2</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;news3&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;news1&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;news2&quot;</span></span><br><span class="line"><span class="number">4</span>) <span class="string">&quot;news4&quot;</span></span><br><span class="line"><span class="number">5</span>) <span class="string">&quot;news5&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="sinter"><a href="#sinter" class="headerlink" title="sinter"></a>sinter</h5><p>sinter——求给定key对应的set交集 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; sinter myset myset2</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;news3&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-命令汇总"><a href="#4-2-命令汇总" class="headerlink" title="4.2 命令汇总"></a>4.2 命令汇总</h4><table>
+<thead>
+<tr>
+<th>命令格式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SADD</strong> key member1 [member2…]</td>
+<td>向集合添加一个或多个成员</td>
+</tr>
+<tr>
+<td><strong>SREM</strong> key member1 [member2…]</td>
+<td>移除集合中一个或多个成员</td>
+</tr>
+<tr>
+<td><strong>SPOP</strong> key</td>
+<td>移除并返回集合中的一个随机元素</td>
+</tr>
+<tr>
+<td><strong>SMEMBERS</strong> key</td>
+<td>返回集合中的所有成员</td>
+</tr>
+<tr>
+<td><strong>SRANDMEMBER</strong> key [count]</td>
+<td>返回集合中count个随机元素，如count为空，则只返回一个</td>
+</tr>
+<tr>
+<td><strong>SCARD</strong> key</td>
+<td>（<strong>S</strong>et <strong>Card</strong>inality）返回集合中的元素总数</td>
+</tr>
+<tr>
+<td><strong>SISMEMBER</strong> key member</td>
+<td>判membe元素是否是集key 的成员</td>
+</tr>
+<tr>
+<td><strong>SMOVE</strong> source destination member</td>
+<td>将member元素从source集合移动到destination集合</td>
+</tr>
+<tr>
+<td><strong>SDIFF</strong> key1 [key2…]</td>
+<td>返回给定所有集合的差集，即以key1为基准，返回key1有且[key2…]没有的元素</td>
+</tr>
+<tr>
+<td><strong>SDIFFSTORE</strong> destination key1 [key2…]</td>
+<td>返回给定所有集合的差集并存储在destination中</td>
+</tr>
+<tr>
+<td><strong>SINTER</strong> key1 [key2…]</td>
+<td>返回给定所有集合的交集</td>
+</tr>
+<tr>
+<td><strong>SINTERSTORE</strong> destination key1 [key2…]</td>
+<td>返回给定所有集合的交集并存储在destination中</td>
+</tr>
+<tr>
+<td><strong>SUNION</strong> key1 [key2…]</td>
+<td>返回所有给定集合的并集</td>
+</tr>
+<tr>
+<td><strong>SUNIONSTORE</strong> destination key1 [key2…]</td>
+<td>所有给定集合的并集存储在destination集合中</td>
+</tr>
+</tbody></table>
+<h3 id="5-有序列表-SortSet"><a href="#5-有序列表-SortSet" class="headerlink" title="5 有序列表 SortSet"></a>5 有序列表 SortSet</h3><p>SortSet顾名思义，是一个排好序的Set，它在Set的基础上增加了一个顺序属性score，这个属性在添加修改元素时可以指定，每次指定后，SortSet会自动重新按新的值排序。</p>
+<p>需要注意的是，Redis有序集合是默认升序的，<strong>score越低排名越靠前</strong>，即score越低的元素下标越小。 </p>
+<p>sorted set的内部使用HashMap和跳跃表(SkipList)来保证数据的存储和有序，HashMap里放的是成员到score的映射，而跳跃表里存放的是所有的成员，排序依据是HashMap里存的score。</p>
+<h4 id="5-1-常用命令"><a href="#5-1-常用命令" class="headerlink" title="5.1 常用命令"></a>5.1 常用命令</h4><h5 id="zadd-zrange"><a href="#zadd-zrange" class="headerlink" title="zadd   zrange"></a>zadd   zrange</h5><p>zadd ——在key对应的zset中添加一个元素</p>
+<p>zrange——获取key对应的zset中指定范围的元素，-1表示获取所有元素</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; zadd myzset <span class="number">1</span> <span class="string">&quot;one&quot;</span> <span class="number">2</span> <span class="string">&quot;two&quot;</span> <span class="number">3</span> <span class="string">&quot;three&quot;</span></span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; zrange myzset <span class="number">0</span> -<span class="number">1</span></span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;one&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;two&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;three&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; zrange myzset <span class="number">0</span> -<span class="number">1</span> withscores</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;one&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;1&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;two&quot;</span></span><br><span class="line"><span class="number">4</span>) <span class="string">&quot;2&quot;</span></span><br><span class="line"><span class="number">5</span>) <span class="string">&quot;three&quot;</span></span><br><span class="line"><span class="number">6</span>) <span class="string">&quot;3&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="zrem"><a href="#zrem" class="headerlink" title="zrem"></a>zrem</h5><p>zrem——删除key对应的zset中的一个元素 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; zrem myzset one</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt; zrange myzset <span class="number">0</span> -<span class="number">1</span> withscores</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;two&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;2&quot;</span></span><br><span class="line"><span class="number">3</span>) <span class="string">&quot;three&quot;</span></span><br><span class="line"><span class="number">4</span>) <span class="string">&quot;3&quot;</span></span><br><span class="line"><span class="number">192.168</span>.<span class="number">2.129</span>:<span class="number">6379</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-2-命令汇总"><a href="#5-2-命令汇总" class="headerlink" title="5.2 命令汇总"></a>5.2 命令汇总</h4><table>
+<thead>
+<tr>
+<th>命令格式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ZADD</strong> key score1 member1 [score2 member2 …]</td>
+<td>添加一个或多个成员到有序集合，或者如果它已经存在更新其分数</td>
+</tr>
+<tr>
+<td><strong>ZRANGE</strong> key start stop [WITHSCORES]</td>
+<td>把集合排序后，返回名次在[start,stop]之间的元素。 WITHSCORES是把score也打印出来</td>
+</tr>
+<tr>
+<td><strong>ZREVRANGE</strong> key start stop [WITHSCORES]</td>
+<td>倒序排列（分数越大排名越靠前），返回名次在[start,stop]之间的元素</td>
+</tr>
+<tr>
+<td><strong>ZRANGEBYSCORE</strong> key min max [WITHSCORES][LIMIT offset n]</td>
+<td>集合（升序）排序后取score在[min, max]内的元素，并跳过offset个，取出n个</td>
+</tr>
+<tr>
+<td><strong>ZREM</strong> key member [member …]</td>
+<td>从有序集合中删除一个或多个成员</td>
+</tr>
+<tr>
+<td><strong>ZRANK</strong> key member</td>
+<td>确定member在集合中的升序名次</td>
+</tr>
+<tr>
+<td><strong>ZREVRANK</strong> key member</td>
+<td>确定member在集合中的降序名次</td>
+</tr>
+<tr>
+<td><strong>ZSCORE</strong> key member</td>
+<td>获取member的分数</td>
+</tr>
+<tr>
+<td><strong>ZCARD</strong> key</td>
+<td>获取有序集合中成员的数量</td>
+</tr>
+<tr>
+<td><strong>ZCOUNT</strong> key min max</td>
+<td>计算分数在min与max之间的元素总数</td>
+</tr>
+<tr>
+<td><strong>ZINCRBY</strong> key increment member</td>
+<td>给member的分数增加increment</td>
+</tr>
+<tr>
+<td><strong>ZREMRANGEBYRANK</strong> key start stop</td>
+<td>移除名次在start与stop之间的元素</td>
+</tr>
+<tr>
+<td><strong>ZREMRANGEBYSCORE</strong> key min max</td>
+<td>移除分数在min与max之间的元素</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Redis/2019-03-01%201%20redis%E5%AE%89%E8%A3%85%E4%B8%8E%E5%90%AF%E5%8A%A8/" rel="prev" title="01 redis安装与启动">
+      <i class="fa fa-chevron-left"></i> 01 redis安装与启动
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Redis/2019-03-03%203%20redis%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4/" rel="next" title="03 redis管理命令">
+      03 redis管理命令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.</span> <span class="nav-text">1 字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#set-get"><span class="nav-number">1.1.1.</span> <span class="nav-text">set get</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#mget"><span class="nav-number">1.1.2.</span> <span class="nav-text">mget</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#incr-amp-amp-incrby"><span class="nav-number">1.1.3.</span> <span class="nav-text">incr &amp;&amp; incrby</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#decr-amp-amp-decrby"><span class="nav-number">1.1.4.</span> <span class="nav-text">decr &amp;&amp; decrby</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 命令汇总</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%93%88%E5%B8%8C"><span class="nav-number">2.</span> <span class="nav-text">2 哈希</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#hset-hget"><span class="nav-number">2.1.1.</span> <span class="nav-text">hset hget</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#hgetall"><span class="nav-number">2.1.2.</span> <span class="nav-text">hgetall</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 命令汇总</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%88%97%E8%A1%A8"><span class="nav-number">3.</span> <span class="nav-text">3 列表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#lpush-lrange-lpop"><span class="nav-number">3.1.1.</span> <span class="nav-text">lpush  lrange  lpop</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#rpush-rpop"><span class="nav-number">3.1.2.</span> <span class="nav-text">rpush  rpop</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 命令汇总</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E9%9B%86%E5%90%88"><span class="nav-number">4.</span> <span class="nav-text">4 集合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#sadd-smembers-spop"><span class="nav-number">4.1.1.</span> <span class="nav-text">sadd  smembers  spop</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sdiff"><span class="nav-number">4.1.2.</span> <span class="nav-text">sdiff</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#suion"><span class="nav-number">4.1.3.</span> <span class="nav-text">suion</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sinter"><span class="nav-number">4.1.4.</span> <span class="nav-text">sinter</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 命令汇总</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8-SortSet"><span class="nav-number">5.</span> <span class="nav-text">5 有序列表 SortSet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#zadd-zrange"><span class="nav-number">5.1.1.</span> <span class="nav-text">zadd   zrange</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#zrem"><span class="nav-number">5.1.2.</span> <span class="nav-text">zrem</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 命令汇总</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

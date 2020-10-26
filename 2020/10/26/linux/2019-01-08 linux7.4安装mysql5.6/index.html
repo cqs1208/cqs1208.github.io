@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux7.4安装mysql5.6">
+<meta property="og:url" content="http://example.com/2020/10/26/linux/2019-01-08%20linux7.4%E5%AE%89%E8%A3%85mysql5.6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="linux">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-26T03:56:48.230Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/26/linux/2019-01-08%20linux7.4%E5%AE%89%E8%A3%85mysql5.6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>linux7.4安装mysql5.6 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/linux/2019-01-08%20linux7.4%E5%AE%89%E8%A3%85mysql5.6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux7.4安装mysql5.6
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">linux</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>mysql5.6网盘下载链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1Q1LD5ENVw00mVbvXPO2I_w">https://pan.baidu.com/s/1Q1LD5ENVw00mVbvXPO2I_w</a><br>提取码：fu31 </p>
+<a id="more"></a> 
+
+<h3 id="1-准备工作"><a href="#1-准备工作" class="headerlink" title="1 准备工作"></a>1 准备工作</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">find / -name mysql|xargs rm –rf                      # 查找并删除mysql有关的文件</span><br><span class="line">tar -zxvf mysql-5.6.31-linux-glibc2.5-x86_64.tar.gz  # 解压</span><br><span class="line">rm -f mysql-5.6.31-linux-glibc2.5-x86_64.tar.gz      # 删除压缩文件</span><br><span class="line">mv mysql-5.6.31-linux-glibc2.5-x86_64/ mysql         # 重命名</span><br></pre></td></tr></table></figure>
+
+<p>此时<code>mysql</code>的安装目录为：/usr/local/mysql</p>
+<h3 id="2-添加用户并授权"><a href="#2-添加用户并授权" class="headerlink" title="2 添加用户并授权"></a>2 添加用户并授权</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">groups mysql                  # 检查是否有mysql用户和组</span><br><span class="line">groupadd mysql                # 添加mysql组</span><br><span class="line">useradd -r -g mysql mysql     # 添加mysql用户并加入mysql组中</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-安装"><a href="#3-安装" class="headerlink" title="3 安装"></a>3 安装</h3><h4 id="3-1-mysql文件夹所有者所有组"><a href="#3-1-mysql文件夹所有者所有组" class="headerlink" title="3.1 mysql文件夹所有者所有组"></a>3.1 mysql文件夹所有者所有组</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd mysql                  # 进入mysql目录</span><br><span class="line">chown -R mysql:mysql ./   # 改变mysql的文件夹的所有者和所有组</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-修改配置文件"><a href="#3-2-修改配置文件" class="headerlink" title="3.2 修改配置文件"></a>3.2 修改配置文件</h4><p>文件位置：/etc/my.cnf</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[client]</span><br><span class="line">socket=/usr/local/mysql/mysql.sock              # socket路径</span><br><span class="line">[mysqld]</span><br><span class="line">datadir=/usr/local/mysql/data                   # mysql实例目录</span><br><span class="line">basedir=/usr/local/mysql                        # mysql安装目录</span><br><span class="line">socket=/usr/local/mysql/mysql.sock              # socket连接</span><br><span class="line">[mysqld_safe]</span><br><span class="line">log-error=/usr/local/mysql/mysql-log/error.log  # 错误日志连接</span><br><span class="line">pid-file=/usr/local/mysql/mysql-pid/mysql.pid   # pid文件连接</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看日志连接和pid连接是否存在 ， 如果不存在则创建。并重新设置mysql的文件夹的所有者和所有组</strong></p>
+<h4 id="3-3-安装数据库实例"><a href="#3-3-安装数据库实例" class="headerlink" title="3.3 安装数据库实例"></a>3.3 安装数据库实例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./scripts/mysql_install_db --user=mysql</span><br></pre></td></tr></table></figure>
+
+<p>该命令可能会出现如下几点报错信息：</p>
+<p>1：FATAL ERROR: please install the following Perl modules before executing</p>
+<p>**解决： **</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y perl-Module-Install.noarch</span><br></pre></td></tr></table></figure>
+
+<p>2：提示-bash: ./scripts/mysql_install_db: /usr/bin/perl: 坏的解释器: 没有那个文件或目录 </p>
+<p><strong>解决（安装解释器 ）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y install perl perl-devel</span><br><span class="line">yum install -y perl-Data-Dumper</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-4-启动"><a href="#3-4-启动" class="headerlink" title="3.4 启动"></a>3.4 启动</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./support-files/mysql.server start</span><br></pre></td></tr></table></figure>
+
+<p>启动成功后会生成socket文件 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">drwxr-xr-x  <span class="number">2</span> mysql mysql  <span class="number">4096</span> Jun <span class="number">18</span>  <span class="number">2018</span> bin</span><br><span class="line">srwxrwxrwx  <span class="number">1</span> mysql mysql     <span class="number">0</span> Dec <span class="number">28</span> <span class="number">15</span>:<span class="number">07</span> mysql.sock</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-密码及远程连接配置"><a href="#4-密码及远程连接配置" class="headerlink" title="4 密码及远程连接配置"></a>4 密码及远程连接配置</h3><h4 id="4-1-修改密码登录"><a href="#4-1-修改密码登录" class="headerlink" title="4.1 修改密码登录"></a>4.1 修改密码登录</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./bin/mysqladmin -u root -h localhost.localdomain password &#x27;root&#x27;  # 修改密码</span><br><span class="line">./bin/mysql -h127.0.0.1 -uroot –proot                              # 登录</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">登录可能出现如下报错信息：</span><br><span class="line"></span><br><span class="line">ERROR <span class="number">1045</span> (<span class="number">28000</span>): Access denied <span class="keyword">for</span> user <span class="string">&#x27;root&#x27;</span> @ <span class="string">&#x27;localhost&#x27;</span> (using password : NO)</span><br><span class="line"></span><br><span class="line">查看报错日志：（cat /usr/local/mysql/mysql-log/error.log） </span><br><span class="line"></span><br><span class="line">Version: <span class="string">&#x27;5.6&#x27;</span> socket:  <span class="string">&#x27;/usr/local/mysql/mysql.sock&#x27;</span> port: <span class="number">3306</span> <span class="function">Mysql Community <span class="title">Server</span> <span class="params">(GPL)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">该提示表示socket套接字问题（linux会默认找/tmp/mysql.sock套接字文件）</span></span><br></pre></td></tr></table></figure>
+
+<p>把mysql下的mysql.sock文件软连接到/tmp/mysql.sock中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/local/mysql/mysql.sock /tmp/mysql.sock</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-授权远程连接"><a href="#4-2-授权远程连接" class="headerlink" title="4.2 授权远程连接"></a>4.2 授权远程连接</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">grant all privileges on *.* to root@&#x27;%&#x27; identified by &#x27;root&#x27;;   # 使root用户在所有ip都能联通mysql</span><br><span class="line">flush privileges;                                               # 刷新配置</span><br><span class="line">systemctl stop firewalld.service                                # Centos7关闭防火墙</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-设置MySql自动启动"><a href="#5-设置MySql自动启动" class="headerlink" title="5 设置MySql自动启动"></a>5 设置MySql自动启动</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld   # 将服务文件拷贝到init.d下，并重命名为mysqll</span><br><span class="line">chmod +x /etc/init.d/mysqld                                         # 赋予可执行权限</span><br><span class="line">chkconfig --add mysqld                                              # 添加服务</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">chkconfig --list                                                    # 显示服务列表</span><br><span class="line">mysqld         	<span class="number">0</span>:off	<span class="number">1</span>:off	<span class="number">2</span>:on	<span class="number">3</span>:on	<span class="number">4</span>:on	<span class="number">5</span>:on	<span class="number">6</span>:off</span><br><span class="line">如果看到mysql的服务，并且<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>都是on的话则成功，如果是off，则键入</span><br><span class="line">chkconfig --level <span class="number">345</span> mysql on</span><br><span class="line">reboot                                                              # 重启电脑</span><br><span class="line">netstat -na | grep 3306                                             # 验证(如果看到有监听说明服务启动了)</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/linux/2018-11-09-nginx%E6%90%AD%E5%BB%BA%E5%9B%BE%E7%89%87%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="prev" title="Linux下安装Nginx并配置一个图片服务器">
+      <i class="fa fa-chevron-left"></i> Linux下安装Nginx并配置一个图片服务器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/linux/2019-08-25%20%E5%90%AF%E7%94%A8%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/" rel="next" title="启用虚拟内存">
+      启用虚拟内存 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">1 准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7%E5%B9%B6%E6%8E%88%E6%9D%83"><span class="nav-number">2.</span> <span class="nav-text">2 添加用户并授权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">3 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-mysql%E6%96%87%E4%BB%B6%E5%A4%B9%E6%89%80%E6%9C%89%E8%80%85%E6%89%80%E6%9C%89%E7%BB%84"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 mysql文件夹所有者所有组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 修改配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E5%AE%89%E8%A3%85%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 安装数据库实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E5%90%AF%E5%8A%A8"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 启动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AF%86%E7%A0%81%E5%8F%8A%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">4 密码及远程连接配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 修改密码登录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E6%8E%88%E6%9D%83%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 授权远程连接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E8%AE%BE%E7%BD%AEMySql%E8%87%AA%E5%8A%A8%E5%90%AF%E5%8A%A8"><span class="nav-number">5.</span> <span class="nav-text">5 设置MySql自动启动</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

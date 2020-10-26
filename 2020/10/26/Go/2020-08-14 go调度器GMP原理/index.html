@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="go调度器GMP原理">
+<meta property="og:url" content="http://example.com/2020/10/26/Go/2020-08-14%20go%E8%B0%83%E5%BA%A6%E5%99%A8GMP%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="golang">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp01.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp02.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp03.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp04.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp05.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp06.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp07.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp08.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp09.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp10.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp11.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp12.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp13.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp14.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp15.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp16.png">
+<meta property="og:image" content="http://example.com/images/go/gc/gc_gmp17.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.119Z">
+<meta property="article:modified_time" content="2020-08-12T07:47:48.746Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="golang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/go/gc/gc_gmp01.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Go/2020-08-14%20go%E8%B0%83%E5%BA%A6%E5%99%A8GMP%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>go调度器GMP原理 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Go/2020-08-14%20go%E8%B0%83%E5%BA%A6%E5%99%A8GMP%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          go调度器GMP原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-12 15:47:48" itemprop="dateModified" datetime="2020-08-12T15:47:48+08:00">2020-08-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/" itemprop="url" rel="index"><span itemprop="name">golang</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">golang</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>go调度器GMP原理</p>
+<a id="more"></a> 
+<h2 id="Golang调度器的由来"><a href="#Golang调度器的由来" class="headerlink" title="Golang调度器的由来"></a>Golang调度器的由来</h2><h3 id="多进程-线程中CPU的利用"><a href="#多进程-线程中CPU的利用" class="headerlink" title="多进程/线程中CPU的利用"></a>多进程/线程中CPU的利用</h3><p>对于Linux操作系统来讲，cpu对进程的态度和线程的态度是一样的。</p>
+<p><img src="/images/go/gc/gc_gmp01.png" alt="gc_gmp01.png"></p>
+<p>很明显，CPU调度切换的是进程和线程。尽管线程看起来很美好，但实际上多线程开发设计会变得更加复杂，要考虑很多同步竞争等问题，如锁、竞争冲突等。</p>
+<h3 id="协程来提高CPU利用率"><a href="#协程来提高CPU利用率" class="headerlink" title="协程来提高CPU利用率"></a>协程来提高CPU利用率</h3><p>大量的进程/线程出现了新的问题</p>
+<ul>
+<li><p>高内存占用</p>
+</li>
+<li><p>调度的高消耗CPU</p>
+</li>
+</ul>
+<p>然后工程师们就发现，其实一个线程分为“内核态“线程和”用户态“线程。</p>
+<p>一个“用户态线程”必须要绑定一个“内核态线程”，但是CPU并不知道有“用户态线程”的存在，它只知道它运行的是一个“内核态线程”(Linux的PCB进程控制块)。</p>
+<p><img src="/images/go/gc/gc_gmp02.png" alt="gc_gmp02.png"></p>
+<p>这样，我们再去细化去分类一下，内核线程依然叫“线程(thread)”，用户线程叫“协程(co-routine)”.</p>
+<p><img src="/images/go/gc/gc_gmp03.png" alt="gc_gmp03.png"></p>
+<p>  看到这里，我们就要开脑洞了，既然一个协程(co-routine)可以绑定一个线程(thread)，那么能不能多个协程(co-routine)绑定一个或者多个线程(thread)上呢。</p>
+<p>​      之后，我们就看到了有上图中协程和线程的映射关系：</p>
+<h3 id="go协程goroutine"><a href="#go协程goroutine" class="headerlink" title="go协程goroutine"></a>go协程goroutine</h3><p><strong>Go为了提供更容易使用的并发方法，使用了goroutine和channel</strong>。goroutine来自协程的概念，让一组可复用的函数运行在一组线程之上，即使有协程阻塞，该线程的其他协程也可以被runtime调度，转移到其他可运行的线程上。最关键的是，程序员看不到这些底层的细节，这就降低了编程的难度，提供了更容易的并发。</p>
+<p>Go中，协程被称为goroutine，它非常轻量，一个goroutine只占几KB，并且这几KB就足够goroutine运行完，这就能在有限的内存空间内支持大量goroutine，支持了更多的并发。虽然一个goroutine的栈只占几KB，但实际是可伸缩的，如果需要更多内容，runtime会自动为goroutine分配。</p>
+<p>Goroutine特点：</p>
+<p>占用内存更小（几kb）</p>
+<p>调度更灵活(runtime调度)</p>
+<h2 id="GMP模型的设计思想"><a href="#GMP模型的设计思想" class="headerlink" title="GMP模型的设计思想"></a>GMP模型的设计思想</h2><h3 id="GMP介绍"><a href="#GMP介绍" class="headerlink" title="GMP介绍"></a>GMP介绍</h3><p><img src="/images/go/gc/gc_gmp04.png" alt="gc_gmp04.png"></p>
+<h4 id="G"><a href="#G" class="headerlink" title="G"></a>G</h4><p><code>G</code>: 代表一个goroutine对象，每次go调用的时候，都会创建一个G对象，它包括栈、指令指针以及对于调用goroutines很重要的其它信息，比如阻塞它的任何channel，其主要数据结构：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">type g struct &#123;</span><br><span class="line">  stack       stack   <span class="comment">// 描述了真实的栈内存，包括上下界</span></span><br><span class="line"></span><br><span class="line">  m              *m     <span class="comment">// 当前的m</span></span><br><span class="line">  sched          gobuf   <span class="comment">// goroutine切换时，用于保存g的上下文      </span></span><br><span class="line">  param          unsafe.Pointer <span class="comment">// 用于传递参数，睡眠时其他goroutine可以设置param，唤醒时该goroutine可以获取</span></span><br><span class="line">  atomicstatus   uint32</span><br><span class="line">  stackLock      uint32 </span><br><span class="line">  goid           int64  <span class="comment">// goroutine的ID</span></span><br><span class="line">  waitsince      int64 <span class="comment">// g被阻塞的大体时间</span></span><br><span class="line">  lockedm        *m     <span class="comment">// G被锁定只在这个m上运行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中最主要的当然是sched了，保存了goroutine的上下文。goroutine切换的时候不同于线程有OS来负责这部分数据，而是由一个gobuf对象来保存，这样能够更加轻量级，再来看看gobuf的结构：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">type gobuf struct &#123;</span><br><span class="line">    sp   uintptr</span><br><span class="line">    pc   uintptr</span><br><span class="line">    g    guintptr</span><br><span class="line">    ctxt unsafe.Pointer</span><br><span class="line">    ret  sys.Uintreg</span><br><span class="line">    lr   uintptr</span><br><span class="line">    bp   uintptr <span class="comment">// for GOEXPERIMENT=framepointer</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其实就是保存了当前的栈指针，计数器，当然还有g自身，这里记录自身g的指针是为了能快速的访问到goroutine中的信息。</p>
+<h4 id="M"><a href="#M" class="headerlink" title="M"></a>M</h4><p><code>M</code>：代表一个线程，每次创建一个M的时候，都会有一个底层线程创建；所有的G任务，最终还是在M上执行，其主要数据结构：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">type m struct &#123;</span><br><span class="line">    g0      *g     <span class="comment">// 带有调度栈的goroutine</span></span><br><span class="line"></span><br><span class="line">    gsignal       *g         <span class="comment">// 处理信号的goroutine</span></span><br><span class="line">    tls           [<span class="number">6</span>]uintptr <span class="comment">// thread-local storage</span></span><br><span class="line">    <span class="function">mstartfn      <span class="title">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    curg          *g       <span class="comment">// 当前运行的goroutine</span></span></span><br><span class="line"><span class="function">    caughtsig     guintptr </span></span><br><span class="line"><span class="function">    p             puintptr <span class="comment">// 关联p和执行的go代码</span></span></span><br><span class="line"><span class="function">    nextp         puintptr</span></span><br><span class="line"><span class="function">    id            int32</span></span><br><span class="line"><span class="function">    mallocing     int32 <span class="comment">// 状态</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    spinning      bool <span class="comment">// m是否out of work</span></span></span><br><span class="line"><span class="function">    blocked       bool <span class="comment">// m是否被阻塞</span></span></span><br><span class="line"><span class="function">    inwb          bool <span class="comment">// m是否在执行写屏蔽</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    printlock     int8</span></span><br><span class="line"><span class="function">    incgo         bool <span class="comment">// m在执行cgo吗</span></span></span><br><span class="line"><span class="function">    fastrand      uint32</span></span><br><span class="line"><span class="function">    ncgocall      uint64      <span class="comment">// cgo调用的总数</span></span></span><br><span class="line"><span class="function">    ncgo          int32       <span class="comment">// 当前cgo调用的数目</span></span></span><br><span class="line"><span class="function">    park          note</span></span><br><span class="line"><span class="function">    alllink       *m <span class="comment">// 用于链接allm</span></span></span><br><span class="line"><span class="function">    schedlink     muintptr</span></span><br><span class="line"><span class="function">    mcache        *mcache <span class="comment">// 当前m的内存缓存</span></span></span><br><span class="line"><span class="function">    lockedg       *g <span class="comment">// 锁定g在当前m上执行，而不会切换到其他m</span></span></span><br><span class="line"><span class="function">    createstack   [32]uintptr <span class="comment">// thread创建的栈</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>结构体M中有两个G是需要关注一下的，一个是curg，代表结构体M当前绑定的结构体G。另一个是g0，是带有调度栈的goroutine，这是一个比较特殊的goroutine。普通的goroutine的栈是在堆上分配的可增长的栈，而g0的栈是M对应的线程的栈。所有调度相关的代码，会先切换到该goroutine的栈中再执行。也就是说线程的栈也是用的g实现，而不是使用的OS的。</p>
+<h4 id="P"><a href="#P" class="headerlink" title="P"></a>P</h4><p><code>P</code>：代表一个处理器， 它包含了运行goroutine的资源，每一个运行的M都必须绑定一个P，就像线程必须在么一个CPU核上执行一样，由P来调度G在M上的运行，P的个数就是GOMAXPROCS（最大256），启动时固定的，一般不修改；M的个数和P的个数不一定一样多（会有休眠的M或者不需要太多的M）（最大10000）；每一个P保存着本地G任务队列，也有一个全局G任务队列。P的数据结构：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">type p struct &#123;</span><br><span class="line">    lock mutex</span><br><span class="line"></span><br><span class="line">    id          int32</span><br><span class="line">    status      uint32 <span class="comment">// 状态，可以为pidle/prunning/...</span></span><br><span class="line">    link        puintptr</span><br><span class="line">    schedtick   uint32     <span class="comment">// 每调度一次加1</span></span><br><span class="line">    syscalltick uint32     <span class="comment">// 每一次系统调用加1</span></span><br><span class="line">    sysmontick  sysmontick </span><br><span class="line">    m           muintptr   <span class="comment">// 回链到关联的m</span></span><br><span class="line">    mcache      *mcache</span><br><span class="line">    racectx     uintptr</span><br><span class="line"></span><br><span class="line">    goidcache    uint64 <span class="comment">// goroutine的ID的缓存</span></span><br><span class="line">    goidcacheend uint64</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 可运行的goroutine的队列</span></span><br><span class="line">    runqhead uint32</span><br><span class="line">    runqtail uint32</span><br><span class="line">    runq     [<span class="number">256</span>]guintptr</span><br><span class="line"></span><br><span class="line">    runnext guintptr <span class="comment">// 下一个运行的g</span></span><br><span class="line"></span><br><span class="line">    sudogcache []*sudog</span><br><span class="line">    sudogbuf   [<span class="number">128</span>]*sudog</span><br><span class="line"></span><br><span class="line">    palloc persistentAlloc <span class="comment">// per-P to avoid mutex</span></span><br><span class="line"></span><br><span class="line">    pad [sys.CacheLineSize]<span class="keyword">byte</span></span><br></pre></td></tr></table></figure>
+
+<p>其中P的状态有Pidle, Prunning, Psyscall, Pgcstop, Pdead；在其内部队列runqhead里面有可运行的goroutine，P优先从内部获取执行的g，这样能够提高效率。</p>
+<h3 id="GPM-模型"><a href="#GPM-模型" class="headerlink" title="GPM 模型"></a>GPM 模型</h3><p>在Go中，<strong>线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上</strong>。</p>
+<p><img src="/images/go/gc/gc_gmp05.png" alt="gc_gmp05.png"></p>
+<p><strong>全局队列</strong>（Global Queue）：存放等待运行的G。</p>
+<p><strong>P的本地队列</strong>：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。新建G’时，G’优先加入到P的本地队列，如果队列满了，则会把本地队列中一半的G移动到全局队列。</p>
+<p><strong>P列表</strong>：所有的P都在程序启动时创建，并保存在数组中，最多有GOMAXPROCS(可配置)个。</p>
+<p><strong>M</strong>：线程想运行任务就得获取P，从P的本地队列获取G，P队列为空时，M也会尝试从全局队列<strong>拿</strong>一批G放到P的本地队列，或从其他P的本地队列<strong>偷</strong>一半放到自己P的本地队列。M运行G，G执行之后，M会从P获取下一个G，不断重复下去。</p>
+<p><strong>Goroutine调度器和OS调度器是通过M结合起来的，每个M都代表了1个内核线程，OS调度器负责把内核线程分配到CPU的核上执行</strong>。</p>
+<h3 id="P和M的个数"><a href="#P和M的个数" class="headerlink" title="P和M的个数"></a>P和M的个数</h3><p>1、P的数量：</p>
+<p>由启动时环境变量$GOMAXPROCS或者是由runtime的方法GOMAXPROCS()决定。这意味着在程序执行的任意时刻都只有$GOMAXPROCS个goroutine在同时运行。</p>
+<p>2、M的数量:</p>
+<p>go语言本身的限制：go程序启动时，会设置M的最大数量，默认10000.但是内核很难支持这么多的线程数，所以这个限制可以忽略。</p>
+<p>runtime/debug中的SetMaxThreads函数，设置M的最大数量</p>
+<p>一个M阻塞了，会创建新的M。</p>
+<p>M与P的数量没有绝对关系，一个M阻塞，P就会去创建或者切换另一个M，所以，即使P的默认数量是1，也有可能会创建很多个M出来。</p>
+<p>P和M何时会被创建</p>
+<p>1、P何时创建：在确定了P的最大数量n后，运行时系统会根据这个数量创建n个P。</p>
+<p>2、M何时创建：没有足够的M来关联P并运行其中的可运行的G。比如所有的M此时都阻塞住了，而P中还有很多就绪任务，就会去寻找空闲的M，而没有空闲的，就会去创建新的M。</p>
+<h3 id="调度器的设计策略"><a href="#调度器的设计策略" class="headerlink" title="调度器的设计策略"></a>调度器的设计策略</h3><p><strong>复用线程</strong>：避免频繁的创建、销毁线程，而是对线程的复用。</p>
+<p>1）work stealing机制</p>
+<p>​      当本线程无可运行的G时，尝试从其他线程绑定的P偷取G，而不是销毁线程。</p>
+<p>2）hand off机制</p>
+<p>​      当本线程因为G进行系统调用阻塞时，线程释放绑定的P，把P转移给其他空闲的线程执行。</p>
+<p><strong>利用并行</strong>：GOMAXPROCS设置P的数量，最多有GOMAXPROCS个线程分布在多个CPU上同时运行。GOMAXPROCS也限制了并发的程度，比如GOMAXPROCS = 核数/2，则最多利用了一半的CPU核进行并行。</p>
+<p><strong>抢占</strong>：在coroutine中要等待一个协程主动让出CPU才执行下一个协程，在Go中，一个goroutine最多占用CPU 10ms，防止其他goroutine被饿死，这就是goroutine不同于coroutine的一个地方。</p>
+<p><strong>全局G队列</strong>：在新的调度器中依然有全局G队列，但功能已经被弱化了，当M执行work stealing从其他P偷不到G时，它可以从全局G队列获取G。</p>
+<h2 id="go调度流程"><a href="#go调度流程" class="headerlink" title="go调度流程"></a>go调度流程</h2><p><img src="/images/go/gc/gc_gmp06.png" alt="gc_gmp06.png"></p>
+<p>从上图我们可以分析出几个结论：</p>
+<p>  1、我们通过 go func()来创建一个goroutine；</p>
+<p>  2、有两个存储G的队列，一个是局部调度器P的本地队列、一个是全局G队列。新创建的G会先保存在P的本地队列中，如果P的本地队列已经满了就会保存在全局的队列中；</p>
+<p>  3、G只能运行在M中，一个M必须持有一个P，M与P是1：1的关系。M会从P的本地队列弹出一个可执行状态的G来执行，如果P的本地队列为空，就会想其他的MP组合偷取一个可执行的G来执行；</p>
+<p>  4、一个M调度G执行的过程是一个循环机制；</p>
+<p>  5、当M执行某一个G时候如果发生了syscall或则其余阻塞操作，M会阻塞，如果当前有一些G在执行，runtime会把这个线程M从P中摘除(detach)，然后再创建一个新的操作系统的线程(如果有空闲的线程可用就复用空闲线程)来服务于这个P；</p>
+<p>  6、当M系统调用结束时候，这个G会尝试获取一个空闲的P执行，并放入到这个P的本地队列。如果获取不到P，那么这个线程M变成休眠状态， 加入到空闲线程中，然后这个G会被放入全局队列中。</p>
+<h2 id="调度器场景过程"><a href="#调度器场景过程" class="headerlink" title="调度器场景过程"></a>调度器场景过程</h2><h3 id="场景1"><a href="#场景1" class="headerlink" title="场景1"></a>场景1</h3><p>P拥有G1，M1获取P后开始运行G1，G1使用go func()创建了G2，为了局部性G2优先加入到P1的本地队列。</p>
+<p><img src="/images/go/gc/gc_gmp07.png" alt="gc_gmp07.png"></p>
+<h3 id="场景2"><a href="#场景2" class="headerlink" title="场景2"></a>场景2</h3><p>G1运行完成后(函数：goexit)，M上运行的goroutine切换为G0，G0负责调度时协程的切换（函数：schedule）。从P的本地队列取G2，从G0切换到G2，并开始运行G2(函数：execute)。实现了线程M1的复用。</p>
+<p><img src="/images/go/gc/gc_gmp08.png" alt="gc_gmp08.png"></p>
+<h3 id="场景3"><a href="#场景3" class="headerlink" title="场景3"></a>场景3</h3><p>假设每个P的本地队列只能存3个G。G2要创建了6个G，前3个G（G3, G4, G5）已经加入p1的本地队列，p1本地队列满了。</p>
+<p><img src="/images/go/gc/gc_gmp09.png" alt="gc_gmp09.png"></p>
+<h3 id="场景4"><a href="#场景4" class="headerlink" title="场景4"></a>场景4</h3><p>G2在创建G7的时候，发现P1的本地队列已满，需要执行<strong>负载均衡</strong>(把P1中本地队列中前一半的G，还有新创建G<strong>转移</strong>到全局队列)</p>
+<p>（实现中并不一定是新的G，如果G是G2之后就执行的，会被保存在本地队列，利用某个老的G替换新G加入全局队列）</p>
+<p><img src="/images/go/gc/gc_gmp10.png" alt="gc_gmp10.png"></p>
+<p>这些G被转移到全局队列时，会被打乱顺序。所以G3,G4,G7被转移到全局队列。</p>
+<h3 id="场景5"><a href="#场景5" class="headerlink" title="场景5"></a>场景5</h3><p>G2创建G8时，P1的本地队列未满，所以G8会被加入到P1的本地队列。</p>
+<p><img src="/images/go/gc/gc_gmp11.png" alt="gc_gmp11.png"></p>
+<p>G8加入到P1点本地队列的原因还是因为P1此时在与M1绑定，而G2此时是M1在执行。所以G2创建的新的G会优先放置到自己的M绑定的P上。</p>
+<h3 id="场景6"><a href="#场景6" class="headerlink" title="场景6"></a>场景6</h3><p>规定：<strong>在创建G时，运行的G会尝试唤醒其他空闲的P和M组合去执行</strong>。</p>
+<p><img src="/images/go/gc/gc_gmp12.png" alt="gc_gmp12.png"></p>
+<p>假定G2唤醒了M2，M2绑定了P2，并运行G0，但P2本地队列没有G，M2此时为自旋线程<strong>（没有G但为运行状态的线程，不断寻找G）</strong></p>
+<h3 id="场景7"><a href="#场景7" class="headerlink" title="场景7"></a>场景7</h3><p>M2尝试从全局队列(简称“GQ”)取一批G放到P2的本地队列（函数：findrunnable()）。M2从全局队列取的G数量符合下面的公式：</p>
+<p>n=min(len(GQ)/GOMAXPROCS+1,len(GQ/2))</p>
+<p>至少从全局队列取1个g，但每次不要从全局队列移动太多的g到p本地队列，给其他p留点。这是<strong>从全局队列到P本地队列的负载均衡</strong>。</p>
+<p><img src="/images/go/gc/gc_gmp13.png" alt="gc_gmp13.png"></p>
+<p>假定我们场景中一共有4个P（GOMAXPROCS设置为4，那么我们允许最多就能用4个P来供M使用）。所以M2只从能从全局队列取1个G（即G3）移动P2本地队列，然后完成从G0到G3的切换，运行G3。</p>
+<h3 id="场景8"><a href="#场景8" class="headerlink" title="场景8"></a>场景8</h3><p>假设G2一直在M1上运行，经过2轮后，M2已经把G7、G4从全局队列获取到了P2的本地队列并完成运行，全局队列和P2的本地队列都空了,如场景8图的左半部分</p>
+<p><img src="/images/go/gc/gc_gmp14.png" alt="gc_gmp14.png"></p>
+<p><strong>全局队列已经没有G，那m就要执行work stealing(偷取)：从其他有G的P哪里偷取一半G过来，放到自己的P本地队列</strong>。P2从P1的本地队列尾部取一半的G，本例中一半则只有1个G8，放到P2的本地队列并执行。</p>
+<h3 id="场景9"><a href="#场景9" class="headerlink" title="场景9"></a>场景9</h3><p>G1本地队列G5、G6已经被其他M偷走并运行完成，当前M1和M2分别在运行G2和G8，M3和M4没有goroutine可以运行，M3和M4处于<strong>自旋状态</strong>，它们不断寻找goroutine。</p>
+<p><img src="/images/go/gc/gc_gmp15.png" alt="gc_gmp15.png"></p>
+<p>为什么要让m3和m4自旋，自旋本质是在运行，线程在运行却没有执行G，就变成了浪费CPU.  为什么不销毁现场，来节约CPU资源。因为创建和销毁CPU也会浪费时间，我们<strong>希望当有新goroutine创建时，立刻能有M运行它</strong>，如果销毁再新建就增加了时延，降低了效率。当然也考虑了过多的自旋线程是浪费CPU，所以系统中最多有GOMAXPROCS个自旋的线程(当前例子中的GOMAXPROCS=4，所以一共4个P)，多余的没事做线程会让他们休眠。</p>
+<h3 id="场景10"><a href="#场景10" class="headerlink" title="场景10"></a>场景10</h3><p>假定当前除了M3和M4为自旋线程，还有M5和M6为空闲的线程(没有得到P的绑定，注意我们这里最多就只能够存在4个P，所以P的数量应该永远是M&gt;=P, 大部分都是M在抢占需要运行的P)，G8创建了G9，G8进行了<strong>阻塞的系统调用</strong>，M2和P2立即解绑，P2会执行以下判断：如果P2本地队列有G、全局队列有G或有空闲的M，P2都会立马唤醒1个M和它绑定，否则P2则会加入到空闲P列表，等待M来获取可用的p。本场景中，P2本地队列有G9，可以和其他空闲的线程M5绑定。</p>
+<p><img src="/images/go/gc/gc_gmp16.png" alt="gc_gmp16.png"></p>
+<h3 id="场景11"><a href="#场景11" class="headerlink" title="场景11"></a>场景11</h3><p>G8创建了G9，假如G8进行了<strong>非阻塞系统调用</strong></p>
+<p><img src="/images/go/gc/gc_gmp17.png" alt="gc_gmp17.png"></p>
+<p>  M2和P2会解绑，但M2会记住P2，然后G8和M2进入<strong>系统调用</strong>状态。当G8和M2退出系统调用时，会尝试获取P2，如果无法获取，则获取空闲的P，如果依然没有，G8会被记为可运行状态，并加入到全局队列,M2因为没有P的绑定而变成休眠状态(长时间休眠等待GC回收销毁)。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Go调度器很轻量也很简单，足以撑起goroutine的调度工作，并且让Go具有了原生（强大）并发的能力。<strong>Go调度本质是把大量的goroutine分配到少量线程上去执行，并利用多核并行，实现更强大的并发。</strong></p>
+<p><a target="_blank" rel="noopener" href="https://studygolang.com/articles/26921?fr=sidebar">参考资料</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/abe79d86ff27">参考资料</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/golang/" rel="tag"># golang</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Go/2020-08-14%20go%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="prev" title="go内存管理">
+      <i class="fa fa-chevron-left"></i> go内存管理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Hexo/2018-08-06-hexo-yilia%E4%BD%BF%E7%94%A8/" rel="next" title="hexo-yilia使用">
+      hexo-yilia使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Golang%E8%B0%83%E5%BA%A6%E5%99%A8%E7%9A%84%E7%94%B1%E6%9D%A5"><span class="nav-number">1.</span> <span class="nav-text">Golang调度器的由来</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E4%B8%ADCPU%E7%9A%84%E5%88%A9%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">多进程&#x2F;线程中CPU的利用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E6%9D%A5%E6%8F%90%E9%AB%98CPU%E5%88%A9%E7%94%A8%E7%8E%87"><span class="nav-number">1.2.</span> <span class="nav-text">协程来提高CPU利用率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#go%E5%8D%8F%E7%A8%8Bgoroutine"><span class="nav-number">1.3.</span> <span class="nav-text">go协程goroutine</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GMP%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">2.</span> <span class="nav-text">GMP模型的设计思想</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GMP%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.1.</span> <span class="nav-text">GMP介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#G"><span class="nav-number">2.1.1.</span> <span class="nav-text">G</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#M"><span class="nav-number">2.1.2.</span> <span class="nav-text">M</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#P"><span class="nav-number">2.1.3.</span> <span class="nav-text">P</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GPM-%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">GPM 模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#P%E5%92%8CM%E7%9A%84%E4%B8%AA%E6%95%B0"><span class="nav-number">2.3.</span> <span class="nav-text">P和M的个数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E5%BA%A6%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1%E7%AD%96%E7%95%A5"><span class="nav-number">2.4.</span> <span class="nav-text">调度器的设计策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#go%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">go调度流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E5%BA%A6%E5%99%A8%E5%9C%BA%E6%99%AF%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">调度器场景过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF1"><span class="nav-number">4.1.</span> <span class="nav-text">场景1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF2"><span class="nav-number">4.2.</span> <span class="nav-text">场景2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF3"><span class="nav-number">4.3.</span> <span class="nav-text">场景3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF4"><span class="nav-number">4.4.</span> <span class="nav-text">场景4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF5"><span class="nav-number">4.5.</span> <span class="nav-text">场景5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF6"><span class="nav-number">4.6.</span> <span class="nav-text">场景6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF7"><span class="nav-number">4.7.</span> <span class="nav-text">场景7</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF8"><span class="nav-number">4.8.</span> <span class="nav-text">场景8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF9"><span class="nav-number">4.9.</span> <span class="nav-text">场景9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF10"><span class="nav-number">4.10.</span> <span class="nav-text">场景10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF11"><span class="nav-number">4.11.</span> <span class="nav-text">场景11</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

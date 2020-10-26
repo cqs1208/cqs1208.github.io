@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql优化实战">
+<meta property="og:url" content="http://example.com/2020/10/26/Mysql/2019-08-25%20Mysql%E4%BC%98%E5%8C%96-trace%E3%80%81Order%20by%E4%B8%8EGroup%20by/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Mysql">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_trace01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_trace02.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_trace03.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_orderBy01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_orderBy02.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_orderBy03.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_orderBy04.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_orderBy05.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_orderBy06.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_orderBy07.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_orderBy08.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_orderBy08a.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_fileSort01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit02.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit03.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit04.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit05.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit06.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit07.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit08.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit09.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit10.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit11.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit12.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_limit13.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_count01.png">
+<meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_count02.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.287Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Mysql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/Users/admin/Desktop/note/images/Mysql/mysql_trace01.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Mysql/2019-08-25%20Mysql%E4%BC%98%E5%8C%96-trace%E3%80%81Order%20by%E4%B8%8EGroup%20by/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Mysql优化实战 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Mysql/2019-08-25%20Mysql%E4%BC%98%E5%8C%96-trace%E3%80%81Order%20by%E4%B8%8EGroup%20by/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Mysql优化实战
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Mysql</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>trace工具以及排序优化(order by 以及文件排序 )</p>
+<a id="more"></a> 
+
+<p>示例表</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">DROP TABLE IF EXISTS `employees`;</span><br><span class="line">CREATE TABLE `employees` (</span><br><span class="line">  `id` int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `name` varchar(24) NOT NULL DEFAULT &#x27;&#x27; COMMENT &#x27;姓名&#x27;,</span><br><span class="line">  `age` int(11) NOT NULL DEFAULT 0 COMMENT &#x27;年龄&#x27;,</span><br><span class="line">  `position` varchar(20) NOT NULL DEFAULT &#x27;&#x27; COMMENT &#x27;职位&#x27;,</span><br><span class="line">  `hire_time` timestamp NOT NULL DEFAULT current_timestamp() COMMENT &#x27;入职时间&#x27;,</span><br><span class="line">  PRIMARY KEY (`id`),</span><br><span class="line">  KEY `idx_name_age_position` (`name`,`age`,`position`) USING BTREE</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT=&#x27;员工记录表&#x27;;</span><br><span class="line"></span><br><span class="line">INSERT INTO employees(name,age,position,hire_time)VALUES(&#x27;LiLei&#x27;,22,&#x27;manager&#x27;,NOW());  INSERT INTO employees(name,age,position,hire_time)VALUES(&#x27;HanMeimei&#x27;,23,&#x27;dev&#x27;,NOW());  INSERT INTO employees(name,age,position,hire_time)VALUES(&#x27;Lucy&#x27;,23,&#x27;dev&#x27;,NOW());</span><br></pre></td></tr></table></figure>
+
+<h2 id="Mysql如何选择合适的索引"><a href="#Mysql如何选择合适的索引" class="headerlink" title="Mysql如何选择合适的索引"></a>Mysql如何选择合适的索引</h2><p>EXPLAIN select * from employees where name &gt; ‘a’;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_trace01.png" alt="mysql_trace01"></p>
+<p>如果用name索引需要遍历name字段联合索引树，然后还需要根据遍历出来的主键值去主键索引树里再去查出最终数据，成本比全表扫描还高，可以用覆盖索引优化，这样只需要遍历name字段的联合索引树就能拿到所有结果，如下:</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_trace02.png" alt="mysql_trace02"></p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_trace03.png" alt="mysql_trace03"></p>
+<p>对于上面这两种 name&gt;’a’ 和 name&gt;’zzz’ 的执行结果，mysql最终是否选择走索引或者一张表涉及多个索引，mysql最终如何选择索引，我们可以用trace工具来一查究竟，开启trace工具会影响mysql性能，所以只能临时分析sql使用，用完之后立即关闭</p>
+<p>trace工具用法:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br></pre></td><td class="code"><pre><span class="line"> set session optimizer_trace=&quot;enabled=on&quot;,end_markers_in_json=on; </span><br><span class="line">  select * from employees where name &gt; &#x27;a&#x27; order by position;</span><br><span class="line"> SELECT trace FROM information_schema.OPTIMIZER_TRACE;</span><br><span class="line"> </span><br><span class="line"> 查看trace字段:</span><br><span class="line"> &#123;</span><br><span class="line">	&quot;steps&quot;: [&#123;</span><br><span class="line">		&quot;join_preparation&quot;: &#123;  ‐‐第一阶段:SQL准备阶段</span><br><span class="line">			&quot;select#&quot;: 1,</span><br><span class="line">			&quot;steps&quot;: [&#123;</span><br><span class="line">				&quot;expanded_query&quot;: &quot;/* select#1 */ select `employees`.`id` AS `id`,`employees`.`name` AS `name`,`employees`.`age` AS `age`,`employees`.`position` AS `position`,`employees`.`hire_time` AS `hire_time` from `employees` where (`employees`.`name` &gt; &#x27;a&#x27;) order by `employees`.`position`&quot;</span><br><span class="line">			&#125;] /* steps */</span><br><span class="line">		&#125; /* join_preparation */</span><br><span class="line">	&#125;, &#123;</span><br><span class="line">		&quot;join_optimization&quot;: &#123; ‐‐第二阶段:SQL优化阶段</span><br><span class="line">			&quot;select#&quot;: 1,</span><br><span class="line">			&quot;steps&quot;: [&#123;</span><br><span class="line">				&quot;condition_processing&quot;: &#123; ‐‐条件处理</span><br><span class="line">					&quot;condition&quot;: &quot;WHERE&quot;,</span><br><span class="line">					&quot;original_condition&quot;: &quot;(`employees`.`name` &gt; &#x27;a&#x27;)&quot;,</span><br><span class="line">					&quot;steps&quot;: [&#123;</span><br><span class="line">						&quot;transformation&quot;: &quot;equality_propagation&quot;,</span><br><span class="line">						&quot;resulting_condition&quot;: &quot;(`employees`.`name` &gt; &#x27;a&#x27;)&quot;</span><br><span class="line">					&#125;, &#123;</span><br><span class="line">						&quot;transformation&quot;: &quot;constant_propagation&quot;,</span><br><span class="line">						&quot;resulting_condition&quot;: &quot;(`employees`.`name` &gt; &#x27;a&#x27;)&quot;</span><br><span class="line">					&#125;, &#123;</span><br><span class="line">						&quot;transformation&quot;: &quot;trivial_condition_removal&quot;,</span><br><span class="line">						&quot;resulting_condition&quot;: &quot;(`employees`.`name` &gt; &#x27;a&#x27;)&quot;</span><br><span class="line">					&#125;] /* steps */</span><br><span class="line">				&#125; /* condition_processing */</span><br><span class="line">			&#125;, &#123;</span><br><span class="line">				&quot;table_dependencies&quot;: [&#123; ‐‐表依赖详情</span><br><span class="line">					&quot;table&quot;: &quot;`employees`&quot;,</span><br><span class="line">					&quot;row_may_be_null&quot;: false,</span><br><span class="line">					&quot;map_bit&quot;: 0,</span><br><span class="line">					&quot;depends_on_map_bits&quot;: [] /* depends_on_map_bits */</span><br><span class="line">				&#125;] /* table_dependencies */</span><br><span class="line">			&#125;, &#123;</span><br><span class="line">				&quot;ref_optimizer_key_uses&quot;: [] /* ref_optimizer_key_uses */</span><br><span class="line">			&#125;, &#123;</span><br><span class="line">				&quot;rows_estimation&quot;: [&#123;‐‐预估表的访问成本</span><br><span class="line">					&quot;table&quot;: &quot;`employees`&quot;,</span><br><span class="line">					&quot;range_analysis&quot;: &#123;</span><br><span class="line">						&quot;table_scan&quot;: &#123;‐‐全表扫描情况</span><br><span class="line">							&quot;rows&quot;: 3,‐‐扫描行数</span><br><span class="line">							&quot;cost&quot;: 3.7‐‐查询成本</span><br><span class="line">						&#125; /* table_scan */ ,</span><br><span class="line">						&quot;potential_range_indices&quot;: [‐‐查询可能使用的索引</span><br><span class="line">						&#123;</span><br><span class="line">							&quot;index&quot;: &quot;PRIMARY&quot;,‐‐主键索引</span><br><span class="line">							&quot;usable&quot;: false,</span><br><span class="line">							&quot;cause&quot;: &quot;not_applicable&quot;</span><br><span class="line">						&#125;, &#123;</span><br><span class="line">							&quot;index&quot;: &quot;idx_name_age_position&quot;,‐‐辅助索引</span><br><span class="line">							&quot;usable&quot;: true,</span><br><span class="line">							&quot;key_parts&quot;: [&quot;name&quot;, &quot;age&quot;, &quot;position&quot;, &quot;id&quot;] /* key_parts */</span><br><span class="line">						&#125;] /* potential_range_indices */ ,</span><br><span class="line">						&quot;setup_range_conditions&quot;: [] /* setup_range_conditions */ ,</span><br><span class="line">						&quot;group_index_range&quot;: &#123;</span><br><span class="line">							&quot;chosen&quot;: false,</span><br><span class="line">							&quot;cause&quot;: &quot;not_group_by_or_distinct&quot;</span><br><span class="line">						&#125; /* group_index_range */ ,</span><br><span class="line">						&quot;analyzing_range_alternatives&quot;: &#123;‐‐分析各个索引使用成本</span><br><span class="line">							&quot;range_scan_alternatives&quot;: [&#123;</span><br><span class="line">								&quot;index&quot;: &quot;idx_name_age_position&quot;,</span><br><span class="line">								&quot;ranges&quot;: [&quot;a &lt; name&quot;] /* ranges */ ,‐‐索引使用范围</span><br><span class="line">								&quot;index_dives_for_eq_ranges&quot;: true,</span><br><span class="line">							&quot;rowid_ordered&quot;: false,‐‐使用该索引获取的记录是否按照主键排序</span><br><span class="line">								&quot;using_mrr&quot;: false,</span><br><span class="line">								&quot;index_only&quot;: false,‐‐是否使用覆盖索引</span><br><span class="line">								&quot;rows&quot;: 3,‐‐索引扫描行数</span><br><span class="line">								&quot;cost&quot;: 4.61,‐‐索引使用成本</span><br><span class="line">								&quot;chosen&quot;: false,‐‐是否选择该索引</span><br><span class="line">								&quot;cause&quot;: &quot;cost&quot;</span><br><span class="line">							&#125;] /* range_scan_alternatives */ ,</span><br><span class="line">							&quot;analyzing_roworder_intersect&quot;: &#123;</span><br><span class="line">								&quot;usable&quot;: false,</span><br><span class="line">								&quot;cause&quot;: &quot;too_few_roworder_scans&quot;</span><br><span class="line">							&#125; /* analyzing_roworder_intersect */</span><br><span class="line">						&#125; /* analyzing_range_alternatives */</span><br><span class="line">					&#125; /* range_analysis */</span><br><span class="line">				&#125;] /* rows_estimation */</span><br><span class="line">			&#125;, &#123;</span><br><span class="line">				&quot;considered_execution_plans&quot;: [&#123;</span><br><span class="line">					&quot;plan_prefix&quot;: [] /* plan_prefix */ ,</span><br><span class="line">					&quot;table&quot;: &quot;`employees`&quot;,</span><br><span class="line">					&quot;best_access_path&quot;: &#123;‐‐最优访问路径</span><br><span class="line">						&quot;considered_access_paths&quot;: [‐‐最终选择的访问路径</span><br><span class="line">						&#123;</span><br><span class="line">						&quot;access_type&quot;: &quot;scan&quot;,‐‐访问类型:为scan，全表扫描</span><br><span class="line">							&quot;rows&quot;: 3,</span><br><span class="line">							&quot;cost&quot;: 1.6,</span><br><span class="line">							&quot;chosen&quot;: true,‐‐确定选择</span><br><span class="line">							&quot;use_tmp_table&quot;: true</span><br><span class="line">						&#125;] /* considered_access_paths */</span><br><span class="line">					&#125; /* best_access_path */ ,</span><br><span class="line">					&quot;cost_for_plan&quot;: 1.6,</span><br><span class="line">					&quot;rows_for_plan&quot;: 3,</span><br><span class="line">					&quot;sort_cost&quot;: 3,</span><br><span class="line">					&quot;new_cost_for_plan&quot;: 4.6,</span><br><span class="line">					&quot;chosen&quot;: true</span><br><span class="line">				&#125;] /* considered_execution_plans */</span><br><span class="line">			&#125;, &#123;</span><br><span class="line">				&quot;attaching_conditions_to_tables&quot;: &#123;</span><br><span class="line">					&quot;original_condition&quot;: &quot;(`employees`.`name` &gt; &#x27;a&#x27;)&quot;,</span><br><span class="line">					&quot;attached_conditions_computation&quot;: [] /* attached_conditions_computation */ ,</span><br><span class="line">					&quot;attached_conditions_summary&quot;: [&#123;</span><br><span class="line">						&quot;table&quot;: &quot;`employees`&quot;,</span><br><span class="line">						&quot;attached&quot;: &quot;(`employees`.`name` &gt; &#x27;a&#x27;)&quot;</span><br><span class="line">					&#125;] /* attached_conditions_summary */</span><br><span class="line">				&#125; /* attaching_conditions_to_tables */</span><br><span class="line">			&#125;, &#123;</span><br><span class="line">				&quot;clause_processing&quot;: &#123;</span><br><span class="line">					&quot;clause&quot;: &quot;ORDER BY&quot;,</span><br><span class="line">					&quot;original_clause&quot;: &quot;`employees`.`position`&quot;,</span><br><span class="line">					&quot;items&quot;: [&#123;</span><br><span class="line">						&quot;item&quot;: &quot;`employees`.`position`&quot;</span><br><span class="line">					&#125;] /* items */ ,</span><br><span class="line">					&quot;resulting_clause_is_simple&quot;: true,</span><br><span class="line">					&quot;resulting_clause&quot;: &quot;`employees`.`position`&quot;</span><br><span class="line">				&#125; /* clause_processing */</span><br><span class="line">			&#125;, &#123;</span><br><span class="line">				&quot;refine_plan&quot;: [&#123;</span><br><span class="line">					&quot;table&quot;: &quot;`employees`&quot;,</span><br><span class="line">					&quot;access_type&quot;: &quot;table_scan&quot;</span><br><span class="line">				&#125;] /* refine_plan */</span><br><span class="line">			&#125;, &#123;</span><br><span class="line">				&quot;reconsidering_access_paths_for_index_ordering&quot;: &#123;</span><br><span class="line">					&quot;clause&quot;: &quot;ORDER BY&quot;,</span><br><span class="line">					&quot;index_order_summary&quot;: &#123;</span><br><span class="line">						&quot;table&quot;: &quot;`employees`&quot;,</span><br><span class="line">						&quot;index_provides_order&quot;: false,</span><br><span class="line">						&quot;order_direction&quot;: &quot;undefined&quot;,</span><br><span class="line">						&quot;index&quot;: &quot;unknown&quot;,</span><br><span class="line">						&quot;plan_changed&quot;: false</span><br><span class="line">					&#125; /* index_order_summary */</span><br><span class="line">				&#125; /* reconsidering_access_paths_for_index_ordering */</span><br><span class="line">			&#125;] /* steps */</span><br><span class="line">		&#125; /* join_optimization */</span><br><span class="line">	&#125;, &#123;</span><br><span class="line">		&quot;join_execution&quot;: &#123;‐‐第三阶段:SQL执行阶段</span><br><span class="line">			&quot;select#&quot;: 1,</span><br><span class="line">			&quot;steps&quot;: [&#123;</span><br><span class="line">				&quot;filesort_information&quot;: [&#123;</span><br><span class="line">					&quot;direction&quot;: &quot;asc&quot;,</span><br><span class="line">					&quot;table&quot;: &quot;`employees`&quot;,</span><br><span class="line">					&quot;field&quot;: &quot;position&quot;</span><br><span class="line">				&#125;] /* filesort_information */ ,</span><br><span class="line">				&quot;filesort_priority_queue_optimization&quot;: &#123;</span><br><span class="line">					&quot;usable&quot;: false,</span><br><span class="line">					&quot;cause&quot;: &quot;not applicable (no LIMIT)&quot;</span><br><span class="line">				&#125; /* filesort_priority_queue_optimization */ ,</span><br><span class="line">				&quot;filesort_execution&quot;: [] /* filesort_execution */ ,</span><br><span class="line">				&quot;filesort_summary&quot;: &#123;</span><br><span class="line">					&quot;rows&quot;: 3,</span><br><span class="line">					&quot;examined_rows&quot;: 3,</span><br><span class="line">					&quot;number_of_tmp_files&quot;: 0,</span><br><span class="line">					&quot;sort_buffer_size&quot;: 200704,</span><br><span class="line">					&quot;sort_mode&quot;: &quot;&lt;sort_key, additional_fields&gt;&quot;</span><br><span class="line">				&#125; /* filesort_summary */</span><br><span class="line">			&#125;] /* steps */</span><br><span class="line">		&#125; /* join_execution */</span><br><span class="line">	&#125;] /* steps */</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结论:全表扫描的成本低于索引扫描，所以mysql最终选择全表扫描</span><br><span class="line"></span><br><span class="line">select * from employees where name &gt; &#x27;zzz&#x27; order by position;</span><br><span class="line"> SELECT trace FROM information_schema.OPTIMIZER_TRACE;</span><br><span class="line"> </span><br><span class="line"> 查看trace字段可知索引扫描的成本低于全表扫描，所以mysql最终选择索引扫描</span><br><span class="line"> </span><br><span class="line"> set session optimizer_trace=&quot;enabled=off&quot;; ‐‐关闭trace</span><br></pre></td></tr></table></figure>
+
+<h2 id="Order-by与Group-by优化"><a href="#Order-by与Group-by优化" class="headerlink" title="Order by与Group by优化"></a>Order by与Group by优化</h2><p><strong>Case1:</strong></p>
+<p>explain select * from employees where name = ‘LiLei’ and position = ‘dev’ order by age;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_orderBy01.png" alt="mysql_orderBy01"></p>
+<p>分析:</p>
+<p>利用最左前缀法则:中间字段不能断，因此查询用到了name索引，从key_len=74也能看出，age索引列用<br>在排序过程中，因为Extra字段里没有using filesort</p>
+<p><strong>Case 2:</strong></p>
+<p>explain select * from employees where name = ‘LiLei’  order by position;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_orderBy02.png" alt="mysql_orderBy02"></p>
+<p>分析:<br>从explain的执行结果来看:key_len=74，查询使用了name索引，由于用了position进行排序，跳过了age，出现了Using filesort。</p>
+<p><strong>Case 3:</strong></p>
+<p>explain select * from employees where name = ‘LiLei’  order by age, position;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_orderBy03.png" alt="mysql_orderBy03"></p>
+<p>分析:<br>查找只用到索引name，age和position用于排序，无Using filesort。</p>
+<p><strong>Case 4:</strong></p>
+<p>explain select * from employees where name = ‘LiLei’  order by  position , age;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_orderBy04.png" alt="mysql_orderBy04"></p>
+<p>分析:<br>和Case 3中explain的执行结果一样，但是出现了Using filesort，因为索引的创建顺序为name,age,position，但是排序的时候age和position颠倒位置了。</p>
+<p><strong>Case 5:</strong></p>
+<p>explain select * from employees where name = ‘LiLei’ and age = 18  order by  position , age;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_orderBy05.png" alt="mysql_orderBy05"></p>
+<p>与Case 4对比，在Extra中并未出现Using filesort，因为age为常量，在排序中被优化，所以索引未颠倒，不会出现Using filesort。</p>
+<p><strong>Case 6:</strong></p>
+<p>explain select * from employees where name = ‘LiLei’   order by age asc,  position desc;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_orderBy06.png" alt="mysql_orderBy06"></p>
+<p>分析:<br>虽然排序的字段列与索引顺序一样，且order by默认升序，这里position desc变成了降序，导致与索引的<br>排序方式不同，从而产生Using filesort。Mysql8以上版本有降序索引可以支持该种查询方式。</p>
+<p><strong>Case 7:</strong></p>
+<p>explain select * from employees where name in ( ‘LiLei’ , ‘chen’ )  order by age ,  position ;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_orderBy07.png" alt="mysql_orderBy07"></p>
+<p>分析:<br>对于排序来说，多个相等条件也是范围查询</p>
+<p><strong>Case 8:</strong></p>
+<p>explain select * from employees where name &gt; ‘a’   order by name ;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_orderBy08.png" alt="mysql_orderBy08"></p>
+<p>可以用覆盖索引优化</p>
+<p>explain select name,age,position from employees where name &gt; ‘a’   order by name ;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_orderBy08a.png" alt="mysql_orderBy08a"></p>
+<h2 id="优化小结"><a href="#优化小结" class="headerlink" title="优化小结"></a>优化小结</h2><p>1、MySQL支持两种方式的排序filesort和index，Using index是指MySQL扫描索引本身完成排序。index 效率高，filesort效率低。<br> 2、order by满足两种情况会使用Using index。 </p>
+<p>​    1) order by语句使用索引最左前列。 </p>
+<p>​    2) 使用where子句与order by子句条件列组合满足索引最左前列。</p>
+<p>3、尽量在索引列上完成排序，遵循索引建立(索引创建的顺序)时的最左前缀法则。</p>
+<p>4、如果order by的条件不在索引列上，就会产生Using filesort。</p>
+<p>5、能用覆盖索引尽量用覆盖索引</p>
+<p>6、group by与order by很类似，其实质是先排序后分组，遵照索引创建顺序的最左前缀法则。对于group<br>by的优化如果不需要排序的可以加上order by null禁止排序。注意，where高于having，能写在where中<br>的限定条件就不要去having限定了。</p>
+<h2 id="Using-filesort文件排序原理详解"><a href="#Using-filesort文件排序原理详解" class="headerlink" title="Using filesort文件排序原理详解"></a>Using filesort文件排序原理详解</h2><p>filesort文件排序方式</p>
+<p><strong>单路排序</strong>: 是一次性取出满足条件行的所有字段，然后在sort buffer中进行排序;用trace工具可以看到sort_mode信息里显示&lt; sort_key, additional_fields &gt;或者&lt; sort_key,packed_additional_fields &gt;</p>
+<p><strong>双路排序 (又叫回表排序模式)</strong>:是首先根据相应的条件取出相应的排序字段和可以直接定位行数据的行 ID，然后在 sort buffer 中进行排序，排序完后需要再次取回其它需要的字段;用trace工具可以看到sort_mode信息里显示&lt; sort_key, rowid &gt;</p>
+<p>MySQL 通过比较系统变量 max_length_for_sort_data(默认1024字节) 的大小和需要查询的字段总大小来 判断使用哪种排序模式。 </p>
+<ul>
+<li>如果 max_length_for_sort_data 比查询字段的总长度大，那么使用 单路排序模式; </li>
+<li>如果 max_length_for_sort_data 比查询字段的总长度小，那么使用 双路排序模式。 </li>
+</ul>
+<p>示例验证下各种排序方式:</p>
+<p>explain select * from employees where name = ‘LiLei’  order by  position ;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_fileSort01.png" alt="mysql_fileSort01"></p>
+<p>查看下这条sql对应trace结果如下(只展示排序部分):</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">set session optimizer_trace=&quot;enabled=on&quot;,end_markers_in_json=on; ‐‐开启trace</span><br><span class="line">select * from employees where name = &#x27;zhuge&#x27; order by position;</span><br><span class="line">select * from information_schema.OPTIMIZER_TRACE;</span><br><span class="line"></span><br><span class="line">trace排序部分结果: </span><br><span class="line">&quot;join_execution&quot;: &#123; ‐‐Sql执行阶段</span><br><span class="line">&quot;select#&quot;: 1,</span><br><span class="line">&quot;steps&quot;: [</span><br><span class="line"> &quot;direction&quot;: &quot;asc&quot;,</span><br><span class="line"> &quot;table&quot;: &quot;`employees`&quot;,</span><br><span class="line"> &quot;field&quot;: &quot;position&quot;</span><br><span class="line"> &#125;</span><br><span class="line"> ] /* filesort_information */,</span><br><span class="line"> &quot;filesort_priority_queue_optimization&quot;: &#123;</span><br><span class="line"> &quot;usable&quot;: false,</span><br><span class="line"> &quot;cause&quot;: &quot;not applicable (no LIMIT)&quot;</span><br><span class="line"> &#125; /* filesort_priority_queue_optimization */,</span><br><span class="line"> &quot;filesort_execution&quot;: [</span><br><span class="line"> ] /* filesort_execution */,</span><br><span class="line"> &quot;filesort_summary&quot;: &#123; ‐‐文件排序信息</span><br><span class="line"> &quot;rows&quot;: 10000, ‐‐预计扫描行数</span><br><span class="line"> &quot;examined_rows&quot;: 10000, ‐‐参数排序的行</span><br><span class="line"> &quot;number_of_tmp_files&quot;: 3, ‐‐使用临时文件的个数，这个值如果为0代表全部使用的sort_buffer内存排序，否则使用磁盘文件排序</span><br><span class="line"> &quot;sort_buffer_size&quot;: 262056, ‐‐排序缓存的大小</span><br><span class="line"> &quot;sort_mode&quot;: &quot;&lt;sort_key, packed_additional_fields&gt;&quot; ‐‐排序方式，这里用的单路排序</span><br><span class="line"> &#125; /* filesort_summary */</span><br><span class="line"> &#125;</span><br><span class="line"> ] /* steps */</span><br><span class="line"> &#125; /* join_execution */</span><br><span class="line"> </span><br><span class="line"> set max_length_for_sort_data = 10; ‐‐employees表所有字段长度总和肯定大于10字节</span><br><span class="line"> select * from employees where name = &#x27;zhuge&#x27; order by position;</span><br><span class="line"> select * from information_schema.OPTIMIZER_TRACE;</span><br><span class="line"></span><br><span class="line"> trace排序部分结果:</span><br><span class="line"> &quot;join_execution&quot;: &#123;</span><br><span class="line"> &quot;select#&quot;: 1,</span><br><span class="line"> &quot;steps&quot;: [</span><br><span class="line"> &#123;</span><br><span class="line"> &quot;filesort_information&quot;: [</span><br><span class="line"> &#123;</span><br><span class="line"> &quot;direction&quot;: &quot;asc&quot;,</span><br><span class="line"> &quot;table&quot;: &quot;`employees`&quot;,</span><br><span class="line"> &quot;field&quot;: &quot;position&quot;</span><br><span class="line"> &#125;</span><br><span class="line"> ] /* filesort_information */,</span><br><span class="line"> &quot;filesort_priority_queue_optimization&quot;: &#123;</span><br><span class="line"> &quot;usable&quot;: false,</span><br><span class="line"> &quot;cause&quot;: &quot;not applicable (no LIMIT)&quot;</span><br><span class="line"> &#125; /* filesort_priority_queue_optimization */,</span><br><span class="line"> &quot;filesort_execution&quot;: [</span><br><span class="line"> ] /* filesort_execution */,</span><br><span class="line"> &quot;filesort_summary&quot;: &#123;</span><br><span class="line"> &quot;rows&quot;: 10000,</span><br><span class="line"> &quot;examined_rows&quot;: 10000,</span><br><span class="line"> &quot;number_of_tmp_files&quot;: 2,</span><br><span class="line"> &quot;sort_buffer_size&quot;: 262136,</span><br><span class="line"> &quot;sort_mode&quot;: &quot;&lt;sort_key, rowid&gt;&quot; ‐‐排序方式，这里用的双路排序</span><br><span class="line"> &#125; /* filesort_summary */</span><br><span class="line"> &#125;</span><br><span class="line"> ] /* steps */</span><br><span class="line"> &#125; /* join_execution */</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> set session optimizer_trace=&quot;enabled=off&quot;; ‐‐关闭trace</span><br></pre></td></tr></table></figure>
+
+<p>我们先看单路排序的详细过程:</p>
+<ol>
+<li>从索引name找到第一个满足 name = ‘zhuge’ 条件的主键 id </li>
+<li>根据主键 id 取出整行，取出所有字段的值，存入 sort_buffer 中 </li>
+<li>从索引name找到下一个满足 name = ‘zhuge’ 条件的主键 id </li>
+<li> 重复步骤 2、3 直到不满足 name = ‘zhuge’ </li>
+<li>对 sort_buffer 中的数据按照字段 position 进行排序 </li>
+<li> 返回结果给客户端 </li>
+</ol>
+<p>我们再看下双路排序的详细过程:</p>
+<ol>
+<li>从索引 name 找到第一个满足 name = ‘zhuge’ 的主键id</li>
+<li>根据主键 id 取出整行，把排序字段 position 和主键 id 这两个字段放到 sort buffer 中 </li>
+<li> 从索引 name 取下一个满足 name = ‘zhuge’ 记录的主键 id</li>
+<li>重复 3、4 直到不满足 name = ‘zhuge’ </li>
+<li>对 sort_buffer 中的字段 position 和主键 id 按照字段 position 进行排序</li>
+<li>遍历排序好的 id 和字段 position，按照 id 的值回到原表中取出 所有字段的值返回给客户端</li>
+</ol>
+<p>其实对比两个排序模式，单路排序会把所有需要查询的字段都放到 sort buffer 中，而双路排序只会把主键 和需要排序的字段放到 sort buffer 中进行排序，然后再通过主键回到原表查询需要的字段。<br> 如果 MySQL 排序内存配置的比较小并且没有条件继续增加了，可以适当把 max_length_for_sort_data 配 置小点，让优化器选择使用双路排序算法，可以在sort_buffer 中一次排序更多的行，只是需要再根据主键 回到原表取数据。 </p>
+<p>如果 MySQL 排序内存有条件可以配置比较大，可以适当增大 max_length_for_sort_data 的值，让优化器 优先选择全字段排序(单路排序)，把需要的字段放到 sort_buffer 中，这样排序后就会直接从内存里返回查 询结果了。<br> 所以，MySQL通过 max_length_for_sort_data 这个参数来控制排序，在不同场景使用不同的排序模式， 从而提升排序效率。 </p>
+<p><strong>注意</strong>，如果全部使用sort_buffer内存排序一般情况下效率会高于磁盘文件排序，但不能因为这个就随便增<br>大sort_buffer(默认1M)，mysql很多参数设置都是做过优化的，不要轻易调整。</p>
+<h2 id="分页查询优化"><a href="#分页查询优化" class="headerlink" title="分页查询优化"></a>分页查询优化</h2><p>示例表:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">DROP TABLE IF EXISTS `employees`;</span><br><span class="line">CREATE TABLE`employees`(</span><br><span class="line">`id` int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line">`name` varchar(24) NOT NULL DEFAULT &#x27;&#x27; COMMENT &#x27;姓名&#x27;,</span><br><span class="line">`age` int(11) NOT NULL DEFAULT &#x27;0&#x27; COMMENT &#x27;年龄&#x27;,</span><br><span class="line">`position` varchar(20) NOT NULL DEFAULT &#x27;&#x27; COMMENT &#x27;职位&#x27;,</span><br><span class="line">`hire_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &#x27;入职时间&#x27;, </span><br><span class="line">PRIMARY KEY (`id`),</span><br><span class="line">KEY `idx_name_age_position` (`name`,`age`,`position`) USING BTREE </span><br><span class="line">)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT=&#x27;员工记录表&#x27;;</span><br><span class="line"></span><br><span class="line">drop procedure if exists insert_emp; </span><br><span class="line">delimiter ;;</span><br><span class="line">create procedure insert_emp()</span><br><span class="line">begin</span><br><span class="line">    declare i int;</span><br><span class="line">    set i=1; </span><br><span class="line">    while(i&lt;=100000)do</span><br><span class="line">	insert into employees(name,age,position) values(CONCAT(&#x27;zhuge&#x27;,i),i,&#x27;dev&#x27;);</span><br><span class="line">	set i=i+1; </span><br><span class="line">    end while;</span><br><span class="line">end;;</span><br><span class="line">delimiter ; </span><br><span class="line"></span><br><span class="line">call insert_emp();</span><br></pre></td></tr></table></figure>
+
+<p>很多时候我们业务系统实现分页功能可能会用如下sql实现</p>
+<p>select * from employees limit 10000,10;</p>
+<p>表示从表 employees 中取出从 10001 行开始的 10 行记录。看似只查询了 10 条记录，实际这条 SQL 是先读取 10010<br>条记录，然后抛弃前 10000 条记录，然后读到后面 10 条想要的数据。因此要查询一张大表比较靠后的数据，执行效率是非常低的。</p>
+<p><strong>&gt;&gt;常见的分页场景优化技巧:</strong></p>
+<p><strong>1、根据自增且连续的主键排序的分页查询</strong></p>
+<p>首先来看一个根据自增且连续主键排序的分页查询的例子</p>
+<p>select * from employees limit 90000,5;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit01.png" alt="mysql_limit01"></p>
+<p>该 SQL 表示查询从第 90001开始的五行数据，没添加单独 order by，表示通过主键排序。我们再看表 employees ，因为主键是自增并且连续的，所以可以改写成按照主键去查询从第 90001开始的五行数据，如下:</p>
+<p>select * from employees where id &gt; 90000 limit 5;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit02.png" alt="mysql_limit02"></p>
+<p>查询的结果是一致的。我们再对比一下执行计划:</p>
+<p>EXPLAIN select * from employees limit 90000,5;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit03.png" alt="mysql_limit03"></p>
+<p>EXPLAIN select * from employees where id &gt; 90000 limit 5;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit04.png" alt="mysql_limit04"></p>
+<p>显然改写后的 SQL 走了索引，而且扫描的行数大大减少，执行效率更高。但是，这条 改写的SQL 在很多场景并不实用，因为表中可能某些记录被删后，主键空缺，导致结果不一致，如下图试验所示(先删除一条前面的记录，然后再测试原 SQL 和优化后的 SQL):</p>
+<p>select * from employees limit 90000,5;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit05.png" alt="mysql_limit05"></p>
+<p>select * from employees where id &gt; 90000 limit 5;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit06.png" alt="mysql_limit06"></p>
+<p>两条 SQL 的结果并不一样，因此，如果主键不连续，不能使用上面描述的优化方法。另外如果原 SQL 是 order by 非主键的字段，按照上面说的方法改写会导致两条 SQL 的结果不一致。</p>
+<p>所以这种改写得满 足以下两个条件: </p>
+<ul>
+<li>主键自增且连续</li>
+<li>结果是按照主键排序的</li>
+</ul>
+<p><strong>2、根据非主键字段排序的分页查询</strong></p>
+<p>再看一个根据非主键字段排序的分页查询，SQL 如下:</p>
+<p>select * from employees ORDER BY name limit 90000,5;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit07.png" alt="mysql_limit07"></p>
+<p>EXPLAIN select * from employees ORDER BY name limit 90000,5;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit08.png" alt="mysql_limit08"></p>
+<p>发现并没有使用 name 字段的索引(key 字段对应的值为 null)，具体原因:扫描整个索引并查找到没索引<br>的行(可能要遍历多个索引树)的成本比扫描全表的成本更高，所以优化器放弃使用索引。<br>知道不走索引的原因，那么怎么优化呢?<br>其实关键是让排序时返回的字段尽可能少，所以可以让排序和分页操作先查出主键，然后根据主键查到对应的记录，SQL改写如下</p>
+<p>select * from employees e inner join (select id from employees order by name limit 90000,5) ed on e.id = ed.id;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit09.png" alt="mysql_limit09"></p>
+<p>需要的结果与原 SQL 一致，执行时间减少了一半以上，我们再对比优化前后sql的执行计划:</p>
+<p>explain select * from employees e inner join (select id from employees order by name limit 90000,5) ed on e.id = ed.id;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit10.png" alt="mysql_limit10"></p>
+<p>原 SQL 使用的是 filesort 排序，而优化后的 SQL 使用的是索引排序。</p>
+<h2 id="Join关联查询优化"><a href="#Join关联查询优化" class="headerlink" title="Join关联查询优化"></a>Join关联查询优化</h2><p>示例表：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">DROP TABLE IF EXISTS `t1`;</span><br><span class="line">CREATE TABLE `t1`(</span><br><span class="line"> `id` int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line"> `a` int(11) DEFAULT NULL,</span><br><span class="line"> `b` int(11) DEFAULT NULL,</span><br><span class="line"> PRIMARY KEY (`id`),</span><br><span class="line"> KEY `idx_a` (`a`)</span><br><span class="line"> )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;</span><br><span class="line"></span><br><span class="line"> create table t2 like t1;</span><br><span class="line"></span><br><span class="line">drop procedure if exists insert_t1; </span><br><span class="line">delimiter ;;</span><br><span class="line">create procedure insert_t1()</span><br><span class="line">begin</span><br><span class="line">    declare i int;</span><br><span class="line">    set i=1; </span><br><span class="line">    while(i&lt;=10000)do</span><br><span class="line">	insert into t1 (a,b) values(i,i);</span><br><span class="line">	set i=i+1; </span><br><span class="line">    end while;</span><br><span class="line">end;;</span><br><span class="line">delimiter ; </span><br><span class="line">call insert_t1();</span><br><span class="line"></span><br><span class="line">drop procedure if exists insert_t2; </span><br><span class="line">delimiter ;;</span><br><span class="line">create procedure insert_t2()</span><br><span class="line">begin</span><br><span class="line">    declare i int;</span><br><span class="line">    set i=1; </span><br><span class="line">    while(i&lt;=100)do</span><br><span class="line">	insert into t2 (a,b) values(i,i);</span><br><span class="line">	set i=i+1; </span><br><span class="line">    end while;</span><br><span class="line">end;;</span><br><span class="line">delimiter ; </span><br><span class="line">call insert_t2();</span><br><span class="line"></span><br><span class="line">往t1表插入1万行记录，往t2表插入100行记录</span><br></pre></td></tr></table></figure>
+
+<p><strong>mysql的表关联常见有两种算法</strong></p>
+<ul>
+<li>Nested-Loop Join 算法 </li>
+<li>Block Nested-Loop Join 算法</li>
+</ul>
+<p><strong>1、 嵌套循环连接 Nested-Loop Join(NLJ) 算法</strong></p>
+<p>一次一行循环地从第一张表(称为驱动表)中读取行，在这行数据中取到关联字段，根据关联字段在另一张表(被驱动<br>表)里取出满足条件的行，然后取出两张表的结果合集。</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit11.png" alt="mysql_limit11"></p>
+<p>从执行计划中可以看到这些信息:</p>
+<ul>
+<li><p>驱动表是 t2，被驱动表是 t1。先执行的就是驱动表(执行计划结果的id如果一样则按从上到下顺序执行sql);优 化器一般会优先选择小表做驱动表。所以使用 inner join 时，排在前面的表并不一定就是驱动表。 </p>
+</li>
+<li><p>使用了 NLJ算法。一般 join 语句中，如果执行计划 Extra 中未出现 Using join buffer 则表示使用的 join 算 法是 NLJ。 </p>
+</li>
+</ul>
+<p>上面sql的大致流程如下: </p>
+<ol>
+<li>从表 t2 中读取一行数据;</li>
+<li> 从第 1 步的数据中，取出关联字段 a，到表 t1 中查找;</li>
+<li>取出表 t1 中满足条件的行，跟 t2 中获取到的结果合并，作为结果返回给客户端; 4. 重复上面 3 步。 </li>
+</ol>
+<p>整个过程会读取 t2 表的所有数据(扫描100行)，然后遍历这每行数据中字段 a 的值，根据 t2 表中 a 的值索引扫描 t1 表中的对应行(扫描100次 t1 表的索引，1次扫描可以认为最终只扫描 t1 表一行完整数据，也就是总共 t1 表也扫描了100行)。因此整个过程扫描了 200 行。<br>如果被驱动表的关联字段没索引，使用NLJ算法性能会比较低(下面有详细解释)，mysql会选择Block Nested-Loop Join算法。</p>
+<p><strong>2、 基于块的嵌套循环连接 Block Nested-Loop Join(BNL)算法</strong></p>
+<p>把驱动表的数据读入到 join_buffer 中，然后扫描被驱动表，把被驱动表每一行取出来跟 join_buffer 中的数据做对比。</p>
+<p>EXPLAIN select * from t1 inner join t2 on t1.b= t2.b;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit12.png" alt="mysql_limit12"></p>
+<p>Extra 中 的Using join buffer (Block Nested Loop)说明该关联查询使用的是 BNL 算法。</p>
+<p>上面sql的大致流程如下: </p>
+<ol>
+<li>把 t2 的所有数据放入到 join_buffer 中</li>
+<li>把表 t1 中每一行取出来，跟 join_buffer 中的数据做对比 </li>
+<li>返回满足 join 条件的数据 </li>
+</ol>
+<p>整个过程对表 t1 和 t2 都做了一次全表扫描，因此扫描的总行数为10000(表 t1 的数据总量) + 100(表 t2 的数据总量) = 10100。并且 join_buffer 里的数据是无序的，因此对表 t1 中的每一行，都要做 100 次判断，所以内存中的判断次数是 100 * 10000= 100 万次。 </p>
+<p><strong>被驱动表的关联字段没索引为什么要选择使用 BNL 算法而不使用 Nested-Loop Join 呢?</strong></p>
+<p>如果上面第二条sql使用 Nested-Loop Join，那么扫描行数为 100 * 10000 = 100万次，这个是磁盘扫描。</p>
+<p>很显然，用BNL磁盘扫描次数少很多，相比于磁盘扫描，BNL的内存计算会快得多。因此MySQL对于被驱动表的关联字段没索引的关联查询，一般都会使用 BNL 算法。如果有索引一般选择 NLJ 算法，有索引的情况下 NLJ 算法比 BNL算法性能更高</p>
+<p>对于关联sql的优化</p>
+<ul>
+<li>关联字段加索引，让mysql做join操作时尽量选择NLJ算法 </li>
+<li>小标驱动大表，写多表连接sql时如果明确知道哪张表是小表可以用straight_join写法固定连接驱动方式，省去 </li>
+</ul>
+<p>mysql优化器自己判断的时间 </p>
+<p><strong>straight_join解释</strong>:straight_join功能同join类似，但能让左边的表来驱动右边的表，能改表优化器对于联表查询的执行顺序。</p>
+<p>比如:select * from t2 straight_join t1 on t2.a = t1.a; 代表制定mysql选着 t2 表作为驱动表。 </p>
+<ul>
+<li><p><strong>straight_join</strong>只适用于inner join，并不适用于left join，right join。(因为left join，right join已经代表指 定了表的执行顺序) </p>
+</li>
+<li><p>尽可能让优化器去判断，因为大部分情况下mysql优化器是比人要聪明的。使用straight_join一定要慎重，因 为部分情况下人为指定的执行顺序并不一定会比优化引擎要靠谱。 </p>
+</li>
+</ul>
+<h2 id="in和exsits优化"><a href="#in和exsits优化" class="headerlink" title="in和exsits优化"></a>in和exsits优化</h2><p>原则:小表驱动大表，即小的数据集驱动大的数据集</p>
+<p><strong>in</strong>:当B表的数据集小于A表的数据集时，in优于exists</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">select * from A where id in(select id from B) </span><br><span class="line"><span class="meta"> #</span><span class="bash">等价于:</span></span><br><span class="line"> for(select id from B)&#123;</span><br><span class="line">    select * from A where A.id = B.id</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>exists</strong>:当A表的数据集小于B表的数据集时，exists优于in</p>
+<p>将主查询A的数据，放到子查询B中做条件验证，根据验证结果(true或false)来决定主查询的数据是否保留</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">select * from A where exists(select 1 from B where B.id=A.id) </span><br><span class="line"><span class="meta"> #</span><span class="bash">等价于:</span></span><br><span class="line"> for(select * from A)&#123;</span><br><span class="line">     select * from B where B.id = A.id</span><br><span class="line"> &#125;</span><br><span class="line"><span class="meta"> #</span><span class="bash">A表与B表的ID字段应建立索引</span></span><br></pre></td></tr></table></figure>
+
+<p>1、EXISTS (subquery)只返回TRUE或FALSE,因此子查询中的SELECT * 也可以用SELECT 1替换,官方说法是实际执行时会<br>忽略SELECT清单,因此没有区别<br>2、EXISTS子查询的实际执行过程可能经过了优化而不是我们理解上的逐条对比<br>3、EXISTS子查询往往也可以用JOIN来代替，何种最优需要具体问题具体分析</p>
+<h2 id="count-查询优化"><a href="#count-查询优化" class="headerlink" title="count(*)查询优化"></a>count(*)查询优化</h2><p>临时关闭mysql查询缓存，为了查看sql多次执行的真实时间</p>
+<p> set global query_cache_size=0;<br> set global query_cache_type=0;</p>
+<p>EXPLAIN select count(1) from employees;<br>EXPLAIN select count(id) from employees;<br>EXPLAIN select count(name) from employees;<br>EXPLAIN select count(*) from employees;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_limit13.png" alt="mysql_limit13"></p>
+<p>四个sql的执行计划一样，说明这四个sql执行效率应该差不多，区别在于根据某个字段count不会统计字段为null值的数据行<br>为什么mysql最终选择辅助索引而不是主键聚集索引?因为二级索引相对主键索引存储数据更少，检索性能应该更高</p>
+<p><strong>常见优化方法</strong></p>
+<p><strong>1、查询mysql自己维护的总行数</strong></p>
+<p>示例表：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">DROP TABLE IF EXISTS `tset_myisam`;</span><br><span class="line">CREATE TABLE `tset_myisam`(</span><br><span class="line"> `id` int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line"> `a` int(11) DEFAULT NULL,</span><br><span class="line"> `b` int(11) DEFAULT NULL,</span><br><span class="line"> PRIMARY KEY (`id`),</span><br><span class="line"> KEY `idx_a` (`a`)</span><br><span class="line"> )ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;</span><br><span class="line"> </span><br><span class="line"> drop procedure if exists insert_t2; </span><br><span class="line">delimiter ;;</span><br><span class="line">create procedure insert_t2()</span><br><span class="line">begin</span><br><span class="line">    declare i int;</span><br><span class="line">    set i=1; </span><br><span class="line">    while(i&lt;=100)do</span><br><span class="line">	insert into tset_myisam (a,b) values(i,i);</span><br><span class="line">	set i=i+1; </span><br><span class="line">    end while;</span><br><span class="line">end;;</span><br><span class="line">delimiter ; </span><br><span class="line">call insert_t2();</span><br></pre></td></tr></table></figure>
+
+<p>对于myisam存储引擎的表做不带where条件的count查询性能是很高的，因为myisam存储引擎的表的总行数会被<br>mysql存储在磁盘上，查询不需要计算</p>
+<p>explain select count(*) from tset_myisam ;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_count01.png" alt="mysql_count01"></p>
+<p>对于innodb存储引擎的表mysql不会存储表的总记录行数，查询count需要实时计算</p>
+<p><strong>2、show table status</strong></p>
+<p>如果只需要知道表总行数的估计值可以用如下sql查询，性能很高</p>
+<p>show table status like ‘employees’;</p>
+<p><img src="/Users/admin/Desktop/note/images/Mysql/mysql_count02.png" alt="mysql_count02"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Mysql/2019-08-07%20mysql%E9%94%81%E4%B8%8E%E4%BA%8B%E7%89%A9/" rel="prev" title="mysql锁与事物">
+      <i class="fa fa-chevron-left"></i> mysql锁与事物
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Mysql/2019-08-25%20Mysql%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96/" rel="next" title="Mysql参数优化">
+      Mysql参数优化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mysql%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E5%90%88%E9%80%82%E7%9A%84%E7%B4%A2%E5%BC%95"><span class="nav-number">1.</span> <span class="nav-text">Mysql如何选择合适的索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Order-by%E4%B8%8EGroup-by%E4%BC%98%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">Order by与Group by优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">优化小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-filesort%E6%96%87%E4%BB%B6%E6%8E%92%E5%BA%8F%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.</span> <span class="nav-text">Using filesort文件排序原理详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-number">5.</span> <span class="nav-text">分页查询优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Join%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-number">6.</span> <span class="nav-text">Join关联查询优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#in%E5%92%8Cexsits%E4%BC%98%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">in和exsits优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#count-%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-number">8.</span> <span class="nav-text">count(*)查询优化</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

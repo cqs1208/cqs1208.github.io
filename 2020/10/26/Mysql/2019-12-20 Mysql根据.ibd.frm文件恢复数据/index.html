@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql数据恢复">
+<meta property="og:url" content="http://example.com/2020/10/26/Mysql/2019-12-20%20Mysql%E6%A0%B9%E6%8D%AE.ibd.frm%E6%96%87%E4%BB%B6%E6%81%A2%E5%A4%8D%E6%95%B0%E6%8D%AE/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Mysql">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-26T03:56:48.295Z">
+<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Mysql">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/26/Mysql/2019-12-20%20Mysql%E6%A0%B9%E6%8D%AE.ibd.frm%E6%96%87%E4%BB%B6%E6%81%A2%E5%A4%8D%E6%95%B0%E6%8D%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Mysql数据恢复 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/Mysql/2019-12-20%20Mysql%E6%A0%B9%E6%8D%AE.ibd.frm%E6%96%87%E4%BB%B6%E6%81%A2%E5%A4%8D%E6%95%B0%E6%8D%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Mysql数据恢复
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Mysql</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文根据innodb引擎，表文件中的.ibd和.frm后缀文件恢复数据</p>
+<a id="more"></a> 
+
+<h2 id="1-表结构恢复"><a href="#1-表结构恢复" class="headerlink" title="1 表结构恢复"></a>1 表结构恢复</h2><p>dbsake直接查看mysql的frm表结构文件</p>
+<p>安装命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -s get.dbsake.net &gt; dbsake</span><br><span class="line">chmod u+x dbsake</span><br></pre></td></tr></table></figure>
+
+<p>表结构查看命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xxx/dbsake frmdump xxx/***.frm</span><br><span class="line">第一个 xxx 为自己实际安装dbsake的路径</span><br><span class="line">第二个 xxx 为表结构的路径</span><br><span class="line">第三个 *** 为具体的名称</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@izm5e7klp5h59pozbv3fghz tmp]# /tmp/dbsake frmdump /tmp/navList.frm  # 查看表结构</span><br><span class="line"></span><br><span class="line">CREATE TABLE `navList` (</span><br><span class="line">  `navId` int(10) unsigned NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `title` varchar(100) DEFAULT NULL,</span><br><span class="line">  `cont` varchar(100) DEFAULT NULL,</span><br><span class="line">  `images` varchar(100) DEFAULT NULL,</span><br><span class="line">  `author` varchar(40) DEFAULT NULL,</span><br><span class="line">  `rank` varchar(255) NOT NULL,</span><br><span class="line">  `their` varchar(255) NOT NULL,</span><br><span class="line">  `tag` varchar(255) DEFAULT &#x27;0&#x27;,</span><br><span class="line">  `isChild` tinyint(255) NOT NULL DEFAULT &#x27;0&#x27;,</span><br><span class="line">  PRIMARY KEY (`navId`) USING BTREE</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-表数据恢复"><a href="#2-表数据恢复" class="headerlink" title="2 表数据恢复"></a>2 表数据恢复</h2><p>表数据恢复包含以下几个步骤</p>
+<h3 id="1-根据建表语句建表"><a href="#1-根据建表语句建表" class="headerlink" title="1 根据建表语句建表"></a>1 根据建表语句建表</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> CREATE TABLE `navList` (</span></span><br><span class="line">    -&gt;   `navId` int(10) unsigned NOT NULL AUTO_INCREMENT,</span><br><span class="line">    -&gt;   `title` varchar(100) DEFAULT NULL,</span><br><span class="line">    -&gt;   `cont` varchar(100) DEFAULT NULL,</span><br><span class="line">    -&gt;   `images` varchar(100) DEFAULT NULL,</span><br><span class="line">    -&gt;   `author` varchar(40) DEFAULT NULL,</span><br><span class="line">    -&gt;   `rank` varchar(255) NOT NULL,</span><br><span class="line">    -&gt;   `their` varchar(255) NOT NULL,</span><br><span class="line">    -&gt;   `tag` varchar(255) DEFAULT &#x27;0&#x27;,</span><br><span class="line">    -&gt;   `isChild` tinyint(255) NOT NULL DEFAULT &#x27;0&#x27;,</span><br><span class="line">    -&gt;   PRIMARY KEY (`navId`) USING BTREE</span><br><span class="line">    -&gt; ) ENGINE=InnoDB DEFAULT CHARSET=utf8 row_format=compact;</span><br></pre></td></tr></table></figure>
+
+<p>注： 表后加<code>row_format=compact</code> </p>
+<h3 id="2-删除当前表的-ibd文件"><a href="#2-删除当前表的-ibd文件" class="headerlink" title="2 删除当前表的.ibd文件"></a>2 删除当前表的.ibd文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE 表名 DISCARD TABLESPACE;</span><br></pre></td></tr></table></figure>
+
+<p>操作示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 切换到数据库目录查看表文件</span></span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz bk_FE]# ll  </span><br><span class="line">total 328</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys    61 Dec 19 22:59 db.opt</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys  8748 Dec 20 09:50 friendLink.frm</span><br><span class="line">-rw-r--r-- 1 polkitd ssh_keys 98304 Dec 20 09:52 friendLink.ibd</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys  8818 Dec 20 09:56 navList.frm</span><br><span class="line">-rw-r--r-- 1 polkitd ssh_keys 98304 Dec 20 09:58 navList.ibd</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 进入MySQL 执行命令丢弃表空间；</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> ALTER TABLE `navList` DISCARD TABLESPACE;   </span></span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 再次切换到数据库目录查看表文件，此时navList.ibd文件已不存在</span></span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz bk_FE]# ll  </span><br><span class="line">total 328</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys    61 Dec 19 22:59 db.opt</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys  8748 Dec 20 09:50 friendLink.frm</span><br><span class="line">-rw-r--r-- 1 polkitd ssh_keys 98304 Dec 20 09:52 friendLink.ibd</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys  8818 Dec 20 09:56 navList.frm</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-复制之前的-ibd文件"><a href="#3-复制之前的-ibd文件" class="headerlink" title="3 复制之前的.ibd文件"></a>3 复制之前的.ibd文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /路径/表名.ibd ./</span><br></pre></td></tr></table></figure>
+
+<p>操作示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 复制</span></span></span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz bk_FE]# cp /tmp/navList.ibd ./</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 再次查看，</span></span></span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz bk_FE]# ll</span><br><span class="line">total 220</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys    61 Dec 19 22:59 db.opt</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys  8748 Dec 20 09:50 friendLink.frm</span><br><span class="line">-rw-r--r-- 1 polkitd ssh_keys 98304 Dec 20 09:52 friendLink.ibd</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys  8818 Dec 20 09:56 navList.frm</span><br><span class="line">-rw-r--r-- 1 root    root     98304 Dec 20 09:51 navList.ibd</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-授权"><a href="#4-授权" class="headerlink" title="4 授权"></a>4 授权</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 授权</span></span><br><span class="line">chown polkitd:ssh_keys navList.ibd</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 再次查看</span></span></span><br><span class="line">[root@izm5e7klp5h59pozbv3fghz bk_FE]# ll</span><br><span class="line">total 220</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys    61 Dec 19 22:59 db.opt</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys  8748 Dec 20 09:50 friendLink.frm</span><br><span class="line">-rw-r--r-- 1 polkitd ssh_keys 98304 Dec 20 09:52 friendLink.ibd</span><br><span class="line">-rw-r----- 1 polkitd ssh_keys  8818 Dec 20 09:56 navList.frm</span><br><span class="line">-rw-r--r-- 1 polkitd ssh_keys  98304 Dec 20 09:51 navList.ibd</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-导入表空间"><a href="#5-导入表空间" class="headerlink" title="5 导入表空间"></a>5 导入表空间</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 导入表空间</span></span><br><span class="line">ALTER TABLE `navList`  IMPORT TABLESPACE;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-问题处理方案"><a href="#3-问题处理方案" class="headerlink" title="3 问题处理方案"></a>3 问题处理方案</h2><h3 id="1-导入表空间报错"><a href="#1-导入表空间报错" class="headerlink" title="1 导入表空间报错"></a>1 导入表空间报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> ALTER TABLE `navList`  IMPORT TABLESPACE;</span></span><br><span class="line">ERROR 1812 (HY000): Tablespace is missing for table `bk_FE`.`navList`.</span><br></pre></td></tr></table></figure>
+
+<p>报错原因：未对复制的.ibd文件授权,</p>
+<p>解决方案：执行授权操作<code>chown polkitd:ssh_keys navList.ibd</code></p>
+<h3 id="2-模式不匹配"><a href="#2-模式不匹配" class="headerlink" title="2 模式不匹配"></a>2 模式不匹配</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> ALTER TABLE `userInfo`  IMPORT TABLESPACE;</span></span><br><span class="line">ERROR 1808 (HY000): Schema mismatch (Table has ROW_TYPE_DYNAMIC row format, .ibd file has ROW_TYPE_COMPACT row format.)</span><br></pre></td></tr></table></figure>
+
+<p>报错原因：ibd文件有ROW_TYSchema错配(表有ROW_TYPE_DYNAMIC row格式)。ibd文件有ROW_TYPE_COMPACT行格式。</p>
+<p>解决方案：在建表语句后加： row_format= compact;</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Mysql/2019-11-07%20Mysql%E7%A2%8E%E7%89%87/" rel="prev" title="Mysql 碎片">
+      <i class="fa fa-chevron-left"></i> Mysql 碎片
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/Nginx/Nginx%20%E4%BD%BF%E7%94%A8%E5%8F%8A%E9%85%8D%E7%BD%AE/" rel="next" title="Nginx 使用及配置">
+      Nginx 使用及配置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%A1%A8%E7%BB%93%E6%9E%84%E6%81%A2%E5%A4%8D"><span class="nav-number">1.</span> <span class="nav-text">1 表结构恢复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%A1%A8%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D"><span class="nav-number">2.</span> <span class="nav-text">2 表数据恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%B9%E6%8D%AE%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A5%E5%BB%BA%E8%A1%A8"><span class="nav-number">2.1.</span> <span class="nav-text">1 根据建表语句建表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%88%A0%E9%99%A4%E5%BD%93%E5%89%8D%E8%A1%A8%E7%9A%84-ibd%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">2 删除当前表的.ibd文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%A4%8D%E5%88%B6%E4%B9%8B%E5%89%8D%E7%9A%84-ibd%E6%96%87%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text">3 复制之前的.ibd文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8E%88%E6%9D%83"><span class="nav-number">2.4.</span> <span class="nav-text">4 授权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%AF%BC%E5%85%A5%E8%A1%A8%E7%A9%BA%E9%97%B4"><span class="nav-number">2.5.</span> <span class="nav-text">5 导入表空间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">3 问题处理方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AF%BC%E5%85%A5%E8%A1%A8%E7%A9%BA%E9%97%B4%E6%8A%A5%E9%94%99"><span class="nav-number">3.1.</span> <span class="nav-text">1 导入表空间报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%A8%A1%E5%BC%8F%E4%B8%8D%E5%8C%B9%E9%85%8D"><span class="nav-number">3.2.</span> <span class="nav-text">2 模式不匹配</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
