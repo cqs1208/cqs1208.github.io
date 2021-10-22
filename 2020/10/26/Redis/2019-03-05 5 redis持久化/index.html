@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/Redis/Redis_all.png">
 <meta property="article:published_time" content="2020-10-26T03:56:48.322Z">
-<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:modified_time" content="2020-12-09T03:10:46.459Z">
 <meta property="article:author" content="QingSong">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -184,7 +184,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+                <time title="Modified: 2020-12-09 11:10:46" itemprop="dateModified" datetime="2020-12-09T11:10:46+08:00">2020-12-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -218,11 +218,15 @@
 </ol>
 <p>RDB和AOF两种方式可以同时使用，在这种情况下如果Redis重启，则会<strong>优先采用AOF方式来进行数据恢复</strong>，这是因为AOF方式的数据恢复完整度更高。 </p>
 <p>没有数据持久化的需求，也完全可以关闭RDB和AOF方式，这样的话，Redis将变成一个纯内存数据库，就像memcache一样。 </p>
-<h3 id="1-RDB模式"><a href="#1-RDB模式" class="headerlink" title="1 RDB模式"></a>1 RDB模式</h3><p>​    Redis在进行数据持久化的过程中，会先将数据写入到一个临时文件中，待持久化过程都结束了，才会用这个临时文件替换上次持久化好的文件。正是这种特性，让我们可以随时来进行备份，因为快照文件总是完整可用的。</p>
+<h2 id="RDB模式"><a href="#RDB模式" class="headerlink" title="RDB模式"></a>RDB模式</h2><p>​    Redis在进行数据持久化的过程中，会先将数据写入到一个临时文件中，待持久化过程都结束了，才会用这个临时文件替换上次持久化好的文件。正是这种特性，让我们可以随时来进行备份，因为快照文件总是完整可用的。</p>
 <p>​    对于RDB方式，Redis会单独创建（fork）一个子进程来进行持久化，而主进程是不会进行任何IO操作的，这样就确保了Redis极高的性能。</p>
 <p>​    如果需要进行大规模数据的恢复，且对于数据恢复的完整性不是非常敏感，那RDB方式要比AOF方式更加的高效。</p>
 <p>​    虽然RDB有不少优点，但它的缺点也是不容忽视的。如果对数据的完整性非常敏感，那么RDB方式就不太适合，因为即使每5分钟都持久化一次，当Redis故障时，仍然会有近5分钟的数据丢失。所以，Redis还提供了另一种持久化方式，那就是AOF。</p>
-<h3 id="2-AOF模式"><a href="#2-AOF模式" class="headerlink" title="2 AOF模式"></a>2 AOF模式</h3><p>​    通过配置Redis.conf中的“appendonly yes”就可以打开AOF功能。如果有写操作（如SET等），Redis就会被追加到AOF文件的末尾。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>1：关闭rdb配置。关闭RDB只需要将所有的save保存策略注释掉即可</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">注释以下命令</span><br><span class="line">Save <span class="number">900</span> <span class="number">1</span>      </span><br><span class="line">Save <span class="number">300</span> <span class="number">10</span>    </span><br><span class="line">Save <span class="number">60</span> <span class="number">10000</span>   </span><br></pre></td></tr></table></figure>
+
+<p>2： 可以手动执行命令生成RDB快照，进入redis客户端执行命令save或bgsave可以生成dump.rdb文件，每次命令执行都会将所有redis内存快照到一个新的rdb文件里，并覆盖原有rdb快照文件。</p>
+<h2 id="AOF模式"><a href="#AOF模式" class="headerlink" title="AOF模式"></a>AOF模式</h2><p>​    通过配置Redis.conf中的“appendonly yes”就可以打开AOF功能。如果有写操作（如SET等），Redis就会被追加到AOF文件的末尾。</p>
 <p>​    默认的AOF持久化策略是每秒钟fsync一次（fsync是指把缓存中的写指令记录到磁盘中），因为在这种情况下，Redis仍然可以保持很好的处理性能，即使Redis故障，也只会丢失最近1秒钟的数据。</p>
 <p>​    如果在追加日志时，恰好遇到磁盘空间满、inode满或断电等情况导致日志写入不完整，也没有关系，Redis提供了Redis-check-aof工具，可以用来进行日志修复。</p>
 <p>​    AOF 后台执行的方式和 RDB 有类似的地方，fork 一个子进程，主进程仍进行服务，子进程执行 AOF 持久化，数据被 dump 到磁盘上。与 RDB 不同的是，后台子进程持久化过程中，主进程会记录期间的所有数据变更（主进程还在服务），并存储在 server.aof_rewrite_buf_blocks 中；后台子进程结束后，Redis更新缓存追加到 AOF 文件中，是 RDB 持久化所不具备的。<img src="/images/Redis/Redis_all.png" alt="redis持久化1"></p>
@@ -234,6 +238,21 @@
 <p>​    当追加结束后，Redis就会用新AOF文件来代替旧AOF文件，之后再有新的写指令，就都会追加到新的AOF文件中了。 </p>
 <p>​    虽然优点多多，但AOF方式也同样存在缺陷，比如在同样数据规模的情况下，AOF文件要比RDB文件的体积大。而且，AOF方式的恢复速度也要慢于RDB方式。</p>
 <p>​    如果运气比较差，AOF文件出现了被写坏的情况，也不必过分担忧，Redis并不会贸然加载这个有问题的AOF文件，而是报错退出。这时可以通过Redis-check-aof工具来修复文件，确认问题点后再重启Redis。</p>
+<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><p>1： 开启</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">appendonly yes</span><br></pre></td></tr></table></figure>
+
+<p>2: 设置多久将数据fsync到磁盘一次</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> appendfsync always：每次有新命令追加到AOF文件时就执行一次 fsync ，非常慢也非常安全。</span><br><span class="line"><span class="number">2</span> appendfsync everysec：每秒 fsync 一次，足够快，并且在故障时只会丢失<span class="number">1</span>秒钟的数据。</span><br><span class="line"><span class="number">3</span> appendfsync no：从不 fsync ，将数据交给操作系统来处理。更快，也更不安全的选择。</span><br></pre></td></tr></table></figure>
+
+<p>推荐（并且也是默认）的措施为每秒 fsync 一次， 这种 fsync 策略可以兼顾速度和安全性</p>
+<p>3：配置aof自动重写频率</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1# auto‐aof‐rewrite‐min‐size 64mb //aof文件至少要达到64M才会自动重写，文件太小恢复速度本来就很快，重写的意义不大</span><br><span class="line">2# auto‐aof‐rewrite‐percentage 100//aof文件自上一次重写后文件大小增长了100%则再次触发重写</span><br></pre></td></tr></table></figure>
+
+<p>当然AOF还可以手动重写，进入redis客户端执行命令bgrewriteaof重写AOF</p>
+<h2 id="redis4-0-混合持久化"><a href="#redis4-0-混合持久化" class="headerlink" title="redis4.0 混合持久化"></a>redis4.0 混合持久化</h2><p>重启 Redis 时，我们很少使用 RDB来恢复内存状态，因为会丢失大量数据。我们通常使用 AOF 日志重放，但是重放 AOF 日志性能相对 RDB来说要慢很多，这样在 Redis 实例很大的情况下，启动需要花费很长的时间。 Redis 4.0 为了解决这个问题，带来了一个新的持久化选项——混合持久化。通过如下配置可以开启混合持久化(必须先开启aof)：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aof‐use‐rdb‐preamble yes</span><br></pre></td></tr></table></figure>
+
+<p>如果开启了混合持久化，AOF在重写时，不再是单纯将内存数据转换为RESP命令写入AOF文件，而是将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令存在一起，都写入新的AOF文件，新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换。于是在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升。</p>
 
     </div>
 
@@ -317,7 +336,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-RDB%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">1 RDB模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-AOF%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">2 AOF模式</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RDB%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">RDB模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AOF%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">AOF模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-1"><span class="nav-number">2.1.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis4-0-%E6%B7%B7%E5%90%88%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">redis4.0 混合持久化</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -333,18 +352,18 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-count">153</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -371,7 +390,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
