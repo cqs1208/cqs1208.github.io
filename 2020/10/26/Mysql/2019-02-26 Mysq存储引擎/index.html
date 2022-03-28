@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://example.com/images/mysql/Mysql_enginesStructure.png">
 <meta property="og:image" content="http://example.com/images/mysql/Mysql_doublewrite.png">
 <meta property="article:published_time" content="2020-10-26T03:56:48.276Z">
-<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:modified_time" content="2022-03-25T06:45:30.701Z">
 <meta property="article:author" content="QingSong">
 <meta property="article:tag" content="Mysql">
 <meta name="twitter:card" content="summary">
@@ -189,7 +189,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+                <time title="Modified: 2022-03-25 14:45:30" itemprop="dateModified" datetime="2022-03-25T14:45:30+08:00">2022-03-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -225,9 +225,7 @@
 </ol>
 <p><img src="/images/mysql/Mysql_InnoDb.png" alt="Mysql_InnoDb"></p>
 <p>​    后台线程的主要作用是负责刷新内存池中的数据，保证缓冲池中的内存缓存的是最近的数据。此外，将已修改的数据文件刷新到磁盘文件，同时保证在数据库发生异常情况下InnoDB能恢复到正常运行状态。 </p>
-<h2 id="2-后台线程"><a href="#2-后台线程" class="headerlink" title="2 后台线程"></a>2 后台线程</h2><p>​    由于Oracle是多进程的架构（Windows下除外），因此可以通过一些很简单的命令来得知Oracle当前运行的后台进程，如ipcs命令。一般来说，Oracle的核心后台进程有CKPT、DBWn、LGWR、ARCn、PMON、SMON等。</p>
-<p>​    InnoDB存储引擎是否也是这样的架构，只不过是多线程版本的实现后，看InnoDB的源代码，发现InnoDB并不是这样对数据库进程进行操作的。InnoDB存储引擎是在一个被称做master thread的线程上几乎实现了所有的功能。</p>
-<p>​    默认情况下，InnoDB存储引擎的后台线程有4类——IO thread，1个master thread，1个锁（lock）监控线程，1个错误监控线程。</p>
+<h2 id="2-后台线程"><a href="#2-后台线程" class="headerlink" title="2 后台线程"></a>2 后台线程</h2><p>​    默认情况下，InnoDB存储引擎的后台线程有4类——IO thread，1个master thread，1个锁（lock）监控线程，1个错误监控线程。</p>
 <p>​    IO线程分别是insert buffer thread、log thread、read thread、write thread。在Linux平台下，IO thread的数量不能进行调整，但是在Windows平台下可以通过参数innodb_file_io_threads来增大IO thread。InnoDB Plugin版本开始增加了默认IO thread的数量，默认的read thread和write thread分别增大到了4个，并且不再使用innodb_file_io_threads参数，而是分别使用innodb_read_io_threads和innodb_write_io_threads参数。</p>
 <p>show variables like ‘innodb_version’\G</p>
 <p>show variables like ‘innodb_%io_threads’\G</p>
@@ -240,12 +238,11 @@
 <p><img src="/images/mysql/Mysql_bufferPool.png" alt="Mysql_bufferPool"></p>
 <h3 id="3-1-缓冲池"><a href="#3-1-缓冲池" class="headerlink" title="3.1 缓冲池"></a>3.1 缓冲池</h3><p>​    缓冲池是占最大块内存的部分，用来存放各种数据的缓存。因为InnoDB的存储引擎的工作方式总是将数据库文件按页（每页16K）读取到缓冲池，然后按最近最少使用（LRU）的算法来保留在缓冲池中的缓存数据。如果数据库文件需要修改，总是首先修改在缓存池中的页（发生修改后，该页即为脏页），然后再按照一定的频率将缓冲池的脏页刷新（flush）到文件。可以通过命令show engine innodb status\G来查看innodb_buffer_pool的具体使用情况，如下所示。 </p>
 <p><img src="/images/mysql/Mysql_innoDbCache.png" alt="Mysql_innoDbCache"></p>
-<p>​    在BUFFER POOL AND MEMORY里可以看到InnoDB存储引擎缓冲池的使用情况，buffer pool size表明了一共有多少个缓冲帧（buffer frame），每个buffer frame为16K，所以这里一共分配了8192*16/1024G内存的缓冲池。Free buffers表示当前空闲的缓冲帧，Database pages表示已经使用的缓冲帧，Modified db pages表示脏页的数量。就当前状态看来，这台数据库的压力并不大，因为在缓冲池中有大量的空闲页可供数据库进一步使用。 </p>
-<p><strong>注意：</strong>show engine innodb status的命令显示的不是当前的状态，而是过去某个时间范围内InnoDB存储引擎的状态，从上面的示例中我们可以看到，Per second averages calculated from the last 24 seconds表示的信息是过去24秒内的数据库状态。 </p>
+<p>​    在BUFFER POOL AND MEMORY里可以看到InnoDB存储引擎缓冲池的使用情况，buffer pool size表明了一共有多少个缓冲帧（buffer frame），每个buffer frame为16K，所以这里一共分配了8192*16/1024/1024G内存的缓冲池。Free buffers表示当前空闲的缓冲帧，Database pages表示已经使用的缓冲帧，Modified db pages表示脏页的数量。就当前状态看来，这台数据库的压力并不大，因为在缓冲池中有大量的空闲页可供数据库进一步使用。 </p>
+<p><strong>注意：</strong>show engine innodb status的命令显示的不是当前的状态，而是过去某个时间范围内InnoDB存储引擎的状态，类似这样的字眼 Per second averages calculated from the last 24 seconds表示的信息是过去24秒内的数据库状态。 </p>
 <p>​    具体来看，缓冲池中缓存的数据页类型有：索引页、数据页、undo页、插入缓冲（insert buffer）、自适应哈希索引（adaptive hash index）、InnoDB存储的锁信息（lock info）、数据字典信息（data dictionary）等。不能简单地认为，缓冲池只是缓存索引页和数据页，它们只是占缓冲池很大的一部分而已。</p>
 <p>下图很好地显示了InnoDB存储引擎中内存的结构情况。</p>
 <p><img src="/images/mysql/Mysql_enginesStructure.png" alt="Mysql_enginesStructure"></p>
-<p>**ps:**参数innodb_buffer_pool_size指定了缓冲池的大小，在32位Windows系统下，参数innodb_buffer_pool_awe_mem_mb还可以启用地址窗口扩展（AWE）功能，突破32位下对于内存使用的限制。但是，在使用这个参数的时候需要注意，一旦启用AWE功能，InnoDB存储引擎将自动禁用自适应哈希索引（adaptive hash index）的功能。 </p>
 <h3 id="3-2-日志缓冲"><a href="#3-2-日志缓冲" class="headerlink" title="3.2 日志缓冲"></a>3.2 日志缓冲</h3><p>​    严格地说，应该是重做（redo）日志缓冲。将重做日志信息先放入这个缓冲区，然后按一定频率将其刷新到重做日志文件。该值一般不需要设置为很大，因为一般情况下每一秒钟就会将重做日志缓冲刷新到日志文件，因此我们只需要保证每秒产生的事务量在这个缓冲大小之内即可。 </p>
 <h3 id="3-3-额外的内存池"><a href="#3-3-额外的内存池" class="headerlink" title="3.3 额外的内存池"></a>3.3 额外的内存池</h3><p>​    在InnoDB存储引擎中，对内存的管理是通过一种称为内存堆（heap）的方式进行的。在对一些数据结构本身分配内存时，需要从额外的内存池中申请，当该区域的内存不够时，会从缓冲池中申请。InnoDB实例会申请缓冲池（innodb_buffer_pool）的空间，每个缓冲池中的帧缓冲（frame buffer）还有对应的缓冲控制对象（buffer control block），这些对象记录了诸如LRU、锁、等待等方面的信息，而这个对象的内存需要从额外内存池中申请。因此，当你申请了很大的InnoDB缓冲池时，这个值也应该相应增加。 </p>
 <h2 id="4-Master-Thread"><a href="#4-Master-Thread" class="headerlink" title="4 Master Thread"></a>4 Master Thread</h2><p>​    innoDB存储引擎的主要工作都是由Master Thread 完成的。master thread的线程优先级别最高。其内部几个循环**(loop)组成:主循环(loop),后台循环(background loop),刷新循环(flush loop),暂停循环(suspend loop)**.master thread会根据数据运行的状态在loop,background loop,flush loop和suspend loop中进行切换.</p>
@@ -479,7 +476,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-count">157</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -517,7 +514,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

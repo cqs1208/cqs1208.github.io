@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql插入缓存Insert buffer">
+<meta property="og:url" content="http://example.com/2022/03/25/Mysql/2022-03-26%20Mysq%E6%8F%92%E5%85%A5%E7%BC%93%E5%AD%98Insert%20buffer/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Mysql">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-03-25T04:04:24.969Z">
+<meta property="article:modified_time" content="2022-03-25T06:45:12.061Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Mysql">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/03/25/Mysql/2022-03-26%20Mysq%E6%8F%92%E5%85%A5%E7%BC%93%E5%AD%98Insert%20buffer/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Mysql插入缓存Insert buffer | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/25/Mysql/2022-03-26%20Mysq%E6%8F%92%E5%85%A5%E7%BC%93%E5%AD%98Insert%20buffer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Mysql插入缓存Insert buffer
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-03-25 12:04:24 / Modified: 14:45:12" itemprop="dateCreated datePublished" datetime="2022-03-25T12:04:24+08:00">2022-03-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Mysql</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>InnoDB缓冲池中有Insert Buffer信息固然不错，但是InsertBuffer和数据页一样，也是物理页的一个组成部分。</p>
+<a id="more"></a> 
+
+<h3 id="什么是-innsert-buffer"><a href="#什么是-innsert-buffer" class="headerlink" title="什么是 innsert-buffer"></a>什么是 innsert-buffer</h3><p>插入缓冲是缓冲池中的一个组成部分。其实不然，InnoDB缓冲池中有Insert Buffer信息固然不错，但是InsertBuffer和数据页一样，也是物理页的一个组成部分</p>
+<h3 id="innsert-buffer作用"><a href="#innsert-buffer作用" class="headerlink" title="innsert-buffer作用"></a>innsert-buffer作用</h3><p>我们知道在进行插入操作时，数据页的存放还是按主键id的执行顺序存放， 但是对于非聚集索引，叶子节点的插入不再是顺序的了。<br>例如,对于如下表结构进行insert操作<br>create table tab (<br>  id int auto_increment,<br>  name varchar(30),<br>  primary key (id),<br>  key(name)<br> ) engine=innodb  default charset=utf8;<br>nanme 为非唯一字段，这时就需要离散地访问非聚集索引页，插入性能在这里变低了。然而这并不是这个name字段上索引的错误，因为B+树的特性决定了非聚集索引插入的离散性。<br><strong>为了解决非聚族索引的随机写性能差(提升插入性能)</strong>,InnoDB 存储引擎开发了 innsert-buffer pool (5.5 中做了加强,称之为 change buffer pool)</p>
+<h3 id="innsert-buffer-需要满足的条件"><a href="#innsert-buffer-需要满足的条件" class="headerlink" title="innsert-buffer 需要满足的条件"></a>innsert-buffer 需要满足的条件</h3><ul>
+<li><strong>索引是辅助索引(secondary index)</strong></li>
+<li><strong>索引不是唯一的(unique)</strong></li>
+</ul>
+<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><p>  1 主键是行唯一的标示符, 写入行时，是按照主键递增的顺序进行插入的，异常插入聚族索引一般也顺序的，不需要随机IO。<br>  2 写唯一索引要检查记录是不是存在，所以在修改唯一索引之前,必须把修改的记录相关的索引页读出来才知道是不是唯一,这样Insert buffer就没意义了，反正要读出来(读带来随机IO)，所以只对非唯一索引有效。</p>
+<h4 id="现实中的例子："><a href="#现实中的例子：" class="headerlink" title="现实中的例子："></a><strong>现实中的例子：</strong></h4><p><strong>先说第一个问题</strong>。 我们去图书馆还书，对应图书馆来说，他是做了insert(增加)操作，管理员在1小时内接受了100本书，这时候他有2种做法把还回来的书归位到书架上</p>
+<p>1）每还回来一本书，根据这本书的编码（书柜区-排-号）把书送回架上</p>
+<p>2）暂时不做归位操作，先放到柜面上，等不忙的时候，再把这些书按照书柜区-排-号先排好，然后一次性归位</p>
+<p>用方法1，管理员需要进出（IO）藏书区100次，不停的登高爬低完成图书归位操作，累死累活，效率很差。</p>
+<p>用方法2，管理员只需要进出（IO）藏书区1次，对同一个位置的书，不管多少，都只要爬一次楼梯，大大减轻了管理员的工作量。</p>
+<p>所以图书馆都是按照方法2来做还书动作的。但是你要说，我的图书馆就20本书，1个0.5米的架子，方法2和1管理起来都很方便，这种情况不在我们讨论的范围。当数据量非常小的时候，就不存在效率问题了。</p>
+<p>关系数据库在处理插入操作的时候，处理的方法和上面类似，每一次插入都相当于还一本书，它也需要一个柜台来保存插入的数据，然后分类归档，在不忙的时候做批量的归位。这个柜台就是insert buffer.</p>
+<p>我想这就是为什么会有insert buffer，更多的是处于性能优化的考虑。</p>
+<p><strong>再说第二个问题</strong>，有什么限制：“只对于非聚集索引（非唯一）的插入和更新有效”</p>
+<p>为什么对于非聚集索引（非唯一）的插入和更新有效?</p>
+<p>还是用还书的例子来说，还一本书A到图书馆，管理员要判断一下这本书是不是唯一的，他在柜台上是看不到的，必须爬到指定位置去确认，这个过程其实已经产生了一次IO操作，相当于没有节省任何操作。</p>
+<p>所以这个buffer只能处理非唯一的插入，不要求判断是否唯一。聚集索引就不用说了，它肯定是唯一的，mysql现在还只能通过主键聚集。</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><ul>
+<li> 先判断要更新的这一页在不在内存中。</li>
+<li>如果不在,则读取index page 存入Insert Buffer，按照Master Thread的调度规则来合并非唯一索引和索引页中的叶子结点.</li>
+</ul>
+<h4 id="Master-Thread的调度规则"><a href="#Master-Thread的调度规则" class="headerlink" title="Master Thread的调度规则"></a>Master Thread的调度规则</h4><ul>
+<li>主动merger[innodb主线程定期完成，用户线程无感知]<pre><code>主动merger：
+原理:主动merge通过innodb主线程(svr_master_thread）判断：若过去1s之内发生的I/O小于系统I/O能力的5%，
+    则主动进行一次insert buffer的meger操作。meger的页面数为系统I/O能力的5%，读取采用async io模式。
+    每10s,必定触发一次insert buffer meger操作。meger的页面数仍旧为系统 I/O能力的5%。
+步骤:
+    1.主线程发出async io请求，async读取需要被meger的索引页面
+    2.I/O handler 线程，在接受到完成的async I/O之后，进行merger</code></pre>
+</li>
+<li>被动merge[用户线程完成，用户能感受到meger操作带来的性能影响]<pre><code>被动merge:
+  情况一：
+  insert操作，导致页面空间不足，需要分裂(split)。由于insert buffer只针对单个页面，不能buffer page split[页已经在内存里]，因此引起页面的被动meger。同理，update操作导致页面空间不 足；purge导致页面为空等。总之:若 当前操作引起页面split or merge,那么就会导致被动merge。
+  情况二:
+  insert操作，由于其它各种原因，insert buffer优化返回false，需要真正读取page时，要进行被动merge。与一不同的是，页在disk上，需要读取到内存里。
+  情况三：
+  在进行insert buffer操作，发现insert buffer太大，需要压缩insert buffer,这时需要强制被动merge,不允许 insert 操作进行。</code></pre>
+</li>
+</ul>
+<h3 id="如何查看insert-buffer"><a href="#如何查看insert-buffer" class="headerlink" title="如何查看insert buffer"></a><strong>如何查看insert buffer</strong></h3><p>  我们可以通过show engine innodb status \G 来查看插入缓冲的信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-------------------------------------</span><br><span class="line">INSERT BUFFER AND ADAPTIVE HASH INDEX</span><br><span class="line">-------------------------------------</span><br><span class="line">Ibuf: size <span class="number">1</span>, free list len <span class="number">0</span>, seg size <span class="number">2</span>, <span class="number">2920</span> merges</span><br><span class="line">merged operations:</span><br><span class="line"> insert <span class="number">23858</span>, delete mark <span class="number">0</span>, delete <span class="number">0</span></span><br><span class="line">discarded operations:</span><br><span class="line"> insert <span class="number">0</span>, delete mark <span class="number">0</span>, delete <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>seg size显示了当前插入缓冲的大小为2 *16KB，大约为32KB，free list len代表了空闲列表的长度，size代表了已经合并记录页的数量。merges 表示合并次数。<br>merged operations:<br>Inserts代表插入的记录数，delete mark delete 次数均为0.  </p>
+<p><a target="_blank" rel="noopener" href="http://blog.itpub.net/22664653/viewspace-1163838">参考链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/25/Mysql/2022-03-26%20Mysq%E6%A0%B8%E5%BF%83%E6%97%A5%E5%BF%97(redolog%20undolog%20binlog)/" rel="prev" title="Mysql 核心日志（redolog、undolog、binlog）">
+      <i class="fa fa-chevron-left"></i> Mysql 核心日志（redolog、undolog、binlog）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/03/25/Mysql/2022-03-26%20Mysq%E4%B8%A4%E6%AC%A1%E5%86%99doublewrite/" rel="next" title="两次写doublewrite">
+      两次写doublewrite <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-innsert-buffer"><span class="nav-number">1.</span> <span class="nav-text">什么是 innsert-buffer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#innsert-buffer%E4%BD%9C%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">innsert-buffer作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#innsert-buffer-%E9%9C%80%E8%A6%81%E6%BB%A1%E8%B6%B3%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">innsert-buffer 需要满足的条件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0"><span class="nav-number">3.1.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%B0%E5%AE%9E%E4%B8%AD%E7%9A%84%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">现实中的例子：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Master-Thread%E7%9A%84%E8%B0%83%E5%BA%A6%E8%A7%84%E5%88%99"><span class="nav-number">4.1.</span> <span class="nav-text">Master Thread的调度规则</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8Binsert-buffer"><span class="nav-number">5.</span> <span class="nav-text">如何查看insert buffer</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">157</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
