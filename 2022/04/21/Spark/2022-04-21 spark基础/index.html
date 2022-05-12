@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="spark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spark基础">
+<meta property="og:url" content="http://example.com/2022/04/21/Spark/2022-04-21%20spark%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="spark">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Spark/Spark_core02.png">
+<meta property="og:image" content="http://example.com/images/Spark/Spark_core03.png">
+<meta property="og:image" content="http://example.com/images/Spark/Spark_core04.png">
+<meta property="og:image" content="http://example.com/images/Spark/Spark_core05.png">
+<meta property="og:image" content="http://example.com/images/Spark/Spark_core06.png">
+<meta property="og:image" content="http://example.com/images/Spark/Spark_core07.png">
+<meta property="article:published_time" content="2022-04-21T04:47:44.000Z">
+<meta property="article:modified_time" content="2022-04-29T06:10:23.866Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="spark">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Spark/Spark_core02.png">
+
+<link rel="canonical" href="http://example.com/2022/04/21/Spark/2022-04-21%20spark%E5%9F%BA%E7%A1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>spark基础 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/21/Spark/2022-04-21%20spark%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          spark基础
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-04-21 12:47:44" itemprop="dateCreated datePublished" datetime="2022-04-21T12:47:44+08:00">2022-04-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-04-29 14:10:23" itemprop="dateModified" datetime="2022-04-29T14:10:23+08:00">2022-04-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spark/" itemprop="url" rel="index"><span itemprop="name">spark</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">spark</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>spark笔记</p>
+<a id="more"></a> 
+
+<h2 id="WordCount"><a href="#WordCount" class="headerlink" title="WordCount"></a>WordCount</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">object Spark01_WordCount &#123;</span><br><span class="line">  <span class="function">def <span class="title">main</span><span class="params">(args: Array[String])</span>: Unit </span>= &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 建立spark框架连接</span></span><br><span class="line">    val sparkConf = <span class="keyword">new</span> SparkConf().setMaster(<span class="string">&quot;local&quot;</span>).setAppName(<span class="string">&quot;WordCount&quot;</span>)</span><br><span class="line">    val sc =  <span class="keyword">new</span> SparkContext(sparkConf)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 读取文件， 获取一行一行的数据  hello world</span></span><br><span class="line">    val lines: RDD[String] = sc.textFile(<span class="string">&quot;datas&quot;</span>)</span><br><span class="line">    <span class="comment">// 将一行数据进行拆分，形成一个个单词  hello world =》hello,world</span></span><br><span class="line">    val words = lines.flatMap(_.split(<span class="string">&quot; &quot;</span>))</span><br><span class="line">    <span class="comment">// 将数据根据单词进行分组，便于统计 (hello,hello),(world)</span></span><br><span class="line">    val wordGroup = words.groupBy(word =&gt; word)</span><br><span class="line">    <span class="comment">// 对分组后的数据进行转换 (hello,2),(world,1)</span></span><br><span class="line">    val wordToCount = wordGroup.map&#123;</span><br><span class="line">      <span class="keyword">case</span> (word, list) =&gt; &#123;</span><br><span class="line">        (word, list.size)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将转换结果打印</span></span><br><span class="line">    val array = wordToCount.collect()</span><br><span class="line">    array.foreach(println)</span><br><span class="line">    <span class="comment">// 关闭</span></span><br><span class="line">    sc.stop()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实现方式2</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">object Spark02_WordCount &#123;</span><br><span class="line">  <span class="function">def <span class="title">main</span><span class="params">(args: Array[String])</span>: Unit </span>= &#123;</span><br><span class="line">    <span class="comment">// 建立spark框架连接</span></span><br><span class="line">    val sparkConf = <span class="keyword">new</span> SparkConf().setMaster(<span class="string">&quot;local&quot;</span>).setAppName(<span class="string">&quot;WordCount&quot;</span>)</span><br><span class="line">    val sc =  <span class="keyword">new</span> SparkContext(sparkConf)</span><br><span class="line"></span><br><span class="line">    val lines: RDD[String] = sc.textFile(<span class="string">&quot;datas&quot;</span>)</span><br><span class="line">    val words = lines.flatMap(_.split(<span class="string">&quot; &quot;</span>))</span><br><span class="line">    val wordToOne = words.map(word =&gt; (word,<span class="number">1</span> ))</span><br><span class="line">    val wordGroup = wordToOne.groupBy(t =&gt; t._1)</span><br><span class="line">    val wordToCount = wordGroup.map&#123;</span><br><span class="line">      <span class="keyword">case</span> (word, list) =&gt; &#123;</span><br><span class="line">        list.reduce(</span><br><span class="line">          (t1, t2) =&gt; &#123;</span><br><span class="line">            (t1._1, t1._2 + t2._2)</span><br><span class="line">          &#125;</span><br><span class="line">        )</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将转换结果打印</span></span><br><span class="line">    val array = wordToCount.collect()</span><br><span class="line">    array.foreach(println)</span><br><span class="line">    <span class="comment">// 关闭</span></span><br><span class="line">    sc.stop()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>spark方式实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">object Spark03_WordCount &#123;</span><br><span class="line">  <span class="function">def <span class="title">main</span><span class="params">(args: Array[String])</span>: Unit </span>= &#123;</span><br><span class="line">    <span class="comment">// 建立spark框架连接</span></span><br><span class="line">    val sparkConf = <span class="keyword">new</span> SparkConf().setMaster(<span class="string">&quot;local&quot;</span>).setAppName(<span class="string">&quot;WordCount&quot;</span>)</span><br><span class="line">    val sc =  <span class="keyword">new</span> SparkContext(sparkConf)</span><br><span class="line"></span><br><span class="line">    val lines: RDD[String] = sc.textFile(<span class="string">&quot;datas&quot;</span>)</span><br><span class="line">    val words = lines.flatMap(_.split(<span class="string">&quot; &quot;</span>))</span><br><span class="line">    val wordToOne = words.map(word =&gt; (word,<span class="number">1</span> ))</span><br><span class="line">    <span class="comment">// spark框架提供了更多的功能，可以将分组和聚合使用一个方法实现</span></span><br><span class="line">    <span class="comment">// reduceByKey 相同的key的数据，可以对value进行reduce</span></span><br><span class="line">    val wordToCount = wordToOne.reduceByKey(_ + _)</span><br><span class="line">    <span class="comment">// 将转换结果打印</span></span><br><span class="line">    val array = wordToCount.collect()</span><br><span class="line">    array.foreach(println)</span><br><span class="line">    <span class="comment">// 关闭</span></span><br><span class="line">    sc.stop()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="spark核心编程"><a href="#spark核心编程" class="headerlink" title="spark核心编程"></a>spark核心编程</h2><ul>
+<li>RDD：          弹性分布式数据集</li>
+<li>累加器：      分布式共享只写变量</li>
+<li>广播变量：  分布式共享只读变量</li>
+</ul>
+<h3 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h3><p>RDD叫做弹性分布式数据集，是spark中最基本的数据处理模型，代码中是一个抽象类，它代表一个弹性的、不可变、可分区、里面的元素可并行计算的集合</p>
+<p><strong>弹性</strong>：</p>
+<ul>
+<li>存储的弹性： 内存与磁盘的自动切换</li>
+<li>容错的弹性： 数据丢失可以自动恢复</li>
+<li>计算的弹性： 计算出错重试机制</li>
+<li>分片的弹性： 可根据需要重新分片</li>
+</ul>
+<p><strong>分布式</strong>： 数据存储在大数据集群不同节点上</p>
+<p><strong>数据集</strong>： RDD封装了计算逻辑，并不保存数据</p>
+<p><strong>数据抽象</strong>： RDD是一个抽象类，需要子类具体实现</p>
+<p><strong>不可变</strong>：：RDD封装了计算逻辑，是不可改变的，想要改变，只能产生新的RDD，在新的RDD里面封装计算逻辑</p>
+<p><strong>可分区</strong>： 并行计算</p>
+<h3 id="RDD核心属性"><a href="#RDD核心属性" class="headerlink" title="RDD核心属性"></a>RDD核心属性</h3><blockquote>
+<ul>
+<li>Internally, each RDD is characterized by five main properties:</li>
+<li></li>
+<li><ul>
+<li>A list of partitions</li>
+</ul>
+</li>
+<li><ul>
+<li>A function for computing each split</li>
+</ul>
+</li>
+<li><ul>
+<li>A list of dependencies on other RDDs</li>
+</ul>
+</li>
+<li><ul>
+<li>Optionally, a Partitioner for key-value RDDs (e.g. to say that the RDD is hash-partitioned)</li>
+</ul>
+</li>
+<li><ul>
+<li>Optionally, a list of preferred locations to compute each split on (e.g. block locations for</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="分区列表"><a href="#分区列表" class="headerlink" title="分区列表"></a>分区列表</h4><p>RDD数据结构中存在分区列表，用于执行任务时并行计算，是实现分布式计算的重要属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> def getPartitions: Array[Partition]</span><br></pre></td></tr></table></figure>
+
+<h4 id="分区计算函数"><a href="#分区计算函数" class="headerlink" title="分区计算函数"></a>分区计算函数</h4><p>Spark在计算时，是使用分区函数对每一个分区进行计算的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">compute</span><span class="params">(split: Partition, context: TaskContext)</span>: Iterator[T]</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="RDD之间的依赖关系"><a href="#RDD之间的依赖关系" class="headerlink" title="RDD之间的依赖关系"></a>RDD之间的依赖关系</h4><p>RDD是计算模型的封装，当需求中需要将多个计算模型进行组合时，就需要将多个RDD建立依赖关系</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> def getDependencies: Seq[Dependency[_]] = deps</span><br></pre></td></tr></table></figure>
+
+<p>####分区器（可选）</p>
+<p>当数据为 KV 类型数据时，可以通过设定分区器自定义数据的分区</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@transient</span> val partitioner: Option[Partitioner] = None</span><br></pre></td></tr></table></figure>
+
+<h4 id="首选位置（可选）"><a href="#首选位置（可选）" class="headerlink" title="首选位置（可选）"></a>首选位置（可选）</h4><p>计算数据时，可以根据计算节点的状态选择不同的节点位置进行计算</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> def <span class="title">getPreferredLocations</span><span class="params">(split: Partition)</span>: Seq[String] </span>= Nil</span><br></pre></td></tr></table></figure>
+
+<h3 id="执行原理"><a href="#执行原理" class="headerlink" title="执行原理"></a>执行原理</h3><p>​    从计算的角度来讲，数据处理过程中需要计算资源（内存 &amp; CPU）和计算模型（逻辑）。 执行时，需要将计算资源和计算模型进行协调和整合</p>
+<p>​    Spark 框架在执行时，先申请资源，然后将应用程序的数据处理逻辑分解成一个一个的 计算任务。然后将任务发到已经分配资源的计算节点上, 按照指定的计算模型进行数据计 算。最后得到计算结果。</p>
+<p>​    RDD 是 Spark 框架中用于数据处理的核心模型，接下来我们看看，在 Yarn 环境中，RDD 的工作原理:</p>
+<ol>
+<li>启动 Yarn 集群环境</li>
+</ol>
+<p><img src="/images/Spark/Spark_core02.png" alt="Spark_core02"></p>
+<ol start="2">
+<li>Spark 通过申请资源创建调度节点和计算节点</li>
+</ol>
+<p><img src="/images/Spark/Spark_core03.png" alt="Spark_core02"></p>
+<ol start="3">
+<li>Spark 框架根据需求将计算逻辑根据分区划分成不同的任务</li>
+</ol>
+<p><img src="/images/Spark/Spark_core04.png" alt="Spark_core02"></p>
+<ol start="4">
+<li>调度节点将任务根据计算节点状态发送到对应的计算节点进行计算</li>
+</ol>
+<p><img src="/images/Spark/Spark_core05.png" alt="Spark_core02"></p>
+<p>​    从以上流程可以看出 RDD 在整个流程中主要用于将逻辑进行封装，并生成 Task 发送给 Executor 节点执行计算，接下来我们就一起看看 Spark 框架中 RDD 是具体是如何进行数据 处理的。 </p>
+<h3 id="基础编程"><a href="#基础编程" class="headerlink" title="基础编程"></a>基础编程</h3><h4 id="RDD-创建"><a href="#RDD-创建" class="headerlink" title="RDD 创建"></a>RDD 创建</h4><h5 id="从集合（内存）中创建-RDD"><a href="#从集合（内存）中创建-RDD" class="headerlink" title="从集合（内存）中创建 RDD"></a>从集合（内存）中创建 <strong>RDD</strong></h5><p>从集合中创建 RDD，Spark 主要提供了两个方法：parallelize 和 makeRDD</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> val sparkConf = <span class="keyword">new</span> SparkConf().setMaster(<span class="string">&quot;local[*]&quot;</span>).setAppName(<span class="string">&quot;rdd&quot;</span>)</span><br><span class="line">    val sc =  <span class="keyword">new</span> SparkContext(sparkConf)</span><br><span class="line">    <span class="comment">// parallelize 并行</span></span><br><span class="line"><span class="comment">//    val rdd1 = sc.parallelize(List(1,2,3,4))</span></span><br><span class="line"><span class="comment">//    rdd1.collect().foreach(println)</span></span><br><span class="line">     <span class="comment">// makeRDD 底层实际调用的就是 parallelize</span></span><br><span class="line">    val rdd2 = sc.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line">    rdd2.collect().foreach(println)</span><br><span class="line">    sc.stop()</span><br></pre></td></tr></table></figure>
+
+<h5 id="从外部存储（文件）创建-RDD"><a href="#从外部存储（文件）创建-RDD" class="headerlink" title="从外部存储（文件）创建 RDD"></a>从外部存储（文件）创建 <strong>RDD</strong></h5><p>由外部存储系统的数据集创建 RDD 包括：本地的文件系统，所有 Hadoop 支持的数据集， 比如 HDFS、HBase 等</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">val sparkConf = <span class="keyword">new</span> SparkConf().setMaster(<span class="string">&quot;local&quot;</span>).setAppName(<span class="string">&quot;WordCount&quot;</span>)</span><br><span class="line">   val sc =  <span class="keyword">new</span> SparkContext(sparkConf)</span><br><span class="line">    <span class="comment">// path 可以是文件路径，也可以是目录</span></span><br><span class="line"><span class="comment">//   val rdd1: RDD[String] = sc.textFile(&quot;datas&quot;)</span></span><br><span class="line">   <span class="comment">// path 还可以是通配符</span></span><br><span class="line">   val rdd1: RDD[String] = sc.textFile(<span class="string">&quot;datas/1*.txt&quot;</span>)</span><br><span class="line">   rdd1.collect().foreach(println)</span><br><span class="line">   sc.stop()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">textFile : 以行为单位来读取数据</span><br><span class="line">wholeTextFiles: 以文件为单位来读取数据  读取的结果为元组(第一个为路径，第二个为文件内容)</span><br></pre></td></tr></table></figure>
+
+<h4 id="RDD-并行度与分区"><a href="#RDD-并行度与分区" class="headerlink" title="RDD 并行度与分区"></a>RDD 并行度与分区</h4><p>​    默认情况下，Spark 可以将一个作业切分多个任务后，发送给 Executor 节点并行计算，而能 够并行计算的任务数量我们称之为并行度。这个数量可以在构建 RDD 时指定。记住，这里 的并行执行的任务数量，并不是指的切分任务的数量，不要混淆了。 </p>
+<h5 id="集合分区："><a href="#集合分区：" class="headerlink" title="集合分区："></a>集合分区：</h5><ul>
+<li>如果makeRDD函数的第二个参数有值， 则使用该分区数， </li>
+<li>否则使用配置的分区数(默认为CPU核数）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">val sparkConf = <span class="keyword">new</span> SparkConf().setMaster(<span class="string">&quot;local[*]&quot;</span>).setAppName(<span class="string">&quot;rdd&quot;</span>)</span><br><span class="line">      sparkConf.set(<span class="string">&quot;spark.default.parallelism&quot;</span>, <span class="string">&quot;5&quot;</span>)</span><br><span class="line">      val sc =  <span class="keyword">new</span> SparkContext(sparkConf)</span><br><span class="line">      <span class="comment">// makeRDD 可以传第二个参数， 这个参数表示分区的数量，</span></span><br><span class="line">      <span class="comment">// 没传会使用默认值 defaultParallelism 默认并行度</span></span><br><span class="line">      <span class="comment">//  scheduler.conf.getInt(&quot;spark.default.parallelism&quot;, totalCores)</span></span><br><span class="line">      <span class="comment">// spark在默认情况下，会使用配置参数 spark.default.parallelism</span></span><br><span class="line">      <span class="comment">// 如果获取不到，那么使用totalCores属性，这个属性取值为当前环境最大可用核数</span></span><br><span class="line">      val rdd2 = sc.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line">      <span class="comment">// 将数据保存为分区文件</span></span><br><span class="line">      rdd2.saveAsTextFile(<span class="string">&quot;output&quot;</span>)</span><br><span class="line">      rdd2.collect().foreach(println)</span><br><span class="line">      sc.stop()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 进源码查看数据分区规则 </span></span><br><span class="line">val sparkConf = <span class="keyword">new</span> SparkConf().setMaster(<span class="string">&quot;local[*]&quot;</span>).setAppName(<span class="string">&quot;rdd&quot;</span>)</span><br><span class="line">    val sc =  <span class="keyword">new</span> SparkContext(sparkConf)</span><br><span class="line">    val rdd2 = sc.makeRDD(List(<span class="number">1</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>), <span class="number">3</span>)</span><br><span class="line">    <span class="comment">// 将数据保存为分区文件</span></span><br><span class="line">    rdd2.saveAsTextFile(<span class="string">&quot;output&quot;</span>)</span><br><span class="line">    rdd2.collect().foreach(println)</span><br><span class="line">    sc.stop()</span><br></pre></td></tr></table></figure>
+
+<p><strong>集合数据分区规则</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">positions</span><span class="params">(length: Long, numSlices: Int)</span>: Iterator[<span class="params">(Int, Int)</span>] </span>= &#123;</span><br><span class="line"> (<span class="number">0</span> until numSlices).iterator.map &#123; i =&gt;</span><br><span class="line"> val start = ((i * length) / numSlices).toInt</span><br><span class="line"> val end = (((i + <span class="number">1</span>) * length) / numSlices).toInt</span><br><span class="line"> (start, end)</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="文件分区："><a href="#文件分区：" class="headerlink" title="文件分区："></a>文件分区：</h5><ul>
+<li>如果makeRDD函数的第二个参数有值， 则使用hadoop的分区规则（字节数 / 参数值）， 余数如果大于商的10% 则分区数为 （参数值 + 1）  否则 分区数为 参数值</li>
+<li>如果没有第二个参数，则取默认核数和2的较小的值</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">val sparkConf = <span class="keyword">new</span> SparkConf().setMaster(<span class="string">&quot;local[*]&quot;</span>).setAppName(<span class="string">&quot;rdd&quot;</span>)</span><br><span class="line">  val sc =  <span class="keyword">new</span> SparkContext(sparkConf)</span><br><span class="line">  <span class="comment">// textFile 可以将文件作为数据处理的数据源</span></span><br><span class="line">  <span class="comment">// defaultMinPartitions 默认分区数量</span></span><br><span class="line">  <span class="comment">// math.min(defaultParallelism, 2) //</span></span><br><span class="line">  <span class="comment">// 如果不想使用默认分区数， 则可以添加第二个参数</span></span><br><span class="line">  <span class="comment">// spark读取文件，底层其实使用的就是hadoop的读取方式</span></span><br><span class="line">  <span class="comment">// 分区数量的计算方式</span></span><br><span class="line">  <span class="comment">// totalSize = 7</span></span><br><span class="line">  <span class="comment">// goalSize = 7 / 2 = 3 （byte）</span></span><br><span class="line">  <span class="comment">// 7 / 3 = 2...1   = 3 （分区）</span></span><br><span class="line">  val rdd1 = sc.textFile(<span class="string">&quot;datas/1.txt&quot;</span>, <span class="number">3</span>)</span><br><span class="line">  <span class="comment">// 将数据保存为分区文件</span></span><br><span class="line">  rdd1.saveAsTextFile(<span class="string">&quot;output&quot;</span>)</span><br><span class="line">  rdd1.collect().foreach(println)</span><br><span class="line">  sc.stop()</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>文件数据分区规则</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> InputSplit[] getSplits(JobConf job, <span class="keyword">int</span> numSplits)</span><br><span class="line"> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line"> <span class="keyword">long</span> totalSize = <span class="number">0</span>; <span class="comment">// compute total size</span></span><br><span class="line"> <span class="keyword">for</span> (FileStatus file: files) &#123; <span class="comment">// check we have valid files</span></span><br><span class="line"> <span class="keyword">if</span> (file.isDirectory()) &#123;</span><br><span class="line"> <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">&quot;Not a file: &quot;</span>+ file.getPath());</span><br><span class="line"> &#125;</span><br><span class="line"> totalSize += file.getLen();</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">long</span> goalSize = totalSize / (numSplits == <span class="number">0</span> ? <span class="number">1</span> : numSplits);</span><br><span class="line"> <span class="keyword">long</span> minSize = Math.max(job.getLong(org.apache.hadoop.mapreduce.lib.input.</span><br><span class="line"> FileInputFormat.SPLIT_MINSIZE, <span class="number">1</span>), minSplitSize);</span><br><span class="line"> </span><br><span class="line"> ...</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">for</span> (FileStatus file: files) &#123;</span><br><span class="line"> </span><br><span class="line"> ...</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">if</span> (isSplitable(fs, path)) &#123;</span><br><span class="line"> <span class="keyword">long</span> blockSize = file.getBlockSize();</span><br><span class="line"> <span class="keyword">long</span> splitSize = computeSplitSize(goalSize, minSize, blockSize);</span><br><span class="line"> ...</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="function"><span class="keyword">protected</span> <span class="keyword">long</span> <span class="title">computeSplitSize</span><span class="params">(<span class="keyword">long</span> goalSize, <span class="keyword">long</span> minSize,</span></span></span><br><span class="line"><span class="function"><span class="params"> <span class="keyword">long</span> blockSize)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">return</span> Math.max(minSize, Math.min(goalSize, blockSize));</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="RDD-转换算子"><a href="#RDD-转换算子" class="headerlink" title="RDD 转换算子"></a><strong>RDD</strong> 转换算子</h4><p>RDD 根据数据处理方式的不同将算子整体上分为 Value 类型、双 Value 类型和 Key-Value 类型 </p>
+<h5 id="➢-双-Value-类型"><a href="#➢-双-Value-类型" class="headerlink" title="➢ 双 Value 类型"></a>➢ <strong>双</strong> <strong>Value</strong> <strong>类型</strong></h5><h5 id="map"><a href="#map" class="headerlink" title="map"></a>map</h5><p>➢ 函数签名</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def map[U: ClassTag](f: T =&gt; U): RDD[U]</span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明</p>
+<p>将处理的数据逐条进行映射转换，这里的转换可以是类型的转换，也可以是值的转换。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD: RDD[Int] = sparkContext.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line">val dataRDD1: RDD[Int] = dataRDD.map( num =&gt; &#123;num * <span class="number">2</span> &#125; )</span><br><span class="line">val dataRDD2: RDD[String] = dataRDD1.map( num =&gt; &#123; <span class="string">&quot;&quot;</span> + num &#125; )</span><br></pre></td></tr></table></figure>
+
+<h5 id="mapPartitions"><a href="#mapPartitions" class="headerlink" title="mapPartitions"></a>mapPartitions</h5><p>➢ 函数签名</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def mapPartitions[U: ClassTag](</span><br><span class="line"> f: Iterator[T] =&gt; Iterator[U],</span><br><span class="line"> preservesPartitioning: Boolean = <span class="keyword">false</span>): RDD[U]</span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明</p>
+<p>将待处理的数据以分区为单位发送到计算节点进行处理，这里的处理是指可以进行任意的处 理，哪怕是过滤数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1: RDD[Int] = dataRDD.mapPartitions(</span><br><span class="line"> datas =&gt; &#123; datas.filter(_==<span class="number">2</span>)&#125; </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>map 和 mapPartitions 的区别？</p>
+<ul>
+<li><p>数据处理角度</p>
+<p>Map 算子是分区内一个数据一个数据的执行，类似于串行操作。而 mapPartitions 算子 是以分区为单位进行批处理操作。</p>
+</li>
+<li><p>功能的角度Map 算子主要目的将数据源中的数据进行转换和改变。但是不会减少或增多数据。 </p>
+<p>MapPartitions 算子需要传递一个迭代器，返回一个迭代器，没有要求的元素的个数保持不变， 所以可以增加或减少数据</p>
+</li>
+<li><p>性能的角度</p>
+<p>Map 算子因为类似于串行操作，所以性能比较低，而是 mapPartitions 算子类似于批处 理，所以性能较高。但是 mapPartitions 算子会长时间占用内存，那么这样会导致内存可能 不够用，出现内存溢出的错误。所以在内存有限的情况下，不推荐使用。使用 map 操作。</p>
+</li>
+</ul>
+<h5 id="mapPartitionsWithIndex"><a href="#mapPartitionsWithIndex" class="headerlink" title="mapPartitionsWithIndex"></a><strong>mapPartitionsWithIndex</strong></h5><p>➢ 函数签名</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def mapPartitionsWithIndex[U: ClassTag](</span><br><span class="line"> f: (Int, Iterator[T]) =&gt; Iterator[U],</span><br><span class="line"> preservesPartitioning: Boolean = <span class="keyword">false</span>): RDD[U]</span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明</p>
+<p>将待处理的数据以分区为单位发送到计算节点进行处理，这里的处理是指可以进行任意的处 理，哪怕是过滤数据，在处理时同时可以获取当前分区索引。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 = dataRDD.mapPartitionsWithIndex(</span><br><span class="line"> (index, datas) =&gt; &#123;</span><br><span class="line"> datas.map(index, _)</span><br><span class="line"> &#125; )</span><br></pre></td></tr></table></figure>
+
+<h5 id="flatMap"><a href="#flatMap" class="headerlink" title="flatMap"></a><strong>flatMap</strong></h5><p>➢ 函数签名</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def flatMap[U: ClassTag](f: T =&gt; TraversableOnce[U]): RDD[U]</span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明</p>
+<p>将处理的数据进行扁平化后再进行映射处理，所以算子也称之为扁平映射</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD = sparkContext.makeRDD(List(</span><br><span class="line"> List(<span class="number">1</span>,<span class="number">2</span>),List(<span class="number">3</span>,<span class="number">4</span>)</span><br><span class="line">),<span class="number">1</span>)</span><br><span class="line">val dataRDD1 = dataRDD.flatMap(</span><br><span class="line"> list =&gt; list</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h5 id="glom"><a href="#glom" class="headerlink" title="glom"></a><strong>glom</strong></h5><p>➢ 函数签名</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">glom</span><span class="params">()</span>: RDD[Array[T]] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明</p>
+<p>将同一个分区的数据直接转换为相同类型的内存数组进行处理，分区不变</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD = sparkContext.makeRDD(List(</span><br><span class="line"> <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span></span><br><span class="line">),<span class="number">1</span>)</span><br><span class="line">val dataRDD1:RDD[Array[Int]] = dataRDD.glom()</span><br></pre></td></tr></table></figure>
+
+<h5 id="groupBy"><a href="#groupBy" class="headerlink" title="groupBy"></a><strong>groupBy</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def groupBy[K](f: T =&gt; K)(implicit kt: ClassTag[K]): RDD[(K, Iterable[T])] </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>​    将数据根据指定的规则进行分组, 分区默认不变，但是数据会被打乱重新组合，我们将这样 的操作称之为 shuffle。极限情况下，数据可能被分在同一个分区中 </p>
+<p>​    一个组的数据在一个分区中，但是并不是说一个分区中只有一个组</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD = sparkContext.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>),<span class="number">1</span>)</span><br><span class="line">val dataRDD1 = dataRDD.groupBy(</span><br><span class="line"> _%<span class="number">2</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h5 id="filter"><a href="#filter" class="headerlink" title="filter"></a><strong>filter</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">filter</span><span class="params">(f: T =&gt; Boolean)</span>: RDD[T] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>​    将数据根据指定的规则进行筛选过滤，符合规则的数据保留，不符合规则的数据丢弃。 当数据进行筛选过滤后，分区不变，但是分区内的数据可能不均衡，生产环境下，可能会出 现数据<strong>倾斜</strong>。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD = sparkContext.makeRDD(List(</span><br><span class="line"> <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span></span><br><span class="line">),<span class="number">1</span>)</span><br><span class="line">val dataRDD1 = dataRDD.filter(_%<span class="number">2</span> == <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="sample"><a href="#sample" class="headerlink" title="sample"></a><strong>sample</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">sample</span><span class="params">( </span></span></span><br><span class="line"><span class="function"><span class="params"> withReplacement: Boolean, </span></span></span><br><span class="line"><span class="function"><span class="params"> fraction: Double, </span></span></span><br><span class="line"><span class="function"><span class="params"> seed: Long = Utils.random.nextLong)</span>: RDD[T] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>根据指定的规则从数据集中抽取数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD = sparkContext.makeRDD(List(</span><br><span class="line"> <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span></span><br><span class="line">),<span class="number">1</span>)</span><br><span class="line"><span class="comment">// 抽取数据不放回（伯努利算法）</span></span><br><span class="line"><span class="comment">// 伯努利算法：又叫 0、1 分布。例如扔硬币，要么正面，要么反面。</span></span><br><span class="line"><span class="comment">// 具体实现：根据种子和随机算法算出一个数和第二个参数设置几率比较，小于第二个参数要，大于不</span></span><br><span class="line">要</span><br><span class="line"><span class="comment">// 第一个参数：抽取的数据是否放回，false：不放回</span></span><br><span class="line"><span class="comment">// 第二个参数：抽取的几率，范围在[0,1]之间,0：全不取；1：全取；</span></span><br><span class="line"><span class="comment">// 第三个参数：随机数种子</span></span><br><span class="line">val dataRDD1 = dataRDD.sample(<span class="keyword">false</span>, <span class="number">0.5</span>)</span><br><span class="line"><span class="comment">// 抽取数据放回（泊松算法）</span></span><br><span class="line"><span class="comment">// 第一个参数：抽取的数据是否放回，true：放回；false：不放回</span></span><br><span class="line"><span class="comment">// 第二个参数：重复数据的几率，范围大于等于 0.表示每一个元素被期望抽取到的次数</span></span><br><span class="line"><span class="comment">// 第三个参数：随机数种子</span></span><br><span class="line">val dataRDD2 = dataRDD.sample(<span class="keyword">true</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="distinct"><a href="#distinct" class="headerlink" title="distinct"></a><strong>distinct</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def distinct()(implicit ord: Ordering[T] &#x3D; null): RDD[T] </span><br><span class="line">def distinct(numPartitions: Int)(implicit ord: Ordering[T] &#x3D; null): RDD[T] </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>将数据集中重复的数据去重</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD = sparkContext.makeRDD(List(</span><br><span class="line"> <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">2</span></span><br><span class="line">),<span class="number">1</span>)</span><br><span class="line">val dataRDD1 = dataRDD.distinct()</span><br><span class="line">val dataRDD2 = dataRDD.distinct(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="coalesce"><a href="#coalesce" class="headerlink" title="coalesce"></a><strong>coalesce</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">coalesce</span><span class="params">(numPartitions: Int, shuffle: Boolean = <span class="keyword">false</span>, </span></span></span><br><span class="line"><span class="function"><span class="params"> partitionCoalescer: Option[PartitionCoalescer] = Option.empty)</span> </span></span><br><span class="line"><span class="function"> <span class="params">(implicit ord: Ordering[T] = <span class="keyword">null</span>)</span> </span></span><br><span class="line"><span class="function"> : RDD[T] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>根据数据量缩减分区，用于大数据集过滤后，提高小数据集的执行效率 当 spark 程序中，存在过多的小任务的时候，可以通过 coalesce 方法，收缩合并分区，减少 分区的个数，减小任务调度成本</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD = sparkContext.makeRDD(List(</span><br><span class="line"> <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">2</span></span><br><span class="line">),<span class="number">6</span>)</span><br><span class="line">val dataRDD1 = dataRDD.coalesce(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="repartition"><a href="#repartition" class="headerlink" title="repartition"></a><strong>repartition</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">repartition</span><span class="params">(numPartitions: Int)</span><span class="params">(implicit ord: Ordering[T] = <span class="keyword">null</span>)</span>: RDD[T] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>​    该操作内部其实执行的是 coalesce 操作，参数 shuffle 的默认值为 true。无论是将分区数多的 RDD 转换为分区数少的 RDD，还是将分区数少的 RDD 转换为分区数多的 RDD，repartition 操作都可以完成，因为无论如何都会经 shuffle 过程。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD = sparkContext.makeRDD(List(</span><br><span class="line"> <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">2</span></span><br><span class="line">),<span class="number">2</span>)</span><br><span class="line">val dataRDD1 = dataRDD.repartition(<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="sortBy"><a href="#sortBy" class="headerlink" title="sortBy"></a><strong>sortBy</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def sortBy[K]( </span><br><span class="line"> f: (T) =&gt; K,</span><br><span class="line">ascending: Boolean = <span class="keyword">true</span>, </span><br><span class="line"> numPartitions: Int = <span class="keyword">this</span>.partitions.length) </span><br><span class="line"> (implicit ord: Ordering[K], ctag: ClassTag[K]): RDD[T]</span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明</p>
+<p>​    该操作用于排序数据。在排序之前，可以将数据通过 f 函数进行处理，之后按照 f 函数处理 的结果进行排序，默认为升序排列。排序后新产生的 RDD 的分区数与原 RDD 的分区数一 致。中间存在 shuffle 的过程 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD = sparkContext.makeRDD(List(</span><br><span class="line"> <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">2</span></span><br><span class="line">),<span class="number">2</span>)</span><br><span class="line">val dataRDD1 = dataRDD.sortBy(num=&gt;num, <span class="keyword">false</span>, <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="➢-双-Value-类型-1"><a href="#➢-双-Value-类型-1" class="headerlink" title="➢  双 Value 类型"></a><strong>➢  双</strong> <strong>Value</strong> <strong>类型</strong></h5><h5 id="intersection"><a href="#intersection" class="headerlink" title="intersection"></a><strong>intersection</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">intersection</span><span class="params">(other: RDD[T])</span>: RDD[T] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>对源 RDD 和参数 RDD 求交集后返回一个新的 RDD</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 = sparkContext.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line">val dataRDD2 = sparkContext.makeRDD(List(<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>))</span><br><span class="line">val dataRDD = dataRDD1.intersection(dataRDD2)</span><br></pre></td></tr></table></figure>
+
+<h5 id="union"><a href="#union" class="headerlink" title="union"></a><strong>union</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">union</span><span class="params">(other: RDD[T])</span>: RDD[T] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>对源 RDD 和参数 RDD 求并集后返回一个新的 RDD</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 = sparkContext.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line">val dataRDD2 = sparkContext.makeRDD(List(<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>))</span><br><span class="line">val dataRDD = dataRDD1.union(dataRDD2)</span><br></pre></td></tr></table></figure>
+
+<h5 id="subtract"><a href="#subtract" class="headerlink" title="subtract"></a><strong>subtract</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">subtract</span><span class="params">(other: RDD[T])</span>: RDD[T] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>以一个 RDD 元素为主，去除两个 RDD 中重复元素，将其他元素保留下来。求差集</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 = sparkContext.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line">val dataRDD2 = sparkContext.makeRDD(List(<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>))</span><br><span class="line">val dataRDD = dataRDD1.subtract(dataRDD2)</span><br></pre></td></tr></table></figure>
+
+<h5 id="zip"><a href="#zip" class="headerlink" title="zip"></a><strong>zip</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def zip[U: ClassTag](other: RDD[U]): RDD[(T, U)] </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>​    将两个 RDD 中的元素，以键值对的形式进行合并。其中，键值对中的 Key 为第 1 个 RDD 中的元素，Value 为第 2 个 RDD 中的相同位置的元素。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 = sparkContext.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line">val dataRDD2 = sparkContext.makeRDD(List(<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>))</span><br><span class="line">val dataRDD = dataRDD1.zip(dataRDD2)</span><br></pre></td></tr></table></figure>
+
+<h5 id="➢-Key-Value-类型"><a href="#➢-Key-Value-类型" class="headerlink" title="➢ Key - Value 类型"></a><strong>➢ Key - Value</strong> <strong>类型</strong></h5><h5 id="partitionBy"><a href="#partitionBy" class="headerlink" title="partitionBy"></a><strong>partitionBy</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">partitionBy</span><span class="params">(partitioner: Partitioner)</span>: RDD[<span class="params">(K, V)</span>] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>将数据按照指定 Partitioner 重新进行分区。Spark 默认的分区器是 HashPartitioner</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[(Int, String)] =</span><br><span class="line"> sc.makeRDD(Array((<span class="number">1</span>,<span class="string">&quot;aaa&quot;</span>),(<span class="number">2</span>,<span class="string">&quot;bbb&quot;</span>),(<span class="number">3</span>,<span class="string">&quot;ccc&quot;</span>)),<span class="number">3</span>)</span><br><span class="line"><span class="keyword">import</span> org.apache.spark.HashPartitioner</span><br><span class="line">val rdd2: RDD[(Int, String)] =</span><br><span class="line"> rdd.partitionBy(<span class="keyword">new</span> HashPartitioner(<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+
+<h5 id="reduceByKey"><a href="#reduceByKey" class="headerlink" title="reduceByKey"></a><strong>reduceByKey</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">reduceByKey</span><span class="params">(func: (V, V)</span> </span>=&gt; V): RDD[(K, V)] </span><br><span class="line"><span class="function">def <span class="title">reduceByKey</span><span class="params">(func: (V, V)</span> </span>=&gt; V, numPartitions: Int): RDD[(K, V)] </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>可以将数据按照相同的 Key 对 Value 进行聚合 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 = sparkContext.makeRDD(List((<span class="string">&quot;a&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;b&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">3</span>)))</span><br><span class="line">val dataRDD2 = dataRDD1.reduceByKey(_+_)</span><br><span class="line">val dataRDD3 = dataRDD1.reduceByKey(_+_, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="groupByKey"><a href="#groupByKey" class="headerlink" title="groupByKey"></a><strong>groupByKey</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">groupByKey</span><span class="params">()</span>: RDD[<span class="params">(K, Iterable[V])</span>] </span></span><br><span class="line"><span class="function">def <span class="title">groupByKey</span><span class="params">(numPartitions: Int)</span>: RDD[<span class="params">(K, Iterable[V])</span>] </span></span><br><span class="line"><span class="function">def <span class="title">groupByKey</span><span class="params">(partitioner: Partitioner)</span>: RDD[<span class="params">(K, Iterable[V])</span>] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>将数据源的数据根据 key 对 value 进行分组</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 =</span><br><span class="line"> sparkContext.makeRDD(List((<span class="string">&quot;a&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;b&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">3</span>)))</span><br><span class="line">val dataRDD2 = dataRDD1.groupByKey()</span><br><span class="line">val dataRDD3 = dataRDD1.groupByKey(<span class="number">2</span>)</span><br><span class="line">val dataRDD4 = dataRDD1.groupByKey(<span class="keyword">new</span> HashPartitioner(<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+
+<p><strong>reduceByKey 和 groupByKey 的区别？</strong></p>
+<p><strong>从</strong> <strong>shuffle</strong> <strong>的角度</strong>：reduceByKey 和 groupByKey 都存在 shuffle 的操作，但是 reduceByKey 可以在 shuffle 前对分区内相同 key 的数据进行预聚合（combine）功能，这样会减少落盘的 数据量，而 groupByKey 只是进行分组，不存在数据量减少的问题，reduceByKey 性能比较 高。 </p>
+<p><strong>从功能的角度</strong>：reduceByKey 其实包含分组和聚合的功能。GroupByKey 只能分组，不能聚 合，所以在分组聚合的场合下，推荐使用 reduceByKey，如果仅仅是分组而不需要聚合。那 么还是只能使用 groupByKey</p>
+<h5 id="aggregateByKey"><a href="#aggregateByKey" class="headerlink" title="aggregateByKey"></a><strong>aggregateByKey</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def aggregateByKey[U: ClassTag](zeroValue: U)(seqOp: (U, V) =&gt; U, </span><br><span class="line"> combOp: (U, U) =&gt; U): RDD[(K, U)] </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>将数据根据不同的规则进行分区内计算和分区间计算</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 =</span><br><span class="line"> sparkContext.makeRDD(List((<span class="string">&quot;a&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;b&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">3</span>)))</span><br><span class="line">val dataRDD2 =</span><br><span class="line"> dataRDD1.aggregateByKey(<span class="number">0</span>)(_+_,_+_)</span><br></pre></td></tr></table></figure>
+
+<p>❖ 取出每个分区内相同 key 的最大值然后分区间相加</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TODO : 取出每个分区内相同 key 的最大值然后分区间相加</span></span><br><span class="line"><span class="comment">// aggregateByKey 算子是函数柯里化，存在两个参数列表</span></span><br><span class="line"><span class="comment">// 1. 第一个参数列表中的参数表示初始值</span></span><br><span class="line"><span class="comment">// 2. 第二个参数列表中含有两个参数</span></span><br><span class="line"><span class="comment">// 2.1 第一个参数表示分区内的计算规则</span></span><br><span class="line"><span class="comment">// 2.2 第二个参数表示分区间的计算规则</span></span><br><span class="line">val rdd =</span><br><span class="line"> sc.makeRDD(List(</span><br><span class="line"> (<span class="string">&quot;a&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;a&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">3</span>),</span><br><span class="line"> (<span class="string">&quot;b&quot;</span>,<span class="number">4</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">5</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">6</span>)</span><br><span class="line"> ),<span class="number">2</span>)</span><br><span class="line"><span class="comment">// 0:(&quot;a&quot;,1),(&quot;a&quot;,2),(&quot;c&quot;,3) =&gt; (a,10)(c,10)</span></span><br><span class="line"><span class="comment">// =&gt; (a,10)(b,10)(c,20)</span></span><br><span class="line"><span class="comment">// 1:(&quot;b&quot;,4),(&quot;c&quot;,5),(&quot;c&quot;,6) =&gt; (b,10)(c,10)</span></span><br><span class="line">val resultRDD =</span><br><span class="line"> rdd.aggregateByKey(<span class="number">10</span>)(</span><br><span class="line"> (x, y) =&gt; math.max(x,y),</span><br><span class="line"> (x, y) =&gt; x + y</span><br><span class="line"> )</span><br><span class="line">resultRDD.collect().foreach(println)</span><br></pre></td></tr></table></figure>
+
+<h5 id="foldByKey"><a href="#foldByKey" class="headerlink" title="foldByKey"></a><strong>foldByKey</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">foldByKey</span><span class="params">(zeroValue: V)</span><span class="params">(func: (V, V)</span> </span>=&gt; V): RDD[(K, V)] </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>当分区内计算规则和分区间计算规则相同时，aggregateByKey 就可以简化为 foldByKey</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 = sparkContext.makeRDD(List((<span class="string">&quot;a&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;b&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">3</span>)))</span><br><span class="line">val dataRDD2 = dataRDD1.foldByKey(<span class="number">0</span>)(_+_)</span><br></pre></td></tr></table></figure>
+
+<p><strong>求平均值练习</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 相同key数据的平均值</span></span><br><span class="line">   val rdd = sc.makeRDD(List(</span><br><span class="line">     (<span class="string">&quot;a&quot;</span>,<span class="number">1</span>), (<span class="string">&quot;a&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">3</span>), (<span class="string">&quot;a&quot;</span>, <span class="number">4</span>),(<span class="string">&quot;b&quot;</span>,<span class="number">5</span>),(<span class="string">&quot;b&quot;</span>,<span class="number">6</span>)</span><br><span class="line">   ), <span class="number">2</span>)</span><br><span class="line">   val newRdd: RDD[(String, (Int, Int))] = rdd.aggregateByKey((<span class="number">0</span>,<span class="number">0</span>))(</span><br><span class="line">     (t,v) =&gt; &#123;</span><br><span class="line">       (t._1 + v, t._2 + <span class="number">1</span>)</span><br><span class="line">     &#125;,</span><br><span class="line">     (t1, t2)=&gt; &#123;</span><br><span class="line">       ( t1._1 + t2._1, t1._2 + t2._2 )</span><br><span class="line">     &#125;</span><br><span class="line">   )</span><br><span class="line">   val rdd2 = newRdd.mapValues&#123;</span><br><span class="line">     <span class="keyword">case</span> (num, cnt) =&gt; num / cnt</span><br><span class="line">   &#125;</span><br><span class="line">   rdd2.collect().foreach(println)</span><br></pre></td></tr></table></figure>
+
+<h5 id="combineByKey"><a href="#combineByKey" class="headerlink" title="combineByKey"></a>combineByKey</h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def combineByKey[C]( </span><br><span class="line"> createCombiner: V =&gt; C, </span><br><span class="line"> mergeValue: (C, V) =&gt; C, </span><br><span class="line"> mergeCombiners: (C, C) =&gt; C): RDD[(K, C)] </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>最通用的对 key-value 型 rdd 进行聚集操作的聚集函数（aggregation function）。类似于 aggregate()，combineByKey()允许用户返回值的类型与输入不一致。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">val list: List[(String, Int)] = List((<span class="string">&quot;a&quot;</span>, <span class="number">88</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">95</span>), (<span class="string">&quot;a&quot;</span>, <span class="number">91</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">93</span>), </span><br><span class="line">(<span class="string">&quot;a&quot;</span>, <span class="number">95</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">98</span>))</span><br><span class="line">val input: RDD[(String, Int)] = sc.makeRDD(list, <span class="number">2</span>)</span><br><span class="line"><span class="comment">// 1. 第一个参数: 将相同key的第一个数据进行结构的转换，实现操作</span></span><br><span class="line"><span class="comment">// 2. 第二个参数列表中含有两个参数</span></span><br><span class="line"><span class="comment">// 2.1 第一个参数表示分区内的计算规则</span></span><br><span class="line"><span class="comment">// 2.2 第二个参数表示分区间的计算规则</span></span><br><span class="line">val combineRdd: RDD[(String, (Int, Int))] = input.combineByKey(</span><br><span class="line"> (_, <span class="number">1</span>),</span><br><span class="line"> (acc: (Int, Int), v) =&gt; (acc._1 + v, acc._2 + <span class="number">1</span>),</span><br><span class="line"> (acc1: (Int, Int), acc2: (Int, Int)) =&gt; (acc1._1 + acc2._1, acc1._2 + acc2._2)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>reduceByKey、foldByKey、aggregateByKey、combineByKey 的区别？</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">rdd.reduceByKey(_+_)</span><br><span class="line">rdd.aggregateByKey(<span class="number">0</span>)(_+_,_+_)</span><br><span class="line">rdd.foldByKey(<span class="number">0</span>)(_+_)</span><br><span class="line">rdd.combineByKey (v=&gt;v, (x:Int,y),(x:Int,y:Int)=&gt;x+y)</span><br><span class="line">    </span><br><span class="line">reduceByKey: 相同 key 的第一个数据不进行任何计算，分区内和分区间计算规则相同</span><br><span class="line">FoldByKey: 相同 key 的第一个数据和初始值进行分区内计算，分区内和分区间计算规则相</span><br><span class="line">同</span><br><span class="line">AggregateByKey：相同 key 的第一个数据和初始值进行分区内计算，分区内和分区间计算规</span><br><span class="line">则可以不相同</span><br><span class="line">CombineByKey:当计算时，发现数据结构不满足要求时，可以让第一个数据转换结构。分区</span><br><span class="line">内和分区间计算规则不相同。</span><br></pre></td></tr></table></figure>
+
+<h5 id="sortByKey"><a href="#sortByKey" class="headerlink" title="sortByKey"></a><strong>sortByKey</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">sortByKey</span><span class="params">(ascending: Boolean = <span class="keyword">true</span>, numPartitions: Int = self.partitions.length)</span> </span></span><br><span class="line"><span class="function"> : RDD[<span class="params">(K, V)</span>] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>在一个(K,V)的 RDD 上调用，K 必须实现 Ordered 接口(特质)，返回一个按照 key 进行排序 的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 = sparkContext.makeRDD(List((<span class="string">&quot;a&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;b&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">3</span>)))</span><br><span class="line">val sortRDD1: RDD[(String, Int)] = dataRDD1.sortByKey(<span class="keyword">true</span>)</span><br><span class="line">val sortRDD1: RDD[(String, Int)] = dataRDD1.sortByKey(<span class="keyword">false</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="join"><a href="#join" class="headerlink" title="join"></a><strong>join</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def join[W](other: RDD[(K, W)]): RDD[(K, (V, W))] </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>在类型为(K,V)和(K,W)的 RDD 上调用，返回一个相同 key 对应的所有元素连接在一起的 (K,(V,W))的 RDD </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[(Int, String)] = sc.makeRDD(Array((<span class="number">1</span>, <span class="string">&quot;a&quot;</span>), (<span class="number">2</span>, <span class="string">&quot;b&quot;</span>), (<span class="number">3</span>, <span class="string">&quot;c&quot;</span>)))</span><br><span class="line">val rdd1: RDD[(Int, Int)] = sc.makeRDD(Array((<span class="number">1</span>, <span class="number">4</span>), (<span class="number">2</span>, <span class="number">5</span>), (<span class="number">3</span>, <span class="number">6</span>)))</span><br><span class="line">    <span class="comment">// 如果两个数据源中的key没有匹配上，那么数据不会出现在结果中</span></span><br><span class="line">    <span class="comment">// 如果两个数据源中key有多个相同的，会一次匹配，可能出现笛卡尔乘积，数据量会几何增长</span></span><br><span class="line">rdd.join(rdd1).collect().foreach(println)</span><br></pre></td></tr></table></figure>
+
+<h5 id="leftOuterJoin"><a href="#leftOuterJoin" class="headerlink" title="leftOuterJoin"></a><strong>leftOuterJoin</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def leftOuterJoin[W](other: RDD[(K, W)]): RDD[(K, (V, Option[W]))] </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>类似于 SQL 语句的左外连接</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 = sparkContext.makeRDD(List((<span class="string">&quot;a&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;b&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">3</span>)))</span><br><span class="line">val dataRDD2 = sparkContext.makeRDD(List((<span class="string">&quot;a&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;b&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">3</span>)))</span><br><span class="line">val rdd: RDD[(String, (Int, Option[Int]))] = dataRDD1.leftOuterJoin(dataRDD2)</span><br></pre></td></tr></table></figure>
+
+<h5 id="cogroup"><a href="#cogroup" class="headerlink" title="cogroup"></a><strong>cogroup</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def cogroup[W](other: RDD[(K, W)]): RDD[(K, (Iterable[V], Iterable[W]))] </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>在类型为(K,V)和(K,W)的 RDD 上调用，返回一个(K,(Iterable<V>,Iterable<W>))类型的 RDD </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val dataRDD1 = sparkContext.makeRDD(List((<span class="string">&quot;a&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;a&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">3</span>)))</span><br><span class="line">val dataRDD2 = sparkContext.makeRDD(List((<span class="string">&quot;a&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;c&quot;</span>,<span class="number">3</span>)))</span><br><span class="line">    <span class="comment">// 分组、连接</span></span><br><span class="line">val value: RDD[(String, (Iterable[Int], Iterable[Int]))] = </span><br><span class="line">dataRDD1.cogroup(dataRDD2)</span><br></pre></td></tr></table></figure>
+
+<h4 id="RDD行动算子"><a href="#RDD行动算子" class="headerlink" title="RDD行动算子"></a>RDD行动算子</h4><h5 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a><strong>reduce</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">reduce</span><span class="params">(f: (T, T)</span> </span>=&gt; T): T </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>聚集 RDD 中的所有元素，先聚合分区内数据，再聚合分区间数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[Int] = sc.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line"><span class="comment">// 聚合数据</span></span><br><span class="line">val reduceResult: Int = rdd.reduce(_+_)</span><br></pre></td></tr></table></figure>
+
+<h5 id="collect"><a href="#collect" class="headerlink" title="collect"></a><strong>collect</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">collect</span><span class="params">()</span>: Array[T] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>在驱动程序中，以数组 Array 的形式返回数据集的所有元素</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[Int] = sc.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>)) </span><br><span class="line"><span class="comment">// 收集数据到 Driver </span></span><br><span class="line">rdd.collect().foreach(println)  </span><br></pre></td></tr></table></figure>
+
+<h5 id="count"><a href="#count" class="headerlink" title="count"></a><strong>count</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">count</span><span class="params">()</span>: Long </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>返回 RDD 中元素的个数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[Int] = sc.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line"><span class="comment">// 返回 RDD 中元素的个数</span></span><br><span class="line">val countResult: Long = rdd.count()</span><br></pre></td></tr></table></figure>
+
+<h5 id="first"><a href="#first" class="headerlink" title="first"></a><strong>first</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">first</span><span class="params">()</span>: T </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明</p>
+<p>返回 RDD 中的第一个元素</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[Int] = sc.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line"><span class="comment">// 返回 RDD 中元素的个数</span></span><br><span class="line">val firstResult: Int = rdd.first()</span><br><span class="line">println(firstResult)</span><br></pre></td></tr></table></figure>
+
+<h5 id="take"><a href="#take" class="headerlink" title="take"></a><strong>take</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">take</span><span class="params">(num: Int)</span>: Array[T] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>返回一个由 RDD 的前 n 个元素组成的数组 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[Int] = sc.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line"><span class="comment">// 返回 RDD 中元素的个数</span></span><br><span class="line">val takeResult: Array[Int] = rdd.take(<span class="number">2</span>)</span><br><span class="line">println(takeResult.mkString(<span class="string">&quot;,&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<h5 id="takeOrdered"><a href="#takeOrdered" class="headerlink" title="takeOrdered"></a><strong>takeOrdered</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">takeOrdered</span><span class="params">(num: Int)</span><span class="params">(implicit ord: Ordering[T])</span>: Array[T] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>返回该 RDD 排序后的前 n 个元素组成的数组 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[Int] = sc.makeRDD(List(<span class="number">1</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">4</span>))</span><br><span class="line"><span class="comment">// 返回 RDD 中元素的个数</span></span><br><span class="line">val result: Array[Int] = rdd.takeOrdered(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="aggregate"><a href="#aggregate" class="headerlink" title="aggregate"></a><strong>aggregate</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def aggregate[U: ClassTag](zeroValue: U)(seqOp: (U, T) =&gt; U, combOp: (U, U) =&gt; U): U </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>分区的数据通过初始值和分区内的数据进行聚合，然后再和初始值进行分区间的数据聚合 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[Int] = sc.makeRDD(List(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>), <span class="number">8</span>)</span><br><span class="line"><span class="comment">// 将该 RDD 所有元素相加得到结果</span></span><br><span class="line"><span class="comment">//val result: Int = rdd.aggregate(0)(_ + _, _ + _)</span></span><br><span class="line">    <span class="comment">// aggregateByKey  初始值只会参与分区内计算</span></span><br><span class="line">    <span class="comment">// aggregate 初始值会参与分区内和分区间计算</span></span><br><span class="line">val result: Int = rdd.aggregate(<span class="number">10</span>)(_ + _, _ + _)</span><br></pre></td></tr></table></figure>
+
+<h5 id="fold"><a href="#fold" class="headerlink" title="fold"></a><strong>fold</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">fold</span><span class="params">(zeroValue: T)</span><span class="params">(op: (T, T)</span> </span>=&gt; T): T </span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>折叠操作，aggregate 的简化版操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[Int] = sc.makeRDD(List(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)) </span><br><span class="line">val foldResult: Int = rdd.fold(<span class="number">0</span>)(_+_) </span><br></pre></td></tr></table></figure>
+
+<h5 id="countByKey"><a href="#countByKey" class="headerlink" title="countByKey"></a><strong>countByKey</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">countByKey</span><span class="params">()</span>: Map[K, Long] </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>统计每种 key 的个数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[(Int, String)] = sc.makeRDD(List((<span class="number">1</span>, <span class="string">&quot;a&quot;</span>), (<span class="number">1</span>, <span class="string">&quot;a&quot;</span>), (<span class="number">1</span>, <span class="string">&quot;a&quot;</span>), (<span class="number">2</span>, </span><br><span class="line"><span class="string">&quot;b&quot;</span>), (<span class="number">3</span>, <span class="string">&quot;c&quot;</span>), (<span class="number">3</span>, <span class="string">&quot;c&quot;</span>)))</span><br><span class="line"><span class="comment">// 统计每种 key 的个数</span></span><br><span class="line">val result: collection.Map[Int, Long] = rdd.countByKey()</span><br></pre></td></tr></table></figure>
+
+<h5 id="save-相关算子"><a href="#save-相关算子" class="headerlink" title="save 相关算子"></a><strong>save</strong> <strong>相关算子</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">saveAsTextFile</span><span class="params">(path: String)</span>: Unit </span></span><br><span class="line"><span class="function">def <span class="title">saveAsObjectFile</span><span class="params">(path: String)</span>: Unit </span></span><br><span class="line"><span class="function">def <span class="title">saveAsSequenceFile</span><span class="params">( </span></span></span><br><span class="line"><span class="function"><span class="params"> path: String, </span></span></span><br><span class="line"><span class="function"><span class="params"> codec: Option[Class[_ &lt;: CompressionCodec]] = None)</span>: Unit </span></span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>将数据保存到不同格式的文件中 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 保存成 Text 文件</span></span><br><span class="line">rdd.saveAsTextFile(<span class="string">&quot;output&quot;</span>)</span><br><span class="line"><span class="comment">// 序列化成对象保存到文件</span></span><br><span class="line">rdd.saveAsObjectFile(<span class="string">&quot;output1&quot;</span>)</span><br><span class="line"><span class="comment">// 保存成 Sequencefile 文件</span></span><br><span class="line">rdd.map((_,<span class="number">1</span>)).saveAsSequenceFile(<span class="string">&quot;output2&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a><strong>foreach</strong></h5><p>➢ 函数签名 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">foreach</span><span class="params">(f: T =&gt; Unit)</span>: Unit </span>= withScope &#123; </span><br><span class="line"> val cleanF = sc.clean(f) </span><br><span class="line"> sc.runJob(<span class="keyword">this</span>, (iter: Iterator[T]) =&gt; iter.foreach(cleanF)) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>➢ 函数说明 </p>
+<p>分布式遍历 RDD 中的每一个元素，调用指定函数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val rdd: RDD[Int] = sc.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line"><span class="comment">// 收集后打印</span></span><br><span class="line">rdd.map(num=&gt;num).collect().foreach(println)</span><br><span class="line">println(<span class="string">&quot;****************&quot;</span>)</span><br><span class="line"><span class="comment">// 分布式打印</span></span><br><span class="line">rdd.foreach(println)</span><br></pre></td></tr></table></figure>
+
+<h4 id="RDD-序列化"><a href="#RDD-序列化" class="headerlink" title="RDD 序列化"></a><strong>RDD</strong> <strong>序列化</strong></h4><ol>
+<li>闭包检查</li>
+</ol>
+<p>​    从计算的角度, 算子以外的代码都是在 Driver 端执行, 算子里面的代码都是在 Executor 端执行。那么在 scala 的函数式编程中，就会导致算子内经常会用到算子外的数据，这样就 形成了闭包的效果，如果使用的算子外的数据无法序列化，就意味着无法传值给 Executor 端执行，就会发生错误，所以需要在执行任务计算前，检测闭包内的对象是否可以进行序列 化，这个操作我们称之为闭包检测。Scala2.12 版本后闭包编译方式发生了改变</p>
+<ol start="2">
+<li>序列化方法和属性</li>
+</ol>
+<p>从计算的角度, 算子以外的代码都是在 Driver 端执行, 算子里面的代码都是在 Executor 端执行，看如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">object serializable02_function &#123;</span><br><span class="line">     <span class="function">def <span class="title">main</span><span class="params">(args: Array[String])</span>: Unit </span>= &#123;</span><br><span class="line">         <span class="comment">//1.创建 SparkConf 并设置 App 名称</span></span><br><span class="line">         val conf: SparkConf = <span class="keyword">new</span> </span><br><span class="line">        SparkConf().setAppName(<span class="string">&quot;SparkCoreTest&quot;</span>).setMaster(<span class="string">&quot;local[*]&quot;</span>)</span><br><span class="line">         <span class="comment">//2.创建 SparkContext，该对象是提交 Spark App 的入口</span></span><br><span class="line">         val sc: SparkContext = <span class="keyword">new</span> SparkContext(conf)</span><br><span class="line">         <span class="comment">//3.创建一个 RDD</span></span><br><span class="line">         val rdd: RDD[String] = sc.makeRDD(Array(<span class="string">&quot;hello world&quot;</span>, <span class="string">&quot;hello spark&quot;</span>, </span><br><span class="line">        <span class="string">&quot;hive&quot;</span>, <span class="string">&quot;atguigu&quot;</span>))</span><br><span class="line">         <span class="comment">//3.1 创建一个 Search 对象</span></span><br><span class="line">         val search = <span class="keyword">new</span> Search(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">         <span class="comment">//3.2 函数传递，打印：ERROR Task not serializable</span></span><br><span class="line">         search.getMatch1(rdd).collect().foreach(println)</span><br><span class="line">         <span class="comment">//3.3 属性传递，打印：ERROR Task not serializable</span></span><br><span class="line">         search.getMatch2(rdd).collect().foreach(println)</span><br><span class="line">         <span class="comment">//4.关闭连接</span></span><br><span class="line">         sc.stop()</span><br><span class="line">     &#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Search(query:String) extends Serializable &#123;</span><br><span class="line">     <span class="function">def <span class="title">isMatch</span><span class="params">(s: String)</span>: Boolean </span>= &#123;</span><br><span class="line">     	s.contains(query)</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">// 函数序列化案例</span></span><br><span class="line">     <span class="function">def <span class="title">getMatch1</span> <span class="params">(rdd: RDD[String])</span>: RDD[String] </span>= &#123;</span><br><span class="line">     	<span class="comment">//rdd.filter(this.isMatch)</span></span><br><span class="line">     	rdd.filter(isMatch)</span><br><span class="line">     &#125;</span><br><span class="line">        <span class="comment">// 属性序列化案例</span></span><br><span class="line">     <span class="function">def <span class="title">getMatch2</span><span class="params">(rdd: RDD[String])</span>: RDD[String] </span>= &#123;</span><br><span class="line">     	<span class="comment">//rdd.filter(x =&gt; x.contains(this.query))</span></span><br><span class="line">     	rdd.filter(x =&gt; x.contains(query))</span><br><span class="line">     	<span class="comment">//val q = query</span></span><br><span class="line">     	<span class="comment">//rdd.filter(x =&gt; x.contains(q))</span></span><br><span class="line">     &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>Kryo 序列化框架</li>
+</ol>
+<p>​    参考地址: <a target="_blank" rel="noopener" href="https://github.com/EsotericSoftware/kryo">https://github.com/EsotericSoftware/kryo</a> </p>
+<p>​    Java 的序列化能够序列化任何的类。但是比较重（字节多），序列化后，对象的提交也 比较大。Spark 出于性能的考虑，Spark2.0 开始支持另外一种 Kryo 序列化机制。Kryo 速度 是 Serializable 的 10 倍。当 RDD 在 Shuffle 数据的时候，简单数据类型、数组和字符串类型 已经在 Spark 内部使用 Kryo 来序列化。 </p>
+<p><strong>注意</strong>：即使使用 Kryo 序列化，也要继承 Serializable 接口。 </p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">object serializable_Kryo &#123;</span><br><span class="line">     <span class="function">def <span class="title">main</span><span class="params">(args: Array[String])</span>: Unit </span>= &#123;</span><br><span class="line">         val conf: SparkConf = <span class="keyword">new</span> SparkConf()</span><br><span class="line">         	.setAppName(<span class="string">&quot;SerDemo&quot;</span>)</span><br><span class="line">         	.setMaster(<span class="string">&quot;local[*]&quot;</span>)</span><br><span class="line">         	<span class="comment">// 替换默认的序列化机制</span></span><br><span class="line">         	.set(<span class="string">&quot;spark.serializer&quot;</span>,  <span class="string">&quot;org.apache.spark.serializer.KryoSerializer&quot;</span>)</span><br><span class="line">         	<span class="comment">// 注册需要使用 kryo 序列化的自定义类</span></span><br><span class="line">         	.registerKryoClasses(Array(classOf[Searcher]))</span><br><span class="line">         val sc = <span class="keyword">new</span> SparkContext(conf)</span><br><span class="line">         val rdd: RDD[String] = sc.makeRDD(Array(<span class="string">&quot;hello world&quot;</span>, <span class="string">&quot;hello atguigu&quot;</span>,  <span class="string">&quot;atguigu&quot;</span>, <span class="string">&quot;hahah&quot;</span>), <span class="number">2</span>)</span><br><span class="line">         val searcher = <span class="keyword">new</span> Searcher(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">         val result: RDD[String] = searcher.getMatchedRDD1(rdd)</span><br><span class="line">         result.collect.foreach(println)</span><br><span class="line">     &#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">case</span> class <span class="title">Searcher</span><span class="params">(val query: String)</span> </span>&#123;</span><br><span class="line">     <span class="function">def <span class="title">isMatch</span><span class="params">(s: String)</span> </span>= &#123;</span><br><span class="line">         s.contains(query)</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="function">def <span class="title">getMatchedRDD1</span><span class="params">(rdd: RDD[String])</span> </span>= &#123;</span><br><span class="line">         rdd.filter(isMatch) </span><br><span class="line">     &#125;</span><br><span class="line">     <span class="function">def <span class="title">getMatchedRDD2</span><span class="params">(rdd: RDD[String])</span> </span>= &#123;</span><br><span class="line">         val q = query</span><br><span class="line">         rdd.filter(_.contains(q))</span><br><span class="line">     &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="RDD-依赖关系"><a href="#RDD-依赖关系" class="headerlink" title="RDD 依赖关系"></a><strong>RDD</strong> <strong>依赖关系</strong></h4><h5 id="RDD-血缘关系"><a href="#RDD-血缘关系" class="headerlink" title="RDD 血缘关系"></a><strong>RDD</strong> <strong>血缘关系</strong></h5><p>​    RDD 只支持粗粒度转换，即在大量记录上执行的单个操作。将创建 RDD 的一系列 Lineage （血统）记录下来，以便恢复丢失的分区。RDD 的 Lineage 会记录 RDD 的元数据信息和转 换行为，当该 RDD 的部分分区数据丢失时，它可以根据这些信息来重新运算和恢复丢失的数据分区。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">val fileRDD: RDD[String] = sc.textFile(<span class="string">&quot;input/1.txt&quot;</span>)</span><br><span class="line">println(fileRDD.toDebugString)</span><br><span class="line">println(<span class="string">&quot;----------------------&quot;</span>)</span><br><span class="line">val wordRDD: RDD[String] = fileRDD.flatMap(_.split(<span class="string">&quot; &quot;</span>))</span><br><span class="line">println(wordRDD.toDebugString)</span><br><span class="line">println(<span class="string">&quot;----------------------&quot;</span>)</span><br><span class="line">val mapRDD: RDD[(String, Int)] = wordRDD.map((_,<span class="number">1</span>))</span><br><span class="line">println(mapRDD.toDebugString)</span><br><span class="line">println(<span class="string">&quot;----------------------&quot;</span>)</span><br><span class="line">val resultRDD: RDD[(String, Int)] = mapRDD.reduceByKey(_+_)</span><br><span class="line">println(resultRDD.toDebugString)</span><br><span class="line">resultRDD.collect()</span><br></pre></td></tr></table></figure>
+
+<h5 id="RDD-依赖关系-1"><a href="#RDD-依赖关系-1" class="headerlink" title="RDD 依赖关系"></a><strong>RDD</strong> <strong>依赖关系</strong></h5><p>这里所谓的依赖关系，其实就是两个相邻 RDD 之间的关系</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">val sc: SparkContext = <span class="keyword">new</span> SparkContext(conf)</span><br><span class="line">val fileRDD: RDD[String] = sc.textFile(<span class="string">&quot;input/1.txt&quot;</span>)</span><br><span class="line">println(fileRDD.dependencies)</span><br><span class="line">println(<span class="string">&quot;----------------------&quot;</span>)</span><br><span class="line">val wordRDD: RDD[String] = fileRDD.flatMap(_.split(<span class="string">&quot; &quot;</span>))</span><br><span class="line">println(wordRDD.dependencies)</span><br><span class="line">println(<span class="string">&quot;----------------------&quot;</span>)</span><br><span class="line">val mapRDD: RDD[(String, Int)] = wordRDD.map((_,<span class="number">1</span>))</span><br><span class="line">println(mapRDD.dependencies)</span><br><span class="line">println(<span class="string">&quot;----------------------&quot;</span>)</span><br><span class="line">val resultRDD: RDD[(String, Int)] = mapRDD.reduceByKey(_+_)</span><br><span class="line">println(resultRDD.dependencies)</span><br><span class="line">resultRDD.collect()</span><br></pre></td></tr></table></figure>
+
+<h5 id="RDD-窄依赖"><a href="#RDD-窄依赖" class="headerlink" title="RDD 窄依赖"></a><strong>RDD</strong> <strong>窄依赖</strong></h5><p>窄依赖表示每一个父(上游)RDD 的 Partition 最多被子（下游）RDD 的一个 Partition 使用， 窄依赖我们形象的比喻为独生子女。 </p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class OneToOneDependency[T](rdd: RDD[T]) extends NarrowDependency[T](rdd)</span><br></pre></td></tr></table></figure>
+
+<h5 id="RDD-宽依赖"><a href="#RDD-宽依赖" class="headerlink" title="RDD 宽依赖"></a><strong>RDD</strong> <strong>宽依赖</strong></h5><p>宽依赖表示同一个父（上游）RDD 的 Partition 被多个子（下游）RDD 的 Partition 依赖，会 引起 Shuffle，总结：宽依赖我们形象的比喻为多生。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class ShuffleDependency[K: ClassTag, V: ClassTag, C: ClassTag](</span><br><span class="line"> <span class="meta">@transient</span> <span class="keyword">private</span> val _rdd: RDD[_ &lt;: Product2[K, V]],</span><br><span class="line"> val partitioner: Partitioner,</span><br><span class="line"> val serializer: Serializer = SparkEnv.get.serializer,</span><br><span class="line"> val keyOrdering: Option[Ordering[K]] = None,</span><br><span class="line"> val aggregator: Option[Aggregator[K, V, C]] = None,</span><br><span class="line"> val mapSideCombine: Boolean = <span class="keyword">false</span>)</span><br><span class="line"> extends Dependency[Product2[K, V]]</span><br></pre></td></tr></table></figure>
+
+<h5 id="RDD-阶段划分"><a href="#RDD-阶段划分" class="headerlink" title="RDD 阶段划分"></a><strong>RDD</strong> <strong>阶段划分</strong></h5><p>DAG（Directed Acyclic Graph）有向无环图是由点和线组成的拓扑图形，该图形具有方向， 不会闭环。例如，DAG 记录了 RDD 的转换过程和任务的阶段。 </p>
+<p><img src="/images/Spark/Spark_core06.png" alt="Spark_core06"></p>
+<p>阶段划分源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line"> <span class="comment">// New stage creation may throw an exception if, for example, jobs are run on </span></span><br><span class="line">a</span><br><span class="line"> <span class="comment">// HadoopRDD whose underlying HDFS files have been deleted.</span></span><br><span class="line"> finalStage = createResultStage(finalRDD, func, partitions, jobId, callSite)</span><br><span class="line">&#125; <span class="keyword">catch</span> &#123;</span><br><span class="line"> <span class="keyword">case</span> e: Exception =&gt;</span><br><span class="line"> logWarning(<span class="string">&quot;Creating new stage failed due to exception - job: &quot;</span> + jobId, e)</span><br><span class="line"> listener.jobFailed(e)</span><br><span class="line"> <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line">……</span><br><span class="line"><span class="function"><span class="keyword">private</span> def <span class="title">createResultStage</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params"> rdd: RDD[_],</span></span></span><br><span class="line"><span class="function"><span class="params"> func: (TaskContext, Iterator[_])</span> </span>=&gt; _,</span><br><span class="line"> partitions: Array[Int],</span><br><span class="line"> jobId: Int,</span><br><span class="line"> callSite: CallSite): ResultStage = &#123;</span><br><span class="line">val parents = getOrCreateParentStages(rdd, jobId)</span><br><span class="line">val id = nextStageId.getAndIncrement()</span><br><span class="line">val stage = <span class="keyword">new</span> ResultStage(id, rdd, func, partitions, parents, jobId, callSite)</span><br><span class="line">stageIdToStage(id) = stage</span><br><span class="line">updateJobIdStageIdMaps(jobId, stage)</span><br><span class="line">stage</span><br><span class="line">&#125;</span><br><span class="line">……</span><br><span class="line"><span class="function"><span class="keyword">private</span> def <span class="title">getOrCreateParentStages</span><span class="params">(rdd: RDD[_], firstJobId: Int)</span>: List[Stage] </span></span><br><span class="line"><span class="function"></span>= &#123;</span><br><span class="line">getShuffleDependencies(rdd).map &#123; shuffleDep =&gt;</span><br><span class="line"> getOrCreateShuffleMapStage(shuffleDep, firstJobId)</span><br><span class="line">&#125;.toList</span><br><span class="line">&#125;</span><br><span class="line">……</span><br><span class="line"><span class="keyword">private</span>[scheduler] <span class="function">def <span class="title">getShuffleDependencies</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params"> rdd: RDD[_])</span>: HashSet[ShuffleDependency[_, _, _]] </span>= &#123;</span><br><span class="line">val parents = <span class="keyword">new</span> HashSet[ShuffleDependency[_, _, _]]</span><br><span class="line">val visited = <span class="keyword">new</span> HashSet[RDD[_]]</span><br><span class="line">val waitingForVisit = <span class="keyword">new</span> Stack[RDD[_]]</span><br><span class="line">waitingForVisit.push(rdd)</span><br><span class="line"><span class="keyword">while</span> (waitingForVisit.nonEmpty) &#123;</span><br><span class="line"> val toVisit = waitingForVisit.pop()</span><br><span class="line"> <span class="keyword">if</span> (!visited(toVisit)) &#123;</span><br><span class="line"> visited += toVisit</span><br><span class="line"> toVisit.dependencies.foreach &#123;</span><br><span class="line"> <span class="keyword">case</span> shuffleDep: ShuffleDependency[_, _, _] =&gt;</span><br><span class="line"> parents += shuffleDep</span><br><span class="line"> <span class="keyword">case</span> dependency =&gt;</span><br><span class="line"> waitingForVisit.push(dependency.rdd)</span><br><span class="line"> &#125;</span><br><span class="line"> &#125; &#125;</span><br><span class="line">parents</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="RDD-任务划分"><a href="#RDD-任务划分" class="headerlink" title="RDD 任务划分"></a><strong>RDD</strong> <strong>任务划分</strong></h5><p>RDD 任务切分中间分为：Application、Job、Stage 和 Task </p>
+<p>⚫ Application：初始化一个 SparkContext 即生成一个 Application； </p>
+<p>⚫ Job：一个 Action 算子就会生成一个 Job； </p>
+<p>⚫ Stage：Stage 等于宽依赖(ShuffleDependency)的个数加 1； </p>
+<p>⚫ Task：一个 Stage 阶段中，最后一个 RDD 的分区个数就是 Task 的个数。 </p>
+<p><strong>注意：Application-&gt;Job-&gt;Stage-&gt;Task 每一层都是 1 对 n 的关系。</strong></p>
+<p><strong>RDD任务划分源码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">val tasks: Seq[Task[_]] = <span class="keyword">try</span> &#123;</span><br><span class="line"> stage match &#123;</span><br><span class="line"> <span class="keyword">case</span> stage: ShuffleMapStage =&gt;</span><br><span class="line"> partitionsToCompute.map &#123; id =&gt;</span><br><span class="line"> val locs = taskIdToLocations(id)</span><br><span class="line"> val part = stage.rdd.partitions(id)</span><br><span class="line"> <span class="keyword">new</span> ShuffleMapTask(stage.id, stage.latestInfo.attemptId,</span><br><span class="line"> taskBinary, part, locs, stage.latestInfo.taskMetrics, properties, </span><br><span class="line">Option(jobId),</span><br><span class="line"> Option(sc.applicationId), sc.applicationAttemptId)</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">case</span> stage: ResultStage =&gt;</span><br><span class="line"> partitionsToCompute.map &#123; id =&gt;</span><br><span class="line"> val p: Int = stage.partitions(id)</span><br><span class="line"> val part = stage.rdd.partitions(p)</span><br><span class="line"> val locs = taskIdToLocations(id)</span><br><span class="line"> <span class="keyword">new</span> ResultTask(stage.id, stage.latestInfo.attemptId,</span><br><span class="line"> taskBinary, part, locs, id, properties, stage.latestInfo.taskMetrics,</span><br><span class="line"> Option(jobId), Option(sc.applicationId), sc.applicationAttemptId)</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line">……</span><br><span class="line">val partitionsToCompute: Seq[Int] = stage.findMissingPartitions()</span><br><span class="line">……</span><br><span class="line"><span class="function">override def <span class="title">findMissingPartitions</span><span class="params">()</span>: Seq[Int] </span>= &#123;</span><br><span class="line">mapOutputTrackerMaster</span><br><span class="line"> .findMissingPartitions(shuffleDep.shuffleId)</span><br><span class="line"> .getOrElse(<span class="number">0</span> until numPartitions) &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="RDD-持久化"><a href="#RDD-持久化" class="headerlink" title="RDD 持久化"></a><strong>RDD</strong> <strong>持久化</strong></h4><h5 id="RDD-Cache-缓存"><a href="#RDD-Cache-缓存" class="headerlink" title="RDD Cache 缓存"></a><strong>RDD Cache</strong> <strong>缓存</strong></h5><p>​    RDD 通过 Cache 或者 Persist 方法将前面的计算结果缓存，默认情况下会把数据以缓存 在 JVM 的堆内存中。但是并不是这两个方法被调用时立即缓存，而是触发后面的 action 算 子时，该 RDD 将会被缓存在计算节点的内存中，并供后面重用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// cache 操作会增加血缘关系，不改变原有的血缘关系</span></span><br><span class="line">println(wordToOneRdd.toDebugString)</span><br><span class="line"><span class="comment">// 数据缓存。</span></span><br><span class="line">wordToOneRdd.cache()</span><br><span class="line"><span class="comment">// 可以更改存储级别</span></span><br><span class="line"><span class="comment">//mapRdd.persist(StorageLevel.MEMORY_AND_DISK_2)</span></span><br></pre></td></tr></table></figure>
+
+<p>存储级别</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">object StorageLevel &#123;</span><br><span class="line"> val NONE = <span class="keyword">new</span> StorageLevel(<span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)</span><br><span class="line"> val DISK_ONLY = <span class="keyword">new</span> StorageLevel(<span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)</span><br><span class="line"> val DISK_ONLY_2 = <span class="keyword">new</span> StorageLevel(<span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="number">2</span>)</span><br><span class="line"> val MEMORY_ONLY = <span class="keyword">new</span> StorageLevel(<span class="keyword">false</span>, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">true</span>)</span><br><span class="line"> val MEMORY_ONLY_2 = <span class="keyword">new</span> StorageLevel(<span class="keyword">false</span>, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">true</span>, <span class="number">2</span>)</span><br><span class="line"> val MEMORY_ONLY_SER = <span class="keyword">new</span> StorageLevel(<span class="keyword">false</span>, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)</span><br><span class="line"> val MEMORY_ONLY_SER_2 = <span class="keyword">new</span> StorageLevel(<span class="keyword">false</span>, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="number">2</span>)</span><br><span class="line"> val MEMORY_AND_DISK = <span class="keyword">new</span> StorageLevel(<span class="keyword">true</span>, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">true</span>)</span><br><span class="line"> val MEMORY_AND_DISK_2 = <span class="keyword">new</span> StorageLevel(<span class="keyword">true</span>, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">true</span>, <span class="number">2</span>)</span><br><span class="line"> val MEMORY_AND_DISK_SER = <span class="keyword">new</span> StorageLevel(<span class="keyword">true</span>, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)</span><br><span class="line"> val MEMORY_AND_DISK_SER_2 = <span class="keyword">new</span> StorageLevel(<span class="keyword">true</span>, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="number">2</span>)</span><br><span class="line"> val OFF_HEAP = <span class="keyword">new</span> StorageLevel(<span class="keyword">true</span>, <span class="keyword">true</span>, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Spark/Spark_core07.png" alt="Spark_core07"></p>
+<p>​    缓存有可能丢失，或者存储于内存的数据由于内存不足而被删除，RDD 的缓存容错机 制保证了即使缓存丢失也能保证计算的正确执行。通过基于 RDD 的一系列转换，丢失的数 据会被重算，由于 RDD 的各个 Partition 是相对独立的，因此只需要计算丢失的部分即可， 并不需要重算全部 Partition。 </p>
+<p>​    Spark 会自动对一些 Shuffle 操作的中间数据做持久化操作(比如：reduceByKey)。这样 做的目的是为了当一个节点 Shuffle 失败了避免重新计算整个输入。但是，在实际使用的时 候，如果想重用数据，仍然建议调用 persist 或 cache。</p>
+<h5 id="RDD-CheckPoint-检查点"><a href="#RDD-CheckPoint-检查点" class="headerlink" title="RDD CheckPoint 检查点"></a><strong>RDD CheckPoint</strong> <strong>检查点</strong></h5><p>​    所谓的检查点其实就是通过将 RDD 中间结果写入磁盘 由于血缘依赖过长会造成容错成本过高，这样就不如在中间阶段做检查点容错，如果检查点 之后有节点出现问题，可以从检查点开始重做血缘，减少了开销。 对 RDD 进行 checkpoint 操作并不会马上被执行，必须执行 Action 操作才能触发。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置检查点路径</span></span><br><span class="line">sc.setCheckpointDir(<span class="string">&quot;./checkpoint1&quot;</span>)</span><br><span class="line"><span class="comment">// 创建一个 RDD，读取指定位置文件:hello atguigu atguigu</span></span><br><span class="line">val lineRdd: RDD[String] = sc.textFile(<span class="string">&quot;input/1.txt&quot;</span>)</span><br><span class="line"><span class="comment">// 业务逻辑</span></span><br><span class="line">val wordRdd: RDD[String] = lineRdd.flatMap(line =&gt; line.split(<span class="string">&quot; &quot;</span>))</span><br><span class="line">val wordToOneRdd: RDD[(String, Long)] = wordRdd.map &#123;</span><br><span class="line"> word =&gt; &#123;</span><br><span class="line"> (word, System.currentTimeMillis())</span><br><span class="line"> &#125; &#125;</span><br><span class="line"><span class="comment">// 增加缓存,避免再重新跑一个 job 做 checkpoint</span></span><br><span class="line">wordToOneRdd.cache()</span><br><span class="line"><span class="comment">// 数据检查点：针对 wordToOneRdd 做检查点计算</span></span><br><span class="line">wordToOneRdd.checkpoint()</span><br><span class="line"><span class="comment">// 触发执行逻辑</span></span><br><span class="line">wordToOneRdd.collect().foreach(println)</span><br></pre></td></tr></table></figure>
+
+<h5 id="缓存和检查点区别"><a href="#缓存和检查点区别" class="headerlink" title="缓存和检查点区别"></a><strong>缓存和检查点区别</strong></h5><p>1）Cache 缓存只是将数据保存起来，不切断血缘依赖。Checkpoint 检查点切断血缘依赖。 </p>
+<p>2）Cache 缓存的数据通常存储在磁盘、内存等地方，可靠性低。Checkpoint 的数据通常存 储在 HDFS 等容错、高可用的文件系统，可靠性高。 </p>
+<p>3）建议对 checkpoint()的 RDD 使用 Cache 缓存，这样 checkpoint 的 job 只需从 Cache 缓存 中读取数据即可，否则需要再从头计算一次 RDD。</p>
+<h4 id="RDD-分区器"><a href="#RDD-分区器" class="headerlink" title="RDD 分区器"></a><strong>RDD</strong> <strong>分区器</strong></h4><p>​    Spark 目前支持 Hash 分区和 Range 分区，和用户自定义分区。Hash 分区为当前的默认 分区。分区器直接决定了 RDD 中分区的个数、RDD 中每条数据经过 Shuffle 后进入哪个分 区，进而决定了 Reduce 的个数。</p>
+<p>➢ 只有 Key-Value 类型的 RDD 才有分区器，非 Key-Value 类型的 RDD 分区的值是 None </p>
+<p>➢ 每个 RDD 的分区 ID 范围：0 ~ (numPartitions - 1)，决定这个值是属于那个分区的。 </p>
+<ol>
+<li><strong>Hash</strong> <strong>分区</strong>：对于给定的 key，计算其 hashCode,并除以分区个数取余</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class HashPartitioner(partitions: Int) extends Partitioner </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>Range</strong> <strong>分区</strong>：将一定范围内的数据映射到一个分区中，尽量保证每个分区数据均匀，而且分区间有序 </li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class RangePartitioner[K : Ordering : ClassTag, V](</span><br><span class="line"> partitions: Int,</span><br><span class="line"> rdd: RDD[_ &lt;: Product2[K, V]],</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">var</span> ascending: Boolean = <span class="keyword">true</span>)</span><br><span class="line"> extends Partitioner </span><br></pre></td></tr></table></figure>
+
+<h4 id="RDD-文件读取与保存"><a href="#RDD-文件读取与保存" class="headerlink" title="RDD 文件读取与保存"></a><strong>RDD</strong> <strong>文件读取与保存</strong></h4><p>​    Spark 的数据读取及数据保存可以从两个维度来作区分：文件格式以及文件系统。 文件格式分为：text 文件、csv 文件、sequence 文件以及 Object 文件； 文件系统分为：本地文件系统、HDFS、HBASE 以及数据库。 </p>
+<p>➢ <strong>text</strong> <strong>文件</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取输入文件</span></span><br><span class="line">val inputRDD: RDD[String] = sc.textFile(<span class="string">&quot;input/1.txt&quot;</span>)</span><br><span class="line"><span class="comment">// 保存数据</span></span><br><span class="line">inputRDD.saveAsTextFile(<span class="string">&quot;output&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>➢ <strong>sequence</strong> <strong>文件</strong> </p>
+<p>SequenceFile 文件是 Hadoop 用来存储二进制形式的 key-value 对而设计的一种平面文件(Flat  File)。在 SparkContext 中，可以调用 sequenceFile<a href="path">keyClass, valueClass</a>。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 保存数据为 SequenceFile</span></span><br><span class="line">dataRDD.saveAsSequenceFile(<span class="string">&quot;output&quot;</span>)</span><br><span class="line"><span class="comment">// 读取 SequenceFile 文件</span></span><br><span class="line">sc.sequenceFile[Int,Int](<span class="string">&quot;output&quot;</span>).collect().foreach(println)</span><br></pre></td></tr></table></figure>
+
+<p>➢ <strong>object</strong> <strong>对象文件</strong> </p>
+<p>​    对象文件是将对象序列化后保存的文件，采用 Java 的序列化机制。可以通过 objectFile<a href="path">T:  ClassTag</a>函数接收一个路径，读取对象文件，返回对应的 RDD，也可以通过调用 saveAsObjectFile()实现对对象文件的输出。因为是序列化所以要指定类型。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 保存数据 </span></span><br><span class="line">dataRDD.saveAsObjectFile(<span class="string">&quot;output&quot;</span>) </span><br><span class="line"><span class="comment">// 读取数据 </span></span><br><span class="line">sc.objectFile[Int](<span class="string">&quot;output&quot;</span>).collect().foreach(println)</span><br></pre></td></tr></table></figure>
+
+<h3 id="累加器"><a href="#累加器" class="headerlink" title="累加器"></a><strong>累加器</strong></h3><h4 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a><strong>实现原理</strong></h4><p>​    累加器用来把 Executor 端变量信息聚合到 Driver 端。在 Driver 程序中定义的变量，在 Executor 端的每个 Task 都会得到这个变量的一份新的副本，每个 task 更新这些副本的值后， 传回 Driver 端进行 merge。 </p>
+<h4 id="系统累加器"><a href="#系统累加器" class="headerlink" title="系统累加器"></a><strong>系统累加器</strong></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">val rdd = sc.makeRDD(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>))</span><br><span class="line"><span class="comment">// 声明累加器</span></span><br><span class="line"><span class="keyword">var</span> sum = sc.longAccumulator(<span class="string">&quot;sum&quot;</span>);</span><br><span class="line">rdd.foreach(</span><br><span class="line"> num =&gt; &#123;</span><br><span class="line"> <span class="comment">// 使用累加器</span></span><br><span class="line"> sum.add(num)</span><br><span class="line"> &#125; )</span><br><span class="line"><span class="comment">// 获取累加器的值</span></span><br><span class="line">println(<span class="string">&quot;sum = &quot;</span> + sum.value)</span><br></pre></td></tr></table></figure>
+
+<h4 id="自定义累加器"><a href="#自定义累加器" class="headerlink" title="自定义累加器"></a><strong>自定义累加器</strong></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义累加器</span></span><br><span class="line"><span class="comment">// 1. 继承 AccumulatorV2，并设定泛型</span></span><br><span class="line"><span class="comment">// 2. 重写累加器的抽象方法</span></span><br><span class="line">class WordCountAccumulator extends AccumulatorV2[String, mutable.Map[String, </span><br><span class="line">Long]]&#123;</span><br><span class="line"><span class="keyword">var</span> map : mutable.Map[String, Long] = mutable.Map()</span><br><span class="line"><span class="comment">// 累加器是否为初始状态</span></span><br><span class="line">override def isZero: Boolean = &#123;</span><br><span class="line"> map.isEmpty</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 复制累加器</span></span><br><span class="line"><span class="function">override def <span class="title">copy</span><span class="params">()</span>: AccumulatorV2[String, mutable.Map[String, Long]] </span>= &#123;</span><br><span class="line"> <span class="keyword">new</span> WordCountAccumulator</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 重置累加器</span></span><br><span class="line"><span class="function">override def <span class="title">reset</span><span class="params">()</span>: Unit </span>= &#123;</span><br><span class="line"> map.clear()</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 向累加器中增加数据 (In)</span></span><br><span class="line"><span class="function">override def <span class="title">add</span><span class="params">(word: String)</span>: Unit </span>= &#123;</span><br><span class="line"> <span class="comment">// 查询 map 中是否存在相同的单词</span></span><br><span class="line"> <span class="comment">// 如果有相同的单词，那么单词的数量加 1</span></span><br><span class="line"> <span class="comment">// 如果没有相同的单词，那么在 map 中增加这个单词</span></span><br><span class="line"> map(word) = map.getOrElse(word, <span class="number">0L</span>) + <span class="number">1L</span></span><br><span class="line">&#125;</span><br><span class="line">    <span class="comment">// 合并累加器</span></span><br><span class="line"><span class="function">override def <span class="title">merge</span><span class="params">(other: AccumulatorV2[String, mutable.Map[String, Long]])</span>: </span></span><br><span class="line"><span class="function">Unit </span>= &#123;</span><br><span class="line"> val map1 = map</span><br><span class="line"> val map2 = other.value</span><br><span class="line"> <span class="comment">// 两个 Map 的合并</span></span><br><span class="line"> map = map1.foldLeft(map2)(</span><br><span class="line"> ( innerMap, kv ) =&gt; &#123;</span><br><span class="line"> innerMap(kv._1) = innerMap.getOrElse(kv._1, <span class="number">0L</span>) + kv._2</span><br><span class="line"> innerMap</span><br><span class="line"> &#125;</span><br><span class="line"> ) &#125;</span><br><span class="line"><span class="comment">// 返回累加器的结果 （Out）</span></span><br><span class="line">override def value: mutable.Map[String, Long] = map</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="广播变量"><a href="#广播变量" class="headerlink" title="广播变量"></a><strong>广播变量</strong></h3><h4 id="实现原理-1"><a href="#实现原理-1" class="headerlink" title="实现原理"></a><strong>实现原理</strong></h4><p>​    广播变量用来高效分发较大的对象。向所有工作节点发送一个较大的只读值，以供一个 或多个 Spark 操作使用。比如，如果你的应用需要向所有节点发送一个较大的只读查询表， 广播变量用起来都很顺手。在多个并行操作中使用同一个变量，但是 Spark 会为每个任务 分别发送。</p>
+<h4 id="基础编程-1"><a href="#基础编程-1" class="headerlink" title="基础编程"></a><strong>基础编程</strong></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">val rdd1 = sc.makeRDD(List( (<span class="string">&quot;a&quot;</span>,<span class="number">1</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;c&quot;</span>, <span class="number">3</span>), (<span class="string">&quot;d&quot;</span>, <span class="number">4</span>) ),<span class="number">4</span>)</span><br><span class="line">val list = List( (<span class="string">&quot;a&quot;</span>,<span class="number">4</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">5</span>), (<span class="string">&quot;c&quot;</span>, <span class="number">6</span>), (<span class="string">&quot;d&quot;</span>, <span class="number">7</span>) )</span><br><span class="line"><span class="comment">// 声明广播变量</span></span><br><span class="line">val broadcast: Broadcast[List[(String, Int)]] = sc.broadcast(list)</span><br><span class="line">val resultRDD: RDD[(String, (Int, Int))] = rdd1.map &#123;</span><br><span class="line"> <span class="keyword">case</span> (key, num) =&gt; &#123;</span><br><span class="line"> <span class="keyword">var</span> num2 = <span class="number">0</span></span><br><span class="line"> <span class="comment">// 使用广播变量</span></span><br><span class="line"> <span class="keyword">for</span> ((k, v) &lt;- broadcast.value) &#123;</span><br><span class="line"> <span class="keyword">if</span> (k == key) &#123;</span><br><span class="line"> num2 = v</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> (key, (num, num2))</span><br><span class="line"> &#125; &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/spark/" rel="tag"># spark</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/19/Scala/2022-04-19%20scala%E9%9B%86%E5%90%88/" rel="prev" title="scala集合">
+      <i class="fa fa-chevron-left"></i> scala集合
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/21/Python/2022-05-07%20python%E5%9F%BA%E7%A1%80/" rel="next" title="python基础">
+      python基础 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#WordCount"><span class="nav-number">1.</span> <span class="nav-text">WordCount</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spark%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">spark核心编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RDD"><span class="nav-number">2.1.</span> <span class="nav-text">RDD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RDD%E6%A0%B8%E5%BF%83%E5%B1%9E%E6%80%A7"><span class="nav-number">2.2.</span> <span class="nav-text">RDD核心属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E5%88%97%E8%A1%A8"><span class="nav-number">2.2.1.</span> <span class="nav-text">分区列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E8%AE%A1%E7%AE%97%E5%87%BD%E6%95%B0"><span class="nav-number">2.2.2.</span> <span class="nav-text">分区计算函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD%E4%B9%8B%E9%97%B4%E7%9A%84%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB"><span class="nav-number">2.2.3.</span> <span class="nav-text">RDD之间的依赖关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A6%96%E9%80%89%E4%BD%8D%E7%BD%AE%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="nav-number">2.2.4.</span> <span class="nav-text">首选位置（可选）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86"><span class="nav-number">2.3.</span> <span class="nav-text">执行原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%BC%96%E7%A8%8B"><span class="nav-number">2.4.</span> <span class="nav-text">基础编程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD-%E5%88%9B%E5%BB%BA"><span class="nav-number">2.4.1.</span> <span class="nav-text">RDD 创建</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%8E%E9%9B%86%E5%90%88%EF%BC%88%E5%86%85%E5%AD%98%EF%BC%89%E4%B8%AD%E5%88%9B%E5%BB%BA-RDD"><span class="nav-number">2.4.1.1.</span> <span class="nav-text">从集合（内存）中创建 RDD</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%8E%E5%A4%96%E9%83%A8%E5%AD%98%E5%82%A8%EF%BC%88%E6%96%87%E4%BB%B6%EF%BC%89%E5%88%9B%E5%BB%BA-RDD"><span class="nav-number">2.4.1.2.</span> <span class="nav-text">从外部存储（文件）创建 RDD</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD-%E5%B9%B6%E8%A1%8C%E5%BA%A6%E4%B8%8E%E5%88%86%E5%8C%BA"><span class="nav-number">2.4.2.</span> <span class="nav-text">RDD 并行度与分区</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9B%86%E5%90%88%E5%88%86%E5%8C%BA%EF%BC%9A"><span class="nav-number">2.4.2.1.</span> <span class="nav-text">集合分区：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%88%86%E5%8C%BA%EF%BC%9A"><span class="nav-number">2.4.2.2.</span> <span class="nav-text">文件分区：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD-%E8%BD%AC%E6%8D%A2%E7%AE%97%E5%AD%90"><span class="nav-number">2.4.3.</span> <span class="nav-text">RDD 转换算子</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%9E%A2-%E5%8F%8C-Value-%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.4.3.1.</span> <span class="nav-text">➢ 双 Value 类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#map"><span class="nav-number">2.4.3.2.</span> <span class="nav-text">map</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#mapPartitions"><span class="nav-number">2.4.3.3.</span> <span class="nav-text">mapPartitions</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#mapPartitionsWithIndex"><span class="nav-number">2.4.3.4.</span> <span class="nav-text">mapPartitionsWithIndex</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#flatMap"><span class="nav-number">2.4.3.5.</span> <span class="nav-text">flatMap</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#glom"><span class="nav-number">2.4.3.6.</span> <span class="nav-text">glom</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#groupBy"><span class="nav-number">2.4.3.7.</span> <span class="nav-text">groupBy</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#filter"><span class="nav-number">2.4.3.8.</span> <span class="nav-text">filter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sample"><span class="nav-number">2.4.3.9.</span> <span class="nav-text">sample</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#distinct"><span class="nav-number">2.4.3.10.</span> <span class="nav-text">distinct</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#coalesce"><span class="nav-number">2.4.3.11.</span> <span class="nav-text">coalesce</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#repartition"><span class="nav-number">2.4.3.12.</span> <span class="nav-text">repartition</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sortBy"><span class="nav-number">2.4.3.13.</span> <span class="nav-text">sortBy</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%9E%A2-%E5%8F%8C-Value-%E7%B1%BB%E5%9E%8B-1"><span class="nav-number">2.4.3.14.</span> <span class="nav-text">➢  双 Value 类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#intersection"><span class="nav-number">2.4.3.15.</span> <span class="nav-text">intersection</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#union"><span class="nav-number">2.4.3.16.</span> <span class="nav-text">union</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#subtract"><span class="nav-number">2.4.3.17.</span> <span class="nav-text">subtract</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#zip"><span class="nav-number">2.4.3.18.</span> <span class="nav-text">zip</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%9E%A2-Key-Value-%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.4.3.19.</span> <span class="nav-text">➢ Key - Value 类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#partitionBy"><span class="nav-number">2.4.3.20.</span> <span class="nav-text">partitionBy</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#reduceByKey"><span class="nav-number">2.4.3.21.</span> <span class="nav-text">reduceByKey</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#groupByKey"><span class="nav-number">2.4.3.22.</span> <span class="nav-text">groupByKey</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#aggregateByKey"><span class="nav-number">2.4.3.23.</span> <span class="nav-text">aggregateByKey</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#foldByKey"><span class="nav-number">2.4.3.24.</span> <span class="nav-text">foldByKey</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#combineByKey"><span class="nav-number">2.4.3.25.</span> <span class="nav-text">combineByKey</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sortByKey"><span class="nav-number">2.4.3.26.</span> <span class="nav-text">sortByKey</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#join"><span class="nav-number">2.4.3.27.</span> <span class="nav-text">join</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#leftOuterJoin"><span class="nav-number">2.4.3.28.</span> <span class="nav-text">leftOuterJoin</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#cogroup"><span class="nav-number">2.4.3.29.</span> <span class="nav-text">cogroup</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD%E8%A1%8C%E5%8A%A8%E7%AE%97%E5%AD%90"><span class="nav-number">2.4.4.</span> <span class="nav-text">RDD行动算子</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#reduce"><span class="nav-number">2.4.4.1.</span> <span class="nav-text">reduce</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#collect"><span class="nav-number">2.4.4.2.</span> <span class="nav-text">collect</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#count"><span class="nav-number">2.4.4.3.</span> <span class="nav-text">count</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#first"><span class="nav-number">2.4.4.4.</span> <span class="nav-text">first</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#take"><span class="nav-number">2.4.4.5.</span> <span class="nav-text">take</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#takeOrdered"><span class="nav-number">2.4.4.6.</span> <span class="nav-text">takeOrdered</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#aggregate"><span class="nav-number">2.4.4.7.</span> <span class="nav-text">aggregate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#fold"><span class="nav-number">2.4.4.8.</span> <span class="nav-text">fold</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#countByKey"><span class="nav-number">2.4.4.9.</span> <span class="nav-text">countByKey</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#save-%E7%9B%B8%E5%85%B3%E7%AE%97%E5%AD%90"><span class="nav-number">2.4.4.10.</span> <span class="nav-text">save 相关算子</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#foreach"><span class="nav-number">2.4.4.11.</span> <span class="nav-text">foreach</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD-%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">2.4.5.</span> <span class="nav-text">RDD 序列化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD-%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB"><span class="nav-number">2.4.6.</span> <span class="nav-text">RDD 依赖关系</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RDD-%E8%A1%80%E7%BC%98%E5%85%B3%E7%B3%BB"><span class="nav-number">2.4.6.1.</span> <span class="nav-text">RDD 血缘关系</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RDD-%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB-1"><span class="nav-number">2.4.6.2.</span> <span class="nav-text">RDD 依赖关系</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RDD-%E7%AA%84%E4%BE%9D%E8%B5%96"><span class="nav-number">2.4.6.3.</span> <span class="nav-text">RDD 窄依赖</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RDD-%E5%AE%BD%E4%BE%9D%E8%B5%96"><span class="nav-number">2.4.6.4.</span> <span class="nav-text">RDD 宽依赖</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RDD-%E9%98%B6%E6%AE%B5%E5%88%92%E5%88%86"><span class="nav-number">2.4.6.5.</span> <span class="nav-text">RDD 阶段划分</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RDD-%E4%BB%BB%E5%8A%A1%E5%88%92%E5%88%86"><span class="nav-number">2.4.6.6.</span> <span class="nav-text">RDD 任务划分</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD-%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">2.4.7.</span> <span class="nav-text">RDD 持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RDD-Cache-%E7%BC%93%E5%AD%98"><span class="nav-number">2.4.7.1.</span> <span class="nav-text">RDD Cache 缓存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RDD-CheckPoint-%E6%A3%80%E6%9F%A5%E7%82%B9"><span class="nav-number">2.4.7.2.</span> <span class="nav-text">RDD CheckPoint 检查点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%92%8C%E6%A3%80%E6%9F%A5%E7%82%B9%E5%8C%BA%E5%88%AB"><span class="nav-number">2.4.7.3.</span> <span class="nav-text">缓存和检查点区别</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD-%E5%88%86%E5%8C%BA%E5%99%A8"><span class="nav-number">2.4.8.</span> <span class="nav-text">RDD 分区器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDD-%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E4%B8%8E%E4%BF%9D%E5%AD%98"><span class="nav-number">2.4.9.</span> <span class="nav-text">RDD 文件读取与保存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%AF%E5%8A%A0%E5%99%A8"><span class="nav-number">2.5.</span> <span class="nav-text">累加器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">2.5.1.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%B4%AF%E5%8A%A0%E5%99%A8"><span class="nav-number">2.5.2.</span> <span class="nav-text">系统累加器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B4%AF%E5%8A%A0%E5%99%A8"><span class="nav-number">2.5.3.</span> <span class="nav-text">自定义累加器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F"><span class="nav-number">2.6.</span> <span class="nav-text">广播变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86-1"><span class="nav-number">2.6.1.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%BC%96%E7%A8%8B-1"><span class="nav-number">2.6.2.</span> <span class="nav-text">基础编程</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">165</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
