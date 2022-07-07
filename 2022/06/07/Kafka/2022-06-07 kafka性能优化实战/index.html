@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="kafka">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kafka性能优化实战">
+<meta property="og:url" content="http://example.com/2022/06/07/Kafka/2022-06-07%20kafka%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="kafka">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Kafka/Kafka_de06.png">
+<meta property="og:image" content="http://example.com/images/Kafka/Kafka_de07.png">
+<meta property="article:published_time" content="2022-06-07T02:50:34.876Z">
+<meta property="article:modified_time" content="2022-06-07T05:47:37.655Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="kafka">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Kafka/Kafka_de06.png">
+
+<link rel="canonical" href="http://example.com/2022/06/07/Kafka/2022-06-07%20kafka%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>kafka性能优化实战 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/07/Kafka/2022-06-07%20kafka%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          kafka性能优化实战
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-06-07 10:50:34 / Modified: 13:47:37" itemprop="dateCreated datePublished" datetime="2022-06-07T10:50:34+08:00">2022-06-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kafka/" itemprop="url" rel="index"><span itemprop="name">kafka</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">kafka</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>kafka性能优化实战</p>
+<a id="more"></a> 
+
+<h2 id="线上问题及优化"><a href="#线上问题及优化" class="headerlink" title="线上问题及优化"></a><strong>线上问题及优化</strong></h2><h3 id="消息丢失情况："><a href="#消息丢失情况：" class="headerlink" title="消息丢失情况："></a><strong>消息丢失情况：</strong></h3><p><strong>消息发送端</strong>：</p>
+<p>（1）acks=0： 表示producer不需要等待任何broker确认收到消息的回复，就可以继续发送下一条消息。性能最高，但是最容易丢消息。大数据统计报表场景，对性能要求很高，对数据丢失不敏感的情况可以用这种。</p>
+<p>（2）acks=1： 至少要等待leader已经成功将数据写入本地log，但是不需要等待所有follower是否成功写入。就可以继续发送下一条消息。这种情况下，如果follower没有成功备份数据，而此时leader又挂掉，则消息会丢失。</p>
+<p>（3）acks=-1或all： 这意味着leader需要等待所有备份(min.insync.replicas配置的备份个数)都成功写入日志，这种策略会保证只要有一个备份存活就不会丢失数据。这是最强的数据保证。一般除非是金融级别，或跟钱打交道的场景才会使用这种配置。当然如果min.insync.replicas配置的是1则也可能丢消息，跟acks=1情况类似。</p>
+<p><strong>消息消费端</strong>：</p>
+<p>如果消费这边配置的是自动提交，万一消费到数据还没处理完，就自动提交offset了，但是此时你consumer直接宕机了，未处理完的数据丢失了，下次也消费不到了。</p>
+<h3 id="消息重复消费"><a href="#消息重复消费" class="headerlink" title="消息重复消费"></a><strong>消息重复消费</strong></h3><p><strong>消息发送端</strong>：</p>
+<p>发送消息如果配置了重试机制，比如网络抖动时间过长导致发送端发送超时，实际broker可能已经接收到消息，但发送方会重新发送消息</p>
+<p><strong>消息消费端</strong>：</p>
+<p>如果消费这边配置的是自动提交，刚拉取了一批数据处理了一部分，但还没来得及提交，服务挂了，下次重启又会拉取相同的一批数据重复处理</p>
+<p>一般消费端都是要做<strong>消费幂等</strong>处理的。</p>
+<h3 id="消息乱序"><a href="#消息乱序" class="headerlink" title="消息乱序"></a><strong>消息乱序</strong></h3><p>如果发送端配置了重试机制，kafka不会等之前那条消息完全发送成功才去发送下一条消息，这样可能会出现，发送了1，2，3条消息，第一条超时了，后面两条发送成功，再重试发送第1条消息，这时消息在broker端的顺序就是2，3，1了</p>
+<p>所以，是否一定要配置重试要根据业务情况而定。也可以用同步发送的模式去发消息，当然acks不能设置为0，这样也能保证消息发送的有序。</p>
+<p>kafka保证全链路消息顺序消费，需要从发送端开始，将所有有序消息发送到同一个分区，然后用一个消费者去消费，但是这种性能比较低，可以在消费者端接收到消息后将需要保证顺序消费的几条消费发到内存队列(可以搞多个)，一个内存队列开启一个线程顺序处理消息。</p>
+<h3 id="消息积压"><a href="#消息积压" class="headerlink" title="消息积压"></a><strong>消息积压</strong></h3><p>1）线上有时因为发送方发送消息速度过快，或者消费方处理消息过慢，可能会导致broker积压大量未消费消息。</p>
+<p>此种情况如果积压了上百万未消费消息需要紧急处理，可以修改消费端程序，让其将收到的消息快速转发到其他topic(可以设置很多分区)，然后再启动多个消费者同时消费新主题的不同分区。</p>
+<p>2）由于消息数据格式变动或消费者程序有bug，导致消费者一直消费不成功，也可能导致broker积压大量未消费消息。</p>
+<p>此种情况可以将这些消费不成功的消息转发到其它队列里去(类似<strong>死信队列</strong>)，后面再慢慢分析死信队列里的消息处理问题。</p>
+<h3 id="延时队列"><a href="#延时队列" class="headerlink" title="延时队列"></a><strong>延时队列</strong></h3><p>延时队列存储的对象是延时消息。所谓的“延时消息”是指消息被发送以后，并不想让消费者立刻获取，而是等待特定的时间后，消费者才能获取这个消息进行消费，延时队列的使用场景有很多， 比如 ：</p>
+<p>1）在订单系统中， 一个用户下单之后通常有 30 分钟的时间进行支付，如果 30 分钟之内没有支付成功，那么这个订单将进行异常处理，这时就可以使用延时队列来处理这些订单了。</p>
+<p>2）订单完成1小时后通知用户进行评价。</p>
+<p><strong>实现思路：</strong>发送延时消息时先把消息按照不同的延迟时间段发送到指定的队列中（topic_1s，topic_5s，topic_10s，…topic_2h，这个一般不能支持任意时间段的延时），然后通过定时器进行轮训消费这些topic，查看消息是否到期，如果到期就把这个消息发送到具体业务处理的topic中，队列中消息越靠前的到期时间越早，具体来说就是定时器在一次消费过程中，对消息的发送时间做判断，看下是否延迟到对应时间了，如果到了就转发，如果还没到这一次定时任务就可以提前结束了。</p>
+<h3 id="消息回溯"><a href="#消息回溯" class="headerlink" title="消息回溯"></a><strong>消息回溯</strong></h3><p>如果某段时间对已消费消息计算的结果觉得有问题，可能是由于程序bug导致的计算错误，当程序bug修复后，这时可能需要对之前已消费的消息重新消费，可以指定从多久之前的消息回溯消费，这种可以用consumer的offsetsForTimes、seek等方法指定从某个offset偏移的消息开始消费，参见上节课的内容。</p>
+<h2 id="分区数越多吞吐量越高吗"><a href="#分区数越多吞吐量越高吗" class="headerlink" title="分区数越多吞吐量越高吗"></a><strong>分区数越多吞吐量越高吗</strong></h2><p>可以用kafka压测工具自己测试分区数不同，各种情况下的吞吐量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 往test里发送一百万消息，每条设置1KB</span><br><span class="line"># throughput 用来进行限流控制，当设定的值小于 0 时不限流，当设定的值大于 0 时，当发送的吞吐量大于该值时就会被阻塞一段时间</span><br><span class="line">bin&#x2F;kafka-producer-perf-test.sh --topic test --num-records 1000000 --record-size 1024 --throughput -1 --producer-props bootstrap.servers&#x3D;192.168.65.60:9092 acks&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Kafka/Kafka_de06.png" alt="Kafka_de06"></p>
+<p>网络上很多资料都说分区数越多吞吐量越高 ， 但从压测结果来看，分区数到达某个值吞吐量反而开始下降，实际上很多事情都会有一个临界值，当超过这个临界值之后，很多原本符合既定逻辑的走向又会变得不同。一般情况分区数跟集群机器数量相当就差不多了。</p>
+<p>当然吞吐量的数值和走势还会和磁盘、文件系统、 I/O调度策略等因素相关。</p>
+<p>注意：如果分区数设置过大，比如设置10000，可能会设置不成功，后台会报错”java.io.IOException : Too many open files”。</p>
+<p>异常中最关键的信息是“ Too many open flies”，这是一种常见的 Linux 系统错误，通常意味着文件描述符不足，它一般发生在创建线程、创建 Socket、打开文件这些场景下 。 在 Linux系统的默认设置下，这个文件描述符的个数不是很多 ，通过 ulimit -n 命令可以查看：一般默认是1024，可以将该值增大，比如：ulimit -n 65535</p>
+<h2 id="消息传递保障"><a href="#消息传递保障" class="headerlink" title="消息传递保障"></a><strong>消息传递保障</strong></h2><ul>
+<li>at most once(消费者最多收到一次消息，0–1次)：acks = 0 可以实现。</li>
+<li>at least once(消费者至少收到一次消息，1–多次)：ack = all 可以实现。</li>
+<li>exactly once(消费者刚好收到一次消息)：at least once 加上消费者幂等性可以实现，还可以用<strong>kafka生产者的幂等性</strong>来实现。</li>
+</ul>
+<p><strong>kafka生产者的幂等性</strong>：因为发送端重试导致的消息重复发送问题，kafka的幂等性可以保证重复发送的消息只接收一次，只需在生产者加上参数 props.put(“enable.idempotence”, true) 即可，默认是false不开启。    </p>
+<p>具体实现原理是，kafka每次发送消息会生成PID和Sequence Number，并将这两个属性一起发送给broker，broker会将PID和Sequence Number跟消息绑定一起存起来，下次如果生产者重发相同消息，broker会检查PID和Sequence Number，如果相同不会再接收。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PID：每个新的 Producer 在初始化的时候会被分配一个唯一的 PID，这个PID 对用户完全是透明的。生产者如果重启则会生成新的PID。</span><br><span class="line">Sequence Number：对于每个 PID，该 Producer 发送到每个 Partition 的数据都有对应的序列号，这些序列号是从0开始单调递增的。</span><br></pre></td></tr></table></figure>
+
+<h2 id="kafka的事务"><a href="#kafka的事务" class="headerlink" title="kafka的事务"></a><strong>kafka的事务</strong></h2><p>Kafka的事务不同于Rocketmq，Rocketmq是保障本地事务(比如数据库)与mq消息发送的事务一致性，Kafka的事务主要是保障一次发送多条消息的事务一致性(要么同时成功要么同时失败)，一般在kafka的流式计算场景用得多一点，比如，kafka需要对一个topic里的消息做不同的流式计算处理，处理完分别发到不同的topic里，这些topic分别被不同的下游系统消费(比如hbase，redis，es等)，这种我们肯定希望系统发送到多个topic的数据保持事务一致性。Kafka要实现类似Rocketmq的分布式事务需要额外开发功能。</p>
+<p>kafka的事务处理可以参考<a target="_blank" rel="noopener" href="http://kafka.apache.org/24/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html">官方文档</a>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Properties props &#x3D; new Properties();</span><br><span class="line">props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);</span><br><span class="line">props.put(&quot;transactional.id&quot;, &quot;my-transactional-id&quot;);</span><br><span class="line">Producer&lt;String, String&gt; producer &#x3D; new KafkaProducer&lt;&gt;(props, new StringSerializer(), new StringSerializer());</span><br><span class="line">&#x2F;&#x2F;初始化事务</span><br><span class="line">producer.initTransactions();</span><br><span class="line"></span><br><span class="line">try &#123;</span><br><span class="line">    &#x2F;&#x2F;开启事务</span><br><span class="line">    producer.beginTransaction();</span><br><span class="line">    for (int i &#x3D; 0; i &lt; 100; i++)&#123;</span><br><span class="line">        &#x2F;&#x2F;发到不同的主题的不同分区</span><br><span class="line">        producer.send(new ProducerRecord&lt;&gt;(&quot;hdfs-topic&quot;, Integer.toString(i), Integer.toString(i)));</span><br><span class="line">        producer.send(new ProducerRecord&lt;&gt;(&quot;es-topic&quot;, Integer.toString(i), Integer.toString(i)));</span><br><span class="line">        producer.send(new ProducerRecord&lt;&gt;(&quot;redis-topic&quot;, Integer.toString(i), Integer.toString(i)));</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F;提交事务</span><br><span class="line">    producer.commitTransaction();</span><br><span class="line">&#125; catch (ProducerFencedException | OutOfOrderSequenceException | AuthorizationException e) &#123;</span><br><span class="line">    &#x2F;&#x2F; We can&#39;t recover from these exceptions, so our only option is to close the producer and exit.</span><br><span class="line">    producer.close();</span><br><span class="line">&#125; catch (KafkaException e) &#123;</span><br><span class="line">    &#x2F;&#x2F; For all other exceptions, just abort the transaction and try again.</span><br><span class="line">    &#x2F;&#x2F;回滚事务</span><br><span class="line">    producer.abortTransaction();</span><br><span class="line">&#125;</span><br><span class="line">producer.close();</span><br></pre></td></tr></table></figure>
+
+<h2 id="kafka高性能的原因"><a href="#kafka高性能的原因" class="headerlink" title="kafka高性能的原因"></a><strong>kafka高性能的原因</strong></h2><ul>
+<li>磁盘顺序读写：kafka消息不能修改以及不会从文件中间删除保证了磁盘顺序读，kafka的消息写入文件都是追加在文件末尾，不会写入文件中的某个位置(随机写)保证了磁盘顺序写。</li>
+<li>数据传输的零拷贝</li>
+<li>读写数据的批量batch处理以及压缩传输</li>
+</ul>
+<p><img src="/images/Kafka/Kafka_de07.png" alt="Kafka_de07"></p>
+<p><a target="_blank" rel="noopener" href="https://note.youdao.com/ynoteshare/index.html?id=1ce32fe44f9326456e98b6e554bf6245&type=note&_time=1654570189801">参考链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kafka/" rel="tag"># kafka</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/07/Kafka/2022-06-07%20kafka%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3/" rel="prev" title="kafka设计原理详解">
+      <i class="fa fa-chevron-left"></i> kafka设计原理详解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/07/ElasticSearch/2022-06-07%20ElasticSearch%E5%85%A5%E9%97%A8%E5%AE%9E%E6%88%98/" rel="next" title="ElasticSearch入门实战">
+      ElasticSearch入门实战 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E5%8F%8A%E4%BC%98%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">线上问题及优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1%E6%83%85%E5%86%B5%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">消息丢失情况：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9"><span class="nav-number">1.2.</span> <span class="nav-text">消息重复消费</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E4%B9%B1%E5%BA%8F"><span class="nav-number">1.3.</span> <span class="nav-text">消息乱序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E7%A7%AF%E5%8E%8B"><span class="nav-number">1.4.</span> <span class="nav-text">消息积压</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97"><span class="nav-number">1.5.</span> <span class="nav-text">延时队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E5%9B%9E%E6%BA%AF"><span class="nav-number">1.6.</span> <span class="nav-text">消息回溯</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E6%95%B0%E8%B6%8A%E5%A4%9A%E5%90%9E%E5%90%90%E9%87%8F%E8%B6%8A%E9%AB%98%E5%90%97"><span class="nav-number">2.</span> <span class="nav-text">分区数越多吞吐量越高吗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E4%BF%9D%E9%9A%9C"><span class="nav-number">3.</span> <span class="nav-text">消息传递保障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka%E7%9A%84%E4%BA%8B%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">kafka的事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka%E9%AB%98%E6%80%A7%E8%83%BD%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-number">5.</span> <span class="nav-text">kafka高性能的原因</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">183</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

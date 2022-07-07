@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="springcloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="05 Feign 服务调用">
+<meta property="og:url" content="http://example.com/2020/10/26/SpringCloud/2019-03-05%205%20SpringCloud%20Feign/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="springcloud">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/SpringCloud/SpringCloud_feign01.png">
+<meta property="og:image" content="http://example.com/images/SpringCloud/SpringCloud_feign02.png">
+<meta property="og:image" content="http://example.com/images/SpringCloud/SpringCloud_feign03.png">
+<meta property="og:image" content="http://example.com/images/SpringCloud/SpringCloud_feign04.png">
+<meta property="og:image" content="http://example.com/images/SpringCloud/SpringCloud_feign05.png">
+<meta property="og:image" content="http://example.com/images/SpringCloud/SpringCloud_feign06.png">
+<meta property="article:published_time" content="2020-10-26T03:56:48.408Z">
+<meta property="article:modified_time" content="2022-06-16T08:49:26.702Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="Springcloud">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/SpringCloud/SpringCloud_feign01.png">
+
+<link rel="canonical" href="http://example.com/2020/10/26/SpringCloud/2019-03-05%205%20SpringCloud%20Feign/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>05 Feign 服务调用 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/SpringCloud/2019-03-05%205%20SpringCloud%20Feign/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          05 Feign 服务调用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 11:56:48" itemprop="dateCreated datePublished" datetime="2020-10-26T11:56:48+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-16 16:49:26" itemprop="dateModified" datetime="2022-06-16T16:49:26+08:00">2022-06-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Springcloud/" itemprop="url" rel="index"><span itemprop="name">Springcloud</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">springcloud</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Feign是Netflix开发的声明式、模板化的HTTP客户端，其灵感来自Retrofit、JAXRS-2.0以及WebSocket。Feign可帮助我们更加便捷、优雅地调用HTTP AP</p>
+<a id="more"></a> 
+
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Feign是Netflix开发的声明式、模板化的HTTP客户端，其灵感来自Retrofit、JAXRS-2.0以及WebSocket。Feign可帮助我们更加便捷、优雅地调用HTTP API。</p>
+<p>Feign支持多种注解，例如Feign自带的注解或者JAX-RS注解等。Spring Cloud openfeign对Feign进行了增强，使其支持Spring MVC注解，另外还整合了Ribbon和Eureka，从而使得Feign的使用更加方便</p>
+<h2 id="Feign的设计架构"><a href="#Feign的设计架构" class="headerlink" title="Feign的设计架构"></a><strong>Feign的设计架构</strong></h2><p><img src="/images/SpringCloud/SpringCloud_feign01.png" alt="SpringCloud_feign01"></p>
+<h3 id="Feign单独使用"><a href="#Feign单独使用" class="headerlink" title="Feign单独使用"></a>Feign单独使用</h3><p>引入依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.netflix.feign&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;feign-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;8.18.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.netflix.feign&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;feign-jackson&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;8.18.0&lt;&#x2F;version&gt;</span><br></pre></td></tr></table></figure>
+
+<p>编写接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public interface RemoteService &#123;</span><br><span class="line"></span><br><span class="line">    @Headers(&#123;&quot;Content-Type: application&#x2F;json&quot;,&quot;Accept: application&#x2F;json&quot;&#125;)</span><br><span class="line">    @RequestLine(&quot;GET &#x2F;order&#x2F;findOrderByUserId&#x2F;&#123;userId&#125;&quot;)</span><br><span class="line">    public R findOrderByUserId(@Param(&quot;userId&quot;) Integer userId);</span><br></pre></td></tr></table></figure>
+
+<p>调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class FeignDemo &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;基于json</span><br><span class="line">        &#x2F;&#x2F; encoder指定对象编码方式，decoder指定对象解码方式</span><br><span class="line">        RemoteService service &#x3D; Feign.builder()</span><br><span class="line">                .encoder(new JacksonEncoder())</span><br><span class="line">                .decoder(new JacksonDecoder())</span><br><span class="line">                .options(new Request.Options(1000, 3500))</span><br><span class="line">                .retryer(new Retryer.Default(5000, 5000, 3))</span><br><span class="line">                .target(RemoteService.class, &quot;http:&#x2F;&#x2F;localhost:8020&#x2F;&quot;);</span><br><span class="line"></span><br><span class="line">        System.out.println(service.findOrderByUserId(1));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Spring-Cloud-Alibaba快速整合Feign"><a href="#Spring-Cloud-Alibaba快速整合Feign" class="headerlink" title="Spring Cloud Alibaba快速整合Feign"></a><strong>Spring Cloud Alibaba快速整合Feign</strong></h3><p>1）引入依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- openfeign 远程调用 --&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>编写调用接口+@FeignClient注解</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@FeignClient(value &#x3D; &quot;mall-order&quot;,path &#x3D; &quot;&#x2F;order&quot;)</span><br><span class="line">public interface OrderFeignService &#123;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(&quot;&#x2F;findOrderByUserId&#x2F;&#123;userId&#125;&quot;)</span><br><span class="line">    public R findOrderByUserId(@PathVariable(&quot;userId&quot;) Integer userId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用端在启动类上添加@EnableFeignClients注解</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@SpringBootApplication</span><br><span class="line">@EnableFeignClients</span><br><span class="line">public class MallUserFeignDemoApplication &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        SpringApplication.run(MallUserFeignDemoApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发起调用，像调用本地方式一样调用远程服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@RestController</span><br><span class="line">@RequestMapping(&quot;&#x2F;user&quot;)</span><br><span class="line">public class UserController &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    OrderFeignService orderFeignService;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(value &#x3D; &quot;&#x2F;findOrderByUserId&#x2F;&#123;id&#125;&quot;)</span><br><span class="line">    public R  findOrderByUserId(@PathVariable(&quot;id&quot;) Integer id) &#123;</span><br><span class="line">        &#x2F;&#x2F;feign调用</span><br><span class="line">        R result &#x3D; orderFeignService.findOrderByUserId(id);</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>提示： Feign 的继承特性可以让服务的接口定义单独抽出来，作为公共的依赖，以方便使用。</p>
+<h2 id="Feign的自定义配置及使用"><a href="#Feign的自定义配置及使用" class="headerlink" title="Feign的自定义配置及使用"></a><strong>Feign的自定义配置及使用</strong></h2><h3 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a><strong>日志配置</strong></h3><p>有时候我们遇到 Bug，比如接口调用失败、参数没收到等问题，或者想看看调用性能，就需要配置 Feign 的日志了，以此让 Feign 把请求信息输出来。</p>
+<p><strong>1）定义一个配置类，指定日志级别</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 注意： 此处配置@Configuration注解就会全局生效，如果想指定对应微服务生效，就不能配置</span><br><span class="line">public class FeignConfig &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 日志级别</span><br><span class="line">     *</span><br><span class="line">     * @return</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Bean</span><br><span class="line">    public Logger.Level feignLoggerLevel() &#123;</span><br><span class="line">        return Logger.Level.FULL;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过源码可以看到日志等级有 4 种，分别是：</p>
+<ul>
+<li><strong>NONE</strong>【性能最佳，适用于生产】：不记录任何日志（默认值）。</li>
+<li><strong>BASIC</strong>【适用于生产环境追踪问题】：仅记录请求方法、URL、响应状态代码以及执行时间。</li>
+<li><strong>HEADERS</strong>：记录BASIC级别的基础上，记录请求和响应的header。</li>
+<li><strong>FULL</strong>【比较适用于开发及测试环境定位问题】：记录请求和响应的header、body和元数据。</li>
+</ul>
+<p><strong>2) 局部配置，让调用的微服务生效，在**</strong>@FeignClient 注解中指定使用的配置类**</p>
+<p><img src="/images/SpringCloud/SpringCloud_feign02.png" alt="SpringCloud_feign02"></p>
+<p><strong>3) 在yml配置文件中执行 Client 的日志级别才能正常输出日志，格式是”logging.level.feign接口包路径=debug”</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">logging:</span><br><span class="line">  level:</span><br><span class="line">    com.tuling.mall.feigndemo.feign: debug</span><br></pre></td></tr></table></figure>
+
+<p><strong>补充：局部配置可以在yml中配置</strong></p>
+<p>对应属性配置类： org.springframework.cloud.openfeign.FeignClientProperties.FeignClientConfiguration</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">  client:</span><br><span class="line">    config:</span><br><span class="line">      mall-order:  #对应微服务</span><br><span class="line">        loggerLevel: FULL</span><br></pre></td></tr></table></figure>
+
+<h3 id="契约配置"><a href="#契约配置" class="headerlink" title="契约配置"></a><strong>契约配置</strong></h3><p>Spring Cloud 在 Feign 的基础上做了扩展，可以让 Feign 支持 Spring MVC 的注解来调用。原生的 Feign 是不支持 Spring MVC 注解的，如果你想在 Spring Cloud 中使用原生的注解方式来定义客户端也是可以的，通过配置契约来改变这个配置，Spring Cloud 中默认的是 SpringMvcContract。</p>
+<p>   <strong>1）修改契约配置，支持Feign原生的注解</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 修改契约配置，支持Feign原生的注解</span><br><span class="line"> * @return</span><br><span class="line"> *&#x2F;</span><br><span class="line">@Bean</span><br><span class="line">public Contract feignContract() &#123;</span><br><span class="line">    return new Contract.Default();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>注意：修改契约配置后，OrderFeignService 不再支持springmvc的注解，需要使用Feign原生的注解</p>
+<p><strong>2）OrderFeignService 中配置使用Feign原生的注解</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@FeignClient(value &#x3D; &quot;mall-order&quot;,path &#x3D; &quot;&#x2F;order&quot;)</span><br><span class="line">public interface OrderFeignService &#123;</span><br><span class="line">    @RequestLine(&quot;GET &#x2F;findOrderByUserId&#x2F;&#123;userId&#125;&quot;)</span><br><span class="line">    public R findOrderByUserId(@Param(&quot;userId&quot;) Integer userId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>3）补充，也可以通过yml配置契约</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">  client:</span><br><span class="line">    config:</span><br><span class="line">      mall-order:  #对应微服务</span><br><span class="line">        loggerLevel: FULL</span><br><span class="line">        contract: feign.Contract.Default   #指定Feign原生注解契约配置</span><br></pre></td></tr></table></figure>
+
+<h3 id="通过拦截器实现认证"><a href="#通过拦截器实现认证" class="headerlink" title="通过拦截器实现认证"></a><strong>通过拦截器实现认证</strong></h3><p>通常我们调用的接口都是有权限控制的，很多时候可能认证的值是通过参数去传递的，还有就是通过请求头去传递认证信息，比如 Basic 认证方式。  接口鉴权</p>
+<p><strong>Feign 中我们可以直接配置 Basic 认证</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Configuration  &#x2F;&#x2F; 全局配置</span><br><span class="line">public class FeignConfig &#123;</span><br><span class="line">    @Bean</span><br><span class="line">    public BasicAuthRequestInterceptor basicAuthRequestInterceptor() &#123;</span><br><span class="line">        return new BasicAuthRequestInterceptor(&quot;fox&quot;, &quot;123456&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>扩展点： feign.RequestInterceptor</strong> </p>
+<p>每次 feign 发起http调用之前，会去执行拦截器中的逻辑。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface RequestInterceptor &#123;</span><br><span class="line"></span><br><span class="line">  &#x2F;**</span><br><span class="line">   * Called for every request. Add data using methods on the supplied &#123;@link RequestTemplate&#125;.</span><br><span class="line">   *&#x2F;</span><br><span class="line">  void apply(RequestTemplate template);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>使用场景</p>
+<ol>
+<li>统一添加 header 信息；</li>
+<li>对 body 中的信息做修改或替换；</li>
+</ol>
+<p><strong>自定义拦截器实现认证逻辑</strong>                                </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class FeignAuthRequestInterceptor implements RequestInterceptor &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void apply(RequestTemplate template) &#123;</span><br><span class="line">        &#x2F;&#x2F; 业务逻辑</span><br><span class="line">        String access_token &#x3D; UUID.randomUUID().toString();</span><br><span class="line">        template.header(&quot;Authorization&quot;,access_token);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Configuration  &#x2F;&#x2F; 全局配置</span><br><span class="line">public class FeignConfig &#123;</span><br><span class="line">    @Bean</span><br><span class="line">    public Logger.Level feignLoggerLevel() &#123;</span><br><span class="line">        return Logger.Level.FULL;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 自定义拦截器</span><br><span class="line">     * @return</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Bean</span><br><span class="line">    public FeignAuthRequestInterceptor feignAuthRequestInterceptor()&#123;</span><br><span class="line">        return new FeignAuthRequestInterceptor();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>补充：可以在yml中配置</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">  client:</span><br><span class="line">    config:</span><br><span class="line">      mall-order:  #对应微服务</span><br><span class="line">        requestInterceptors[0]:  #配置拦截器</span><br><span class="line">          com.tuling.mall.feigndemo.interceptor.FeignAuthRequestInterceptor</span><br></pre></td></tr></table></figure>
+
+<p>mall-order端可以通过 @RequestHeader获取请求参数</p>
+<p>建议在filter,interceptor中处理</p>
+<h3 id="超时时间配置"><a href="#超时时间配置" class="headerlink" title="超时时间配置"></a><strong>超时时间配置</strong></h3><p>通过 Options 可以配置连接超时时间和读取超时时间，Options 的第一个参数是连接的超时时间（ms），默认值是 2s；第二个是请求处理的超时时间（ms），默认值是 5s。</p>
+<p><strong>全局配置</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class FeignConfig &#123;</span><br><span class="line">    @Bean</span><br><span class="line">    public Request.Options options() &#123;</span><br><span class="line">        return new Request.Options(5000, 10000);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>yml中配置</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">  client:</span><br><span class="line">    config:</span><br><span class="line">      mall-order:  #对应微服务</span><br><span class="line">        # 连接超时时间，默认2s</span><br><span class="line">        connectTimeout: 5000</span><br><span class="line">        # 请求处理超时时间，默认5s</span><br><span class="line">        readTimeout: 10000</span><br></pre></td></tr></table></figure>
+
+<p>补充说明： Feign的底层用的是Ribbon，但超时时间以Feign配置为准</p>
+<h3 id="客户端组件配置"><a href="#客户端组件配置" class="headerlink" title="客户端组件配置"></a><strong>客户端组件配置</strong></h3><p>Feign 中默认使用 JDK 原生的 URLConnection 发送 HTTP 请求，我们可以集成别的组件来替换掉 URLConnection，比如 Apache HttpClient，OkHttp。</p>
+<p>Feign发起调用真正执行逻辑：<strong>feign.Client#execute   （扩展点）</strong></p>
+<p><img src="/images/SpringCloud/SpringCloud_feign03.png" alt="SpringCloud_feign03"></p>
+<h4 id="配置Apache-HttpClient"><a href="#配置Apache-HttpClient" class="headerlink" title="配置Apache HttpClient"></a><strong>配置Apache HttpClient</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Apache HttpClient --&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.httpcomponents&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;httpclient&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;4.5.7&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.github.openfeign&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;feign-httpclient&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;10.1.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>然后修改yml配置，将 Feign 的</strong> <strong>Apache HttpClient**</strong>启用 ：**</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">  #feign 使用 Apache HttpClient  可以忽略，默认开启</span><br><span class="line">  httpclient:</span><br><span class="line">    enabled: true  </span><br></pre></td></tr></table></figure>
+
+<p>关于配置可参考源码： org.springframework.cloud.openfeign.FeignAutoConfiguration</p>
+<p><img src="/images/SpringCloud/SpringCloud_feign04.png" alt="SpringCloud_feign04"></p>
+<h4 id="配置-OkHttp"><a href="#配置-OkHttp" class="headerlink" title="配置 OkHttp"></a><strong>配置 OkHttp</strong></h4><p>引入依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.github.openfeign&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;feign-okhttp&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后修改yml配置，将 Feign 的 HttpClient 禁用，启用 OkHttp，配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">  #feign 使用 okhttp</span><br><span class="line">  httpclient:</span><br><span class="line">    enabled: false</span><br><span class="line">  okhttp:</span><br><span class="line">    enabled: true</span><br></pre></td></tr></table></figure>
+
+<p>关于配置可参考源码： org.springframework.cloud.openfeign.FeignAutoConfiguration</p>
+<p><img src="/images/SpringCloud/SpringCloud_feign05.png" alt="SpringCloud_feign05"></p>
+<h3 id="GZIP-压缩配置"><a href="#GZIP-压缩配置" class="headerlink" title="GZIP 压缩配置"></a><strong>GZIP 压缩配置</strong></h3><p>开启压缩可以有效节约网络资源，提升接口性能，我们可以配置 GZIP 来压缩数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">  # 配置 GZIP 来压缩数据</span><br><span class="line">  compression:</span><br><span class="line">    request:</span><br><span class="line">      enabled: true</span><br><span class="line">      # 配置压缩的类型</span><br><span class="line">      mime-types: text&#x2F;xml,application&#x2F;xml,application&#x2F;json</span><br><span class="line">      # 最小压缩值</span><br><span class="line">      min-request-size: 2048</span><br><span class="line">    response:</span><br><span class="line">      enabled: true</span><br></pre></td></tr></table></figure>
+
+<p>注意：只有当 Feign 的 Http Client 不是 okhttp3 的时候，压缩才会生效，配置源码在FeignAcceptGzipEncodingAutoConfiguration</p>
+<p><img src="/images/SpringCloud/SpringCloud_feign06.png" alt="SpringCloud_feign06"></p>
+<p>核心代码就是 @ConditionalOnMissingBean（type=”okhttp3.OkHttpClient”），表示 Spring BeanFactory 中不包含指定的 bean 时条件匹配，也就是没有启用 okhttp3 时才会进行压缩配置。</p>
+<h3 id="编码器解码器配置"><a href="#编码器解码器配置" class="headerlink" title="编码器解码器配置"></a><strong>编码器解码器配置</strong></h3><p>Feign 中提供了自定义的编码解码器设置，同时也提供了多种编码器的实现，比如 Gson、Jaxb、Jackson。我们可以用不同的编码解码器来处理数据的传输。如果你想传输 XML 格式的数据，可以自定义 XML 编码解码器来实现获取使用官方提供的 Jaxb。</p>
+<p>扩展点：Encoder &amp; Decoder </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public interface Encoder &#123;</span><br><span class="line">    void encode(Object object, Type bodyType, RequestTemplate template) throws EncodeException;</span><br><span class="line">&#125;</span><br><span class="line">public interface Decoder &#123;</span><br><span class="line">    Object decode(Response response, Type type) throws IOException, DecodeException, FeignException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Java配置方式</strong></p>
+<p>配置编码解码器只需要在 Feign 的配置类中注册 Decoder 和 Encoder 这两个类即可:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">public Decoder decoder() &#123;</span><br><span class="line">    return new JacksonDecoder();</span><br><span class="line">&#125;</span><br><span class="line">@Bean</span><br><span class="line">public Encoder encoder() &#123;</span><br><span class="line">    return new JacksonEncoder();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>yml配置方式</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">  client:</span><br><span class="line">    config:</span><br><span class="line">      mall-order:  #对应微服务</span><br><span class="line">        # 配置编解码器</span><br><span class="line">        encoder: feign.jackson.JacksonEncoder</span><br><span class="line">        decoder: feign.jackson.JacksonDecoder</span><br></pre></td></tr></table></figure>
+
+
+
+<p><a target="_blank" rel="noopener" href="https://note.youdao.com/ynoteshare/index.html?id=e4d3a42acab8240647293dde5ed88b7b&type=note&_time=1655359607345">参考链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Springcloud/" rel="tag"># Springcloud</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/26/SpringCloud/2019-03-04%204%20%E6%9C%8D%E5%8A%A1%E5%AE%B9%E9%94%99%E4%BF%9D%E6%8A%A4%20SpringCloud%20Hystrix/" rel="prev" title="04 服务容错保护">
+      <i class="fa fa-chevron-left"></i> 04 服务容错保护
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/SpringCloud/2019-03-06%206%20API%E7%BD%91%E5%85%B3%E6%9C%8D%E5%8A%A1%20SpringCloud%20Zuul/" rel="next" title="06 api网关服务">
+      06 api网关服务 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Feign%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">Feign的设计架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Feign%E5%8D%95%E7%8B%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">Feign单独使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Cloud-Alibaba%E5%BF%AB%E9%80%9F%E6%95%B4%E5%90%88Feign"><span class="nav-number">2.2.</span> <span class="nav-text">Spring Cloud Alibaba快速整合Feign</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Feign%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE%E5%8F%8A%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">Feign的自定义配置及使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E9%85%8D%E7%BD%AE"><span class="nav-number">3.1.</span> <span class="nav-text">日志配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%91%E7%BA%A6%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">契约配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E6%8B%A6%E6%88%AA%E5%99%A8%E5%AE%9E%E7%8E%B0%E8%AE%A4%E8%AF%81"><span class="nav-number">3.3.</span> <span class="nav-text">通过拦截器实现认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E6%97%B6%E9%97%B4%E9%85%8D%E7%BD%AE"><span class="nav-number">3.4.</span> <span class="nav-text">超时时间配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%BB%84%E4%BB%B6%E9%85%8D%E7%BD%AE"><span class="nav-number">3.5.</span> <span class="nav-text">客户端组件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEApache-HttpClient"><span class="nav-number">3.5.1.</span> <span class="nav-text">配置Apache HttpClient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-OkHttp"><span class="nav-number">3.5.2.</span> <span class="nav-text">配置 OkHttp</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GZIP-%E5%8E%8B%E7%BC%A9%E9%85%8D%E7%BD%AE"><span class="nav-number">3.6.</span> <span class="nav-text">GZIP 压缩配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E5%99%A8%E8%A7%A3%E7%A0%81%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">3.7.</span> <span class="nav-text">编码器解码器配置</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">183</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

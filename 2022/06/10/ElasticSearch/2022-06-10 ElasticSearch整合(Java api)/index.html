@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="elasticSearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ElasticSearch整合(Java api)">
+<meta property="og:url" content="http://example.com/2022/06/10/ElasticSearch/2022-06-10%20ElasticSearch%E6%95%B4%E5%90%88(Java%20api)/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="elasticSearch">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-06-10T06:28:02.375Z">
+<meta property="article:modified_time" content="2022-06-10T06:38:27.298Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="elasticSearch">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/06/10/ElasticSearch/2022-06-10%20ElasticSearch%E6%95%B4%E5%90%88(Java%20api)/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ElasticSearch整合(Java api) | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/10/ElasticSearch/2022-06-10%20ElasticSearch%E6%95%B4%E5%90%88(Java%20api)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ElasticSearch整合(Java api)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-06-10 14:28:02 / Modified: 14:38:27" itemprop="dateCreated datePublished" datetime="2022-06-10T14:28:02+08:00">2022-06-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/elasticSearch/" itemprop="url" rel="index"><span itemprop="name">elasticSearch</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">elasticSearch</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>ElasticSearch整合(Java api)</p>
+<a id="more"></a> 
+
+<h3 id="相关依赖"><a href="#相关依赖" class="headerlink" title="相关依赖"></a>相关依赖</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;!-- ES的高阶的客户端API --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.elasticsearch.client&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;elasticsearch-rest-high-level-client&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;7.6.1&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.apache.logging.log4j&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;log4j-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.11.1&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line">    &lt;!-- 阿里巴巴出品的一款将Java对象转换为JSON、将JSON转换为Java对象的库 --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.alibaba&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;fastjson&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.2.62&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;junit&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;junit&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;4.12&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;scope&gt;test&lt;&#x2F;scope&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.testng&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;testng&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;6.14.3&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;scope&gt;test&lt;&#x2F;scope&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line">  </span><br><span class="line">&lt;&#x2F;dependencies&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化连接"><a href="#初始化连接" class="headerlink" title="初始化连接"></a><strong>初始化连接</strong></h3><p><strong>使用的是RestHighLevelClient去连接ES集群，后续操作ES中的数据</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">private RestHighLevelClient restHighLevelClient;</span><br><span class="line"></span><br><span class="line">   public JobFullTextServiceImpl() &#123;</span><br><span class="line">       &#x2F;&#x2F; 建立与ES的连接</span><br><span class="line">       &#x2F;&#x2F; 1. 使用RestHighLevelClient构建客户端连接。</span><br><span class="line">       &#x2F;&#x2F; 2. 基于RestClient.builder方法来构建RestClientBuilder</span><br><span class="line">       &#x2F;&#x2F; 3. 用HttpHost来添加ES的节点</span><br><span class="line">       RestClientBuilder restClientBuilder &#x3D; RestClient.builder(</span><br><span class="line">             new HttpHost(&quot;192.168.21.130&quot;, 9200, &quot;http&quot;)</span><br><span class="line">           , new HttpHost(&quot;192.168.21.131&quot;, 9200, &quot;http&quot;)</span><br><span class="line">           , new HttpHost(&quot;192.168.21.132&quot;, 9200, &quot;http&quot;));</span><br><span class="line">       restHighLevelClient &#x3D; new RestHighLevelClient(restClientBuilder);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询-删除-搜索-分页"><a href="#查询-删除-搜索-分页" class="headerlink" title="查询/删除/搜索/分页**"></a>查询/删除/搜索/分页**</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">* 新增：IndexRequest</span><br><span class="line">* 更新：UpdateRequest</span><br><span class="line">* 删除：DeleteRequest</span><br><span class="line">* 根据ID获取：GetRequest</span><br><span class="line">* 关键字检索：SearchRequest</span><br></pre></td></tr></table></figure>
+
+<p>添加职位数据到ES中</p>
+<p>* 使用IndexRequest对象来描述请求</p>
+<p>​    * 可以设置请求的参数：设置ID、并设置传输ES的数据——注意因为ES都是使用JSON（DSL）来去操作数据的，所以需要使用一个FastJSON的库来将对象转换为JSON字符串进行操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void add(JobDetail jobDetail) throws IOException &#123;</span><br><span class="line">    &#x2F;&#x2F;1.	构建IndexRequest对象，用来描述ES发起请求的数据。</span><br><span class="line">    IndexRequest indexRequest &#x3D; new IndexRequest(JOB_IDX);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;2.	设置文档ID。</span><br><span class="line">    indexRequest.id(jobDetail.getId() + &quot;&quot;);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;3.	使用FastJSON将实体类对象转换为JSON。</span><br><span class="line">    String json &#x3D; JSONObject.toJSONString(jobDetail);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;4.	使用IndexRequest.source方法设置文档数据，并设置请求的数据为JSON格式。</span><br><span class="line">    indexRequest.source(json, XContentType.JSON);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;5.	使用ES High level client调用index方法发起请求，将一个文档添加到索引中。</span><br><span class="line">    restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public JobDetail findById(long id) throws IOException &#123;</span><br><span class="line">    &#x2F;&#x2F; 1.	构建GetRequest请求。</span><br><span class="line">    GetRequest getRequest &#x3D; new GetRequest(JOB_IDX, id + &quot;&quot;);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 2.	使用RestHighLevelClient.get发送GetRequest请求，并获取到ES服务器的响应。</span><br><span class="line">    GetResponse getResponse &#x3D; restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 3.	将ES响应的数据转换为JSON字符串</span><br><span class="line">    String json &#x3D; getResponse.getSourceAsString();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 4.	并使用FastJSON将JSON字符串转换为JobDetail类对象</span><br><span class="line">    JobDetail jobDetail &#x3D; JSONObject.parseObject(json, JobDetail.class);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 5.	记得：单独设置ID</span><br><span class="line">    jobDetail.setId(id);</span><br><span class="line"></span><br><span class="line">    return jobDetail;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void update(JobDetail jobDetail) throws IOException &#123;</span><br><span class="line">    &#x2F;&#x2F; 1.	判断对应ID的文档是否存在</span><br><span class="line">    &#x2F;&#x2F; a)	构建GetRequest</span><br><span class="line">    GetRequest getRequest &#x3D; new GetRequest(JOB_IDX, jobDetail.getId() + &quot;&quot;);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; b)	执行client的exists方法，发起请求，判断是否存在</span><br><span class="line">    boolean exists &#x3D; restHighLevelClient.exists(getRequest, RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line">    if(exists) &#123;</span><br><span class="line">        &#x2F;&#x2F; 2.	构建UpdateRequest请求</span><br><span class="line">        UpdateRequest updateRequest &#x3D; new UpdateRequest(JOB_IDX, jobDetail.getId() + &quot;&quot;);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 3.	设置UpdateRequest的文档，并配置为JSON格式</span><br><span class="line">        updateRequest.doc(JSONObject.toJSONString(jobDetail), XContentType.JSON);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 4.	执行client发起update请求</span><br><span class="line">        restHighLevelClient.update(updateRequest, RequestOptions.DEFAULT);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void deleteById(long id) throws IOException &#123;</span><br><span class="line">    &#x2F;&#x2F; 1.	构建delete请求</span><br><span class="line">    DeleteRequest deleteRequest &#x3D; new DeleteRequest(JOB_IDX, id + &quot;&quot;);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 2.	使用RestHighLevelClient执行delete请求</span><br><span class="line">    restHighLevelClient.delete(deleteRequest, RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public List&lt;JobDetail&gt; searchByKeywords(String keywords) throws IOException &#123;</span><br><span class="line">    &#x2F;&#x2F; 1.构建SearchRequest检索请求</span><br><span class="line">    &#x2F;&#x2F; 专门用来进行全文检索、关键字检索的API</span><br><span class="line">    SearchRequest searchRequest &#x3D; new SearchRequest(JOB_IDX);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 2.创建一个SearchSourceBuilder专门用于构建查询条件</span><br><span class="line">    SearchSourceBuilder searchSourceBuilder &#x3D; new SearchSourceBuilder();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 3.使用QueryBuilders.multiMatchQuery构建一个查询条件（搜索title、jd），并配置到SearchSourceBuilder</span><br><span class="line">    MultiMatchQueryBuilder multiMatchQueryBuilder &#x3D; QueryBuilders.multiMatchQuery(keywords, &quot;title&quot;, &quot;jd&quot;);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将查询条件设置到查询请求构建器中</span><br><span class="line">    searchSourceBuilder.query(multiMatchQueryBuilder);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 4.调用SearchRequest.source将查询条件设置到检索请求</span><br><span class="line">    searchRequest.source(searchSourceBuilder);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 5.执行RestHighLevelClient.search发起请求</span><br><span class="line">    SearchResponse searchResponse &#x3D; restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);</span><br><span class="line">    SearchHit[] hitArray &#x3D; searchResponse.getHits().getHits();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 6.遍历结果</span><br><span class="line">    ArrayList&lt;JobDetail&gt; jobDetailArrayList &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    for (SearchHit documentFields : hitArray) &#123;</span><br><span class="line">        &#x2F;&#x2F; 1)获取命中的结果</span><br><span class="line">        String json &#x3D; documentFields.getSourceAsString();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 2)将JSON字符串转换为对象</span><br><span class="line">        JobDetail jobDetail &#x3D; JSONObject.parseObject(json, JobDetail.class);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 3)使用SearchHit.getId设置文档ID</span><br><span class="line">        jobDetail.setId(Long.parseLong(documentFields.getId()));</span><br><span class="line"></span><br><span class="line">        jobDetailArrayList.add(jobDetail);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return jobDetailArrayList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Map&lt;String, Object&gt; searchByPage(String keywords, int pageNum, int pageSize) throws IOException &#123;</span><br><span class="line">    &#x2F;&#x2F; 1.构建SearchRequest检索请求</span><br><span class="line">    &#x2F;&#x2F; 专门用来进行全文检索、关键字检索的API</span><br><span class="line">    SearchRequest searchRequest &#x3D; new SearchRequest(JOB_IDX);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 2.创建一个SearchSourceBuilder专门用于构建查询条件</span><br><span class="line">    SearchSourceBuilder searchSourceBuilder &#x3D; new SearchSourceBuilder();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 3.使用QueryBuilders.multiMatchQuery构建一个查询条件（搜索title、jd），并配置到SearchSourceBuilder</span><br><span class="line">    MultiMatchQueryBuilder multiMatchQueryBuilder &#x3D; QueryBuilders.multiMatchQuery(keywords, &quot;title&quot;, &quot;jd&quot;);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将查询条件设置到查询请求构建器中</span><br><span class="line">    searchSourceBuilder.query(multiMatchQueryBuilder);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 每页显示多少条</span><br><span class="line">    searchSourceBuilder.size(pageSize);</span><br><span class="line">    &#x2F;&#x2F; 设置从第几条开始查询</span><br><span class="line">    searchSourceBuilder.from((pageNum - 1) * pageSize);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 4.调用SearchRequest.source将查询条件设置到检索请求</span><br><span class="line">    searchRequest.source(searchSourceBuilder);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 5.执行RestHighLevelClient.search发起请求</span><br><span class="line">    SearchResponse searchResponse &#x3D; restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);</span><br><span class="line">    SearchHit[] hitArray &#x3D; searchResponse.getHits().getHits();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 6.遍历结果</span><br><span class="line">    ArrayList&lt;JobDetail&gt; jobDetailArrayList &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    for (SearchHit documentFields : hitArray) &#123;</span><br><span class="line">        &#x2F;&#x2F; 1)获取命中的结果</span><br><span class="line">        String json &#x3D; documentFields.getSourceAsString();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 2)将JSON字符串转换为对象</span><br><span class="line">        JobDetail jobDetail &#x3D; JSONObject.parseObject(json, JobDetail.class);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 3)使用SearchHit.getId设置文档ID</span><br><span class="line">        jobDetail.setId(Long.parseLong(documentFields.getId()));</span><br><span class="line"></span><br><span class="line">        jobDetailArrayList.add(jobDetail);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 8.	将结果封装到Map结构中（带有分页信息）</span><br><span class="line">    &#x2F;&#x2F; a)	total -&gt; 使用SearchHits.getTotalHits().value获取到所有的记录数</span><br><span class="line">    &#x2F;&#x2F; b)	content -&gt; 当前分页中的数据</span><br><span class="line">    long totalNum &#x3D; searchResponse.getHits().getTotalHits().value;</span><br><span class="line">    HashMap hashMap &#x3D; new HashMap();</span><br><span class="line">    hashMap.put(&quot;total&quot;, totalNum);</span><br><span class="line">    hashMap.put(&quot;content&quot;, jobDetailArrayList);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    return hashMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用scroll分页方式查询"><a href="#使用scroll分页方式查询" class="headerlink" title="使用scroll分页方式查询"></a><strong>使用scroll分页方式查询</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; * 第一次查询，不带scroll_id，所以要设置scroll超时时间</span><br><span class="line">&gt; * 超时时间不要设置太短，否则会出现异常</span><br><span class="line">&gt; * 第二次查询，SearchSrollRequest</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Map&lt;String, Object&gt; searchByScrollPage(String keywords, String scrollId, int pageSize) throws IOException &#123;</span><br><span class="line">    SearchResponse searchResponse &#x3D; null;</span><br><span class="line"></span><br><span class="line">    if(scrollId &#x3D;&#x3D; null) &#123;</span><br><span class="line">        &#x2F;&#x2F; 1.构建SearchRequest检索请求</span><br><span class="line">        &#x2F;&#x2F; 专门用来进行全文检索、关键字检索的API</span><br><span class="line">        SearchRequest searchRequest &#x3D; new SearchRequest(JOB_IDX);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 2.创建一个SearchSourceBuilder专门用于构建查询条件</span><br><span class="line">        SearchSourceBuilder searchSourceBuilder &#x3D; new SearchSourceBuilder();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 3.使用QueryBuilders.multiMatchQuery构建一个查询条件（搜索title、jd），并配置到SearchSourceBuilder</span><br><span class="line">        MultiMatchQueryBuilder multiMatchQueryBuilder &#x3D; QueryBuilders.multiMatchQuery(keywords, &quot;title&quot;, &quot;jd&quot;);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 将查询条件设置到查询请求构建器中</span><br><span class="line">        searchSourceBuilder.query(multiMatchQueryBuilder);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 每页显示多少条</span><br><span class="line">        searchSourceBuilder.size(pageSize);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 4.调用SearchRequest.source将查询条件设置到检索请求</span><br><span class="line">        searchRequest.source(searchSourceBuilder);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;--------------------------</span><br><span class="line">        &#x2F;&#x2F; 设置scroll查询</span><br><span class="line">        &#x2F;&#x2F;--------------------------</span><br><span class="line">        searchRequest.scroll(TimeValue.timeValueMinutes(5));</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 5.执行RestHighLevelClient.search发起请求</span><br><span class="line">        searchResponse &#x3D; restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 第二次查询的时候，直接通过scroll id查询数据</span><br><span class="line">    else &#123;</span><br><span class="line">        SearchScrollRequest searchScrollRequest &#x3D; new SearchScrollRequest(scrollId);</span><br><span class="line">        searchScrollRequest.scroll(TimeValue.timeValueMinutes(5));</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 使用RestHighLevelClient发送scroll请求</span><br><span class="line">        searchResponse &#x3D; restHighLevelClient.scroll(searchScrollRequest, RequestOptions.DEFAULT);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;--------------------------</span><br><span class="line">    &#x2F;&#x2F; 迭代ES响应的数据</span><br><span class="line">    &#x2F;&#x2F;--------------------------</span><br><span class="line"></span><br><span class="line">    SearchHit[] hitArray &#x3D; searchResponse.getHits().getHits();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 6.遍历结果</span><br><span class="line">    ArrayList&lt;JobDetail&gt; jobDetailArrayList &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    for (SearchHit documentFields : hitArray) &#123;</span><br><span class="line">        &#x2F;&#x2F; 1)获取命中的结果</span><br><span class="line">        String json &#x3D; documentFields.getSourceAsString();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 2)将JSON字符串转换为对象</span><br><span class="line">        JobDetail jobDetail &#x3D; JSONObject.parseObject(json, JobDetail.class);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 3)使用SearchHit.getId设置文档ID</span><br><span class="line">        jobDetail.setId(Long.parseLong(documentFields.getId()));</span><br><span class="line"></span><br><span class="line">        jobDetailArrayList.add(jobDetail);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 8.	将结果封装到Map结构中（带有分页信息）</span><br><span class="line">    &#x2F;&#x2F; a)	total -&gt; 使用SearchHits.getTotalHits().value获取到所有的记录数</span><br><span class="line">    &#x2F;&#x2F; b)	content -&gt; 当前分页中的数据</span><br><span class="line">    long totalNum &#x3D; searchResponse.getHits().getTotalHits().value;</span><br><span class="line">    HashMap hashMap &#x3D; new HashMap();</span><br><span class="line">    hashMap.put(&quot;scroll_id&quot;, searchResponse.getScrollId());</span><br><span class="line">    hashMap.put(&quot;content&quot;, jobDetailArrayList);</span><br><span class="line"></span><br><span class="line">    return hashMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><a target="_blank" rel="noopener" href="https://note.youdao.com/ynoteshare/index.html?id=0c6581fe8e121e18dba9d22488cebf15&type=note&_time=1654826088141">参考链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/elasticSearch/" rel="tag"># elasticSearch</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/10/ElasticSearch/2022-06-10%20ElasticSearch%E8%AE%A1%E5%88%86%E5%8E%9F%E7%90%86%E5%8F%8A%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1/" rel="prev" title="ElasticSearch计分原理及数据建模">
+      <i class="fa fa-chevron-left"></i> ElasticSearch计分原理及数据建模
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/16/SpringCloud/2022-06-16%20Nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E6%BA%90%E7%A0%81/" rel="next" title="Alibaba Nacos注册中心源码">
+      Alibaba Nacos注册中心源码 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E4%BE%9D%E8%B5%96"><span class="nav-number">1.</span> <span class="nav-text">相关依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.</span> <span class="nav-text">初始化连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2-%E5%88%A0%E9%99%A4-%E6%90%9C%E7%B4%A2-%E5%88%86%E9%A1%B5"><span class="nav-number">3.</span> <span class="nav-text">查询&#x2F;删除&#x2F;搜索&#x2F;分页**</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8scroll%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.</span> <span class="nav-text">使用scroll分页方式查询</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">183</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

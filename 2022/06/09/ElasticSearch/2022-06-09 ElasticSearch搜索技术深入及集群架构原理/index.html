@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="elasticSearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ElasticSearch搜索技术深入及集群架构原理">
+<meta property="og:url" content="http://example.com/2022/06/09/ElasticSearch/2022-06-09%20ElasticSearch%E6%90%9C%E7%B4%A2%E6%8A%80%E6%9C%AF%E6%B7%B1%E5%85%A5%E5%8F%8A%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="elasticSearch">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/ElasticSearch/Es_origin01.png">
+<meta property="og:image" content="http://example.com/images/ElasticSearch/Es_origin02.png">
+<meta property="og:image" content="http://example.com/images/ElasticSearch/Es_origin03.png">
+<meta property="article:published_time" content="2022-06-09T08:10:44.668Z">
+<meta property="article:modified_time" content="2022-06-09T08:07:07.853Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="elasticSearch">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/ElasticSearch/Es_origin01.png">
+
+<link rel="canonical" href="http://example.com/2022/06/09/ElasticSearch/2022-06-09%20ElasticSearch%E6%90%9C%E7%B4%A2%E6%8A%80%E6%9C%AF%E6%B7%B1%E5%85%A5%E5%8F%8A%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ElasticSearch搜索技术深入及集群架构原理 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/09/ElasticSearch/2022-06-09%20ElasticSearch%E6%90%9C%E7%B4%A2%E6%8A%80%E6%9C%AF%E6%B7%B1%E5%85%A5%E5%8F%8A%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ElasticSearch搜索技术深入及集群架构原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-06-09 16:10:44 / Modified: 16:07:07" itemprop="dateCreated datePublished" datetime="2022-06-09T16:10:44+08:00">2022-06-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/elasticSearch/" itemprop="url" rel="index"><span itemprop="name">elasticSearch</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">elasticSearch</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>ElasticSearch搜索技术深入及集群架构原理</p>
+<a id="more"></a> 
+
+<h2 id="Elasticsearch架构原理"><a href="#Elasticsearch架构原理" class="headerlink" title="Elasticsearch架构原理"></a><strong>Elasticsearch架构原理</strong></h2><h3 id="Elasticsearch的节点类型"><a href="#Elasticsearch的节点类型" class="headerlink" title="Elasticsearch的节点类型"></a><strong>Elasticsearch的节点类型</strong></h3><p>在Elasticsearch主要分成两类节点，一类是Master，一类是DataNode。</p>
+<p> <strong>Master节点</strong></p>
+<p>在Elasticsearch启动时，会选举出来一个Master节点。当某个节点启动后，然后使用Zen Discovery机制找到集群中的其他节点，并建立连接。</p>
+<p>discovery.seed_hosts: [“192.168.21.130”, “192.168.21.131”, “192.168.21.132”]</p>
+<p>并从候选主节点中选举出一个主节点。</p>
+<p>cluster.initial_master_nodes: [“node1”, “node2”,”node3”]</p>
+<p>Master节点主要负责：</p>
+<p> 管理索引（创建索引、删除索引）、分配分片</p>
+<p> 维护元数据</p>
+<p> 管理集群节点状态</p>
+<p> 不负责数据写入和查询，比较轻量级</p>
+<p>一个Elasticsearch集群中，只有一个Master节点。在生产环境中，内存可以相对小一点，但机器要稳定。</p>
+<p> <strong>DataNode节点</strong></p>
+<p>在Elasticsearch集群中，会有N个DataNode节点。DataNode节点主要负责：数据写入、数据检索，大部分Elasticsearch的压力都在DataNode节点上在生产环境中，内存最好配置大一些</p>
+<h2 id="分片和副本机制"><a href="#分片和副本机制" class="headerlink" title="分片和副本机制"></a><strong>分片和副本机制</strong></h2><h3 id="分片（Shard）"><a href="#分片（Shard）" class="headerlink" title="分片（Shard）"></a><strong>分片（Shard）</strong></h3><p><strong>Elasticsearch是一个分布式的搜索引擎，索引的数据也是分成若干部分，分布在不同的服务器节点中</strong></p>
+<p>分布在不同服务器节点中的索引数据，就是分片（Shard）。Elasticsearch会自动管理分片，如果发现分片分布不均衡，就会自动迁移</p>
+<p>一个索引（index）由多个shard（分片）组成，而分片是分布在不同的服务器上的</p>
+<h3 id="副本"><a href="#副本" class="headerlink" title="副本"></a><strong>副本</strong></h3><p>为了对Elasticsearch的分片进行容错，假设某个节点不可用，会导致整个索引库都将不可用。所以，需要对分片进行副本容错。每一个分片都会有对应的副本。</p>
+<p>在Elasticsearch中，默认创建的索引为1个分片、每个分片有1个主分片和1个副本分片。</p>
+<p>每个分片都会有一个Primary Shard（主分片），也会有若干个Replica Shard（副本分片）</p>
+<p>Primary Shard和Replica Shard不在同一个节点上</p>
+<h3 id="指定分片、副本数量"><a href="#指定分片、副本数量" class="headerlink" title="指定分片、副本数量"></a><strong>指定分片、副本数量</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 创建指定分片数量、副本数量的索引</span><br><span class="line">PUT &#x2F;job_idx_shard_temp</span><br><span class="line">&#123;</span><br><span class="line">&quot;mappings&quot;:&#123;</span><br><span class="line">&quot;properties&quot;:&#123;</span><br><span class="line">&quot;id&quot;:&#123;&quot;type&quot;:&quot;long&quot;,&quot;store&quot;:true&#125;,</span><br><span class="line">&quot;area&quot;:&#123;&quot;type&quot;:&quot;keyword&quot;,&quot;store&quot;:true&#125;,</span><br><span class="line">&quot;exp&quot;:&#123;&quot;type&quot;:&quot;keyword&quot;,&quot;store&quot;:true&#125;,</span><br><span class="line">&quot;edu&quot;:&#123;&quot;type&quot;:&quot;keyword&quot;,&quot;store&quot;:true&#125;,</span><br><span class="line">&quot;salary&quot;:&#123;&quot;type&quot;:&quot;keyword&quot;,&quot;store&quot;:true&#125;,</span><br><span class="line">&quot;job_type&quot;:&#123;&quot;type&quot;:&quot;keyword&quot;,&quot;store&quot;:true&#125;,</span><br><span class="line">&quot;cmp&quot;:&#123;&quot;type&quot;:&quot;keyword&quot;,&quot;store&quot;:true&#125;,</span><br><span class="line">&quot;pv&quot;:&#123;&quot;type&quot;:&quot;keyword&quot;,&quot;store&quot;:true&#125;,</span><br><span class="line">&quot;title&quot;:&#123;&quot;type&quot;:&quot;text&quot;,&quot;store&quot;:true&#125;,</span><br><span class="line">&quot;jd&quot;:&#123;&quot;type&quot;:&quot;text&quot;&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;settings&quot;:&#123;</span><br><span class="line">&quot;number_of_shards&quot;:3,</span><br><span class="line">&quot;number_of_replicas&quot;:2</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 查看分片、主分片、副本分片</span><br><span class="line">GET &#x2F;_cat&#x2F;indices?v</span><br></pre></td></tr></table></figure>
+
+<h2 id="Elasticsearch重要工作流程"><a href="#Elasticsearch重要工作流程" class="headerlink" title="Elasticsearch重要工作流程"></a><strong>Elasticsearch重要工作流程</strong></h2><h3 id="Elasticsearch文档写入原理"><a href="#Elasticsearch文档写入原理" class="headerlink" title="Elasticsearch文档写入原理"></a><strong>Elasticsearch文档写入原理</strong></h3><p><img src="/images/ElasticSearch/Es_origin01.png" alt="Es_origin01"></p>
+<p>1.选择任意一个DataNode发送请求，例如：node2。此时，node2就成为一个coordinating node（协调节点）</p>
+<p>2.计算得到文档要写入的分片</p>
+<p> <code>shard = hash(routing) % number_of_primary_shards</code></p>
+<p> routing 是一个可变值，默认是文档的 _id</p>
+<p>3.coordinating node会进行路由，将请求转发给对应的primary shard所在的DataNode（假设primary shard在node1、replica shard在node2）</p>
+<p>4.node1节点上的Primary Shard处理请求，写入数据到索引库中，并将数据同步到Replica shard</p>
+<p>5.Primary Shard和Replica Shard都保存好了文档，返回client</p>
+<h3 id="Elasticsearch检索原理"><a href="#Elasticsearch检索原理" class="headerlink" title="Elasticsearch检索原理"></a><strong>Elasticsearch检索原理</strong></h3><p><img src="/images/ElasticSearch/Es_origin02.png" alt="Es_origin02"></p>
+<p> client发起查询请求，某个DataNode接收到请求，该DataNode就会成为协调节点（Coordinating Node）</p>
+<p> 协调节点（Coordinating Node）将查询请求广播到每一个数据节点，这些数据节点的分片会处理该查询请求</p>
+<p> 每个分片进行数据查询，将符合条件的数据放在一个优先队列中，并将这些数据的文档ID、节点信息、分片信息返回给协调节点</p>
+<p> 协调节点将所有的结果进行汇总，并进行全局排序</p>
+<p> 协调节点向包含这些文档ID的分片发送get请求，对应的分片将文档数据返回给协调节点，最后协调节点将数据返回给客户端</p>
+<h2 id="Elasticsearch准实时索引实现"><a href="#Elasticsearch准实时索引实现" class="headerlink" title="Elasticsearch准实时索引实现"></a><strong>Elasticsearch准实时索引实现</strong></h2><p><strong>溢写到文件系统缓存</strong></p>
+<p>当数据写入到ES分片时，会首先写入到内存中，然后通过内存的buffer生成一个segment，并刷到<strong>文件系统缓存</strong>中，数据可以被检索（注意不是直接刷到磁盘）</p>
+<p>ES中默认1秒，refresh一次</p>
+<p><strong>写translog保障容错</strong></p>
+<p> 在写入到内存中的同时，也会记录translog日志，在refresh期间出现异常，会根据translog来进行数据恢复</p>
+<p>等到文件系统缓存中的segment数据都刷到磁盘中，清空translog文件</p>
+<p><strong>flush到磁盘</strong></p>
+<p>ES默认每隔30分钟会将文件系统缓存的数据刷入到磁盘</p>
+<p><strong>segment合并</strong></p>
+<p>Segment太多时，ES定期会将多个segment合并成为大的segment，减少索引查询时IO开销，此阶段ES会真正的物理删除（之前执行过的delete的数据）</p>
+<p><img src="/images/ElasticSearch/Es_origin03.png" alt="Es_origin03"></p>
+<h2 id="手工控制搜索结果精准度"><a href="#手工控制搜索结果精准度" class="headerlink" title="手工控制搜索结果精准度"></a><strong>手工控制搜索结果精准度</strong></h2><p>下述搜索中，如果document中的remark字段包含java或developer词组，都符合搜索条件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;java developer&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果需要搜索的document中的remark字段，包含java和developer词组，则需要使用下述语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &#123;</span><br><span class="line">&quot;query&quot;: &quot;java developer&quot;,</span><br><span class="line">&quot;operator&quot;: &quot;and&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述语法中，如果将operator的值改为or。则与第一个案例搜索语法效果一致。默认的ES执行搜索的时候，operator就是or。</p>
+<p>如果在搜索的结果document中，需要remark字段中包含多个搜索词条中的一定比例，可以使用下述语法实现搜索。其中minimum_should_match可以使用百分比或固定数字。百分比代表query搜索条件中词条百分比，如果无法整除，向下匹配（如，query条件有3个单词，如果使用百分比提供精准度计算，那么是无法除尽的，如果需要至少匹配两个单词，则需要用67%来进行描述。如果使用66%描述，ES则认为匹配一个单词即可。）。固定数字代表query搜索条件中的词条，至少需要匹配多少个。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &#123;</span><br><span class="line">&quot;query&quot;: &quot;java architect assistant&quot;,</span><br><span class="line">&quot;minimum_should_match&quot;: &quot;68%&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果使用should+bool搜索的话，也可以控制搜索条件的匹配度。具体如下：下述案例代表搜索的document中的remark字段中，必须匹配java、developer、assistant三个词条中的至少2个。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;bool&quot;: &#123;</span><br><span class="line">&quot;should&quot;: [</span><br><span class="line">&#123; </span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;java&quot;</span><br><span class="line">&#125; </span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;developer&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;assistant&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">],</span><br><span class="line">&quot;minimum_should_match&quot;: 2</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="match-的底层转换"><a href="#match-的底层转换" class="headerlink" title="match 的底层转换"></a><strong>match 的底层转换</strong></h3><p>其实在ES中，执行match搜索的时候，ES底层通常都会对搜索条件进行底层转换，来实现最终的搜索结果。如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;java developer&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">转换后是：</span><br><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;bool&quot;: &#123;</span><br><span class="line">&quot;should&quot;: [</span><br><span class="line">&#123;</span><br><span class="line">&quot;term&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;java&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">&quot;term&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &#123;</span><br><span class="line">&quot;value&quot;: &quot;developer&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">]</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &#123;</span><br><span class="line">&quot;query&quot;: &quot;java developer&quot;,</span><br><span class="line">&quot;operator&quot;: &quot;and&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">转换后是：</span><br><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;bool&quot;: &#123;</span><br><span class="line">&quot;must&quot;: [</span><br><span class="line">&#123;</span><br><span class="line">&quot;term&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;java&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">&quot;term&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &#123;</span><br><span class="line">&quot;value&quot;: &quot;developer&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">]</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &#123;</span><br><span class="line">&quot;query&quot;: &quot;java architect assistant&quot;,</span><br><span class="line">&quot;minimum_should_match&quot;: &quot;68%&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">转换后为：</span><br><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;bool&quot;: &#123;</span><br><span class="line">&quot;should&quot;: [</span><br><span class="line">&#123;</span><br><span class="line">&quot;term&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;java&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">&quot;term&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;architect&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">&quot;term&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;assistant&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">],</span><br><span class="line">&quot;minimum_should_match&quot;: 2</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>建议，如果不怕麻烦，尽量使用转换后的语法执行搜索，效率更高。</p>
+<p>如果开发周期短，工作量大，使用简化的写法。</p>
+<h3 id="boost权重控制"><a href="#boost权重控制" class="headerlink" title="boost权重控制"></a><strong>boost权重控制</strong></h3><p>搜索document中remark字段中包含java的数据，如果remark中包含developer或architect，则包含architect的document优先显示。（就是将architect数据匹配时的相关度分数增加）。</p>
+<p>一般用于搜索时相关度排序使用。如：电商中的综合排序。将一个商品的销量，广告投放，评价值，库存，单价比较综合排序。在上述的排序元素中，广告投放权重最高，库存权重最低。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;bool&quot;: &#123;</span><br><span class="line">&quot;must&quot;: [</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;java&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">],</span><br><span class="line">&quot;should&quot;: [</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &#123;</span><br><span class="line">&quot;query&quot;: &quot;developer&quot;,</span><br><span class="line">&quot;boost&quot; : 1</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &#123;</span><br><span class="line">&quot;query&quot;: &quot;architect&quot;,</span><br><span class="line">&quot;boost&quot; : 3</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">]</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="基于dis-max实现best-fields策略进行多字段搜索"><a href="#基于dis-max实现best-fields策略进行多字段搜索" class="headerlink" title="基于dis_max实现best fields策略进行多字段搜索"></a><strong>基于dis_max实现best fields策略进行多字段搜索</strong></h3><p>best fields策略： 搜索的document中的某一个field，尽可能多的匹配搜索条件。与之相反的是，尽可能多的字段匹配到搜索条件（most fields策略）。如百度搜索使用这种策略。</p>
+<p><strong><em>优点：精确匹配的数据可以尽可能的排列在最前端，且可以通过minimum_should_match来去除长尾数据，避免长尾数据字段对排序结果的影响。</em></strong></p>
+<p>​              长尾数据比如说我们搜索4个关键词，但很多文档只匹配1个，也显示出来了，这些文档其实不是我们想要的</p>
+<p><strong><em>缺点：相对排序不均匀。</em></strong></p>
+<p><strong><em>dis_max语法： 直接获取搜索的多条件中的，单条件query相关度分数最高的数据，以这个数据做相关度排序。</em></strong></p>
+<p>下述的案例中，就是找name字段中rod匹配相关度分数或remark字段中java developer匹配相关度分数，哪个高，就使用哪一个相关度分数进行结果排序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;dis_max&quot;: &#123;</span><br><span class="line">&quot;queries&quot;: [</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;name&quot;: &quot;rod&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;java developer&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">]</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="基于tie-breaker参数优化dis-max搜索效果"><a href="#基于tie-breaker参数优化dis-max搜索效果" class="headerlink" title="基于tie_breaker参数优化dis_max搜索效果"></a><strong>基于tie_breaker参数优化dis_max搜索效果</strong></h3><p>dis_max是将多个搜索query条件中相关度分数最高的用于结果排序，忽略其他query分数，在某些情况下，可能还需要其他query条件中的相关度介入最终的结果排序，这个时候可以使用tie_breaker参数来优化dis_max搜索。tie_breaker参数代表的含义是：将其他query搜索条件的相关度分数乘以参数值，再参与到结果排序中。如果不定义此参数，相当于参数值为0。所以其他query条件的相关度分数被忽略。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;dis_max&quot;: &#123;</span><br><span class="line">&quot;queries&quot;: [</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;name&quot;: &quot;rod&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;java developer&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">],</span><br><span class="line">&quot;tie_breaker&quot;:0.5</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用multi-match简化dis-max-tie-breaker"><a href="#使用multi-match简化dis-max-tie-breaker" class="headerlink" title="使用multi_match简化dis_max+tie_breaker"></a><strong>使用multi_match简化dis_max+tie_breaker</strong></h3><p>ES中相同结果的搜索也可以使用不同的语法语句来实现。不需要特别关注，只要能够实现搜索，就是完成任务！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;dis_max&quot;: &#123;</span><br><span class="line">&quot;queries&quot;: [</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;name&quot;: &quot;rod&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &#123;</span><br><span class="line">&quot;query&quot;: &quot;java developer&quot;,</span><br><span class="line">&quot;boost&quot; : 2,</span><br><span class="line">&quot;minimum_should_match&quot;: 2</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">],</span><br><span class="line">&quot;tie_breaker&quot;: 0.5</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#使用multi_match语法为：其中type常用的有best_fields和most_fields。^n代表权重，相当于&quot;boost&quot;:n。</span><br><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;multi_match&quot;: &#123;</span><br><span class="line">&quot;query&quot;: &quot;rod java developer&quot;,</span><br><span class="line">&quot;fields&quot;: [&quot;name&quot;, &quot;remark^2&quot;],</span><br><span class="line">&quot;type&quot;: &quot;best_fields&quot;,</span><br><span class="line">&quot;tie_breaker&quot;: 0.5,</span><br><span class="line">&quot;minimum_should_match&quot; : &quot;50%&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="cross-fields搜索"><a href="#cross-fields搜索" class="headerlink" title="cross fields搜索"></a><strong>cross fields搜索</strong></h3><p>cross fields ： 一个唯一的标识，分部在多个fields中，使用这种唯一标识搜索数据就称为cross fields搜索。如：人名可以分为姓和名，地址可以分为省、市、区县、街道等。那么使用人名或地址来搜索document，就称为cross fields搜索。</p>
+<p>实现这种搜索，一般都是使用most fields搜索策略。因为这就不是一个field的问题。</p>
+<p>Cross fields搜索策略，是从多个字段中搜索条件数据。默认情况下，和most fields搜索的逻辑是一致的，计算相关度分数是和best fields策略一致的。一般来说，如果使用cross fields搜索策略，那么都会携带一个额外的参数operator。用来标记搜索条件如何在多个字段中匹配。</p>
+<p>当然，在ES中也有cross fields搜索策略。具体语法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;es_db&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;multi_match&quot;: &#123;</span><br><span class="line">&quot;query&quot;: &quot;java developer&quot;,</span><br><span class="line">&quot;fields&quot;: [&quot;name&quot;, &quot;remark&quot;],</span><br><span class="line">&quot;type&quot;: &quot;cross_fields&quot;,</span><br><span class="line">&quot;operator&quot; : &quot;and&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述语法代表的是，搜索条件中的java必须在name或remark字段中匹配，developer也必须在name或remark字段中匹配。</p>
+<p><strong><em>most field策略问题：most fields策略是尽可能匹配更多的字段，所以会导致精确搜索结果排序问题。又因为cross fields搜索，不能使用minimum_should_match来去除长尾数据。</em></strong></p>
+<p><strong><em>所以在使用most fields和cross fields策略搜索数据的时候，都有不同的缺陷。所以商业项目开发中，都推荐使用best fields策略实现搜索。</em></strong></p>
+<h3 id="copy-to组合fields"><a href="#copy-to组合fields" class="headerlink" title="copy_to组合fields"></a><strong>copy_to组合fields</strong></h3><p>京东中，如果在搜索框中输入“手机”，点击搜索，那么是在商品的类型名称、商品的名称、商品的卖点、商品的描述等字段中，哪一个字段内进行数据的匹配？如果使用某一个字段做搜索不合适，那么使用_all做搜索是否合适？也不合适，因为_all字段中可能包含图片，价格等字段。</p>
+<p>假设，有一个字段，其中的内容包括(但不限于)：商品类型名称、商品名称、商品卖点等字段的数据内容。是否可以在这个特殊的字段上进行数据搜索匹配？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;category_name&quot; : &quot;手机&quot;,</span><br><span class="line">  &quot;product_name&quot; : &quot;一加6T手机&quot;,</span><br><span class="line">  &quot;price&quot; : 568800,</span><br><span class="line">  &quot;sell_point&quot; : &quot;国产最好的Android手机&quot;,</span><br><span class="line">  &quot;tags&quot;: [&quot;8G+128G&quot;, &quot;256G可扩展&quot;],</span><br><span class="line">  &quot;color&quot; : &quot;红色&quot;,</span><br><span class="line">  &quot;keyword&quot; : &quot;手机 一加6T手机 国产最好的Android手机&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>copy_to : 就是将多个字段，复制到一个字段中，实现一个多字段组合。copy_to可以解决cross fields搜索问题，在商业项目中，也用于解决搜索条件默认字段问题。</p>
+<p>如果需要使用copy_to语法，则需要在定义index的时候，手工指定mapping映射策略。</p>
+<p>copy_to语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">PUT &#x2F;es_db&#x2F;_mapping</span><br><span class="line">&#123;</span><br><span class="line">&quot;properties&quot;: &#123;</span><br><span class="line">&quot;provice&quot; : &#123;</span><br><span class="line">&quot;type&quot;: &quot;text&quot;,</span><br><span class="line">&quot;analyzer&quot;: &quot;standard&quot;,</span><br><span class="line">&quot;copy_to&quot;: &quot;address&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;city&quot; : &#123;</span><br><span class="line">&quot;type&quot;: &quot;text&quot;,</span><br><span class="line">&quot;analyzer&quot;: &quot;standard&quot;,</span><br><span class="line">&quot;copy_to&quot;: &quot;address&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;street&quot; : &#123;</span><br><span class="line">&quot;type&quot;: &quot;text&quot;,</span><br><span class="line">&quot;analyzer&quot;: &quot;standard&quot;,</span><br><span class="line">&quot;copy_to&quot;: &quot;address&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;address&quot; : &#123;</span><br><span class="line">&quot;type&quot;: &quot;text&quot;,</span><br><span class="line">&quot;analyzer&quot;: &quot;standard&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述的mapping定义中，是新增了4个字段，分别是provice、city、street、address，其中provice、city、street三个字段的值，会自动复制到address字段中，实现一个字段的组合。那么在搜索地址的时候，就可以在address字段中做条件匹配，从而避免most fields策略导致的问题。在维护数据的时候，不需对address字段特殊的维护。因为address字段是一个组合字段，是由ES自动维护的。类似java代码中的推导属性。在存储的时候，未必存在，但是在逻辑上是一定存在的，因为address是由3个物理存在的属性province、city、street组成的。</p>
+<h3 id="近似匹配"><a href="#近似匹配" class="headerlink" title="近似匹配"></a><strong>近似匹配</strong></h3><p>前文都是精确匹配。如doc中有数据java assistant，那么搜索jave是搜索不到数据的。因为jave单词在doc中是不存在的。</p>
+<p>如果搜索的语法是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET _search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot; : &#123;</span><br><span class="line">&quot;match&quot; : &#123;</span><br><span class="line">&quot;name&quot; : &quot;jave&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果需要的结果是有特殊要求，如：hello world必须是一个完整的短语，不可分割；或document中的field内，包含的hello和world单词，且两个单词之间离的越近，相关度分数越高。那么这种特殊要求的搜索就是近似搜索。包括hell搜索条件在hello world数据中搜索，包括h搜索提示等都数据近似搜索的一部分。</p>
+<p>如上述特殊要求的搜索，使用match搜索语法就无法实现了。</p>
+<h3 id="match-phrase"><a href="#match-phrase" class="headerlink" title="match phrase"></a><strong>match phrase</strong></h3><p>短语搜索。就是搜索条件不分词。代表搜索条件不可分割。</p>
+<p>如果hello world是一个不可分割的短语，我们可以使用前文学过的短语搜索match phrase来实现。语法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET _search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match_phrase&quot;: &#123;</span><br><span class="line">&quot;remark&quot;: &quot;java assistant&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="match-phrase原理-–-term-position"><a href="#match-phrase原理-–-term-position" class="headerlink" title="match phrase原理 – term position"></a><strong>match phrase原理 – term position</strong></h4><p>ES是如何实现match phrase短语搜索的？其实在ES中，使用match phrase做搜索的时候，也是和match类似，首先对搜索条件进行分词-analyze。将搜索条件拆分成hello和world。既然是分词后再搜索，ES是如何实现短语搜索的？</p>
+<p>这里涉及到了倒排索引的建立过程。在倒排索引建立的时候，ES会先对document数据进行分词，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET _analyze</span><br><span class="line">&#123;</span><br><span class="line">&quot;text&quot;: &quot;hello world, java spark&quot;,</span><br><span class="line">&quot;analyzer&quot;: &quot;standard&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>分词的结果是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">&quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;hello&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 5,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;world&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 6,</span><br><span class="line">      &quot;end_offset&quot;: 11,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;java&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 13,</span><br><span class="line">      &quot;end_offset&quot;: 17,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;spark&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 18,</span><br><span class="line">      &quot;end_offset&quot;: 23,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 3</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上述结果中，可以看到。ES在做分词的时候，除了将数据切分外，还会保留一个position。position代表的是这个词在整个数据中的下标。当ES执行match phrase搜索的时候，首先将搜索条件hello world分词为hello和world。然后在倒排索引中检索数据，如果hello和world都在某个document的某个field出现时，那么检查这两个匹配到的单词的position是否是连续的，如果是连续的，代表匹配成功，如果是不连续的，则匹配失败。</p>
+<h4 id="match-phrase搜索参数-–-slop"><a href="#match-phrase搜索参数-–-slop" class="headerlink" title="match phrase搜索参数 – slop"></a><strong>match phrase搜索参数 – slop</strong></h4><p>在做搜索操作的是，如果搜索参数是hello spark。而ES中存储的数据是hello world, java spark。那么使用match phrase则无法搜索到。在这个时候，可以使用match来解决这个问题。但是，当我们需要在搜索的结果中，做一个特殊的要求：hello和spark两个单词距离越近，document在结果集合中排序越靠前，这个时候再使用match则未必能得到想要的结果。</p>
+<p>ES的搜索中，对match phrase提供了参数slop。slop代表match phrase短语搜索的时候，单词最多移动多少次，可以实现数据匹配。在所有匹配结果中，多个单词距离越近，相关度评分越高，排序越靠前。</p>
+<p>这种使用slop参数的match phrase搜索，就称为近似匹配（proximity search）</p>
+<p>如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">数据为： hello world, java spark</span><br><span class="line">搜索为： match phrase : hello spark。</span><br><span class="line">slop为： 3  （代表单词最多移动3次。）</span><br><span class="line">执行短语搜索的时候，将条件hello spark分词为hello和spark两个单词。并且连续。</span><br><span class="line">hello   spark</span><br><span class="line"></span><br><span class="line">接下来，可以根据slop参数执行单词的移动。</span><br><span class="line">下标 ：	0		1		2		3</span><br><span class="line">doc  ：	hello	        world	      java		spark</span><br><span class="line">搜索 ：     hello	        spark</span><br><span class="line">移动1：	hello			      spark</span><br><span class="line">移动2：	hello					       spark</span><br></pre></td></tr></table></figure>
+
+<p>匹配成功，不需要移动第三次即可匹配。</p>
+<p>如果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">数据为： hello world, java spark</span><br><span class="line">搜索为： match phrase : spark hello。</span><br><span class="line">slop为： 5  （代表单词最多移动5次。）</span><br><span class="line">执行短语搜索的时候，将条件hello spark分词为hello和spark两个单词。并且连续。</span><br><span class="line">spark    hello</span><br><span class="line"></span><br><span class="line">接下来，可以根据slop参数执行单词的移动。</span><br><span class="line">下标 ：	0		1		2		3</span><br><span class="line">doc  ：	hello	        world	       java	      spark</span><br><span class="line">搜索 ：     spark	        hello</span><br><span class="line">移动1：			spark&#x2F;hello</span><br><span class="line">移动2：	hello	        spark</span><br><span class="line">移动3：	hello			        spark</span><br><span class="line">移动4：	hello					      spark</span><br></pre></td></tr></table></figure>
+
+<p>匹配成功，不需要移动第五次即可匹配。</p>
+<p>如果当slop移动次数使用完毕，还没有匹配成功，则无搜索结果。如果使用中文分词，则移动次数更加复杂，因为中文词语有重叠情况，很难计算具体次数，需要多次尝试才行。</p>
+<p>测试案例：</p>
+<p>英文：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">GET _analyze</span><br><span class="line">&#123;</span><br><span class="line">&quot;text&quot;: &quot;hello world, java spark&quot;,</span><br><span class="line">&quot;analyzer&quot;: &quot;standard&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST &#x2F;test_a&#x2F;_doc&#x2F;3</span><br><span class="line">&#123;</span><br><span class="line">&quot;f&quot; : &quot;hello world, java spark&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET &#x2F;test_a&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match_phrase&quot;: &#123;</span><br><span class="line">&quot;f&quot; : &#123;</span><br><span class="line">&quot;query&quot;: &quot;hello spark&quot;,</span><br><span class="line">&quot;slop&quot; : 2</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET &#x2F;test_a&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match_phrase&quot;: &#123;</span><br><span class="line">&quot;f&quot; : &#123;</span><br><span class="line">&quot;query&quot;: &quot;spark hello&quot;,</span><br><span class="line">&quot;slop&quot; : 4</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>中文：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">GET _analyze</span><br><span class="line">&#123;</span><br><span class="line">&quot;text&quot;: &quot;中国，一个世界上最强的国家&quot;,</span><br><span class="line">&quot;analyzer&quot;: &quot;ik_max_word&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST &#x2F;test_a&#x2F;_doc&#x2F;1</span><br><span class="line">&#123;</span><br><span class="line">&quot;f&quot; : &quot;中国，一个世界上最强的国家&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET &#x2F;test_a&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match_phrase&quot;: &#123;</span><br><span class="line">&quot;f&quot; : &#123;</span><br><span class="line">&quot;query&quot;: &quot;中国最强&quot;,</span><br><span class="line">&quot;slop&quot; : 5</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET &#x2F;test_a&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match_phrase&quot;: &#123;</span><br><span class="line">&quot;f&quot; : &#123;</span><br><span class="line">&quot;query&quot;: &quot;最强中国&quot;,</span><br><span class="line">&quot;slop&quot; : 9</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="前缀搜索-prefix-search"><a href="#前缀搜索-prefix-search" class="headerlink" title="前缀搜索 prefix search"></a>前缀搜索 prefix search</h2><p>使用前缀匹配实现搜索能力。通常针对keyword类型字段，也就是不分词的字段。</p>
+<p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;test_a&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;prefix&quot;: &#123;</span><br><span class="line">&quot;f.keyword&quot;: &#123;</span><br><span class="line">&quot;value&quot;: &quot;J&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>注意：针对前缀搜索，是对keyword类型字段而言。而keyword类型字段数据大小写敏感。</em></strong></p>
+<p>前缀搜索效率比较低。前缀搜索不会计算相关度分数。前缀越短，效率越低。如果使用前缀搜索，建议使用长前缀。因为前缀搜索需要扫描完整的索引内容，所以前缀越长，相对效率越高。</p>
+<h2 id="通配符搜索"><a href="#通配符搜索" class="headerlink" title="通配符搜索"></a><strong>通配符搜索</strong></h2><p>ES中也有通配符。但是和java还有数据库不太一样。通配符可以在倒排索引中使用，也可以在keyword类型字段中使用。</p>
+<p>常用通配符： </p>
+<p>? - 一个任意字符</p>
+<p>* - 0~n个任意字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;test_a&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;wildcard&quot;: &#123;</span><br><span class="line">&quot;f.keyword&quot;: &#123;</span><br><span class="line">&quot;value&quot;: &quot;?e*o*&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>性能也很低，也是需要扫描完整的索引。不推荐使用。</p>
+<h2 id="正则搜索"><a href="#正则搜索" class="headerlink" title="正则搜索"></a><strong>正则搜索</strong></h2><p>ES支持正则表达式。可以在倒排索引或keyword类型字段中使用。</p>
+<p>常用符号：</p>
+<p>[] - 范围，如： [0-9]是0~9的范围数字</p>
+<p>. - 一个字符</p>
+<p>+ - 前面的表达式可以出现多次。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;test_a&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;regexp&quot; : &#123;</span><br><span class="line">&quot;f.keyword&quot; : &quot;[A-z].+&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>性能也很低，需要扫描完整索引。</p>
+<h2 id="搜索推荐"><a href="#搜索推荐" class="headerlink" title="搜索推荐"></a>搜索推荐</h2><p>搜索推荐： search as your type， 搜索提示。如：索引中有若干数据 以“hello”开头，那么在输入hello的时候，推荐相关信息。（类似百度输入框） </p>
+<p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;test_a&#x2F;_search </span><br><span class="line">&#123; </span><br><span class="line">    &quot;query&quot;: &#123; </span><br><span class="line">        &quot;match_phrase_prefix&quot;: &#123; </span><br><span class="line">            &quot;f&quot;: &#123; </span><br><span class="line">                &quot;query&quot;: &quot;java s&quot;, </span><br><span class="line">                &quot;slop&quot; : 10, </span><br><span class="line">                &quot;max_expansions&quot;: 10 </span><br><span class="line">            &#125; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其原理和match phrase类似，是先使用match匹配term数据（java），然后在 指定的slop移动次数范围内，前缀匹配（s），max_expansions是用于指定prefix 最多匹配多少个term（单词），超过这个数量就不再匹配了。</p>
+<p>这种语法的限制是，只有最后一个term会执行前缀搜索。 </p>
+<p>执行性能很差，毕竟最后一个term是需要扫描所有符合slop要求的倒排索引的 term。</p>
+<p>因为效率较低，如果必须使用，则一定要使用参数max_expansions。</p>
+<p><a target="_blank" rel="noopener" href="https://note.youdao.com/ynoteshare/index.html?id=5700368270f2702c4fa72c629b6a8562&type=note&_time=1654754307737">参考链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/elasticSearch/" rel="tag"># elasticSearch</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/09/ElasticSearch/2022-06-09%20ElasticSearch%E5%88%86%E8%AF%8D%E5%8F%8A%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C/" rel="prev" title="ElasticSearch分词器及聚合操作">
+      <i class="fa fa-chevron-left"></i> ElasticSearch分词器及聚合操作
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/10/ElasticSearch/2022-06-10%20ElasticSearch%E8%AE%A1%E5%88%86%E5%8E%9F%E7%90%86%E5%8F%8A%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1/" rel="next" title="ElasticSearch计分原理及数据建模">
+      ElasticSearch计分原理及数据建模 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">Elasticsearch架构原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Elasticsearch%E7%9A%84%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">Elasticsearch的节点类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%89%87%E5%92%8C%E5%89%AF%E6%9C%AC%E6%9C%BA%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text">分片和副本机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%89%87%EF%BC%88Shard%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">分片（Shard）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC"><span class="nav-number">2.2.</span> <span class="nav-text">副本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E5%88%86%E7%89%87%E3%80%81%E5%89%AF%E6%9C%AC%E6%95%B0%E9%87%8F"><span class="nav-number">2.3.</span> <span class="nav-text">指定分片、副本数量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch%E9%87%8D%E8%A6%81%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">Elasticsearch重要工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Elasticsearch%E6%96%87%E6%A1%A3%E5%86%99%E5%85%A5%E5%8E%9F%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">Elasticsearch文档写入原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Elasticsearch%E6%A3%80%E7%B4%A2%E5%8E%9F%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">Elasticsearch检索原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch%E5%87%86%E5%AE%9E%E6%97%B6%E7%B4%A2%E5%BC%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">Elasticsearch准实时索引实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E5%B7%A5%E6%8E%A7%E5%88%B6%E6%90%9C%E7%B4%A2%E7%BB%93%E6%9E%9C%E7%B2%BE%E5%87%86%E5%BA%A6"><span class="nav-number">5.</span> <span class="nav-text">手工控制搜索结果精准度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#match-%E7%9A%84%E5%BA%95%E5%B1%82%E8%BD%AC%E6%8D%A2"><span class="nav-number">5.1.</span> <span class="nav-text">match 的底层转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boost%E6%9D%83%E9%87%8D%E6%8E%A7%E5%88%B6"><span class="nav-number">5.2.</span> <span class="nav-text">boost权重控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8Edis-max%E5%AE%9E%E7%8E%B0best-fields%E7%AD%96%E7%95%A5%E8%BF%9B%E8%A1%8C%E5%A4%9A%E5%AD%97%E6%AE%B5%E6%90%9C%E7%B4%A2"><span class="nav-number">5.3.</span> <span class="nav-text">基于dis_max实现best fields策略进行多字段搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8Etie-breaker%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96dis-max%E6%90%9C%E7%B4%A2%E6%95%88%E6%9E%9C"><span class="nav-number">5.4.</span> <span class="nav-text">基于tie_breaker参数优化dis_max搜索效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8multi-match%E7%AE%80%E5%8C%96dis-max-tie-breaker"><span class="nav-number">5.5.</span> <span class="nav-text">使用multi_match简化dis_max+tie_breaker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cross-fields%E6%90%9C%E7%B4%A2"><span class="nav-number">5.6.</span> <span class="nav-text">cross fields搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-to%E7%BB%84%E5%90%88fields"><span class="nav-number">5.7.</span> <span class="nav-text">copy_to组合fields</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%91%E4%BC%BC%E5%8C%B9%E9%85%8D"><span class="nav-number">5.8.</span> <span class="nav-text">近似匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#match-phrase"><span class="nav-number">5.9.</span> <span class="nav-text">match phrase</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#match-phrase%E5%8E%9F%E7%90%86-%E2%80%93-term-position"><span class="nav-number">5.9.1.</span> <span class="nav-text">match phrase原理 – term position</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#match-phrase%E6%90%9C%E7%B4%A2%E5%8F%82%E6%95%B0-%E2%80%93-slop"><span class="nav-number">5.9.2.</span> <span class="nav-text">match phrase搜索参数 – slop</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2-prefix-search"><span class="nav-number">6.</span> <span class="nav-text">前缀搜索 prefix search</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E9%85%8D%E7%AC%A6%E6%90%9C%E7%B4%A2"><span class="nav-number">7.</span> <span class="nav-text">通配符搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E6%90%9C%E7%B4%A2"><span class="nav-number">8.</span> <span class="nav-text">正则搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2%E6%8E%A8%E8%8D%90"><span class="nav-number">9.</span> <span class="nav-text">搜索推荐</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">183</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

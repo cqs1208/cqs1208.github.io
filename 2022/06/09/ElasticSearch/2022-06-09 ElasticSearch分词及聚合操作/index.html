@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="elasticSearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ElasticSearch分词器及聚合操作">
+<meta property="og:url" content="http://example.com/2022/06/09/ElasticSearch/2022-06-09%20ElasticSearch%E5%88%86%E8%AF%8D%E5%8F%8A%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="elasticSearch">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-06-09T05:58:55.051Z">
+<meta property="article:modified_time" content="2022-06-09T10:04:35.223Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="elasticSearch">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/06/09/ElasticSearch/2022-06-09%20ElasticSearch%E5%88%86%E8%AF%8D%E5%8F%8A%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ElasticSearch分词器及聚合操作 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/09/ElasticSearch/2022-06-09%20ElasticSearch%E5%88%86%E8%AF%8D%E5%8F%8A%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ElasticSearch分词器及聚合操作
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-06-09 13:58:55 / Modified: 18:04:35" itemprop="dateCreated datePublished" datetime="2022-06-09T13:58:55+08:00">2022-06-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/elasticSearch/" itemprop="url" rel="index"><span itemprop="name">elasticSearch</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">elasticSearch</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>ElasticSearch分词及聚合操作</p>
+<a id="more"></a> 
+
+<h2 id="分词器工作流程"><a href="#分词器工作流程" class="headerlink" title="分词器工作流程"></a>分词器工作流程</h2><p>切分词语，normalization</p>
+<p>给你一段句子，然后将这段句子拆分成一个一个的单个的单词，同时对每个单词进行normalization（时态转换，单复数转换），分词器 </p>
+<p>recall，召回率：搜索的时候，增加能够搜索到的结果的数量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">character filter：在一段文本进行分词之前，先进行预处理，比如说最常见的就是，过滤html标签（&lt;span&gt;hello&lt;span&gt; --&gt; hello），&amp; --&gt; and（I&amp;you --&gt; I and you）</span><br><span class="line"></span><br><span class="line">tokenizer：分词，hello you and me --&gt; hello, you, and, me</span><br><span class="line"></span><br><span class="line">token filter：lowercase，stop word，synonymom，liked --&gt; like，Tom --&gt; tom，a&#x2F;the&#x2F;an --&gt; 干掉，small --&gt; little</span><br></pre></td></tr></table></figure>
+
+<p>一个分词器，很重要，将一段文本进行各种处理，最后处理好的结果才会拿去建立倒排索引 </p>
+<h2 id="定制分词器"><a href="#定制分词器" class="headerlink" title="定制分词器"></a>定制分词器</h2><h3 id="1）默认的分词器"><a href="#1）默认的分词器" class="headerlink" title="1）默认的分词器"></a>1）默认的分词器</h3><p>standard </p>
+<p>standard tokenizer：以单词边界进行切分 </p>
+<p>standard token filter：什么都不做 </p>
+<p>lowercase token filter：将所有字母转换为小写 </p>
+<p>stop token filer（默认被禁用）：移除停用词，比如a the it等等</p>
+<h3 id="2）修改分词器的设置"><a href="#2）修改分词器的设置" class="headerlink" title="2）修改分词器的设置"></a>2）修改分词器的设置</h3><p>启用english停用词token filter</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">PUT &#x2F;my_index</span><br><span class="line">&#123;</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">    &quot;analysis&quot;: &#123;</span><br><span class="line">      &quot;analyzer&quot;: &#123;</span><br><span class="line">        &quot;es_std&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;standard&quot;,</span><br><span class="line">          &quot;stopwords&quot;: &quot;_english_&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET &#x2F;my_index&#x2F;_analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;standard&quot;, </span><br><span class="line">  &quot;text&quot;: &quot;a dog is in the house&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET &#x2F;my_index&#x2F;_analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;es_std&quot;,</span><br><span class="line">  &quot;text&quot;:&quot;a dog is in the house&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">3、定制化自己的分词器</span><br><span class="line"></span><br><span class="line">PUT &#x2F;my_index</span><br><span class="line">&#123;</span><br><span class="line">&quot;settings&quot;: &#123;</span><br><span class="line">&quot;analysis&quot;: &#123;</span><br><span class="line">&quot;char_filter&quot;: &#123;</span><br><span class="line">&quot;&amp;_to_and&quot;: &#123;</span><br><span class="line">&quot;type&quot;: &quot;mapping&quot;,</span><br><span class="line">&quot;mappings&quot;: [&quot;&amp;&#x3D;&gt; and&quot;]</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;filter&quot;: &#123;</span><br><span class="line">&quot;my_stopwords&quot;: &#123;</span><br><span class="line">&quot;type&quot;: &quot;stop&quot;,</span><br><span class="line">&quot;stopwords&quot;: [&quot;the&quot;, &quot;a&quot;]</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;analyzer&quot;: &#123;</span><br><span class="line">&quot;my_analyzer&quot;: &#123;</span><br><span class="line">&quot;type&quot;: &quot;custom&quot;,</span><br><span class="line">&quot;char_filter&quot;: [&quot;html_strip&quot;, &quot;&amp;_to_and&quot;],</span><br><span class="line">&quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">&quot;filter&quot;: [&quot;lowercase&quot;, &quot;my_stopwords&quot;]</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET &#x2F;my_index&#x2F;_analyze</span><br><span class="line">&#123;</span><br><span class="line">&quot;text&quot;: &quot;tom&amp;jerry are a friend in the house, &lt;a&gt;, HAHA!!&quot;,</span><br><span class="line">&quot;analyzer&quot;: &quot;my_analyzer&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT &#x2F;my_index&#x2F;_mapping&#x2F;my_type</span><br><span class="line">&#123;</span><br><span class="line">&quot;properties&quot;: &#123;</span><br><span class="line">&quot;content&quot;: &#123;</span><br><span class="line">&quot;type&quot;: &quot;text&quot;,</span><br><span class="line">&quot;analyzer&quot;: &quot;my_analyzer&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3）ik分词器详解"><a href="#3）ik分词器详解" class="headerlink" title="3）ik分词器详解"></a>3）ik分词器详解</h3><p>ik配置文件地址：es/plugins/ik/config目录</p>
+<p>IKAnalyzer.cfg.xml：用来配置自定义词库 </p>
+<p>main.dic：ik原生内置的中文词库，总共有27万多条，只要是这些单词，都会被分在一起 </p>
+<p>quantifier.dic：放了一些单位相关的词 </p>
+<p>suffix.dic：放了一些后缀 </p>
+<p>surname.dic：中国的姓氏 </p>
+<p>stopword.dic：英文停用词</p>
+<p>ik原生最重要的两个配置文件</p>
+<p>main.dic：包含了原生的中文词语，会按照这个里面的词语去分词 </p>
+<p>stopword.dic：包含了英文的停用词</p>
+<p>停用词，stopword </p>
+<p>a the and at but</p>
+<p>一般，像停用词，会在分词的时候，直接被干掉，不会建立在倒排索引中</p>
+<h3 id="4）IK分词器自定义词库"><a href="#4）IK分词器自定义词库" class="headerlink" title="4）IK分词器自定义词库"></a>4）IK分词器自定义词库</h3><p>（1）自己建立词库：每年都会涌现一些特殊的流行词，网红，蓝瘦香菇，喊麦，鬼畜，一般不会在ik的原生词典里 </p>
+<p>自己补充自己的最新的词语，到ik的词库里面去 </p>
+<p>IKAnalyzer.cfg.xml：ext_dict，custom/mydict.dic </p>
+<p>补充自己的词语，然后需要重启es，才能生效</p>
+<p>（2）自己建立停用词库：比如了，的，啥，么，我们可能并不想去建立索引，让人家搜索</p>
+<p>custom/ext_stopword.dic，已经有了常用的中文停用词，可以补充自己的停用词，然后重启es</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IK分词器源码下载：https:&#x2F;&#x2F;github.com&#x2F;medcl&#x2F;elasticsearch-analysis-ik&#x2F;tree</span><br></pre></td></tr></table></figure>
+
+<h3 id="5）IK热更新"><a href="#5）IK热更新" class="headerlink" title="5）IK热更新"></a>5）IK热更新</h3><p>每次都是在es的扩展词典中，手动添加新词语，很坑 </p>
+<p>（1）每次添加完，都要重启es才能生效，非常麻烦 </p>
+<p>（2）es是分布式的，可能有数百个节点，你不能每次都一个一个节点上面去修改 </p>
+<p> es不停机，直接我们在外部某个地方添加新的词语，es中立即热加载到这些新词语</p>
+<p>IKAnalyzer.cfg.xml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;properties&gt;</span><br><span class="line">	&lt;comment&gt;IK Analyzer 扩展配置&lt;&#x2F;comment&gt;</span><br><span class="line">	&lt;!--用户可以在这里配置自己的扩展字典 --&gt;</span><br><span class="line">	&lt;entry key&#x3D;&quot;ext_dict&quot;&gt;location&lt;&#x2F;entry&gt;</span><br><span class="line">	 &lt;!--用户可以在这里配置自己的扩展停止词字典--&gt;</span><br><span class="line">	&lt;entry key&#x3D;&quot;ext_stopwords&quot;&gt;location&lt;&#x2F;entry&gt;</span><br><span class="line">	&lt;!--用户可以在这里配置远程扩展字典 --&gt;</span><br><span class="line">	&lt;entry key&#x3D;&quot;remote_ext_dict&quot;&gt;words_location&lt;&#x2F;entry&gt; </span><br><span class="line">	&lt;!--用户可以在这里配置远程扩展停止词字典--&gt;</span><br><span class="line">	&lt;entry key&#x3D;&quot;remote_ext_stopwords&quot;&gt;words_location&lt;&#x2F;entry&gt;</span><br><span class="line">&lt;&#x2F;properties&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="高亮显示"><a href="#高亮显示" class="headerlink" title="高亮显示"></a><strong>高亮显示</strong></h2><p>在搜索中，经常需要对搜索关键字做高亮显示，高亮显示也有其常用的参数，在这个案例中做一些常用参数的介绍。</p>
+<p>现在搜索cars索引中remark字段中包含“大众”的document。并对“XX关键字”做高亮显示，高亮效果使用html标签，并设定字体为红色。如果remark数据过长，则只显示前20个字符。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br></pre></td><td class="code"><pre><span class="line">PUT &#x2F;news_website</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line"></span><br><span class="line">      &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;title&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">          &quot;analyzer&quot;: &quot;ik_max_word&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;content&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">          &quot;analyzer&quot;: &quot;ik_max_word&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">PUT &#x2F;news_website</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot; : &#123;</span><br><span class="line">        &quot;index&quot; : &#123;</span><br><span class="line">            &quot;analysis.analyzer.default.type&quot;: &quot;ik_max_word&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">PUT &#x2F;news_website&#x2F;_doc&#x2F;1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;title&quot;: &quot;这是我写的第一篇文章&quot;,</span><br><span class="line">  &quot;content&quot;: &quot;大家好，这是我写的第一篇文章，特别喜欢这个文章门户网站！！！&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET &#x2F;news_website&#x2F;_doc&#x2F;_search </span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;title&quot;: &quot;文章&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;highlight&quot;: &#123;</span><br><span class="line">    &quot;fields&quot;: &#123;</span><br><span class="line">      &quot;title&quot;: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  &quot;took&quot; : 458,</span><br><span class="line">  &quot;timed_out&quot; : false,</span><br><span class="line">  &quot;_shards&quot; : &#123;</span><br><span class="line">    &quot;total&quot; : 1,</span><br><span class="line">    &quot;successful&quot; : 1,</span><br><span class="line">    &quot;skipped&quot; : 0,</span><br><span class="line">    &quot;failed&quot; : 0</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;hits&quot; : &#123;</span><br><span class="line">    &quot;total&quot; : &#123;</span><br><span class="line">      &quot;value&quot; : 1,</span><br><span class="line">      &quot;relation&quot; : &quot;eq&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;max_score&quot; : 0.2876821,</span><br><span class="line">    &quot;hits&quot; : [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;_index&quot; : &quot;news_website&quot;,</span><br><span class="line">        &quot;_type&quot; : &quot;_doc&quot;,</span><br><span class="line">        &quot;_id&quot; : &quot;1&quot;,</span><br><span class="line">        &quot;_score&quot; : 0.2876821,</span><br><span class="line">        &quot;_source&quot; : &#123;</span><br><span class="line">          &quot;title&quot; : &quot;我的第一篇文章&quot;,</span><br><span class="line">          &quot;content&quot; : &quot;大家好，这是我写的第一篇文章，特别喜欢这个文章门户网站！！！&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;highlight&quot; : &#123;</span><br><span class="line">          &quot;title&quot; : [</span><br><span class="line">            &quot;我的第一篇&lt;em&gt;文章&lt;&#x2F;em&gt;&quot;</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;em&gt;&lt;&#x2F;em&gt;表现，会变成红色，所以说你的指定的field中，如果包含了那个搜索词的话，就会在那个field的文本中，对搜索词进行红色的高亮显示</span><br><span class="line"></span><br><span class="line">GET &#x2F;news_website&#x2F;_doc&#x2F;_search </span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;bool&quot;: &#123;</span><br><span class="line">      &quot;should&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">          &quot;match&quot;: &#123;</span><br><span class="line">            &quot;title&quot;: &quot;文章&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          &quot;match&quot;: &#123;</span><br><span class="line">            &quot;content&quot;: &quot;文章&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;highlight&quot;: &#123;</span><br><span class="line">    &quot;fields&quot;: &#123;</span><br><span class="line">      &quot;title&quot;: &#123;&#125;,</span><br><span class="line">      &quot;content&quot;: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">highlight中的field，必须跟query中的field一一对齐的</span><br><span class="line"></span><br><span class="line">2、常用的highlight介绍</span><br><span class="line"></span><br><span class="line">plain highlight，lucene highlight，默认</span><br><span class="line"></span><br><span class="line">posting highlight，index_options&#x3D;offsets</span><br><span class="line"></span><br><span class="line">（1）性能比plain highlight要高，因为不需要重新对高亮文本进行分词</span><br><span class="line">（2）对磁盘的消耗更少</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">DELETE news_website</span><br><span class="line">PUT &#x2F;news_website</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">      &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;title&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">          &quot;analyzer&quot;: &quot;ik_max_word&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;content&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">          &quot;analyzer&quot;: &quot;ik_max_word&quot;,</span><br><span class="line">          &quot;index_options&quot;: &quot;offsets&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT &#x2F;news_website&#x2F;_doc&#x2F;1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;title&quot;: &quot;我的第一篇文章&quot;,</span><br><span class="line">  &quot;content&quot;: &quot;大家好，这是我写的第一篇文章，特别喜欢这个文章门户网站！！！&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET &#x2F;news_website&#x2F;_doc&#x2F;_search </span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;content&quot;: &quot;文章&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;highlight&quot;: &#123;</span><br><span class="line">    &quot;fields&quot;: &#123;</span><br><span class="line">      &quot;content&quot;: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fast vector highlight</span><br><span class="line"></span><br><span class="line">index-time term vector设置在mapping中，就会用fast verctor highlight</span><br><span class="line"></span><br><span class="line">（1）对大field而言（大于1mb），性能更高</span><br><span class="line"></span><br><span class="line">delete  &#x2F;news_website</span><br><span class="line"></span><br><span class="line">PUT &#x2F;news_website</span><br><span class="line">&#123;</span><br><span class="line">  &quot;mappings&quot;: &#123;</span><br><span class="line">      &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;title&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">          &quot;analyzer&quot;: &quot;ik_max_word&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;content&quot;: &#123;</span><br><span class="line">          &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">          &quot;analyzer&quot;: &quot;ik_max_word&quot;,</span><br><span class="line">          &quot;term_vector&quot; : &quot;with_positions_offsets&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">强制使用某种highlighter，比如对于开启了term vector的field而言，可以强制使用plain highlight</span><br><span class="line"></span><br><span class="line">GET &#x2F;news_website&#x2F;_doc&#x2F;_search </span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;content&quot;: &quot;文章&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;highlight&quot;: &#123;</span><br><span class="line">    &quot;fields&quot;: &#123;</span><br><span class="line">      &quot;content&quot;: &#123;</span><br><span class="line">        &quot;type&quot;: &quot;plain&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">总结一下，其实可以根据你的实际情况去考虑，一般情况下，用plain highlight也就足够了，不需要做其他额外的设置</span><br><span class="line">如果对高亮的性能要求很高，可以尝试启用posting highlight</span><br><span class="line">如果field的值特别大，超过了1M，那么可以用fast vector highlight</span><br><span class="line"></span><br><span class="line">3、设置高亮html标签，默认是&lt;em&gt;标签</span><br><span class="line"></span><br><span class="line">GET &#x2F;news_website&#x2F;_doc&#x2F;_search </span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;content&quot;: &quot;文章&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;highlight&quot;: &#123;</span><br><span class="line">    &quot;pre_tags&quot;: [&quot;&lt;span color&#x3D;&#39;red&#39;&gt;&quot;],</span><br><span class="line">    &quot;post_tags&quot;: [&quot;&lt;&#x2F;span&gt;&quot;], </span><br><span class="line">    &quot;fields&quot;: &#123;</span><br><span class="line">      &quot;content&quot;: &#123;</span><br><span class="line">        &quot;type&quot;: &quot;plain&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">4、高亮片段fragment的设置</span><br><span class="line"></span><br><span class="line">GET &#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot; : &#123;</span><br><span class="line">        &quot;match&quot;: &#123; &quot;content&quot;: &quot;文章&quot; &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot; : &#123;</span><br><span class="line">        &quot;fields&quot; : &#123;</span><br><span class="line">            &quot;content&quot; : &#123;&quot;fragment_size&quot; : 150, &quot;number_of_fragments&quot; : 3 &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fragment_size: 你一个Field的值，比如有长度是1万，但是你不可能在页面上显示这么长啊。。。设置要显示出来的fragment文本判断的长度，默认是100</span><br><span class="line">number_of_fragments：你可能你的高亮的fragment文本片段有多个片段，你可以指定就显示几个片段</span><br></pre></td></tr></table></figure>
+
+<h2 id="聚合搜索"><a href="#聚合搜索" class="headerlink" title="聚合搜索"></a><strong>聚合搜索</strong></h2><h3 id="bucket和metric概念简介"><a href="#bucket和metric概念简介" class="headerlink" title="bucket和metric概念简介"></a><strong>bucket和metric概念简介</strong></h3><p>bucket就是一个聚合搜索时的数据分组。如：销售部门有员工张三和李四，开发部门有员工王五和赵六。那么根据部门分组聚合得到结果就是两个bucket。销售部门bucket中有张三和李四，</p>
+<p>开发部门 bucket中有王五和赵六。</p>
+<p>metric就是对一个bucket数据执行的统计分析。如上述案例中，开发部门有2个员工，销售部门有2个员工，这就是metric。</p>
+<p>metric有多种统计，如：求和，最大值，最小值，平均值等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用一个大家容易理解的SQL语法来解释，如：select count(*) from table group by column。那么group by column分组后的每组数据就是bucket。对每个分组执行的count(*)就是metric。</span><br></pre></td></tr></table></figure>
+
+<h3 id="准备案例数据"><a href="#准备案例数据" class="headerlink" title="准备案例数据"></a><strong>准备案例数据</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">PUT &#x2F;cars</span><br><span class="line">&#123;</span><br><span class="line">&quot;mappings&quot;: &#123;</span><br><span class="line">&quot;properties&quot;: &#123;</span><br><span class="line">&quot;price&quot;: &#123;</span><br><span class="line">&quot;type&quot;: &quot;long&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;color&quot;: &#123;</span><br><span class="line">&quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;brand&quot;: &#123;</span><br><span class="line">&quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;model&quot;: &#123;</span><br><span class="line">&quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;sold_date&quot;: &#123;</span><br><span class="line">&quot;type&quot;: &quot;date&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;remark&quot; : &#123;</span><br><span class="line">&quot;type&quot; : &quot;text&quot;,</span><br><span class="line">&quot;analyzer&quot; : &quot;ik_max_word&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">POST &#x2F;cars&#x2F;_bulk</span><br><span class="line">&#123; &quot;index&quot;: &#123;&#125;&#125;</span><br><span class="line">&#123; &quot;price&quot; : 258000, &quot;color&quot; : &quot;金色&quot;, &quot;brand&quot;:&quot;大众&quot;, &quot;model&quot; : &quot;大众迈腾&quot;, &quot;sold_date&quot; : &quot;2021-10-28&quot;,&quot;remark&quot; : &quot;大众中档车&quot; &#125;</span><br><span class="line">&#123; &quot;index&quot;: &#123;&#125;&#125;</span><br><span class="line">&#123; &quot;price&quot; : 123000, &quot;color&quot; : &quot;金色&quot;, &quot;brand&quot;:&quot;大众&quot;, &quot;model&quot; : &quot;大众速腾&quot;, &quot;sold_date&quot; : &quot;2021-11-05&quot;,&quot;remark&quot; : &quot;大众神车&quot; &#125;</span><br><span class="line">&#123; &quot;index&quot;: &#123;&#125;&#125;</span><br><span class="line">&#123; &quot;price&quot; : 239800, &quot;color&quot; : &quot;白色&quot;, &quot;brand&quot;:&quot;标志&quot;, &quot;model&quot; : &quot;标志508&quot;, &quot;sold_date&quot; : &quot;2021-05-18&quot;,&quot;remark&quot; : &quot;标志品牌全球上市车型&quot; &#125;</span><br><span class="line">&#123; &quot;index&quot;: &#123;&#125;&#125;</span><br><span class="line">&#123; &quot;price&quot; : 148800, &quot;color&quot; : &quot;白色&quot;, &quot;brand&quot;:&quot;标志&quot;, &quot;model&quot; : &quot;标志408&quot;, &quot;sold_date&quot; : &quot;2021-07-02&quot;,&quot;remark&quot; : &quot;比较大的紧凑型车&quot; &#125;</span><br><span class="line">&#123; &quot;index&quot;: &#123;&#125;&#125;</span><br><span class="line">&#123; &quot;price&quot; : 1998000, &quot;color&quot; : &quot;黑色&quot;, &quot;brand&quot;:&quot;大众&quot;, &quot;model&quot; : &quot;大众辉腾&quot;, &quot;sold_date&quot; : &quot;2021-08-19&quot;,&quot;remark&quot; : &quot;大众最让人肝疼的车&quot; &#125;</span><br><span class="line">&#123; &quot;index&quot;: &#123;&#125;&#125;</span><br><span class="line">&#123; &quot;price&quot; : 218000, &quot;color&quot; : &quot;红色&quot;, &quot;brand&quot;:&quot;奥迪&quot;, &quot;model&quot; : &quot;奥迪A4&quot;, &quot;sold_date&quot; : &quot;2021-11-05&quot;,&quot;remark&quot; : &quot;小资车型&quot; &#125;</span><br><span class="line">&#123; &quot;index&quot;: &#123;&#125;&#125;</span><br><span class="line">&#123; &quot;price&quot; : 489000, &quot;color&quot; : &quot;黑色&quot;, &quot;brand&quot;:&quot;奥迪&quot;, &quot;model&quot; : &quot;奥迪A6&quot;, &quot;sold_date&quot; : &quot;2022-01-01&quot;,&quot;remark&quot; : &quot;政府专用？&quot; &#125;</span><br><span class="line">&#123; &quot;index&quot;: &#123;&#125;&#125;</span><br><span class="line">&#123; &quot;price&quot; : 1899000, &quot;color&quot; : &quot;黑色&quot;, &quot;brand&quot;:&quot;奥迪&quot;, &quot;model&quot; : &quot;奥迪A 8&quot;, &quot;sold_date&quot; : &quot;2022-02-12&quot;,&quot;remark&quot; : &quot;很贵的大A6。。。&quot; &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="聚合操作案例"><a href="#聚合操作案例" class="headerlink" title="聚合操作案例"></a><strong>聚合操作案例</strong></h3><p>1、根据color分组统计销售数量</p>
+<p>只执行聚合分组，不做复杂的聚合统计。在ES中最基础的聚合为terms，相当于SQL中的count。</p>
+<p>在ES中默认为分组数据做排序，使用的是doc_count数据执行降序排列。可以使用_key元数据，根据分组后的字段数据执行不同的排序方案，也可以根据_count元数据，根据分组后的统计值执行不同的排序方案。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;group_by_color&quot;: &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;color&quot;,</span><br><span class="line">&quot;order&quot;: &#123;</span><br><span class="line">&quot;_count&quot;: &quot;desc&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>2、统计不同color车辆的平均价格</strong></p>
+<p>本案例先根据color执行聚合分组，在此分组的基础上，对组内数据执行聚合统计，这个组内数据的聚合统计就是metric。同样可以执行排序，因为组内有聚合统计，且对统计数据给予了命名avg_by_price，所以可以根据这个聚合统计数据字段名执行排序逻辑。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;group_by_color&quot;: &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;color&quot;,</span><br><span class="line">&quot;order&quot;: &#123;</span><br><span class="line">&quot;avg_by_price&quot;: &quot;asc&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;avg_by_price&quot;: &#123;</span><br><span class="line">&quot;avg&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>size可以设置为0，表示不返回ES中的文档，只返回ES聚合之后的数据，提高查询速度，当然如果你需要这些文档的话，也可以按照实际情况进行设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;size&quot; : 0,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;group_by_color&quot;: &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;color&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;group_by_brand&quot; : &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;brand&quot;,</span><br><span class="line">&quot;order&quot;: &#123;</span><br><span class="line">&quot;avg_by_price&quot;: &quot;desc&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;avg_by_price&quot;: &#123;</span><br><span class="line">&quot;avg&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>3、统计不同color不同brand中车辆的平均价格</strong></p>
+<p>先根据color聚合分组，在组内根据brand再次聚合分组，这种操作可以称为下钻分析。</p>
+<p>Aggs如果定义比较多，则会感觉语法格式混乱，aggs语法格式，有一个相对固定的结构，简单定义：aggs可以嵌套定义，可以水平定义。</p>
+<p>嵌套定义称为下钻分析。水平定义就是平铺多个分组方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;index_name&#x2F;type_name&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;aggs&quot; : &#123;</span><br><span class="line">&quot;定义分组名称（最外层）&quot;: &#123;</span><br><span class="line">&quot;分组策略如：terms、avg、sum&quot; : &#123;</span><br><span class="line">&quot;field&quot; : &quot;根据哪一个字段分组&quot;,</span><br><span class="line">&quot;其他参数&quot; : &quot;&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot; : &#123;</span><br><span class="line">&quot;分组名称1&quot; : &#123;&#125;,</span><br><span class="line">&quot;分组名称2&quot; : &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;group_by_color&quot;: &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;color&quot;,</span><br><span class="line">&quot;order&quot;: &#123;</span><br><span class="line">&quot;avg_by_price_color&quot;: &quot;asc&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;avg_by_price_color&quot; : &#123;</span><br><span class="line">&quot;avg&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;group_by_brand&quot; : &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;brand&quot;,</span><br><span class="line">&quot;order&quot;: &#123;</span><br><span class="line">&quot;avg_by_price_brand&quot;: &quot;desc&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;avg_by_price_brand&quot;: &#123;</span><br><span class="line">&quot;avg&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>4、统计不同color中的最大和最小价格、总价</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;group_by_color&quot;: &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;color&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;max_price&quot;: &#123;</span><br><span class="line">&quot;max&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;min_price&quot; : &#123;</span><br><span class="line">&quot;min&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;sum_price&quot; : &#123;</span><br><span class="line">&quot;sum&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在常见的业务常见中，聚合分析，最常用的种类就是统计数量，最大，最小，平均，总计等。通常占有聚合业务中的60%以上的比例，小型项目中，甚至占比85%以上。</p>
+<p><strong>5、统计不同品牌汽车中价格排名最高的车型</strong></p>
+<p>在分组后，可能需要对组内的数据进行排序，并选择其中排名高的数据。那么可以使用s来实现：top_top_hithits中的属性size代表取组内多少条数据（默认为10）；sort代表组内使用什么字段什么规则排序（默认使用_doc的asc规则排序）；_source代表结果中包含document中的那些字段（默认包含全部字段）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">GET cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;size&quot; : 0,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;group_by_brand&quot;: &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;brand&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;top_car&quot;: &#123;</span><br><span class="line">&quot;top_hits&quot;: &#123;</span><br><span class="line">&quot;size&quot;: 1,</span><br><span class="line">&quot;sort&quot;: [</span><br><span class="line">&#123;</span><br><span class="line">&quot;price&quot;: &#123;</span><br><span class="line">&quot;order&quot;: &quot;desc&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">],</span><br><span class="line">&quot;_source&quot;: &#123;</span><br><span class="line">&quot;includes&quot;: [&quot;model&quot;, &quot;price&quot;]</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>6、histogram 区间统计</strong></p>
+<p>histogram类似terms，也是进行bucket分组操作的，是根据一个field，实现数据区间分组。</p>
+<p>如：以100万为一个范围，统计不同范围内车辆的销售量和平均价格。那么使用histogram的聚合的时候，field指定价格字段price。区间范围是100万-interval ： 1000000。这个时候ES会将price价格区间划分为： [0, 1000000), [1000000, 2000000), [2000000, 3000000)等，依次类推。在划分区间的同时，histogram会类似terms进行数据数量的统计（count），可以通过嵌套aggs对聚合分组后的组内数据做再次聚合分析。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;histogram_by_price&quot;: &#123;</span><br><span class="line">&quot;histogram&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;,</span><br><span class="line">&quot;interval&quot;: 1000000</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;avg_by_price&quot;: &#123;</span><br><span class="line">&quot;avg&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>7、date_histogram区间分组</strong></p>
+<p>date_histogram可以对date类型的field执行区间聚合分组，如每月销量，每年销量等。</p>
+<p>如：以月为单位，统计不同月份汽车的销售数量及销售总金额。这个时候可以使用date_histogram实现聚合分组，其中field来指定用于聚合分组的字段，interval指定区间范围（可选值有：year、quarter、month、week、day、hour、minute、second），format指定日期格式化，min_doc_count指定每个区间的最少document（如果不指定，默认为0，当区间范围内没有document时，也会显示bucket分组），extended_bounds指定起始时间和结束时间（如果不指定，默认使用字段中日期最小值所在范围和最大值所在范围为起始和结束时间）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">ES7.x之前的语法</span><br><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;histogram_by_date&quot; : &#123;</span><br><span class="line">&quot;date_histogram&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;sold_date&quot;,</span><br><span class="line">&quot;interval&quot;: &quot;month&quot;,</span><br><span class="line">&quot;format&quot;: &quot;yyyy-MM-dd&quot;,</span><br><span class="line">&quot;min_doc_count&quot;: 1,</span><br><span class="line">&quot;extended_bounds&quot;: &#123;</span><br><span class="line">&quot;min&quot;: &quot;2021-01-01&quot;,</span><br><span class="line">&quot;max&quot;: &quot;2022-12-31&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;sum_by_price&quot;: &#123;</span><br><span class="line">&quot;sum&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">执行后出现</span><br><span class="line">#! Deprecation: [interval] on [date_histogram] is deprecated, use [fixed_interval] or [calendar_interval] in the future.</span><br><span class="line"></span><br><span class="line">7.X之后</span><br><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;histogram_by_date&quot; : &#123;</span><br><span class="line">&quot;date_histogram&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;sold_date&quot;,</span><br><span class="line">&quot;calendar_interval&quot;: &quot;month&quot;,</span><br><span class="line">&quot;format&quot;: &quot;yyyy-MM-dd&quot;,</span><br><span class="line">&quot;min_doc_count&quot;: 1,</span><br><span class="line">&quot;extended_bounds&quot;: &#123;</span><br><span class="line">&quot;min&quot;: &quot;2021-01-01&quot;,</span><br><span class="line">&quot;max&quot;: &quot;2022-12-31&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;sum_by_price&quot;: &#123;</span><br><span class="line">&quot;sum&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>8、_global bucket</strong></p>
+<p>在聚合统计数据的时候，有些时候需要对比部分数据和总体数据。</p>
+<p>如：统计某品牌车辆平均价格和所有车辆平均价格。global是用于定义一个全局bucket，这个bucket会忽略query的条件，检索所有document进行对应的聚合统计。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;size&quot; : 0,</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;brand&quot;: &quot;大众&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;volkswagen_of_avg_price&quot;: &#123;</span><br><span class="line">&quot;avg&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;all_avg_price&quot; : &#123;</span><br><span class="line">&quot;global&quot;: &#123;&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;all_of_price&quot;: &#123;</span><br><span class="line">&quot;avg&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>9、aggs+order</strong></p>
+<p>对聚合统计数据进行排序。</p>
+<p>如：统计每个品牌的汽车销量和销售总额，按照销售总额的降序排列。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;group_of_brand&quot;: &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;brand&quot;,</span><br><span class="line">&quot;order&quot;: &#123;</span><br><span class="line">&quot;sum_of_price&quot;: &quot;desc&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;sum_of_price&quot;: &#123;</span><br><span class="line">&quot;sum&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果有多层aggs，执行下钻聚合的时候，也可以根据最内层聚合数据执行排序。</p>
+<p>如：统计每个品牌中每种颜色车辆的销售总额，并根据销售总额降序排列。**<em>这就像SQL中的分组排序一样，只能组内数据排序，而不能跨组实现排序。**</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;group_by_brand&quot;: &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;brand&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;group_by_color&quot;: &#123;</span><br><span class="line">&quot;terms&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;color&quot;,</span><br><span class="line">&quot;order&quot;: &#123;</span><br><span class="line">&quot;sum_of_price&quot;: &quot;desc&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;sum_of_price&quot;: &#123;</span><br><span class="line">&quot;sum&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>10、search+aggs</strong> </p>
+<p>聚合类似SQL中的group by子句，search类似SQL中的where子句。在ES中是完全可以将search和aggregations整合起来，执行相对更复杂的搜索统计。</p>
+<p>如：统计某品牌车辆每个季度的销量和销售额。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;brand&quot;: &quot;大众&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;histogram_by_date&quot;: &#123;</span><br><span class="line">&quot;date_histogram&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;sold_date&quot;,</span><br><span class="line">&quot;calendar_interval&quot;: &quot;quarter&quot;,</span><br><span class="line">&quot;min_doc_count&quot;: 1</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;sum_by_price&quot;: &#123;</span><br><span class="line">&quot;sum&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>11、filter+aggs</strong></p>
+<p>在ES中，filter也可以和aggs组合使用，实现相对复杂的过滤聚合分析。</p>
+<p>如：统计10万~50万之间的车辆的平均价格。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;constant_score&quot;: &#123;</span><br><span class="line">&quot;filter&quot;: &#123;</span><br><span class="line">&quot;range&quot;: &#123;</span><br><span class="line">&quot;price&quot;: &#123;</span><br><span class="line">&quot;gte&quot;: 100000,</span><br><span class="line">&quot;lte&quot;: 500000</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;avg_by_price&quot;: &#123;</span><br><span class="line">&quot;avg&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>12、聚合中使用filter</strong></p>
+<p>filter也可以使用在aggs句法中，filter的范围决定了其过滤的范围。</p>
+<p>如：统计某品牌汽车最近一年的销售总额。将filter放在aggs内部，代表这个过滤器只对query搜索得到的结果执行filter过滤。如果filter放在aggs外部，过滤器则会过滤所有的数据。</p>
+<ul>
+<li>12M/M 表示 12 个月。</li>
+<li>1y/y 表示 1年。</li>
+<li>d 表示天</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;cars&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">&quot;match&quot;: &#123;</span><br><span class="line">&quot;brand&quot;: &quot;大众&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;count_last_year&quot;: &#123;</span><br><span class="line">&quot;filter&quot;: &#123;</span><br><span class="line">&quot;range&quot;: &#123;</span><br><span class="line">&quot;sold_date&quot;: &#123;</span><br><span class="line">&quot;gte&quot;: &quot;now-12M&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;aggs&quot;: &#123;</span><br><span class="line">&quot;sum_of_price_last_year&quot;: &#123;</span><br><span class="line">&quot;sum&quot;: &#123;</span><br><span class="line">&quot;field&quot;: &quot;price&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><a target="_blank" rel="noopener" href="https://note.youdao.com/ynoteshare/index.html?id=cd119779e7328b83437b5d46e168d46a&type=note&_time=1654761732462">参考链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/elasticSearch/" rel="tag"># elasticSearch</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/07/ElasticSearch/2022-06-07%20ElasticSearch%E5%85%A5%E9%97%A8%E5%AE%9E%E6%88%98/" rel="prev" title="ElasticSearch入门实战">
+      <i class="fa fa-chevron-left"></i> ElasticSearch入门实战
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/09/ElasticSearch/2022-06-09%20ElasticSearch%E6%90%9C%E7%B4%A2%E6%8A%80%E6%9C%AF%E6%B7%B1%E5%85%A5%E5%8F%8A%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86/" rel="next" title="ElasticSearch搜索技术深入及集群架构原理">
+      ElasticSearch搜索技术深入及集群架构原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E8%AF%8D%E5%99%A8%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">分词器工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E5%88%86%E8%AF%8D%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">定制分词器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%89%E9%BB%98%E8%AE%A4%E7%9A%84%E5%88%86%E8%AF%8D%E5%99%A8"><span class="nav-number">2.1.</span> <span class="nav-text">1）默认的分词器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%BC%89%E4%BF%AE%E6%94%B9%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">2）修改分词器的设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%EF%BC%89ik%E5%88%86%E8%AF%8D%E5%99%A8%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.3.</span> <span class="nav-text">3）ik分词器详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%EF%BC%89IK%E5%88%86%E8%AF%8D%E5%99%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AF%8D%E5%BA%93"><span class="nav-number">2.4.</span> <span class="nav-text">4）IK分词器自定义词库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%EF%BC%89IK%E7%83%AD%E6%9B%B4%E6%96%B0"><span class="nav-number">2.5.</span> <span class="nav-text">5）IK热更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E4%BA%AE%E6%98%BE%E7%A4%BA"><span class="nav-number">3.</span> <span class="nav-text">高亮显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E6%90%9C%E7%B4%A2"><span class="nav-number">4.</span> <span class="nav-text">聚合搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bucket%E5%92%8Cmetric%E6%A6%82%E5%BF%B5%E7%AE%80%E4%BB%8B"><span class="nav-number">4.1.</span> <span class="nav-text">bucket和metric概念简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E6%A1%88%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-number">4.2.</span> <span class="nav-text">准备案例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C%E6%A1%88%E4%BE%8B"><span class="nav-number">4.3.</span> <span class="nav-text">聚合操作案例</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">183</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
