@@ -28,6 +28,7 @@
 <meta property="og:description" content="spring源码">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Spring/SpringMVC_01.png">
+<meta property="og:image" content="http://example.com/images/Spring/Spring_001.png">
 <meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Spring/SpringMVC_05.png">
 <meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Spring/SpringMVC_03.png">
 <meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Spring/SpringMVC_04.png">
@@ -35,7 +36,7 @@
 <meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Spring/SpringMVC_07.png">
 <meta property="og:image" content="http://example.com/Users/admin/Desktop/note/images/Spring/SpringMVC_08.png">
 <meta property="article:published_time" content="2020-10-26T03:56:48.355Z">
-<meta property="article:modified_time" content="2020-08-11T09:28:29.000Z">
+<meta property="article:modified_time" content="2022-07-19T09:58:24.362Z">
 <meta property="article:author" content="QingSong">
 <meta property="article:tag" content="SpringCore">
 <meta name="twitter:card" content="summary">
@@ -190,7 +191,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-11 17:28:29" itemprop="dateModified" datetime="2020-08-11T17:28:29+08:00">2020-08-11</time>
+                <time title="Modified: 2022-07-19 17:58:24" itemprop="dateModified" datetime="2022-07-19T17:58:24+08:00">2022-07-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -274,6 +275,10 @@
 <td>完成策略组件的初始化</td>
 </tr>
 </tbody></table>
+<h2 id="HandlerMapping"><a href="#HandlerMapping" class="headerlink" title="HandlerMapping"></a><strong>HandlerMapping</strong></h2><p>我们着重介绍下HandlerMapping的解析过程和请求映射过程</p>
+<p>附上流程图：</p>
+<p><a target="_blank" rel="noopener" href="https://www.processon.com/view/link/615ea79e1efad4070b2d6707">https://www.processon.com/view/link/615ea79e1efad4070b2d6707</a></p>
+<p><img src="/images/Spring/Spring_001.png" alt="Spring_001"></p>
 <h2 id="5-springMVC-使用姿势"><a href="#5-springMVC-使用姿势" class="headerlink" title="5 springMVC 使用姿势"></a>5 springMVC 使用姿势</h2><h3 id="RequestMapping注解"><a href="#RequestMapping注解" class="headerlink" title="@RequestMapping注解"></a>@RequestMapping注解</h3><p>在对 SpringMVC 进行的配置的时候, 需要我们指定请求与处理方法之间的映射关系。 指定映射关系，就需要我们用上 <code>@RequestMapping</code> 注解。<br> <code>@RequestMapping</code> 是 Spring Web 应用程序中最常被用到的注解之一，这个注解会将 HTTP 请求映射到控制器（Controller类）的处理方法上。</p>
 <h4 id="value-和-method-属性"><a href="#value-和-method-属性" class="headerlink" title="value 和 method 属性"></a>value 和 method 属性</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;rm&quot;)</span></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RequestMappingController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(value = &#123;&quot;home&quot;, &quot;/&quot;, &quot;&quot;&#125;, method = RequestMethod.GET)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">goRMHome</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;访问了 Test RequestMapping 首页&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;1-rm&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -406,7 +411,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-xml%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">1 xml配置说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-springMVC%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">2  springMVC运行流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-SpringMVC%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">3 SpringMVC初始化过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#init"><span class="nav-number">3.1.</span> <span class="nav-text">init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initServletBean"><span class="nav-number">3.2.</span> <span class="nav-text">initServletBean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initWebApplicationContext"><span class="nav-number">3.3.</span> <span class="nav-text">initWebApplicationContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#createWebApplicationContext"><span class="nav-number">3.4.</span> <span class="nav-text">createWebApplicationContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#onRefresh"><span class="nav-number">3.5.</span> <span class="nav-text">onRefresh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initStrategies"><span class="nav-number">3.6.</span> <span class="nav-text">initStrategies</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-DispatcherServlet%E7%9B%B8%E5%85%B3%E7%B1%BB%E4%BD%9C%E7%94%A8%E6%A6%82%E8%BF%B0"><span class="nav-number">4.</span> <span class="nav-text">4  DispatcherServlet相关类作用概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-springMVC-%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF"><span class="nav-number">5.</span> <span class="nav-text">5 springMVC 使用姿势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RequestMapping%E6%B3%A8%E8%A7%A3"><span class="nav-number">5.1.</span> <span class="nav-text">@RequestMapping注解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#value-%E5%92%8C-method-%E5%B1%9E%E6%80%A7"><span class="nav-number">5.1.1.</span> <span class="nav-text">value 和 method 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#consumes-%E5%B1%9E%E6%80%A7"><span class="nav-number">5.1.2.</span> <span class="nav-text">consumes 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#produces-%E5%B1%9E%E6%80%A7"><span class="nav-number">5.1.3.</span> <span class="nav-text">produces 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#params-%E5%B1%9E%E6%80%A7"><span class="nav-number">5.1.4.</span> <span class="nav-text">params 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#headers-%E5%B1%9E%E6%80%A7"><span class="nav-number">5.1.5.</span> <span class="nav-text">headers 属性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RequestParam%E6%B3%A8%E8%A7%A3"><span class="nav-number">5.2.</span> <span class="nav-text">@RequestParam注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RequestHeader%E5%92%8C-CookieValue"><span class="nav-number">5.3.</span> <span class="nav-text">@RequestHeader和@CookieValue</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-xml%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">1 xml配置说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-springMVC%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">2  springMVC运行流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-SpringMVC%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">3 SpringMVC初始化过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#init"><span class="nav-number">3.1.</span> <span class="nav-text">init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initServletBean"><span class="nav-number">3.2.</span> <span class="nav-text">initServletBean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initWebApplicationContext"><span class="nav-number">3.3.</span> <span class="nav-text">initWebApplicationContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#createWebApplicationContext"><span class="nav-number">3.4.</span> <span class="nav-text">createWebApplicationContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#onRefresh"><span class="nav-number">3.5.</span> <span class="nav-text">onRefresh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initStrategies"><span class="nav-number">3.6.</span> <span class="nav-text">initStrategies</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-DispatcherServlet%E7%9B%B8%E5%85%B3%E7%B1%BB%E4%BD%9C%E7%94%A8%E6%A6%82%E8%BF%B0"><span class="nav-number">4.</span> <span class="nav-text">4  DispatcherServlet相关类作用概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HandlerMapping"><span class="nav-number">5.</span> <span class="nav-text">HandlerMapping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-springMVC-%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF"><span class="nav-number">6.</span> <span class="nav-text">5 springMVC 使用姿势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RequestMapping%E6%B3%A8%E8%A7%A3"><span class="nav-number">6.1.</span> <span class="nav-text">@RequestMapping注解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#value-%E5%92%8C-method-%E5%B1%9E%E6%80%A7"><span class="nav-number">6.1.1.</span> <span class="nav-text">value 和 method 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#consumes-%E5%B1%9E%E6%80%A7"><span class="nav-number">6.1.2.</span> <span class="nav-text">consumes 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#produces-%E5%B1%9E%E6%80%A7"><span class="nav-number">6.1.3.</span> <span class="nav-text">produces 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#params-%E5%B1%9E%E6%80%A7"><span class="nav-number">6.1.4.</span> <span class="nav-text">params 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#headers-%E5%B1%9E%E6%80%A7"><span class="nav-number">6.1.5.</span> <span class="nav-text">headers 属性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RequestParam%E6%B3%A8%E8%A7%A3"><span class="nav-number">6.2.</span> <span class="nav-text">@RequestParam注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RequestHeader%E5%92%8C-CookieValue"><span class="nav-number">6.3.</span> <span class="nav-text">@RequestHeader和@CookieValue</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -422,18 +427,18 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">183</span>
+          <span class="site-state-item-count">198</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-count">36</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

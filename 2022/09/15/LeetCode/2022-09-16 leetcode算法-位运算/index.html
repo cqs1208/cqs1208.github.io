@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="LeetCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode算法-位运算">
+<meta property="og:url" content="http://example.com/2022/09/15/LeetCode/2022-09-16%20leetcode%E7%AE%97%E6%B3%95-%E4%BD%8D%E8%BF%90%E7%AE%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="LeetCode">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_92.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_93.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_94.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_95.png">
+<meta property="article:published_time" content="2022-09-15T06:12:10.109Z">
+<meta property="article:modified_time" content="2022-09-15T07:29:18.993Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="LeetCode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Leetcode/Leetcode_92.png">
+
+<link rel="canonical" href="http://example.com/2022/09/15/LeetCode/2022-09-16%20leetcode%E7%AE%97%E6%B3%95-%E4%BD%8D%E8%BF%90%E7%AE%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>leetcode算法-位运算 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/15/LeetCode/2022-09-16%20leetcode%E7%AE%97%E6%B3%95-%E4%BD%8D%E8%BF%90%E7%AE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          leetcode算法-位运算
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-09-15 14:12:10 / Modified: 15:29:18" itemprop="dateCreated datePublished" datetime="2022-09-15T14:12:10+08:00">2022-09-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LeetCode/" itemprop="url" rel="index"><span itemprop="name">LeetCode</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">LeetCode</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p> leetcode算法</p>
+<a id="more"></a> 
+
+<h2 id="位运算知识补全"><a href="#位运算知识补全" class="headerlink" title="位运算知识补全"></a><strong>位运算知识补全</strong></h2><h3 id="进制"><a href="#进制" class="headerlink" title="进制"></a>进制</h3><p><img src="/images/Leetcode/Leetcode_92.png" alt="Leetcode_92"></p>
+<p>二进制就是逢二进一，不能说你二进制比较二，规则就不一样了，基本法还是要遵守的。所以二进制里同样要遵循：1，每个位上的数字不能超过2，最大只能到1，第二，如果某个位上的数字因为运算超过了2，怎么办？往高位进位。 </p>
+<p><img src="/images/Leetcode/Leetcode_93.png" alt="Leetcode_93"></p>
+<h3 id="负数的表示"><a href="#负数的表示" class="headerlink" title="负数的表示"></a><strong>负数的表示</strong></h3><p>计算机中负数的表示，是以补码的形式呈现的。</p>
+<p><strong>原码</strong>：一个正数，按照绝对值大小转换成的二进制数；一个负数按照绝对值大小转换成的二进制数，然后最高位补1，称为原码。</p>
+<p>比如 00000000 00000000 00000000 00000101 是 5的 原码。</p>
+<p>10000000 00000000 00000000 00000101 是 -5的 原码。</p>
+<p><strong>反码</strong>：正数的反码与原码相同，负数的反码为对该数的原码除符号位外各位取反。</p>
+<p>取反操作指：原为1，得0；原为0，得1。（1变0; 0变1）</p>
+<p>比如：正数00000000 00000000 00000000 00000101 的反码还是 00000000 00000000 00000000 00000101 </p>
+<p>负数10000000 00000000 00000000 00000101每一位取反（除符号位），得11111111 11111111 11111111 11111010。 </p>
+<p>称：11111111 11111111 11111111 11111010 是 10000000 00000000 00000000 00000101 的反码。 </p>
+<p><strong>补码</strong>：正数的补码与原码相同，负数的补码为对该数的原码除符号位外各位取反，然后在最后一位加1. </p>
+<p>比如：10000000 00000000 00000000 00000101 的反码是：11111111 11111111 11111111 11111010。 </p>
+<p>那么，补码为： </p>
+<p>11111111 11111111 11111111 11111010 + 1 = 11111111 11111111 11111111 11111011 </p>
+<p>所以，-5 在计算机中表达为：11111111 11111111 11111111 11111011。</p>
+<p>整数-1在计算机中如何表示。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">假设这也是一个int类型，那么： </span><br><span class="line">1、先取-1的原码：10000000 00000000 00000000 00000001 </span><br><span class="line">2、得反码：     11111111 11111111 11111111 11111110（除符号位按位取反） </span><br><span class="line">3、得补码：     11111111 11111111 11111111 11111111 </span><br><span class="line">可见，－1在计算机里用二进制表达就是全1。 </span><br></pre></td></tr></table></figure>
+
+<p>负数为何在计算机中要这么表示？人类的减法运算涉及到符号位的处理，这对电路来说，是比较复杂的。补码系统下，可以通过把减法换成反码，然后通过加法器运算，这样就可以避免设计复杂的减法电路。</p>
+<h3 id="常用位运算"><a href="#常用位运算" class="headerlink" title="常用位运算"></a><strong>常用位运算</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">按位与 &amp; (1&amp;1&#x3D;1 0&amp;0&#x3D;0 1&amp;0&#x3D;0)</span><br><span class="line">按位或  |  (1|1&#x3D;1 0|0&#x3D;0 1|0&#x3D;1)</span><br><span class="line">按位非  ~(~1&#x3D;0  ~0&#x3D;1)</span><br><span class="line">按位异或 ^ (1^1&#x3D;0 1^0&#x3D;1  0^0&#x3D;0，很明显任何一个数和自己异或结果一定是0)</span><br><span class="line">有符号右移&gt;&gt;(若正数,高位补0,负数,高位补1)</span><br><span class="line">有符号左移&lt;&lt;</span><br><span class="line">无符号右移&gt;&gt;&gt;(不论正负,高位均补0)</span><br></pre></td></tr></table></figure>
+
+<h3 id="常见简单面试题"><a href="#常见简单面试题" class="headerlink" title="常见简单面试题"></a><strong>常见简单面试题</strong></h3><h4 id="取模"><a href="#取模" class="headerlink" title="取模"></a><strong>取模</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">有趣的取模性质：取模a % (2n) 等价于 a &amp; (2n - 1)，</span><br><span class="line">所以在map里的数组个数一定是2的乘方数，计算key值在哪个元素中的时候，就用位运算来快速定位。</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断奇偶数"><a href="#判断奇偶数" class="headerlink" title="判断奇偶数"></a><strong>判断奇偶数</strong></h4><p>无需采用取模运算，只要根据数的最后一位是 0 还是 1 来决定即可，为 0 就是偶数，为 1 就是奇数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if(0 &#x3D;&#x3D; (a &amp; 1)) &#123;</span><br><span class="line"> &#x2F;&#x2F;偶数</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="实现数字翻倍或减半"><a href="#实现数字翻倍或减半" class="headerlink" title="实现数字翻倍或减半"></a>实现数字翻倍或减半</h4><p>数 a 向右移一位，相当于将 a 除以 2；数 a 向左移一位，相当于将 a 乘以 2</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">int a &#x3D; 2;</span><br><span class="line">a &gt;&gt; 1; ---&gt; 1</span><br><span class="line">a &lt;&lt; 1; ---&gt; 4</span><br></pre></td></tr></table></figure>
+
+<h4 id="交换两数"><a href="#交换两数" class="headerlink" title="交换两数"></a><strong>交换两数</strong></h4><p>位操作交换两数可以不需要第三个临时变量，虽然普通操作也可以做到，但是没有其效率高。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">  &#x2F;*交换两数*&#x2F;</span><br><span class="line">  int a &#x3D; 4 ,b &#x3D; 6;</span><br><span class="line">  int temp &#x3D; a;</span><br><span class="line">  a &#x3D; b;</span><br><span class="line">  b &#x3D; temp;</span><br><span class="line">  &#x2F;*不借助临时变量交换两数*&#x2F;</span><br><span class="line">  a &#x3D; a + b;</span><br><span class="line">  b &#x3D; a - b;</span><br><span class="line">  a &#x3D; a - b;</span><br><span class="line">  &#x2F;*位操作交换两数*&#x2F;</span><br><span class="line">  a&#x3D;a^b;</span><br><span class="line">  b&#x3D;a^b;</span><br><span class="line">  a&#x3D;a^b;</span><br><span class="line">位操作解释：</span><br><span class="line">第一步：a &#x3D; (a^b); </span><br><span class="line">第二步：b&#x3D;a^b ---&gt; b&#x3D;(a^b)^b&#x3D;a^(b^b)&#x3D;a</span><br><span class="line">第三步：a ^&#x3D; b ---&gt; a&#x3D;(a^b)^a&#x3D;(a^a)^b&#x3D;b</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-136-只出现一次的数字"><a href="#LeetCode-136-只出现一次的数字" class="headerlink" title="(LeetCode-136) 只出现一次的数字"></a>(LeetCode-136) 只出现一次的数字</h2><h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p>给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。</p>
+<p><strong>说明：</strong></p>
+<p>你的算法应该具有线性时间复杂度。 你可以不使用额外空间来实现吗？</p>
+<p><strong>示例 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [2,2,1]</span><br><span class="line">输出: 1</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [4,1,2,1,2]</span><br><span class="line">输出: 4</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>题目为什么要强调有一个数字出现一次，其他的出现两次?</p>
+<p>我们想到了异或运算的性质:任何一个数字异或它自己都等于0。</p>
+<p><img src="/images/Leetcode/Leetcode_94.png" alt="Leetcode_94"></p>
+<p>也就是说，如果我们从头到尾依次异或数组中的每一个数字，那么最终的结果刚好是那个只出现依次的数字，因为那些出现两次的数字全部在异或中抵消掉了。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">        int result &#x3D; 0;</span><br><span class="line">        for(int num : nums)&#123;</span><br><span class="line">            result &#x3D; result ^num;</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="L-eetCode-338-比特位计数"><a href="#L-eetCode-338-比特位计数" class="headerlink" title="(**L**eetCode-**338**) 比特位计数"></a><strong>(**</strong>L**<strong>eetCode-**</strong>338**<strong>)</strong> <strong>比特位计数</strong></h2><h3 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h3><p>给你一个整数 n ，对于 0 &lt;= i &lt;= n 中的每个 i ，计算其二进制表示中 1 的个数 ，返回一个长度为 n + 1 的数组 ans 作为答案</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：n &#x3D; 2</span><br><span class="line">输出：[0,1,1]</span><br><span class="line">解释：</span><br><span class="line">0 --&gt; 0</span><br><span class="line">1 --&gt; 1</span><br><span class="line">2 --&gt; 10</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">输入：n &#x3D; 5</span><br><span class="line">输出：[0,1,1,2,1,2]</span><br><span class="line">解释：</span><br><span class="line">0 --&gt; 0</span><br><span class="line">1 --&gt; 1</span><br><span class="line">2 --&gt; 10</span><br><span class="line">3 --&gt; 11</span><br><span class="line">4 --&gt; 100</span><br><span class="line">5 --&gt; 101</span><br></pre></td></tr></table></figure>
+
+<p>进阶：</p>
+<ul>
+<li>很容易就能实现时间复杂度为 O(n log n) 的解决方案，你可以在线性时间复杂度 O(n) 内用一趟扫描解决此问题吗？</li>
+<li>你能不使用任何内置函数解决此问题吗？（如，C++ 中的 __builtin_popcount ）</li>
+</ul>
+<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><h4 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a><strong>方法1</strong></h4><p>这一题就是利用二进制位运算的经典题。本题可以利用X &amp;= (X - 1)清除最低位的1的功能来解决。什么意思呢？</p>
+<p>X &amp;= (X – 1)可以清除最低位的1，利用它我们可以快速的去统计result 中1 的数量。比如：</p>
+<p>假设X= 21，二进制表示为  0001 0101，</p>
+<p>则 21 &amp; 20 = 0001 0101 &amp; 0001 0100 = 0001 0100 = 20</p>
+<p>20&amp;19 = 0001 0100 &amp; 0001 0011 = 0001 0000= 16</p>
+<p>16&amp;15 = 0001 0000 &amp; 0000 1111 = 0</p>
+<p>相比原来的8次，我们这里只需3次即可知道21的二进制表示中有三个1。</p>
+<p>对于这个题目，我们就可以反过来思考，还是以21为例，在统计21中1的个数时，其实我们只要在20的1的个数基础上加1就是21的值，而20的值又是在16的1的个数值上加1，16的值又是0的1的个数值上加1，而我们统计的次序刚好又是0,16,20,21。那就是说</p>
+<p>N中1的个数 = N&amp;(N-1)中1的个数+1。</p>
+<p>想明白这一点，代码就非常简单了。</p>
+<h4 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a><strong>方法2</strong></h4><p>这个题目还可以利用奇偶性来解决。</p>
+<p>对于所有的数字，只有两类：</p>
+<p>奇数：二进制表示中，奇数一定比前面那个偶数多一个 1，因为多的就是最低位的 1。</p>
+<pre><code>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">  举例： </span><br><span class="line">0 &#x3D; 0       1 &#x3D; 1</span><br><span class="line">2 &#x3D; 10      3 &#x3D; 11</span><br></pre></td></tr></table></figure></code></pre>
+<p>偶数：二进制表示中，偶数中 1 的个数一定和除以 2 之后的那个数一样多。因为最低位是 0，除以 2 就是右移一位，也就是把那个 0 抹掉而已，所以 1 的个数是不变的。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">举例：</span><br><span class="line">2 &#x3D; 10       4 &#x3D; 100       8 &#x3D; 1000</span><br><span class="line">3 &#x3D; 11       6 &#x3D; 110       12 &#x3D; 1100</span><br></pre></td></tr></table></figure>
+
+<p>另外，0 的 1 个数为 0，于是就可以根据奇偶性开始遍历计算了。</p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        System.out.println(Arrays.toString(countBits(5)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;    public static int[] countBits(int n) &#123;</span><br><span class="line">&#x2F;&#x2F;        int[] bits &#x3D; new int[n + 1];</span><br><span class="line">&#x2F;&#x2F;        for(int i &#x3D; 1; i &lt;&#x3D; n; i++)&#123;</span><br><span class="line">&#x2F;&#x2F;            bits[i] &#x3D; bits[i &amp; (i-1)] + 1;</span><br><span class="line">&#x2F;&#x2F;        &#125;</span><br><span class="line">&#x2F;&#x2F;        return bits;</span><br><span class="line">&#x2F;&#x2F;    &#125;</span><br><span class="line"></span><br><span class="line">    public static int[] countBits(int n) &#123;</span><br><span class="line">        int[] bits &#x3D; new int[n + 1];</span><br><span class="line">        for(int i &#x3D; 1; i &lt;&#x3D; n; i++)&#123;</span><br><span class="line">            bits[i] &#x3D; (i &amp; 1) &#x3D;&#x3D; 1 ? bits[i - 1] + 1 : bits[i&gt;&gt;1];</span><br><span class="line">        &#125;</span><br><span class="line">        return bits;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-461-汉明距离"><a href="#LeetCode-461-汉明距离" class="headerlink" title="(LeetCode-461) 汉明距离"></a>(LeetCode-461) <strong>汉明距离</strong></h2><h3 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h3><p>两个整数之间的 <a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB">汉明距离</a> 指的是这两个数字对应二进制位不同的位置的数目。</p>
+<p>给你两个整数 <code>x</code> 和 <code>y</code>，计算并返回它们之间的汉明距离。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：x &#x3D; 1, y &#x3D; 4</span><br><span class="line">输出：2</span><br><span class="line">解释：</span><br><span class="line">1   (0 0 0 1)</span><br><span class="line">4   (0 1 0 0)</span><br><span class="line">       ↑   ↑</span><br><span class="line">上面的箭头指出了对应二进制位不同的位置。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：x &#x3D; 3, y &#x3D; 1</span><br><span class="line">输出：1</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h3><h4 id="方法1-1"><a href="#方法1-1" class="headerlink" title="方法1"></a><strong>方法1</strong></h4><p>仔细分析题目和异或运算的中的性质：1|1=1， 0|0=0， 1|0=1，那就是说AB两数异或，将AB两数以二进制的形式表示，只有相同位置的位不同，结果数result中对应的位才是1，其余的都是0：</p>
+<p><img src="/images/Leetcode/Leetcode_95.png" alt="Leetcode_95"></p>
+<p>所以这个问题可以演变为两数异或后，求结果中 1 的有几个。</p>
+<p>当然，我们可以直接利用JDK中Integer类的bitCount方法直接来求，但是这样就失去了我们刷题的初衷。</p>
+<p>接下来我们可以这样做，可以不断地检查 result的最低位，如果最低位为1，那么令计数器加一，然后我们令result整体右移一位，这样result的最低位将被舍去，原本的次低位就变成了新的最低位。我们重复这个过程直到 result=0 为止。这样计数器中就累计了 result 的二进制表示中 1 的数量。</p>
+<p>但是这么做需要循环去处理result 中的每一位，所以我们还可以借助前面所学习过的X &amp;= (X - 1)清除最低位的1，快速的去统计result 中1 的数量。比如：</p>
+<p>假设result = 21，二进制表示为  0001 0101，相比原来的遍历每位需要8次，我们这里只需3次即可知道21的二进制表示中有三个1。</p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public int hammingDistance(int x, int y) &#123;</span><br><span class="line">      int distance &#x3D; 0;</span><br><span class="line">      for(int xor &#x3D; x ^ y; xor !&#x3D; 0; xor &amp;&#x3D; (xor - 1))&#123;</span><br><span class="line">          distance++;</span><br><span class="line">      &#125;</span><br><span class="line">      return distance;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LeetCode/" rel="tag"># LeetCode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/14/LeetCode/2022-09-15%20leetcode%E7%AE%97%E6%B3%95-%E6%8E%92%E5%BA%8F/" rel="prev" title="leetcode算法-排序">
+      <i class="fa fa-chevron-left"></i> leetcode算法-排序
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/09/15/LeetCode/2022-09-17%20leetcode%E7%AE%97%E6%B3%95-%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="next" title="leetcode算法-字符串">
+      leetcode算法-字符串 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%A8"><span class="nav-number">1.</span> <span class="nav-text">位运算知识补全</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">进制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%9F%E6%95%B0%E7%9A%84%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.2.</span> <span class="nav-text">负数的表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-number">1.3.</span> <span class="nav-text">常用位运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%AE%80%E5%8D%95%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">常见简单面试题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%96%E6%A8%A1"><span class="nav-number">1.4.1.</span> <span class="nav-text">取模</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E5%A5%87%E5%81%B6%E6%95%B0"><span class="nav-number">1.4.2.</span> <span class="nav-text">判断奇偶数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%95%B0%E5%AD%97%E7%BF%BB%E5%80%8D%E6%88%96%E5%87%8F%E5%8D%8A"><span class="nav-number">1.4.3.</span> <span class="nav-text">实现数字翻倍或减半</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E4%B8%A4%E6%95%B0"><span class="nav-number">1.4.4.</span> <span class="nav-text">交换两数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-136-%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97"><span class="nav-number">2.</span> <span class="nav-text">(LeetCode-136) 只出现一次的数字</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#L-eetCode-338-%E6%AF%94%E7%89%B9%E4%BD%8D%E8%AE%A1%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">(**L**eetCode-**338**) 比特位计数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">3.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-1"><span class="nav-number">3.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%951"><span class="nav-number">3.2.1.</span> <span class="nav-text">方法1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%952"><span class="nav-number">3.2.2.</span> <span class="nav-text">方法2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-number">3.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-461-%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB"><span class="nav-number">4.</span> <span class="nav-text">(LeetCode-461) 汉明距离</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">4.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-2"><span class="nav-number">4.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%951-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">方法1</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="nav-number">4.3.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">198</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="LeetCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法理论分析">
+<meta property="og:url" content="http://example.com/2022/09/08/LeetCode/2022-09-07%20%E7%AE%97%E6%B3%95%E7%90%86%E8%AE%BA%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="LeetCode">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_32.png">
+<meta property="article:published_time" content="2022-09-08T05:47:32.468Z">
+<meta property="article:modified_time" content="2022-09-08T09:45:11.382Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="LeetCode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Leetcode/Leetcode_32.png">
+
+<link rel="canonical" href="http://example.com/2022/09/08/LeetCode/2022-09-07%20%E7%AE%97%E6%B3%95%E7%90%86%E8%AE%BA%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>算法理论分析 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/08/LeetCode/2022-09-07%20%E7%AE%97%E6%B3%95%E7%90%86%E8%AE%BA%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          算法理论分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-09-08 13:47:32 / Modified: 17:45:11" itemprop="dateCreated datePublished" datetime="2022-09-08T13:47:32+08:00">2022-09-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LeetCode/" itemprop="url" rel="index"><span itemprop="name">LeetCode</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">LeetCode</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p> leetcode算法理论分析</p>
+<a id="more"></a> 
+
+<h2 id="时间及空间复杂度"><a href="#时间及空间复杂度" class="headerlink" title="时间及空间复杂度"></a>时间及空间复杂度</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>算法之间的优劣主要从算法所占用的「时间」和「空间」两个维度去考量。</p>
+<ul>
+<li>时间维度：是指执行当前算法所消耗的时间，我们通常用「时间复杂度」来描述。</li>
+<li>空间维度：是指执行当前算法需要占用多少内存空间，我们通常用「空间复杂度」来描述。</li>
+</ul>
+<h3 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h3><p>图示</p>
+<p><img src="/images/Leetcode/Leetcode_32.png" alt="Leetcode_32"></p>
+<p>「 <strong>大O符号表示法</strong> 」，即 T(n) = O(f(n))</p>
+<p>常见的时间复杂度量级有：</p>
+<ul>
+<li>常数阶O(1)</li>
+<li>对数阶O(logN)</li>
+<li>线性阶O(n)</li>
+<li>线性对数阶O(nlogN)</li>
+<li>平方阶O(n²)</li>
+<li>立方阶O(n³)</li>
+<li>K次方阶O(n^k)</li>
+<li>指数阶(2^n)</li>
+</ul>
+<p>上面从上至下依次的时间复杂度越来越大，执行的效率越来越低。</p>
+<h4 id="常数阶O-1"><a href="#常数阶O-1" class="headerlink" title="常数阶O(1)"></a>常数阶O(1)</h4><p>无论代码执行了多少行，只要是没有循环等复杂结构，那这个代码的时间复杂度就都是O(1)，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 1;</span><br><span class="line">int j &#x3D; 2;</span><br><span class="line">++i;</span><br><span class="line">j++;</span><br><span class="line">int m &#x3D; i + j;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码在执行的时候，它消耗的时候并不随着某个变量的增长而增长，那么无论这类代码有多长，即使有几万几十万行，都可以用O(1)来表示它的时间复杂度。</p>
+<h4 id="对数阶O-logN"><a href="#对数阶O-logN" class="headerlink" title="对数阶O(logN)"></a><strong>对数阶O(logN)</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 1;</span><br><span class="line">while(i&lt;n)</span><br><span class="line">&#123;</span><br><span class="line">    i &#x3D; i * 2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上面代码可以看到，在while循环里面，每次都将 i 乘以 2，乘完之后，i 距离 n 就越来越近了。我们试着求解一下，假设循环x次之后，i 就大于 2 了，此时这个循环就退出了，也就是说 2 的 x 次方等于 n，那么 x = log2^n<br>也就是说当循环 log2^n 次以后，这个代码就结束了。因此这个代码的时间复杂度为：<strong>O(logn)</strong></p>
+<h4 id="线性阶O-n"><a href="#线性阶O-n" class="headerlink" title="线性阶O(n)"></a><strong>线性阶O(n)</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for(i&#x3D;1; i&lt;&#x3D;n; ++i)</span><br><span class="line">&#123;</span><br><span class="line">   j &#x3D; i;</span><br><span class="line">   j++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码，for循环里面的代码会执行n遍，因此它消耗的时间是随着n的变化而变化的，因此这类代码都可以用O(n)来表示它的时间复杂度。</p>
+<h4 id="线性对数阶O-nlogN"><a href="#线性对数阶O-nlogN" class="headerlink" title="线性对数阶O(nlogN)"></a><strong>线性对数阶O(nlogN)</strong></h4><p>线性对数阶O(nlogN) 其实非常容易理解，将时间复杂度为O(logn)的代码循环N遍的话，那么它的时间复杂度就是 n * O(logN)，也就是了O(nlogN)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">for(m&#x3D;1; m&lt;n; m++)</span><br><span class="line">&#123;</span><br><span class="line">    i &#x3D; 1;</span><br><span class="line">    while(i&lt;n)</span><br><span class="line">    &#123;</span><br><span class="line">        i &#x3D; i * 2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="平方阶O-n²"><a href="#平方阶O-n²" class="headerlink" title="平方阶O(n²)"></a><strong>平方阶O(n²)</strong></h4><p>平方阶O(n²) 就更容易理解了，如果把 O(n) 的代码再嵌套循环一遍，它的时间复杂度就是 O(n²) 了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">for(x&#x3D;1; i&lt;&#x3D;n; x++)</span><br><span class="line">&#123;</span><br><span class="line">   for(i&#x3D;1; i&lt;&#x3D;n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">       j &#x3D; i;</span><br><span class="line">       j++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码其实就是嵌套了2层n循环，它的时间复杂度就是 O(n*n)，即 O(n²) </p>
+<h4 id="立方阶O-n³-、K次方阶O-n-k"><a href="#立方阶O-n³-、K次方阶O-n-k" class="headerlink" title="立方阶O(n³)**、K次方阶O(n^k)**"></a><strong>立方阶O(n³)**、</strong>K次方阶O(n^k)**</h4><p>参考上面的O(n²) 去理解就好了，O(n³)相当于三层n循环，其它的类似。</p>
+<h3 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a><strong>空间复杂度</strong></h3><p>空间复杂度比较常用的有：O(1)、O(n)、O(n²)</p>
+<h4 id="空间复杂度-O-1"><a href="#空间复杂度-O-1" class="headerlink" title="空间复杂度 O(1)"></a><strong>空间复杂度 O(1)</strong></h4><p>如果算法执行所需要的临时空间不随着某个变量n的大小而变化，即此算法空间复杂度为一个常量，可表示为 O(1)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 1;</span><br><span class="line">int j &#x3D; 2;</span><br><span class="line">++i;</span><br><span class="line">j++;</span><br><span class="line">int m &#x3D; i + j;</span><br></pre></td></tr></table></figure>
+
+<p>代码中的 i、j、m 所分配的空间都不随着处理数据量变化，因此它的空间复杂度 S(n) = O(1)</p>
+<h4 id="空间复杂度-O-n"><a href="#空间复杂度-O-n" class="headerlink" title="空间复杂度 O(n)"></a><strong>空间复杂度 O(n)</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int[] m &#x3D; new int[n]</span><br><span class="line">for(i&#x3D;1; i&lt;&#x3D;n; ++i)</span><br><span class="line">&#123;</span><br><span class="line">   j &#x3D; i;</span><br><span class="line">   j++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码中，第一行new了一个数组出来，这个数据占用的大小为n，这段代码的2-6行，虽然有循环，但没有再分配新的空间，因此，这段代码的空间复杂度主要看第一行即可，即 S(n) = O(n)</p>
+<h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><h3 id="递归的特点"><a href="#递归的特点" class="headerlink" title="递归的特点"></a>递归的特点</h3><ul>
+<li>一个问题的解可以分解为几个子问题的解</li>
+<li>这个问题与分解之后的子问题，除了数据规模不同，求解思路完全一样</li>
+<li>存在基线/终止条件</li>
+</ul>
+<h3 id="递归如何实现"><a href="#递归如何实现" class="headerlink" title="递归如何实现"></a>递归如何实现</h3><p>递归的关键：求出这个递归公式，找到终止条件。<br>斐波那契数列数列求解：<br>1 1 2 3 5 8 13 这个的数列我们称之为斐波那契数列<br>他的求解公式：f(n)=f(n-1)+f(n-2)<br>终止条件：n&lt;=2  f(n)=1</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LeetCode/" rel="tag"># LeetCode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/11/Netty/2022-07-11%20%20BIO%EF%BC%8CNIO%EF%BC%8CAIO%E7%B2%BE%E8%AE%B2/" rel="prev" title="BIO，NIO，AIO精讲">
+      <i class="fa fa-chevron-left"></i> BIO，NIO，AIO精讲
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/09/08/LeetCode/2022-09-10%20leetcode%E7%AE%97%E6%B3%95-%E9%80%92%E5%BD%92/" rel="next" title="leetcode算法-递归">
+      leetcode算法-递归 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%8F%8A%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">1.</span> <span class="nav-text">时间及空间复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text">时间复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E6%95%B0%E9%98%B6O-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">常数阶O(1)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E6%95%B0%E9%98%B6O-logN"><span class="nav-number">1.2.2.</span> <span class="nav-text">对数阶O(logN)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E9%98%B6O-n"><span class="nav-number">1.2.3.</span> <span class="nav-text">线性阶O(n)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E5%AF%B9%E6%95%B0%E9%98%B6O-nlogN"><span class="nav-number">1.2.4.</span> <span class="nav-text">线性对数阶O(nlogN)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B3%E6%96%B9%E9%98%B6O-n%C2%B2"><span class="nav-number">1.2.5.</span> <span class="nav-text">平方阶O(n²)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AB%8B%E6%96%B9%E9%98%B6O-n%C2%B3-%E3%80%81K%E6%AC%A1%E6%96%B9%E9%98%B6O-n-k"><span class="nav-number">1.2.6.</span> <span class="nav-text">立方阶O(n³)**、K次方阶O(n^k)**</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">1.3.</span> <span class="nav-text">空间复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6-O-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">空间复杂度 O(1)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6-O-n"><span class="nav-number">1.3.2.</span> <span class="nav-text">空间复杂度 O(n)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%92%E5%BD%92"><span class="nav-number">2.</span> <span class="nav-text">递归</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">递归的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.</span> <span class="nav-text">递归如何实现</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">198</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

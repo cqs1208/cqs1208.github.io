@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="LeetCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode算法-并查集">
+<meta property="og:url" content="http://example.com/2022/09/16/LeetCode/2022-10-09%20leetcode%E7%AE%97%E6%B3%95-%E5%B9%B6%E6%9F%A5%E9%9B%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="LeetCode">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-09-16T04:00:29.267Z">
+<meta property="article:modified_time" content="2022-10-09T09:34:05.421Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="LeetCode">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/09/16/LeetCode/2022-10-09%20leetcode%E7%AE%97%E6%B3%95-%E5%B9%B6%E6%9F%A5%E9%9B%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>leetcode算法-并查集 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/16/LeetCode/2022-10-09%20leetcode%E7%AE%97%E6%B3%95-%E5%B9%B6%E6%9F%A5%E9%9B%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          leetcode算法-并查集
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-16 12:00:29" itemprop="dateCreated datePublished" datetime="2022-09-16T12:00:29+08:00">2022-09-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-09 17:34:05" itemprop="dateModified" datetime="2022-10-09T17:34:05+08:00">2022-10-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LeetCode/" itemprop="url" rel="index"><span itemprop="name">LeetCode</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">LeetCode</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p> leetcode算法</p>
+<a id="more"></a> 
+
+<h2 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h2><p>其实并查集顾名思义，并就是有“合并集合”，查就是“查找集合中的元素”。 </p>
+<p>主要用于解决一些元素分组的问题。它管理一系列不相交的集合，并支持两 种操作： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">合并（Union）：把两个不相交的集合合并为一个集合。</span><br><span class="line">查询（Find）：查询两个元素是否在同一个集合中</span><br></pre></td></tr></table></figure>
+
+<p>既然是集合，自然集合中可能会有很多的元素，有多个集合时怎么区分集合呢？并查集的重要思想在于，用集合中的一个元素来代表集合。 </p>
+<p>并查集在网络连通性问题、渗滤、图像处理、最近公共祖先、有限状态自动机的等价性、Kruskal 的最小生成树算法等等都有非常广的应用。</p>
+<h2 id="LeetCode-128-最长连续序列"><a href="#LeetCode-128-最长连续序列" class="headerlink" title="(LeetCode- 128) 最长连续序列"></a><strong>(LeetCode- 128)</strong> <strong>最长连续序列</strong></h2><h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p>给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。</p>
+<p>请你设计并实现时间复杂度为 O(n) 的算法解决此问题。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [100,4,200,1,3,2]</span><br><span class="line">输出：4</span><br><span class="line">解释：最长数字连续序列是 [1, 2, 3, 4]。它的长度为 4。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [0,3,7,2,5,8,4,6,0,1]</span><br><span class="line">输出：9</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><h4 id="方法-并查集"><a href="#方法-并查集" class="headerlink" title="方法: 并查集"></a>方法: 并查集</h4><p>可以用并查集来解决，基本思想是让一个连续区间内的元素都会 在一个集合中，且这些元素的根结点都为连续区间内最远的右边界元素。 </p>
+<p>回顾一下我们学习并查集的概念的时候，可以看到对并查集的操作无非就是 初始化并查集、查找并查集中的元素和合并集合，所以具体思路则可以： </p>
+<p>遍历所有元素，对于遇到的元素 num，如果 num+1 存在，将 num 加入到 num+1 所在的集合中； </p>
+<p>重新遍历一遍所有元素 num，通过 find 函数找到 num 所在集合的根结点， 也就是 num 所在连续区间内最远的右边界，从而求得连续区间的长度。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">public class LongestConsecutive &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int[] nums &#x3D; &#123;100,4,200,1,3,2&#125;;</span><br><span class="line">        int i &#x3D; new LongestConsecutive().longestConsecutive(nums);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int longestConsecutive(int[] nums) &#123;</span><br><span class="line">        ADT adt &#x3D; new ADT(nums);</span><br><span class="line">        int ans &#x3D; 0;</span><br><span class="line"></span><br><span class="line">        for(int num : nums)&#123;</span><br><span class="line">            &#x2F;&#x2F; 当 num + 1 存在， 将num合并到num+1所在的集合中</span><br><span class="line">            if(adt.find(num + 1) !&#x3D; null)&#123;</span><br><span class="line">                adt.union(num, num + 1);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 找到数组中每个元素num所在连续区间内最远的右边界。 取最大的那个</span><br><span class="line">        for(int num : nums)&#123;</span><br><span class="line">            int right &#x3D; adt.find(num);</span><br><span class="line">            ans &#x3D; Math.max(ans, right - num + 1);</span><br><span class="line">        &#125;</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class ADT&#123;</span><br><span class="line">        &#x2F;&#x2F; 记录每个节点的父节点，key为当前节点，value为父节点</span><br><span class="line">        private Map&lt;Integer, Integer&gt; parent;</span><br><span class="line">        public ADT(int[] nums)&#123;</span><br><span class="line">            parent &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">            &#x2F;&#x2F; 初始化并查集，每个节点的父节点为自身</span><br><span class="line">            for(int num : nums)&#123;</span><br><span class="line">                parent.put(num, num);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 查找x的父节点</span><br><span class="line">        public Integer find(int x)&#123;</span><br><span class="line">            &#x2F;&#x2F; nums 不包含 x</span><br><span class="line">            if(!parent.containsKey(x))&#123;</span><br><span class="line">                return null;</span><br><span class="line">            &#125;</span><br><span class="line">            &#x2F;&#x2F; 遍历找到x 的父节点</span><br><span class="line">            &#x2F;&#x2F; x ！&#x3D; parent.get(x) 说明x有父节点 集合中只有根节点的父节点是自己，这是退出循环</span><br><span class="line">            while (x !&#x3D; parent.get(x))&#123;</span><br><span class="line">               &#x2F;&#x2F; 路径压缩， parent.get(x) 找到x的父节点</span><br><span class="line">               &#x2F;&#x2F; parent.get(parent.get(x)) 找到x 的父节点的父节点， 也就是祖父节点</span><br><span class="line">                parent.put(x, parent.get(parent.get(x)));</span><br><span class="line">                &#x2F;&#x2F; 从x最新的父节点出发， 继续往上寻找知道根节点为止</span><br><span class="line">                x &#x3D; parent.get(x);</span><br><span class="line">            &#125;</span><br><span class="line">            return x;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 合并两个集合， 将x 并入 y 的连续区间中</span><br><span class="line">        public void union(int x, int y)&#123;</span><br><span class="line">            int rootX &#x3D; find(x);</span><br><span class="line">            int rootY &#x3D; find(y);</span><br><span class="line">            &#x2F;&#x2F; x和y已经处于同一连续区间中</span><br><span class="line">            if(rootX &#x3D;&#x3D; rootY)&#123;</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            parent.put(rootX, rootY);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-200-岛屿数量"><a href="#LeetCode-200-岛屿数量" class="headerlink" title="(LeetCode- 200) 岛屿数量"></a><strong>(LeetCode- 200)</strong> <strong>岛屿数量</strong></h2><h3 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h3><p>给你一个由 ‘1’（陆地）和 ‘0’（水）组成的的二维网格，请你计算网格中岛屿的数量。</p>
+<p>岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。</p>
+<p>此外，你可以假设该网格的四条边均被水包围。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：grid &#x3D; [</span><br><span class="line">  [&quot;1&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;,&quot;0&quot;],</span><br><span class="line">  [&quot;1&quot;,&quot;1&quot;,&quot;0&quot;,&quot;1&quot;,&quot;0&quot;],</span><br><span class="line">  [&quot;1&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;],</span><br><span class="line">  [&quot;0&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;]</span><br><span class="line">]</span><br><span class="line">输出：1</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：grid &#x3D; [</span><br><span class="line">  [&quot;1&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;],</span><br><span class="line">  [&quot;1&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;],</span><br><span class="line">  [&quot;0&quot;,&quot;0&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;],</span><br><span class="line">  [&quot;0&quot;,&quot;0&quot;,&quot;0&quot;,&quot;1&quot;,&quot;1&quot;]</span><br><span class="line">]</span><br><span class="line">输出：3</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p><strong><em>方法</em></strong> </p>
+<p>这个题目既可以用并查集来解决，因为这是个考察连通性的问题；也可以看 成一个无向图，用广度或深度优先搜索来解决。 </p>
+<p>站在并查集的角度，水平方向和/或竖直方向上相邻的 1 构成一个集合，然后看看二维网格里有多个这样的集合。所以同样可以遵循初始化并查集、查找并查集中的元素和合并集合这几步来解决。 </p>
+<p>整体思路： 初始时将每一个“1”的格子看作一个岛。然后遍历整个格，考察该格子右侧和下侧的格子，如果是“1”，将其合并到当前格子所在的岛中，每次合并都累计合并次数。岛屿数量就是最初单个格子岛屿数量减去合并次数。 </p>
+<p>当然这里用图论中的广度或深度优先搜索速度会更快些，等我们学习完图论后，可以再回来看看这个题怎么用广度或深度优先搜索解决。</p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">public class NumIslands &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        char[][] grid &#x3D; &#123;&#123;&#39;1&#39;, &#39;1&#39;, &#39;1&#39;,&#39;1&#39;,&#39;0&#39;&#125;, &#123;&#39;1&#39;, &#39;1&#39;, &#39;0&#39;,&#39;1&#39;,&#39;0&#39;&#125;,&#123;&#39;1&#39;, &#39;1&#39;, &#39;0&#39;,&#39;0&#39;,&#39;0&#39;&#125;,&#123;&#39;0&#39;, &#39;0&#39;, &#39;0&#39;,&#39;0&#39;,&#39;0&#39;&#125; &#125;;</span><br><span class="line">        int i &#x3D; new NumIslands().numIslands(grid);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 初始化岛屿数量</span><br><span class="line">    int isLandCount &#x3D; 0;</span><br><span class="line">    &#x2F;&#x2F; 累计合并次数</span><br><span class="line">    int mergedCount &#x3D; 0;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 并查集实现</span><br><span class="line">    public int numIslands(char[][] grid) &#123;</span><br><span class="line">        int m &#x3D; grid.length, n &#x3D; grid[0].length;</span><br><span class="line">        ADT uf &#x3D; new ADT(grid);</span><br><span class="line">        &#x2F;&#x2F; 遍历原始数组中的每个元素</span><br><span class="line">        for(int i &#x3D; 0; i &lt; m; i++)&#123;</span><br><span class="line">            for(int j &#x3D; 0; j &lt; n; j++)&#123;</span><br><span class="line">                &#x2F;&#x2F; 二维转一维时， 在一维数组中的下标</span><br><span class="line">                int landx &#x3D; i * n + j;</span><br><span class="line">                if(grid[i][j] &#x3D;&#x3D; &#39;1&#39;)&#123;</span><br><span class="line">                    &#x2F;&#x2F; 检测右侧是否联通，联通则要合并</span><br><span class="line">                    if(j &lt; n - 1 &amp;&amp; grid[i][j + 1] &#x3D;&#x3D; &#39;1&#39;)&#123;</span><br><span class="line">                        uf.union(landx, landx + 1);</span><br><span class="line">                    &#125;</span><br><span class="line">                    &#x2F;&#x2F; 检测下侧是否联通， 联通则要合并</span><br><span class="line">                    if(i &lt; m - 1 &amp;&amp; grid[i + 1][j] &#x3D;&#x3D; &#39;1&#39;)&#123;</span><br><span class="line">                        uf.union(landx, landx + n);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return isLandCount - mergedCount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class ADT&#123;</span><br><span class="line">        &#x2F;&#x2F; 存储每个元素的父节点</span><br><span class="line">        private int[] parents;</span><br><span class="line">        &#x2F;* 原始数组元素为二维char, 转为一维int  rank的作用记录每个节点的子树深度</span><br><span class="line">        因为在两棵树合并时， 把小树合并到大树上，可以让每个元素到根节点的距离最少</span><br><span class="line">        * *&#x2F;</span><br><span class="line">        private int[] rank;</span><br><span class="line"></span><br><span class="line">        public ADT(char[][] grid)&#123;</span><br><span class="line">            int m &#x3D; grid.length, n &#x3D; grid[0].length;</span><br><span class="line">            this.parents &#x3D; new int[m * n];</span><br><span class="line">            this.rank &#x3D; new int[m * n];</span><br><span class="line">            &#x2F;&#x2F; 遍历原始数组， 累计初始数量，并初始化一维数组parents和rank</span><br><span class="line">            for(int i &#x3D; 0; i &lt; m; i++)&#123;</span><br><span class="line">                for(int j &#x3D; 0; j &lt; n; j++)&#123;</span><br><span class="line">                    if (grid[i][j] &#x3D;&#x3D; &#39;1&#39;) &#123;</span><br><span class="line">                        isLandCount++;</span><br><span class="line">                        int k &#x3D; i * n + j;</span><br><span class="line">                        parents[k] &#x3D; k;</span><br><span class="line">                        rank[k] &#x3D; 1;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 带路径压缩的查找根节点</span><br><span class="line">        public int find(int x)&#123;</span><br><span class="line">            &#x2F;&#x2F; 集合中只有根节点的父节点是自己</span><br><span class="line">            if(parents[x] &#x3D;&#x3D; x) return x;</span><br><span class="line">            &#x2F;&#x2F; 数自然可以递归处理， 并且在查询的过程中不断变更节点的父节点，以缩短查找路径</span><br><span class="line">            return parents[x] &#x3D; find(parents[x]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 合并集合</span><br><span class="line">        public void union(int x, int y)&#123;</span><br><span class="line">            int xRoot &#x3D; find(x);</span><br><span class="line">            int yRoot &#x3D; find(y);</span><br><span class="line">            &#x2F;&#x2F; x 和 y 的根节点不一致， 进行集合合并</span><br><span class="line">            if(xRoot !&#x3D; yRoot)&#123;</span><br><span class="line">                &#x2F;&#x2F; 合并次数 + 1</span><br><span class="line">                mergedCount++;</span><br><span class="line">                &#x2F;&#x2F; 把小树合并到大树上</span><br><span class="line">                if(rank[yRoot] &lt;&#x3D; rank[xRoot]) parents[yRoot] &#x3D; xRoot;</span><br><span class="line">                else parents[xRoot] &#x3D; yRoot;</span><br><span class="line">                &#x2F;&#x2F; 两颗数深度一样， 合并后数的深度要加 1</span><br><span class="line">                if(rank[xRoot] &#x3D;&#x3D; rank[yRoot]) rank[xRoot]++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-399-除法求值"><a href="#LeetCode-399-除法求值" class="headerlink" title="(LeetCode- 399) 除法求值"></a><strong>(LeetCode- 399)</strong> <strong>除法求值</strong></h2><h3 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h3><p>给你一个变量对数组 equations 和一个实数值数组 values 作为已知条件，其中 equations[i] = [Ai, Bi] 和 values[i] 共同表示等式 Ai / Bi = values[i] 。每个 Ai 或 Bi 是一个表示单个变量的字符串。</p>
+<p>另有一些以数组 queries 表示的问题，其中 queries[j] = [Cj, Dj] 表示第 j 个问题，请你根据已知条件找出 Cj / Dj = ? 的结果作为答案。</p>
+<p>返回 所有问题的答案 。如果存在某个无法确定的答案，则用 -1.0 替代这个答案。如果问题中出现了给定的已知条件中没有出现的字符串，也需要用 -1.0 替代这个答案。</p>
+<p>注意：输入总是有效的。你可以假设除法运算中不会出现除数为 0 的情况，且不存在任何矛盾的结果。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：equations &#x3D; [[&quot;a&quot;,&quot;b&quot;],[&quot;b&quot;,&quot;c&quot;]], values &#x3D; [2.0,3.0], queries &#x3D; [[&quot;a&quot;,&quot;c&quot;],[&quot;b&quot;,&quot;a&quot;],[&quot;a&quot;,&quot;e&quot;],[&quot;a&quot;,&quot;a&quot;],[&quot;x&quot;,&quot;x&quot;]]</span><br><span class="line">输出：[6.00000,0.50000,-1.00000,1.00000,-1.00000]</span><br><span class="line">解释：</span><br><span class="line">条件：a &#x2F; b &#x3D; 2.0, b &#x2F; c &#x3D; 3.0</span><br><span class="line">问题：a &#x2F; c &#x3D; ?, b &#x2F; a &#x3D; ?, a &#x2F; e &#x3D; ?, a &#x2F; a &#x3D; ?, x &#x2F; x &#x3D; ?</span><br><span class="line">结果：[6.0, 0.5, -1.0, 1.0, -1.0 ]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">入：equations &#x3D; [[&quot;a&quot;,&quot;b&quot;],[&quot;b&quot;,&quot;c&quot;],[&quot;bc&quot;,&quot;cd&quot;]], values &#x3D; [1.5,2.5,5.0], queries &#x3D; [[&quot;a&quot;,&quot;c&quot;],[&quot;c&quot;,&quot;b&quot;],[&quot;bc&quot;,&quot;cd&quot;],[&quot;cd&quot;,&quot;bc&quot;]]</span><br><span class="line">输出：[3.75000,0.40000,5.00000,0.20000]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：equations &#x3D; [[&quot;a&quot;,&quot;b&quot;]], values &#x3D; [0.5], queries &#x3D; [[&quot;a&quot;,&quot;b&quot;],[&quot;b&quot;,&quot;a&quot;],[&quot;a&quot;,&quot;c&quot;],[&quot;x&quot;,&quot;y&quot;]]</span><br><span class="line">输出：[0.50000,2.00000,-1.00000,-1.00000]</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h3><p><strong><em>方法</em></strong> </p>
+<p>这个题目题干非常复杂，解答代码量也很多，但其实如果搞明白了并查集的 三件事：初始化、查找和合并，题目并不能算很难处理。 </p>
+<p>说到底 queries[j] = [Cj, Dj] 能否有答案，其实就是考察 Cj, Dj 能否归属于同一 个集合，或者说 Cj, Dj 能否通过 equations 连通起来。但是我们前面的题目中只 需要记录两个元素是否属于同一个集合即可，这个题目中还需要记录 equations  中的变量对之间的倍数关系，我们把这个倍数关系称为权值。 </p>
+<p>初始化的时候，所有的元素单独成为集合，并且权值为 1。然后按照变量对 数组 equations 和实数值数组 values 进行集合合并，并更新权值。 </p>
+<p>接下来处理问题数组 queries，检查 Cj, Dj 是否处于同一集合，并且进行路 径压缩。 </p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line">public class CalcEquation &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        List&lt;List&lt;String&gt;&gt; equations &#x3D; new LinkedList&lt;&gt;();</span><br><span class="line">        List&lt;String&gt; equations1  &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        equations1.add(&quot;a&quot;);</span><br><span class="line">        equations1.add(&quot;b&quot;);</span><br><span class="line">        equations.add(equations1);</span><br><span class="line">        List&lt;String&gt; equations2  &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        equations2.add(&quot;b&quot;);</span><br><span class="line">        equations2.add(&quot;c&quot;);</span><br><span class="line">        equations.add(equations2);</span><br><span class="line">        double[] values &#x3D; &#123;2.0,3.0&#125;;</span><br><span class="line">        List&lt;List&lt;String&gt;&gt; queries &#x3D;  new LinkedList&lt;&gt;();</span><br><span class="line">        List&lt;String&gt; queries1  &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        queries1.add(&quot;a&quot;);</span><br><span class="line">        queries1.add(&quot;c&quot;);</span><br><span class="line">        queries.add(queries1);</span><br><span class="line">        List&lt;String&gt; queries2  &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        queries2.add(&quot;b&quot;);</span><br><span class="line">        queries2.add(&quot;a&quot;);</span><br><span class="line">        queries.add(queries2);</span><br><span class="line">        List&lt;String&gt; queries3  &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        queries3.add(&quot;a&quot;);</span><br><span class="line">        queries3.add(&quot;e&quot;);</span><br><span class="line">        queries.add(queries3);</span><br><span class="line">        List&lt;String&gt; queries4  &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        queries4.add(&quot;a&quot;);</span><br><span class="line">        queries4.add(&quot;a&quot;);</span><br><span class="line">        queries.add(queries4);</span><br><span class="line">        List&lt;String&gt; queries5  &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        queries5.add(&quot;x&quot;);</span><br><span class="line">        queries5.add(&quot;x&quot;);</span><br><span class="line">        queries.add(queries5);</span><br><span class="line">        double[] doubles &#x3D; new CalcEquation().calcEquation(equations, values, queries);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public double[] calcEquation(List&lt;List&lt;String&gt;&gt; equations, double[] values, List&lt;List&lt;String&gt;&gt; queries) &#123;</span><br><span class="line">        int equationSize &#x3D; equations.size();</span><br><span class="line">        ADT adt &#x3D; new ADT(2 * equationSize);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 拆解equations中的变量对， 给每个变量赋一个单独的id， 方便并查集操作</span><br><span class="line">        Map&lt;String, Integer&gt; map &#x3D; new HashMap&lt;&gt;(2 * equationSize);</span><br><span class="line">        int id &#x3D; 0;</span><br><span class="line">        for(int i &#x3D; 0; i &lt; equationSize; i++)&#123;</span><br><span class="line">            List&lt;String&gt; eqution &#x3D; equations.get(i);</span><br><span class="line">            String first &#x3D; eqution.get(0);</span><br><span class="line">            String second &#x3D; eqution.get(1);</span><br><span class="line">            if(!map.containsKey(first))&#123;</span><br><span class="line">                map.put(first, id);</span><br><span class="line">                id++;</span><br><span class="line">            &#125;</span><br><span class="line">            if(!map.containsKey(second))&#123;</span><br><span class="line">                map.put(second, id);</span><br><span class="line">                id++;</span><br><span class="line">            &#125;</span><br><span class="line">            &#x2F;&#x2F; 对变量对中的两个变量进行集合合并</span><br><span class="line">            adt.union(map.get(first), map.get(second),values[i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 处理问题数组queries</span><br><span class="line">        int queriesSize &#x3D; queries.size();</span><br><span class="line">        double[] res &#x3D; new double[queriesSize];</span><br><span class="line">        for(int i &#x3D; 0; i &lt; queriesSize; i++)&#123;</span><br><span class="line">            String var1 &#x3D; queries.get(i).get(0);</span><br><span class="line">            String var2 &#x3D; queries.get(i).get(1);</span><br><span class="line"></span><br><span class="line">            Integer id1 &#x3D; map.get(var1);</span><br><span class="line">            Integer id2 &#x3D; map.get(var2);</span><br><span class="line"></span><br><span class="line">            if(id1 &#x3D;&#x3D; null || id2 &#x3D;&#x3D; null)&#123;</span><br><span class="line">                res[i] &#x3D; -1.0d;</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                res[i] &#x3D; adt.calc(id1, id2);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class ADT&#123;</span><br><span class="line">        &#x2F;&#x2F; 记录每个元素的父节点</span><br><span class="line">        private int[] parent;</span><br><span class="line">        &#x2F;*节点指向当前父节点时的权值， 因为存在路径压缩，所以父节点会变化， 权值自然也会变化*&#x2F;</span><br><span class="line">        private double[] weight;</span><br><span class="line">        public ADT(int n)&#123;</span><br><span class="line">            this.parent &#x3D; new int[n];</span><br><span class="line">            this.weight &#x3D; new double[n];</span><br><span class="line">            for(int i &#x3D; 0; i &lt; n; i++)&#123;</span><br><span class="line">                &#x2F;&#x2F; 初始化， 每个元素都是自己的父节点， 权值为1</span><br><span class="line">                parent[i] &#x3D; i;</span><br><span class="line">                weight[i] &#x3D; 1.0d;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 集合合并</span><br><span class="line">        public void union(int x, int y, double value)&#123;</span><br><span class="line">            int rootX &#x3D; find(x);</span><br><span class="line">            int rootY &#x3D; find(y);</span><br><span class="line">            &#x2F;&#x2F; 两者不属于统一集合， 合并， 并更新权值</span><br><span class="line">            if(rootX !&#x3D; rootY)&#123;</span><br><span class="line">                parent[rootX] &#x3D; rootY;</span><br><span class="line">                weight[rootX] &#x3D; weight[y] * value &#x2F; weight[x];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 带路径压缩的根节点查找， 并更新权值</span><br><span class="line">        public int find(int x)&#123;</span><br><span class="line">            if(x !&#x3D; parent[x])&#123;</span><br><span class="line">                int origin &#x3D; parent[x];</span><br><span class="line">                parent[x] &#x3D; find(parent[x]);</span><br><span class="line">                weight[x] &#x3D; weight[x] * weight[origin];</span><br><span class="line">            &#125;</span><br><span class="line">            return parent[x];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;</span><br><span class="line">        public double calc(int x, int y)&#123;</span><br><span class="line">            int rootX &#x3D; find(x);</span><br><span class="line">            int rootY &#x3D; find(y);</span><br><span class="line">            if(rootX &#x3D;&#x3D; rootY)&#123;</span><br><span class="line">                return weight[x] &#x2F; weight[y];</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                return -1.0d;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LeetCode/" rel="tag"># LeetCode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/15/LeetCode/2022-09-17%20leetcode%E7%AE%97%E6%B3%95-%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="prev" title="leetcode算法-字符串">
+      <i class="fa fa-chevron-left"></i> leetcode算法-字符串
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/09/30/LeetCode/2022-09-18%20leetcode%E7%AE%97%E6%B3%95-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="next" title="leetcode算法-动态规划、回溯">
+      leetcode算法-动态规划、回溯 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E6%9F%A5%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">并查集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-128-%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%BA%8F%E5%88%97"><span class="nav-number">2.</span> <span class="nav-text">(LeetCode- 128) 最长连续序列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-%E5%B9%B6%E6%9F%A5%E9%9B%86"><span class="nav-number">2.2.1.</span> <span class="nav-text">方法: 并查集</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-200-%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F"><span class="nav-number">3.</span> <span class="nav-text">(LeetCode- 200) 岛屿数量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">3.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-1"><span class="nav-number">3.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-number">3.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-399-%E9%99%A4%E6%B3%95%E6%B1%82%E5%80%BC"><span class="nav-number">4.</span> <span class="nav-text">(LeetCode- 399) 除法求值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">4.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-2"><span class="nav-number">4.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="nav-number">4.3.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">198</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

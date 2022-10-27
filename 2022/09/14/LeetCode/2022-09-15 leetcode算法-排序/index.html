@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="LeetCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode算法-排序">
+<meta property="og:url" content="http://example.com/2022/09/14/LeetCode/2022-09-15%20leetcode%E7%AE%97%E6%B3%95-%E6%8E%92%E5%BA%8F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="LeetCode">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_60.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_61.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_62.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_63.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_64.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_65.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_66.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_67.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_68.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_69.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_70.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_85.png">
+<meta property="og:image" content="http://example.com/2022/09/14/LeetCode/2022-09-15%20leetcode%E7%AE%97%E6%B3%95-%E6%8E%92%E5%BA%8F/">
+<meta property="og:image" content="http://example.com/2022/09/14/LeetCode/2022-09-15%20leetcode%E7%AE%97%E6%B3%95-%E6%8E%92%E5%BA%8F/">
+<meta property="og:image" content="http://example.com/2022/09/14/LeetCode/2022-09-15%20leetcode%E7%AE%97%E6%B3%95-%E6%8E%92%E5%BA%8F/">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_84.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_74.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_75.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_76.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_77.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_78.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_79.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_80.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_81.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_82.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_83.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_86.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_87.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_88.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_89.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_90.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_91.png">
+<meta property="article:published_time" content="2022-09-14T01:52:33.772Z">
+<meta property="article:modified_time" content="2022-09-20T10:05:05.720Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="LeetCode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Leetcode/Leetcode_60.png">
+
+<link rel="canonical" href="http://example.com/2022/09/14/LeetCode/2022-09-15%20leetcode%E7%AE%97%E6%B3%95-%E6%8E%92%E5%BA%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>leetcode算法-排序 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/14/LeetCode/2022-09-15%20leetcode%E7%AE%97%E6%B3%95-%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          leetcode算法-排序
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-14 09:52:33" itemprop="dateCreated datePublished" datetime="2022-09-14T09:52:33+08:00">2022-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-20 18:05:05" itemprop="dateModified" datetime="2022-09-20T18:05:05+08:00">2022-09-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LeetCode/" itemprop="url" rel="index"><span itemprop="name">LeetCode</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">LeetCode</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p> leetcode算法</p>
+<a id="more"></a> 
+
+<h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><p>冒泡排序是一种简单的排序算法。它重复地走访过要排序的数列，一次比较两个元素，如果它们的顺序错误就把它们交换过来。走访数列的工作是重复地进行直到没有再需要交换，也就是说该数列已经排序完成。这个算法的名字由来是因为相关的元素会经由交换慢慢“浮”到数列的顶端。 </p>
+<p>基本思路：</p>
+<p>1、比较相邻的元素。如果第一个比第二个大(小)，就交换它们两个；</p>
+<p>2、对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对，这样在最后的元素应该会是最大(小)数；</p>
+<p>3、针对所有的元素重复以上的步骤，除了最后一个；</p>
+<p>重复步骤1~2，直到排序完成。</p>
+<h3 id="图示"><a href="#图示" class="headerlink" title="图示"></a>图示</h3><p>第一轮循环：</p>
+<p><img src="/images/Leetcode/Leetcode_60.png" alt="Leetcode_60"></p>
+<p><img src="/images/Leetcode/Leetcode_61.png" alt="Leetcode_61"></p>
+<p>后面继续从头开始循环，直到所有的元素都排好位置为止。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">      int nums[] &#x3D; &#123;3,5,6,7,1,4,2,9&#125;;</span><br><span class="line">      for(int i &#x3D; 0; i &lt; nums.length; i++)&#123;</span><br><span class="line">          for(int j &#x3D; 0; j &lt; nums.length - 1 - i; j++)&#123;</span><br><span class="line">              int temp1 &#x3D; nums[j];</span><br><span class="line">              int temp2 &#x3D; nums[j+1];</span><br><span class="line">              if(temp1 &gt; temp2)&#123;</span><br><span class="line">                  int temp0 &#x3D; nums[j];</span><br><span class="line">                  nums[j] &#x3D; nums[j+1];</span><br><span class="line">                  nums[j+1] &#x3D; temp0;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      System.out.println(Arrays.toString(nums));</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><p>​    选择排序的思想其实和冒泡排序有点类似，都是在一次排序后把最小的元素放到最前面。但是过程不同，冒泡排序是通过相邻的比较和交换。而选择排序是通过对整体的选择</p>
+<p>​    其实选择排序可以看成冒泡排序的优化，因为其目的相同，只是选择排序只有在确定了最大（小）的前提下才进行交换，大大减少了交换的次数。</p>
+<p><strong>具体步骤：</strong></p>
+<p>首先，找到数组中最大（小）的那个元素；</p>
+<p>其次，将它和数组的第一个元素交换位置（如果第一个元素就是最大（小）元素那么它就和自己交换）；</p>
+<p>再次，在剩下的元素中找到最大（小）的元素，将它与数组的第二个元素交换位置。如此往复，直到将整个数组排序。</p>
+<h3 id="图示-1"><a href="#图示-1" class="headerlink" title="图示"></a>图示</h3><p>原始数组：</p>
+<p><img src="/images/Leetcode/Leetcode_62.png" alt="Leetcode_62"></p>
+<p><img src="/images/Leetcode/Leetcode_63.png" alt="Leetcode_63"></p>
+<p>如此重复，最后形成数组：</p>
+<p><img src="/images/Leetcode/Leetcode_64.png" alt="Leetcode_64"></p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public static int[] choose(int nums[])&#123;</span><br><span class="line">        for(int i &#x3D; 0; i &lt; nums.length; i++)&#123;</span><br><span class="line">            int index &#x3D; i;</span><br><span class="line">            for(int j &#x3D; i ; j &lt; nums.length ; j++)&#123;</span><br><span class="line">                if(nums[j] &lt; nums[index])&#123;</span><br><span class="line">                    index &#x3D; j;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            int temp0 &#x3D; nums[i];</span><br><span class="line">            nums[i] &#x3D; nums[index];</span><br><span class="line">            nums[index] &#x3D; temp0;</span><br><span class="line">        &#125;</span><br><span class="line">      return nums;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p>插入排序不是通过交换位置而是通过比较找到合适的位置插入元素来达到排序的目的的。相信大家都看过打麻将，在摸牌的时候，拿到一张牌，找到一个合适的位置插入。举个例子，我们手里有3万,4万,6万,8万这几张牌，我们收到5万这张牌，把6万,8万往后移，然后把5万放到原理6万的位置，这个原理其实和插入排序是一样的。</p>
+<p><strong>具体步骤：</strong></p>
+<ul>
+<li>对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。</li>
+<li> 为了给要插入的元素腾出空间，我们需要将插入位置之后的已排序元素在都向右移动一位。</li>
+</ul>
+<p>插入排序所需的时间取决于输入中元素的初始顺序。例如，对一个很大且其中的元素已经有序（或接近有序）的数组进行排序将会比对随机顺序的数组或是逆序数组进行排序要快得多。</p>
+<p>总的来说，插入排序对于部分有序的数组十分高效，也很适合小规模数组。</p>
+<h3 id="图示-2"><a href="#图示-2" class="headerlink" title="图示"></a>图示</h3><p>原始数组： </p>
+<p><img src="/images/Leetcode/Leetcode_65.png" alt="Leetcode_65"></p>
+<p>我们总是认为原始数组的第一个元素已经是有序的了，于是从第二个元素开始进行排序。</p>
+<p><img src="/images/Leetcode/Leetcode_66.png" alt="Leetcode_66"></p>
+<p>第二个元素是L，比T小，所以将T后移一位，L插入T原来的位置</p>
+<p><img src="/images/Leetcode/Leetcode_67.png" alt="Leetcode_67"></p>
+<p>第三个元素是M，在已经排序的序列L、T中，L比M小，L不动，继续比较，T比M大，所以将T后移一位，M插入T原来的位置</p>
+<p><img src="/images/Leetcode/Leetcode_68.png" alt="Leetcode_68"></p>
+<p>第四个元素是A，在已经排序的序列LMT中，A比它们都下，应该排在最前面，所以将LMT全部后移一位，A插入L原来的位置。</p>
+<p><img src="/images/Leetcode/Leetcode_69.png" alt="Leetcode_69"></p>
+<p>如此重复，最后形成结果数组：</p>
+<p><img src="/images/Leetcode/Leetcode_70.png" alt="Leetcode_70"></p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public static int[] insert(int nums[])&#123;</span><br><span class="line">    for(int i &#x3D; 1; i &lt; nums.length; i++)&#123;</span><br><span class="line">        &#x2F;&#x2F; 需插入的数据</span><br><span class="line">        int temp &#x3D; nums[i];</span><br><span class="line">        int j &#x3D; i;  &#x2F;&#x2F; 从j 开始往前遍历</span><br><span class="line">        while (j &gt; 0 &amp;&amp; temp &lt; nums[j - 1])&#123;</span><br><span class="line">            &#x2F;&#x2F; 交换</span><br><span class="line">            nums[j ] &#x3D; nums[j- 1];</span><br><span class="line">            j --;</span><br><span class="line">        &#125;</span><br><span class="line">        nums[j ] &#x3D; temp;</span><br><span class="line">    &#125;</span><br><span class="line">    return nums;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h2><p>一种基于插入排序的快速的排序算法(请大家先学习插入排序，了解基本的插入排序的思想。对于大规模乱序数组插入排序很慢，因为元素只能一点一点地从数组的一端移动到另一端。例如，如果主键最小的元素正好在数组的尽头，要将它挪到正确的位置就需要N-1 次移动。</p>
+<p>希尔排序为了加快速度简单地改进了插入排序，也称为缩小增量排序，同时该算法是冲破O(n^2）的第一批算法之一。</p>
+<p>希尔排序是把待排序数组按一定增量的分组，对每组使用直接插入排序算法排序；然后缩小增量继续分组排序，随着增量逐渐减少，每组包含的元素越来越多，当增量减至 1 时，整个数组恰被分成一组，排序便完成了。这个不断缩小的增量，就构成了一个增量序列。</p>
+<h3 id="图示-3"><a href="#图示-3" class="headerlink" title="图示"></a>图示</h3><p><img src="/images/Leetcode/Leetcode_85.png" alt="Leetcode_85"></p>
+<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public static int[] sort(int nums[])&#123;</span><br><span class="line">       int len &#x3D; nums.length;</span><br><span class="line">       int gap &#x3D; len&#x2F; 2;</span><br><span class="line">       while (gap &gt; 0)&#123;</span><br><span class="line">           for(int i &#x3D; gap; i &lt; len; i++)&#123;</span><br><span class="line">               &#x2F;&#x2F; 需插入的数据</span><br><span class="line">               int temp &#x3D; nums[i];</span><br><span class="line">               int preIndex &#x3D; i - gap;  &#x2F;&#x2F; 从j 开始往前遍历</span><br><span class="line">               while (preIndex  &gt;&#x3D; 0 &amp;&amp; temp &lt; nums[preIndex])&#123;</span><br><span class="line">                   &#x2F;&#x2F; 交换</span><br><span class="line">                   nums[preIndex + gap ] &#x3D; nums[preIndex];</span><br><span class="line">                   preIndex -&#x3D; gap;</span><br><span class="line">               &#125;</span><br><span class="line">               nums[preIndex + gap] &#x3D; temp;</span><br><span class="line">           &#125;</span><br><span class="line">           gap &#x3D; gap &#x2F; 2;</span><br><span class="line">       &#125;</span><br><span class="line">       return nums;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><p>排序算法的思想非常简单，在待排序的数列中，我们首先要找一个数字作为基准数（这只是个专用名词）。为了方便，我们一般选择第 1 个数字作为基准数（其实选择第几个并没有关系）。接下来我们需要把这个待排序的数列中小于基准数的元素移动到待排序的数列的左边，把大于基准数的元素移动到待排序的数列的右边。这时，左右两个分区的元素就相对有序了；接着把两个分区的元素分别按照上面两种方法继续对每个分区找出基准数，然后移动，直到各个分区只有一个数时为止。</p>
+<p>这是典型的分治思想，即分治法。下面我们对一个实际例子进行算法描述，讲解快速排序的排序步骤。</p>
+<p>以 47、29、71、99、78、19、24、47 的待排序的数列为例进行排序，为了方便区分两个 47，我们对后面的 47 增加一个下画线，即待排序的数列为 47、29、71、99、78、19、24、47。</p>
+<p>首先我们需要在数列中选择一个基准数，我们一般会选择中间的一个数或者头尾的数，这里直接选择第 1 个数 47 作为基准数，接着把比 47 小的数字移动到左边，把比 47 大的数字移动到右边，对于相等的数字不做移动。所以实际上我们需要找到中间的某个位置 k，这样 k 左边的值全部比 k 上的值小，k 右边的值全部比 k 上的值大。</p>
+<p>接下来开始移动元素。怎么移动呢？其实冒泡排序也涉及对元素的移动，但是那样移动起来很累，比如把最后一个元素移动到第 1 个，就需要比较 n-1 次，同时交换 n-1 次，效率很低。其实，只需把第 1 个元素和最后一个元素交换就好了，这种思想是不是在排序时可以借鉴呢？之前说快速排序就是对冒泡排序的一个改进，就是这个原因。</p>
+<p>快速排序的操作是这样的：首先从数列的右边开始往左边找，我们设这个下标为 i，也就是进行减减操作（i–），找到第 1 个比基准数小的值，让它与基准值交换；接着从左边开始往右边找，设这个下标为 j，然后执行加加操作（j++），找到第 1 个比基准数大的值，让它与基准值交换；然后继续寻找，直到 i 与 j 相遇时结束，最后基准值所在的位置即 k 的位置，也就是说 k 左边的值均比 k 上的值小，而 k 右边的值都比 k 上的值大。</p>
+<p>所以对于上面的数列 47、29、71、99、78、19、24、47，进行第 1 趟第 1 个交换的排序情况如下，第 1 次的操作情况如<a target="_blank" rel="noopener" href="http://data.biancheng.net/view/321.html">图</a> 1 所示。</p>
+<h3 id="图示-4"><a href="#图示-4" class="headerlink" title="图示"></a>图示</h3><p><img src="./" alt="Leetcode_71"></p>
+<p>​                                                         图 1 第 1 次发现可以交换的数</p>
+<p>交换之后，j 移动到了下标为 6 的位置，对 i 继续扫描，如图 2 所示。</p>
+<p><img src="./" alt="Leetcode_72"></p>
+<p>此时交换后的数列变为 24、29、47、99、78、19、71、47。接下来我们继续对 i、j 进行操作，如图 3 所示，继续进行 i– 及 j++ 的比较操作。</p>
+<p><img src="./" alt="Leetcode_73"></p>
+<p>进行了这两次 i、j 的移动、比较、交换之后，我们最终得到的数列是 24、29、19、47、78、99、71、47。接下来我们继续进行 i– 的操作，发现在 i 为 4 时比 47 大不用交换，在 i 为 3 时与 j 相遇，这时就不需要继续移动、比较了，已经找到 k 了，并且 k 的值为 3。我们可以确认一下当前的数列是不是 k 左边的值都比 47 小，而 k 右边的值都比 47 大（由于要保持相对位置不变，所以 47 同样在基准值 47 的右边）。</p>
+<p>47 这个值已经落到了它该在的位置，第 1 趟排序完成了。</p>
+<h3 id="代码-4"><a href="#代码-4" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public static int[] quick(int nums[], int start, int end)&#123;</span><br><span class="line">      &#x2F;&#x2F; 基准数</span><br><span class="line">      if(start &lt; end)&#123;</span><br><span class="line">          int temp &#x3D; nums[start];</span><br><span class="line">          int i &#x3D; start;</span><br><span class="line">          int j &#x3D; end;</span><br><span class="line">          while (i &lt; j)&#123;</span><br><span class="line">              while (i &lt; j &amp;&amp; nums[j] &gt; temp)&#123;</span><br><span class="line">                  j--;</span><br><span class="line">              &#125;</span><br><span class="line">              if(i &lt; j )&#123;</span><br><span class="line">                  nums[i] &#x3D; nums[j];</span><br><span class="line">                  i++;</span><br><span class="line">              &#125;</span><br><span class="line">              while (i &lt; j &amp;&amp; nums[i] &lt; temp)&#123;</span><br><span class="line">                  i++;</span><br><span class="line">              &#125;</span><br><span class="line">              if(i &lt; j )&#123;</span><br><span class="line">                  nums[j] &#x3D; nums[i];</span><br><span class="line">                  j--;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          nums[i] &#x3D; temp;</span><br><span class="line">          quick( nums,  start,  i - 1);</span><br><span class="line">          quick( nums,  i + 1,  end);</span><br><span class="line">      &#125;</span><br><span class="line">      return nums;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>归并排序是建立在归并操作上的一种有效的排序算法。该算法是采用分治法的一个非常典型的应用。将已有序的子序列合并，得到完全有序的序列；即先使每个子序列有序，再使子序列段间有序。</p>
+<p>若将两个有序表合并成一个有序表，称为2-路归并，与之对应的还有多路归并。</p>
+<p>对于给定的一组数据，利用递归与分治技术将数据序列划分成为越来越小的半子表，在对半子表排序后，再用递归方法将排好序的半子表合并成为越来越大的有序序列。</p>
+<p>为了提升性能，有时我们在半子表的个数小于某个数（比如15）的情况下，对半子表的排序采用其他排序算法，比如插入排序。</p>
+<h3 id="图示-5"><a href="#图示-5" class="headerlink" title="图示"></a>图示</h3><p><img src="/images/Leetcode/Leetcode_84.png" alt="Leetcode_84"></p>
+<h3 id="代码-5"><a href="#代码-5" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 归并</span><br><span class="line"> public static int[] mergeSor(int nums[])&#123;</span><br><span class="line">     if(nums.length &lt; 2) return nums;</span><br><span class="line">     &#x2F;&#x2F; 切分数组</span><br><span class="line">     int mid &#x3D; nums.length &#x2F; 2;</span><br><span class="line">     int [] left &#x3D; Arrays.copyOfRange(nums, 0, mid);</span><br><span class="line">     int [] right &#x3D; Arrays.copyOfRange(nums, mid, nums.length);</span><br><span class="line">     return merge(mergeSor(left), mergeSor(right));</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> &#x2F;&#x2F;  归并排序</span><br><span class="line"> public static int[] merge(int left[], int []right)&#123;</span><br><span class="line">     int result[] &#x3D; new int[left.length + right.length];</span><br><span class="line">     for(int index &#x3D; 0, i &#x3D; 0, j &#x3D; 0; index &lt; result.length; index++)&#123;</span><br><span class="line">         if(i &gt;&#x3D; left.length)&#123;  &#x2F;&#x2F; 左边已经取完</span><br><span class="line">             result[index] &#x3D; right[j++];</span><br><span class="line">         &#125;else if(j &gt;&#x3D; right.length)&#123; &#x2F;&#x2F; 右边已经取完</span><br><span class="line">             result[index] &#x3D; left[i++];</span><br><span class="line">         &#125;else if(left[i] &gt; right[j])&#123;</span><br><span class="line">             result[index] &#x3D; left[i++];</span><br><span class="line">         &#125;else &#123;</span><br><span class="line">             result[index] &#x3D; right[j++];</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     return result;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><p>许多应用程序都需要处理有序的元素，但不一定要求他们全部有序，或者不一定要一次就将他们排序，很多时候，我们每次只需要操作数据中的最大元素（最小元素），那么有一种基于二叉堆的数据结构可以提供支持。</p>
+<p>所谓二叉堆，是一个完全二叉树的结构，同时满足堆的性质：即子结点的键值或索引总是小于（或者大于）它的父节点。在一个二叉堆中，根节点总是最大（或者最小）节点。</p>
+<p><img src="/images/Leetcode/Leetcode_74.png" alt="Leetcode_74"></p>
+<p>这就是一个典型的二叉堆。</p>
+<p>堆排序算法就是抓住了这一特点，每次都取堆顶的元素，然后将剩余的元素重新调整为最大（最小）堆，依次类推，最终得到排序的序列。</p>
+<h3 id="图示-6"><a href="#图示-6" class="headerlink" title="图示"></a>图示</h3><p><img src="/images/Leetcode/Leetcode_75.png" alt="Leetcode_75"></p>
+<p>将该数组视为一个完全二叉树 ，则是：</p>
+<p><img src="/images/Leetcode/Leetcode_76.png" alt="Leetcode_76"></p>
+<h4 id="堆的初始化"><a href="#堆的初始化" class="headerlink" title="堆的初始化"></a><strong>堆的初始化</strong></h4><p>很明显，这个二叉树不符合最大堆的定义，需要初始化为最大堆，从<strong>最后一个非叶节点</strong>开始，从下到上，从右到左调整 </p>
+<p>最后一个非叶节点在8/2-1=3的位置，也就是值为9的元素，将它和自己的叶节点进行比较并交换 </p>
+<p><img src="/images/Leetcode/Leetcode_77.png" alt="Leetcode_77"></p>
+<p><img src="/images/Leetcode/Leetcode_78.png" alt="Leetcode_78"></p>
+<p>48和63调整到位后，进而调整根节点35，</p>
+<p><img src="/images/Leetcode/Leetcode_79.png" alt="Leetcode_79"></p>
+<p>将35和它的子结点86交换，此时86变成根结点，35则变成子结点。很明显35和11、63组成的树不符合二叉堆的定义，此时需要再次调整35的位置：</p>
+<p><img src="/images/Leetcode/Leetcode_80.png" alt="Leetcode_80"></p>
+<p>此时就完成了堆的初始化，最大的数已经成为了根节点 。</p>
+<p><strong>正式开始堆排序的过程</strong></p>
+<p>此时将堆顶的86和尾元素9交换</p>
+<p><img src="/images/Leetcode/Leetcode_81.png" alt="Leetcode_81"></p>
+<p>86现在处于数组下标为7的位置，不再将86视为二叉树的一部分。9处于根结点，很明显，此时需要调整元素的位置 使之重新变成二叉堆</p>
+<p><img src="/images/Leetcode/Leetcode_82.png" alt="Leetcode_82"></p>
+<p>继续将堆顶63和尾元素48交换，63现在处于数组下标为6的位置，不再将63视为二叉树的一部分。48处于根结点，很明显，此时需要调整元素的位置 使之重新变成二叉堆</p>
+<p><img src="/images/Leetcode/Leetcode_83.png" alt="Leetcode_83"></p>
+<h3 id="代码-6"><a href="#代码-6" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">private static int len;</span><br><span class="line">   public static void main(String[] args) &#123;</span><br><span class="line">       int nums[] &#x3D; &#123;3,5,6,7,1,4,2,9&#125;;</span><br><span class="line">       &#x2F;&#x2F; 选择</span><br><span class="line">       System.out.println(Arrays.toString(heapArray( nums)));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; 堆排序</span><br><span class="line">   public static void swap(int array[], int i, int j)&#123;</span><br><span class="line">       int temp &#x3D; array[i];</span><br><span class="line">       array[i] &#x3D; array[j];</span><br><span class="line">       array[j] &#x3D; temp;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public static int[] heapArray(int[] nums)&#123;</span><br><span class="line">       len &#x3D; nums.length;</span><br><span class="line">       if(len &lt; 1) return nums;</span><br><span class="line">       &#x2F;&#x2F; 构建最大堆</span><br><span class="line">        buildMaxheap(nums);</span><br><span class="line">       &#x2F;&#x2F; 循环将堆首位(最大值）与末排序数组末位交换，然后重新调整为最大堆</span><br><span class="line">       while (len &gt; 0) &#123;</span><br><span class="line">           swap(nums, 0, len - 1);</span><br><span class="line">           len--;</span><br><span class="line">           adjustHeap(nums, 0);</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line">       return nums;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public static void buildMaxheap(int [] array)&#123;</span><br><span class="line">       &#x2F;&#x2F; 从最后一个非叶子节点开始向上构造最大堆</span><br><span class="line">       for(int i &#x3D; len &#x2F; 2 - 1; i &gt;&#x3D; 0; i--)&#123;</span><br><span class="line">           adjustHeap(array, i);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; 调整成最大堆</span><br><span class="line">   public static void adjustHeap(int [] array, int i)&#123;</span><br><span class="line">      int maxIndex &#x3D; i;</span><br><span class="line">      int left &#x3D; 2 * i + 1;</span><br><span class="line">      int right &#x3D; 2 * (i + 1);</span><br><span class="line">      &#x2F;&#x2F; 如果有左子树， 且左子树大于父节点， 则将最大指针指向左子树</span><br><span class="line">       if(left &lt; len &amp;&amp; array[left] &gt; array[maxIndex])&#123;</span><br><span class="line">           maxIndex &#x3D; left;</span><br><span class="line">       &#125;</span><br><span class="line">       &#x2F;&#x2F; 如果有右子树， 且右子树大于父节点且大于左子树， 则将最大指针指向右子树</span><br><span class="line">       if(right &lt; len &amp;&amp; array[right] &gt; array[maxIndex] &amp;&amp; array[right] &gt; array[left])&#123;</span><br><span class="line">           maxIndex &#x3D; right;</span><br><span class="line">       &#125;</span><br><span class="line">       &#x2F;&#x2F; 如果父节点不是最大值， 则将父节点与最大值交换， 并且递归调整与父节点交换的位置</span><br><span class="line">       if(maxIndex !&#x3D; i)&#123;</span><br><span class="line">           swap(array, maxIndex,i);</span><br><span class="line">           adjustHeap(array, maxIndex);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="桶排序"><a href="#桶排序" class="headerlink" title="桶排序"></a>桶排序</h2><p>桶排序 (Bucket sort)的工作的原理：假设输入数据服从均匀分布，利用某种函数的映射关系将数据分到有限数量的桶里，每个桶再分别排序（有可能再使用别的排序算法或是以递归方式继续使用桶排序）。</p>
+<p>基本步骤是：</p>
+<ul>
+<li>根据输入建立适当个数的桶，每个桶可以存放某个范围内的元素；</li>
+<li>将落在特定范围内的所有元素放入对应的桶中；</li>
+<li>对每个非空的桶中元素进行排序，可以选择通用的排序方法，比如插入、快排</li>
+<li>按照划分的范围顺序，将桶中的元素依次取出。排序完成。</li>
+</ul>
+<p>桶排序利用函数的映射关系，减少了几乎所有的比较工作。实际上，桶排序的f(k)值的计算，其作用就相当于快排中划分，已经把大量数据分割成了基本有序的数据块(桶)。然后只需要对桶中的少量数据做先进的比较排序即可。</p>
+<h3 id="图示-7"><a href="#图示-7" class="headerlink" title="图示"></a>图示</h3><p><img src="/images/Leetcode/Leetcode_86.png" alt="Leetcode_86"></p>
+<p>我们可以建立5个桶，每个桶按范围顺序依次是[0, 10)、[10, 20)……[40, 50)，注意是左闭右开区间，对于待排序数组，5,9会被放到[0, 10)这个桶中，…….，48会被放到[40, 50)这个桶中</p>
+<p><img src="/images/Leetcode/Leetcode_87.png" alt="Leetcode_87"></p>
+<p>对这5个桶中的元素分别排序。 依次取出5个桶中元素，得到排序后的序列。 </p>
+<p>在桶排序中保证元素均匀分布到各个桶尤为关键。举个反例，有数组[0, 9, 4, 5, 8, 7, 6, 3, 2, 1]要排序，它们都是10以下的数，如果还按照上面的范围[0, 10)建立桶，全部的元素将进入同一个桶中，此时桶排序就失去了意义。实际情况我们很可能事先就不知道输入数据是什么，为了保证元素均匀分不到各个桶中，需要建立多少个桶，每个桶的范围是多少呢？</p>
+<p>其实我们可以这样：简单点，首先限定桶的容量，再根据元素的个数来决定桶的个数。当然使用更复杂的方法也是可以的。</p>
+<p>桶排序利用函数的映射关系，减少了几乎所有的比较工作。实际上，桶排序的f(k)值的计算，其作用就相当于快排中划分，已经把大量数据分割成了基本有序的数据块(桶)。然后只需要对桶中的少量数据做先进的比较排序即可。</p>
+<h3 id="代码-7"><a href="#代码-7" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">public class Bucket &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        ArrayList&lt;Integer&gt; array &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        array.add(86);</span><br><span class="line">        array.add(11);</span><br><span class="line">        array.add(77);</span><br><span class="line">        array.add(23);</span><br><span class="line">        array.add(32);</span><br><span class="line">        array.add(45);</span><br><span class="line">        array.add(58);</span><br><span class="line">        array.add(63);</span><br><span class="line">        array.add(93);</span><br><span class="line">        array.add(4);</span><br><span class="line">        array.add(37);</span><br><span class="line">        array.add(22);</span><br><span class="line">        System.out.println(&quot;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&quot;);</span><br><span class="line">        ArrayList&lt;Integer&gt; dest &#x3D; Bucket.sort(array, 2);</span><br><span class="line">        dest.stream().forEach(item -&gt; System.out.println(item));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static ArrayList&lt;Integer&gt; sort(ArrayList&lt;Integer&gt; array, int bucketCap)&#123;</span><br><span class="line">        if(array &#x3D;&#x3D; null || array.size() &lt; 2 )&#123;</span><br><span class="line">            return array;</span><br><span class="line">        &#125;</span><br><span class="line">        int max &#x3D; array.get(0), min &#x3D; array.get(0);</span><br><span class="line">        &#x2F;&#x2F; 找到最大值和最小值</span><br><span class="line">        for(int i &#x3D; 0; i &lt; array.size(); i++)&#123;</span><br><span class="line">            if(array.get(i) &gt; max)&#123;</span><br><span class="line">                max &#x3D; array.get(i);</span><br><span class="line">            &#125;</span><br><span class="line">            if(array.get(i) &lt; min)&#123;</span><br><span class="line">                min &#x3D; array.get(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 获取桶的数量</span><br><span class="line">        int bucketCount &#x3D; (max - min ) &#x2F; bucketCap + 1;</span><br><span class="line">        &#x2F;&#x2F; 构建桶</span><br><span class="line">        ArrayList&lt;ArrayList&lt;Integer&gt;&gt; bucketArr &#x3D; new ArrayList&lt;&gt;(bucketCount);</span><br><span class="line">        ArrayList&lt;Integer&gt; resultArr &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        for(int i &#x3D; 0; i&lt; bucketCount; i++)&#123;</span><br><span class="line">            bucketArr.add(new ArrayList&lt;&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 将原数组中的数据分配到桶中</span><br><span class="line">        for(int i &#x3D; 0; i &lt; array.size(); i++)&#123;</span><br><span class="line">            bucketArr.get((array.get(i) - min) &#x2F; bucketCap).add(array.get(i));</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 看看桶中数据分布</span><br><span class="line">        for(int i &#x3D; 0; i &lt; bucketArr.size(); i++)&#123;</span><br><span class="line">            System.out.println(&quot;第&quot; +i+ &quot;个桶包含数据： &quot;);</span><br><span class="line">            bucketArr.get(i).stream().forEach(item -&gt; System.out.println(item));</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i &#x3D; 0; i &lt; bucketCount; i++)&#123;</span><br><span class="line">            &#x2F;&#x2F;</span><br><span class="line">            bucketArr.get(i).sort(null);</span><br><span class="line">            for (int value : bucketArr.get(i)) &#123;</span><br><span class="line">                resultArr.add(value);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return resultArr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h2><p>常见的数据元素一般是由若干位组成的，比如字符串由若干字符组成，整数由若干位0~9数字组成。基数排序按照从右往左的顺序，依次将每一位都当做一次关键字，然后按照该关键字对数组的元素入桶，每一轮入桶都基于上轮入桶的结果；完成所有位的入桶后，整个数组就达到有序状态。比如对于数字2985，从右往左就是先以个位为关键字进行入桶，然后是十位、百位、千位，总共需要四轮。基数排序也是一种无需比较的排序算法。</p>
+<p>基数是什么意思？对于十进制整数，每一位都只可能是0~9中的某一个，总共10种可能。那10就是它的基，同理二进制数字的基为2；对于字符串，如果它使用的是8位的扩展ASCII字符集，那么它的基就是256。</p>
+<h3 id="图示-8"><a href="#图示-8" class="headerlink" title="图示"></a>图示</h3><p><img src="/images/Leetcode/Leetcode_88.png" alt="Leetcode_88"></p>
+<p>首先按个位排序</p>
+<p><img src="/images/Leetcode/Leetcode_89.png" alt="Leetcode_89"></p>
+<p>然后再按十位进行排序</p>
+<p><img src="/images/Leetcode/Leetcode_90.png" alt="Leetcode_90"></p>
+<h3 id="代码-8"><a href="#代码-8" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">public class Base &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        ArrayList&lt;Integer&gt; array &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        array.add(86);</span><br><span class="line">        array.add(11);</span><br><span class="line">        array.add(77);</span><br><span class="line">        array.add(23);</span><br><span class="line">        array.add(32);</span><br><span class="line">        array.add(45);</span><br><span class="line">        array.add(58);</span><br><span class="line">        array.add(63);</span><br><span class="line">        array.add(93);</span><br><span class="line">        array.add(4);</span><br><span class="line">        array.add(37);</span><br><span class="line">        array.add(22);</span><br><span class="line">        System.out.println(&quot;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&quot;);</span><br><span class="line">        baseSort(array);</span><br><span class="line">        array.stream().forEach(item -&gt; System.out.println(item));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void baseSort(ArrayList&lt;Integer&gt; array)&#123;</span><br><span class="line">        &#x2F;&#x2F; 计算桶的数量</span><br><span class="line">        int max &#x3D; 0;</span><br><span class="line">        for(int value : array)&#123;</span><br><span class="line">            if(value &gt; max) max &#x3D; value;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;桶的数量</span><br><span class="line">        int bucketCount &#x3D; 0;</span><br><span class="line">        while (max !&#x3D; 0)&#123;</span><br><span class="line">            max &#x2F;&#x3D; 10;</span><br><span class="line">            bucketCount++;</span><br><span class="line">        &#125;</span><br><span class="line">        int mod &#x3D; 10, div &#x3D; 1;</span><br><span class="line">        &#x2F;&#x2F; 构建桶</span><br><span class="line">        ArrayList&lt;ArrayList&lt;Integer&gt;&gt; bucketList &#x3D; new ArrayList&lt;&gt;(10);</span><br><span class="line">        for(int i &#x3D; 0; i &lt; 10; i++)&#123;</span><br><span class="line">            bucketList.add(new ArrayList&lt;&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i &#x3D; 0; i &lt; bucketCount; i++, mod *&#x3D; 10, div *&#x3D; 10)&#123;</span><br><span class="line">            &#x2F;&#x2F; 遍历入桶</span><br><span class="line">            for(int j &#x3D; 0; j &lt; array.size(); j++)&#123;</span><br><span class="line">                int num &#x3D; (array.get(j) % mod ) &#x2F; div;</span><br><span class="line">                bucketList.get(num).add(array.get(j));</span><br><span class="line">            &#125;</span><br><span class="line">            &#x2F;&#x2F; 桶中的数据写回原始数组，清除桶，准备下一轮的排序</span><br><span class="line">            array.clear();</span><br><span class="line">            for(int j &#x3D; 0; j &lt; bucketList.size(); j++)&#123;</span><br><span class="line">                for(int k &#x3D;0; k &lt; bucketList.get(j).size(); k++)&#123;</span><br><span class="line">                    array.add(bucketList.get(j).get(k)) ;</span><br><span class="line">                    bucketList.get(j).clear();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="排序算法总结"><a href="#排序算法总结" class="headerlink" title="排序算法总结"></a><strong>排序算法总结</strong></h2><p><img src="/images/Leetcode/Leetcode_91.png" alt="Leetcode_91"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LeetCode/" rel="tag"># LeetCode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/13/LeetCode/2022-09-14%20leetcode%E7%AE%97%E6%B3%95-%E6%A0%91/" rel="prev" title="leetcode算法-树">
+      <i class="fa fa-chevron-left"></i> leetcode算法-树
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/09/15/LeetCode/2022-09-16%20leetcode%E7%AE%97%E6%B3%95-%E4%BD%8D%E8%BF%90%E7%AE%97/" rel="next" title="leetcode算法-位运算">
+      leetcode算法-位运算 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">冒泡排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA"><span class="nav-number">1.1.</span> <span class="nav-text">图示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="nav-number">2.</span> <span class="nav-text">选择排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA-1"><span class="nav-number">2.1.</span> <span class="nav-text">图示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-number">2.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="nav-number">3.</span> <span class="nav-text">插入排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA-2"><span class="nav-number">3.1.</span> <span class="nav-text">图示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="nav-number">3.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F"><span class="nav-number">4.</span> <span class="nav-text">希尔排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA-3"><span class="nav-number">4.1.</span> <span class="nav-text">图示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-3"><span class="nav-number">4.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F"><span class="nav-number">5.</span> <span class="nav-text">快速排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA-4"><span class="nav-number">5.1.</span> <span class="nav-text">图示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-4"><span class="nav-number">5.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="nav-number">6.</span> <span class="nav-text">归并排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA-5"><span class="nav-number">6.1.</span> <span class="nav-text">图示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-5"><span class="nav-number">6.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="nav-number">7.</span> <span class="nav-text">堆排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA-6"><span class="nav-number">7.1.</span> <span class="nav-text">图示</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A0%86%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">7.1.1.</span> <span class="nav-text">堆的初始化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-6"><span class="nav-number">7.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%B6%E6%8E%92%E5%BA%8F"><span class="nav-number">8.</span> <span class="nav-text">桶排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA-7"><span class="nav-number">8.1.</span> <span class="nav-text">图示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-7"><span class="nav-number">8.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F"><span class="nav-number">9.</span> <span class="nav-text">基数排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA-8"><span class="nav-number">9.1.</span> <span class="nav-text">图示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-8"><span class="nav-number">9.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93"><span class="nav-number">10.</span> <span class="nav-text">排序算法总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">198</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

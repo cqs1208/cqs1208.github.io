@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="LeetCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode算法-动态规划、回溯">
+<meta property="og:url" content="http://example.com/2022/09/30/LeetCode/2022-09-18%20leetcode%E7%AE%97%E6%B3%95-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="LeetCode">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_114.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_115.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_116.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_117.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_118.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_119.png">
+<meta property="og:image" content="http://example.com/2022/09/30/images/Leetcode/Leetcode_120.png">
+<meta property="og:image" content="http://example.com/2022/09/30/images/Leetcode/Leetcode_121.png">
+<meta property="og:image" content="http://example.com/2022/09/30/images/Leetcode/Leetcode_122.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_19.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_20.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_21.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_22.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_23.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_24.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_25.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_26.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_27.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_28.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_29.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_30.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_31.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_32.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_33.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_34.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_35.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_36.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_37.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_38.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_39.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_40.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_41.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_42.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_43.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_44.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_45.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_46.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_47.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_48.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_49.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_50.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_51.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_52.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_53.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_54.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_55.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_56.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_57.png">
+<meta property="article:published_time" content="2022-09-30T03:36:20.925Z">
+<meta property="article:modified_time" content="2022-10-09T05:52:02.374Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="LeetCode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Leetcode/Leetcode_114.png">
+
+<link rel="canonical" href="http://example.com/2022/09/30/LeetCode/2022-09-18%20leetcode%E7%AE%97%E6%B3%95-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>leetcode算法-动态规划、回溯 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/30/LeetCode/2022-09-18%20leetcode%E7%AE%97%E6%B3%95-%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          leetcode算法-动态规划、回溯
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-30 11:36:20" itemprop="dateCreated datePublished" datetime="2022-09-30T11:36:20+08:00">2022-09-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-09 13:52:02" itemprop="dateModified" datetime="2022-10-09T13:52:02+08:00">2022-10-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LeetCode/" itemprop="url" rel="index"><span itemprop="name">LeetCode</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">LeetCode</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p> leetcode算法</p>
+<a id="more"></a> 
+
+<h2 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>在现实生活中，有一类活动，由于它的特殊性，可将过程分成若干个互相联系的阶段，在它的每一阶段都需要作出决策，从而使整个过程达到最好的活动效果。因此各个阶段决策的选取不能任意确定，它依赖于当前面临的状态，又影响以后的发展。</p>
+<p>所以如果一类活动过程可以分为若干个互相联系的阶段，在每一个阶段都需作出决策，每一个阶段都有若干个策略可供选择，一个阶段的策略确定以后，形成了本阶段的决策，常常影响到下一个阶段的决策，从而就完全确定了一个过程的活动路线，则称它为<strong>多阶段决策问题</strong>。</p>
+<p>当各个阶段决策确定后，就组成一个决策序列，因而也就确定了整个过程的一条活动路线。在多阶段决策问题中，决策依赖于当前状态，又随即引起状态的转移，一个决策序列就是在变化的状态中产生出来的，故有“动态”的含义，称这种解决多阶段决策最优化的过程为动态规划方法。</p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>5kg的袋子</p>
+<p>物品：</p>
+<p>钱：6  10  12</p>
+<p>Kg：1  2   4</p>
+<p>我们把5kg的袋子，拆分成1kg，1kg这样子计算，里面的表格就表示当前重量下能装的最多的钱。表格的数列就表示是要装的物品</p>
+<p><img src="/images/Leetcode/Leetcode_114.png" alt="Leetcode_114"></p>
+<p>加入物品2时，袋子当前为1kg 的容量时，我们发现物品2装不进去。那我们应该取多少呢？是不是只要取物品进来时1kg最大钱？，当袋子为2kg时，我们发现物品2可以装下去，此时可以得到10块钱，之前物品1进来时2kg最大是6吧，那我们肯定要选择大的这个10，而不是6.此时袋子还剩0kg可以装。</p>
+<p>袋子为3kg时，我们还是可以装下这个物品2,得到10块，袋子还剩下1kg。10+1kg能装的东西。</p>
+<p>物品3来了，袋子为4kg时，物品3可以转进来，得到12块钱，袋子还剩0kg。</p>
+<p>我发现我不装物品3 还能得到16呢</p>
+<p>物品3来了，袋子为5kg时，物品3可以转进来，得到12块钱，袋子还剩1kg。那么装了物品3就能得到12+6=18钱</p>
+<p>我发现我不装物品3 能得到16，比18小，所以决定装。</p>
+<h3 id="图示-公式"><a href="#图示-公式" class="headerlink" title="图示(公式)"></a>图示(公式)</h3><p>上面这一个递推过程总结起来就是一个东西——<strong>状态转移方程</strong>：</p>
+<p>能装的时候 每次和上面的比较，大我就装，否则就不装。</p>
+<p>Max(money[i]+res[i-1][w-weight[i]],res[i-1][w]);</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">money[i]+res[i-1][w-weight[i]]:装这个物品</span><br><span class="line">w-weight[i] :表示装完还剩下的空间</span><br><span class="line">res[i-1][w-weight[i]]:表示装完后剩下的空间还能装的最大值，取上一次的结果。</span><br><span class="line">Res[i-1][w]表示不装这个物品的值</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Leetcode/Leetcode_115.png" alt="Leetcode_115"></p>
+<h3 id="动态规划的阶梯步骤"><a href="#动态规划的阶梯步骤" class="headerlink" title="动态规划的阶梯步骤"></a>动态规划的阶梯步骤</h3><ul>
+<li>确定状态转移公式，当前的状态是怎么由前面的状态变化而来的及其与之相关的辅助的dp数组， （dp table）以及下标的含义。这一步往往也是最难的， 这一步清楚了，整个动态规划的问题基本上可以说就解决了一大半。一般来说，首先要确定dp数组中元素代表的意义，然后在这个意义之下，确定状态是如何在dp数组的元素之间如何变化的。</li>
+<li>初始化dp数组</li>
+<li>根据题目条件确定遍历顺序，并实现状态转移公式</li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">public class Dp &#123;</span><br><span class="line"></span><br><span class="line"> &#x2F;&#x2F; 二维数组</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int value [] &#x3D;&#123;60,100,120&#125;;</span><br><span class="line">        int weigth[] &#x3D; &#123;10,20,40&#125;;	&#x2F;&#x2F;购物车那个问题 只需要一个价值就行了，重量都都没有。</span><br><span class="line"></span><br><span class="line">        int w &#x3D; 50;</span><br><span class="line">        int n &#x3D; 3;</span><br><span class="line">        &#x2F;&#x2F; 声明二维数组表示物品与重量的最优方案</span><br><span class="line">        int[][] dp &#x3D; new int[n + 1][ w + 1];</span><br><span class="line">        &#x2F;&#x2F; 商品数量增加的最优解</span><br><span class="line">        for(int i &#x3D; 1; i &lt;&#x3D; n; i++)&#123;</span><br><span class="line">            &#x2F;&#x2F; 容量递增</span><br><span class="line">            for(int j &#x3D; 1; j &lt;&#x3D; w; j++)&#123;</span><br><span class="line">                &#x2F;&#x2F; 当前商品的重量 小于 指定重量 表示可以放</span><br><span class="line">                int wei &#x3D; weigth[i - 1];</span><br><span class="line">                if(wei &lt;&#x3D; j)&#123;</span><br><span class="line">                    &#x2F;&#x2F; 上一行， 同列的值</span><br><span class="line">                    int pre &#x3D; dp[i - 1][weigth[i - 1] ];</span><br><span class="line">                    &#x2F;&#x2F; 当前物品 加剩余物品的值</span><br><span class="line">                    int curr &#x3D; value[i - 1] + dp[i - 1][j - wei];</span><br><span class="line">                    dp[i][j] &#x3D; Math.max(pre, curr);</span><br><span class="line">                &#125;else &#123;</span><br><span class="line">                    dp[i][j] &#x3D; dp[i-1][j];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(dp[n + 1][w + 1]);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 一维数组</span><br><span class="line">     public static void main(String[] args) &#123;</span><br><span class="line">        int value [] &#x3D;&#123;60,100,120&#125;;</span><br><span class="line">        int weigth[] &#x3D; &#123;10,20,40&#125;;</span><br><span class="line"></span><br><span class="line">        int w &#x3D; 50;</span><br><span class="line">        int n &#x3D; 3;</span><br><span class="line">        int[] dp &#x3D; new int[ w + 1];</span><br><span class="line">        for(int i &#x3D; 0; i &lt; n; i++)&#123;</span><br><span class="line">            for(int j &#x3D; w; j  &gt; 0; j--)&#123;</span><br><span class="line">                if(j&gt;&#x3D; weigth[i])&#123;</span><br><span class="line">                    int pre &#x3D; dp[j - weigth[i]] + value[i];</span><br><span class="line">                    int curr &#x3D; dp[j];</span><br><span class="line">                    dp[j] &#x3D; Math.max(pre, curr);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-53-最大子序和"><a href="#LeetCode-53-最大子序和" class="headerlink" title="**(LeetCode-53) **最大子序和"></a>**(LeetCode-53) **最大子序和</h2><h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p>给你一个整数数组 <code>nums</code> ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</p>
+<p><strong>子数组</strong> 是数组中的一个连续部分。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [-2,1,-3,4,-1,2,1,-5,4]</span><br><span class="line">输出：6</span><br><span class="line">解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1]</span><br><span class="line">输出：1</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [5,4,-1,7,8]</span><br><span class="line">输出：23</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><h4 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h4><p>既然是学习动态规划，我们当然用动态规划来求解。</p>
+<p>首先确定状态转移公式，对于我们在遍历原始数组的过程中，每遇到一个元素nums[i]就要决定，这个元素是加入到当前连续子列，还是成为一个新连续子列的初始元素，所以状态转移公式可以这样描述，我们设当前连续子数组的和为sum，那么sumnew = max(nums[i],(sum+nums[i]))。</p>
+<p>辅助的dp数组呢？用来存放每个阶段计算出来的连续子数组的和，每个元素dp[i]表示包括下标i之前的最大连续子序列和，也就是我们前面的sum，那么最终的状态转移公式就是dp[i]=max(nums[i],(dp[i-1]+nums[i]))。</p>
+<p>对这个dp数组，按照题目，dp[0] = nums[0]。</p>
+<p><img src="/images/Leetcode/Leetcode_116.png" alt="Leetcode_116"></p>
+<p>注意最后的结果可不是dp[nums.size() - 1]。</p>
+<p>在回顾下dp[i]的定义：包括下标i之前的最大连续子序列和为dp[i]。</p>
+<p>那么我们要找最大连续子序列，就应该找每个i为终点的连续最大子序列。</p>
+<p>这种方法的时间复杂度为O(n)，空间复杂度为O(n)。</p>
+<h4 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h4><p>但是其实仔细分析我们的代码，考虑到dp[i] 只和 dp[i-1] 相关，也就是说连这个dp数组都可以不用，我们可以用一个变量pre 来维护对于当前dp[i] 来说它的 dp[i-1]  的值是多少，从而让空间复杂度降低到 O(1)。</p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class MaxSubArray &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int[] nums &#x3D; &#123;-2,1,-3,4,-1,2,1,-5,4&#125;;</span><br><span class="line">        System.out.println(maxSubArray(nums));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static int maxSubArray(int[] nums) &#123;</span><br><span class="line">        int result &#x3D; nums[0];</span><br><span class="line">        int pre &#x3D; nums[0];</span><br><span class="line">        for(int i &#x3D; 1; i &lt; nums.length; i++)&#123;</span><br><span class="line">            int curr &#x3D; nums[i];</span><br><span class="line">            int premax &#x3D; curr + pre;</span><br><span class="line">            pre &#x3D; Math.max(curr, premax);</span><br><span class="line">            if(result &lt; pre)&#123;</span><br><span class="line">                result &#x3D; pre;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-121-买卖股票的最佳时机"><a href="#LeetCode-121-买卖股票的最佳时机" class="headerlink" title="(LeetCode-121)买卖股票的最佳时机"></a>(LeetCode-121)买卖股票的最佳时机</h2><h3 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h3><p>给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。</p>
+<p>你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。</p>
+<p>返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：[7,1,5,3,6,4]</span><br><span class="line">输出：5</span><br><span class="line">解释：在第 2 天（股票价格 &#x3D; 1）的时候买入，在第 5 天（股票价格 &#x3D; 6）的时候卖出，最大利润 &#x3D; 6-1 &#x3D; 5 。</span><br><span class="line">     注意利润不能是 7-1 &#x3D; 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：prices &#x3D; [7,6,4,3,1]</span><br><span class="line">输出：0</span><br><span class="line">解释：在这种情况下, 没有交易完成, 所以最大利润为 0。</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h3><h4 id="方法1-1"><a href="#方法1-1" class="headerlink" title="方法1"></a>方法1</h4><p>从实际的运行速度来看，动态规划的方法速度其实并不是那么快，有没有更快的方法呢？</p>
+<p>其实分析题目我们可以发现，这其实就是个不断发现数组中的最小元素以及最小元素之后最大元素，进而计算最大差距，也就是利润的过程，在整个过程中最小元素可能会不断变化，最大差距自然也可能会发生变化，需要不断的更新最小元素和最大差距。所以整个过程如图示表示：</p>
+<p><img src="/images/Leetcode/Leetcode_117.png" alt="Leetcode_117"></p>
+<p><img src="/images/Leetcode/Leetcode_118.png" alt="Leetcode_118"></p>
+<p><img src="/images/Leetcode/Leetcode_119.png" alt="Leetcode_119"></p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class MaxProfit &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int[] nums &#x3D; &#123;2,4,1&#125;;</span><br><span class="line">        System.out.println(maxProfit(nums));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static int maxProfit(int[] prices) &#123;</span><br><span class="line">        int max &#x3D; 0;  &#x2F;&#x2F; 最大收益</span><br><span class="line">        int indexPre &#x3D; 0; &#x2F;&#x2F;最大收益的买入点下标</span><br><span class="line">        for(int i &#x3D; 0; i &lt; prices.length; i++)&#123;</span><br><span class="line">            int pre &#x3D; prices[i] - prices[indexPre];</span><br><span class="line">            if(pre &lt;&#x3D; 0)&#123;</span><br><span class="line">                indexPre &#x3D; i;</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                if(max &lt; pre)&#123;</span><br><span class="line">                    max &#x3D; pre;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return max;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-470-用-Rand7-实现-Rand10"><a href="#LeetCode-470-用-Rand7-实现-Rand10" class="headerlink" title="(LeetCode-470)用 Rand7() 实现 Rand10()"></a>(LeetCode-470)用 Rand7() 实现 Rand10()</h2><h3 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h3><p>给定方法 rand7 可生成 [1,7] 范围内的均匀随机整数，试写一个方法 rand10 生成 [1,10] 范围内的均匀随机整数。</p>
+<p>你只能调用 rand7() 且不能调用其他方法。请不要使用系统的 Math.random() 方法。</p>
+<p>每个测试用例将有一个内部参数 n，即你实现的函数 rand10() 在测试时将被调用的次数。请注意，这不是传递给 rand10() 的参数。</p>
+<p><strong>示例 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: 1</span><br><span class="line">输出: [2]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: 2</span><br><span class="line">输出: [2,8]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: 3</span><br><span class="line">输出: [3,8,10]</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-3"><a href="#分析-3" class="headerlink" title="分析"></a>分析</h3><h4 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h4><p>思路与算法</p>
+<p>我们可以用拒绝采样的方法实现 Rand10()。在拒绝采样中，如果生成的随机数满足要求，那么就返回该随机数，否则会不断生成，直到生成一个满足要求的随机数为止。</p>
+<p>我们只需要能够满足等概率的生成 1010 个不同的数即可，具体的生成方法可以有很多种，比如我们可以利用两个 Rand7() 相乘，我们只取其中等概率的 1010 个不同的数的组合即可，当然还有许多其他不同的解法，可以利用各种运算和函数的组合等方式来实现。</p>
+<ul>
+<li>比如我们可以利用两个Rand7()相乘，分别可以得到结果如下：</li>
+</ul>
+<p><img src="../../images/Leetcode/Leetcode_120.png" alt="Leetcode_120"></p>
+<ul>
+<li>我们可以得到每个数生成的概率为:</li>
+</ul>
+<p><img src="../../images/Leetcode/Leetcode_121.png" alt="Leetcode_121"></p>
+<ul>
+<li>我们可以从中挑选 1010个等概率的数即可</li>
+</ul>
+<p>题目中要求尽可能的减少 、Rand7() 的调用次数，则我们应该尽量保证生成的每个不同的数的生成概率尽可能的大，即调用 Rand7() 期望次数尽可能的小。</p>
+<p>我们可以调用两次 Rand7()，那么可以生成 [1, 49][1,49] 之间的随机整数，我们只用到其中的前 4040 个用来实现 Rand10()，而拒绝剩下的 99 个数，如下图所示</p>
+<p><img src="../../images/Leetcode/Leetcode_122.png" alt="Leetcode_122"></p>
+<p>我们可以看到表中的 [1,49][1,49] 每个数生成的概率为1 / 49 </p>
+<p>我们实际上只取 [1,40][1,40] 这前 40 个数，转化为 [1,10][1,10] 时，这 10 个数中每个数的生成概率则为4 / 49</p>
+<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public static int rand10() &#123;</span><br><span class="line">     int temp &#x3D; 40;</span><br><span class="line">     while (temp &gt;&#x3D; 40)&#123;</span><br><span class="line">         temp &#x3D; (rand7() - 1) * 7 + rand7() - 1;</span><br><span class="line">     &#125;</span><br><span class="line">     return temp % 10 + 1;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> public static int rand7() &#123;</span><br><span class="line">     Random random &#x3D; new Random();</span><br><span class="line">     return random.nextInt(7) + 1;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="回溯"><a href="#回溯" class="headerlink" title="回溯"></a>回溯</h2><h2 id="LeetCode-17-电话号码的字母组合"><a href="#LeetCode-17-电话号码的字母组合" class="headerlink" title="(LeetCode- 17) 电话号码的字母组合"></a><strong>(LeetCode-</strong> <strong>17</strong>) <strong>电话号码的字母组合</strong></h2><h3 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h3><p>给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。</p>
+<p>给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。</p>
+<p><img src="/images/Leetcode2/Leetcode2_19.png" alt="Leetcode2_19"></p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：digits &#x3D; &quot;23&quot;</span><br><span class="line">输出：[&quot;ad&quot;,&quot;ae&quot;,&quot;af&quot;,&quot;bd&quot;,&quot;be&quot;,&quot;bf&quot;,&quot;cd&quot;,&quot;ce&quot;,&quot;cf&quot;]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：digits &#x3D; &quot;&quot;</span><br><span class="line">输出：[]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：digits &#x3D; &quot;2&quot;</span><br><span class="line">输出：[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-4"><a href="#分析-4" class="headerlink" title="分析"></a>分析</h3><p>方法一：回溯<br>首先使用哈希表存储每个数字对应的所有可能的字母，然后进行回溯操作。</p>
+<p>回溯过程中维护一个字符串，表示已有的字母排列（如果未遍历完电话号码的所有数字，则已有的字母排列是不完整的）。该字符串初始为空。每次取电话号码的一位数字，从哈希表中获得该数字对应的所有可能的字母，并将其中的一个字母插入到已有的字母排列后面，然后继续处理电话号码的后一位数字，直到处理完电话号码中的所有数字，即得到一个完整的字母排列。然后进行回退操作，遍历其余的字母排列。</p>
+<p>回溯算法用于寻找所有的可行解，如果发现一个解不可行，则会舍弃不可行的解。在这道题中，由于每个数字对应的每个字母都可能进入字母组合，因此不存在不可行的解，直接穷举所有的解即可。</p>
+<p>通过这个题目我们也能够整理出一个回溯算法大致的代码模板框架：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">void backtrack(参数列表) &#123;</span><br><span class="line">    if (终止条件) &#123;</span><br><span class="line">    	存放结果;</span><br><span class="line">   	 	return;</span><br><span class="line">    &#125;</span><br><span class="line">    for (选择：本层集合中元素(树中节点孩子的数量就是集合的大小)) &#123;</span><br><span class="line">    	处理节点;</span><br><span class="line">    	backtrack(新参数列表);  &#x2F;&#x2F;递归处理当前节点下的子节点</span><br><span class="line">    	回溯，撤销处理结果</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码-4"><a href="#代码-4" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;String&gt; letterCombinations(String digits) &#123;</span><br><span class="line">       List&lt;String&gt; combinations &#x3D; new ArrayList&lt;String&gt;();</span><br><span class="line">       if (digits.length() &#x3D;&#x3D; 0) &#123;</span><br><span class="line">           return combinations;</span><br><span class="line">       &#125;</span><br><span class="line">       Map&lt;Character, String&gt; phoneMap &#x3D; new HashMap&lt;Character, String&gt;() &#123;&#123;</span><br><span class="line">           put(&#39;2&#39;, &quot;abc&quot;);</span><br><span class="line">           put(&#39;3&#39;, &quot;def&quot;);</span><br><span class="line">           put(&#39;4&#39;, &quot;ghi&quot;);</span><br><span class="line">           put(&#39;5&#39;, &quot;jkl&quot;);</span><br><span class="line">           put(&#39;6&#39;, &quot;mno&quot;);</span><br><span class="line">           put(&#39;7&#39;, &quot;pqrs&quot;);</span><br><span class="line">           put(&#39;8&#39;, &quot;tuv&quot;);</span><br><span class="line">           put(&#39;9&#39;, &quot;wxyz&quot;);</span><br><span class="line">       &#125;&#125;;</span><br><span class="line">       backtrack(combinations, phoneMap, digits, 0, new StringBuffer());</span><br><span class="line">       return combinations;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public void backtrack(List&lt;String&gt; combinations, Map&lt;Character, String&gt; phoneMap, String digits, int index, StringBuffer combination) &#123;</span><br><span class="line">   &#x2F;&#x2F; 递归终止条件，将结果放入集合中</span><br><span class="line">       if (index &#x3D;&#x3D; digits.length()) &#123;</span><br><span class="line">           combinations.add(combination.toString());</span><br><span class="line">       &#125; else &#123;</span><br><span class="line">           char digit &#x3D; digits.charAt(index);</span><br><span class="line">           String letters &#x3D; phoneMap.get(digit);</span><br><span class="line">           int lettersCount &#x3D; letters.length();</span><br><span class="line">           &#x2F;&#x2F; 遍历每个数字对应的字母表，也就是处理空间树中的非叶子节点</span><br><span class="line">           for (int i &#x3D; 0; i &lt; lettersCount; i++) &#123;</span><br><span class="line">               combination.append(letters.charAt(i));</span><br><span class="line">               &#x2F;&#x2F; 继续处理下一个节点</span><br><span class="line">               backtrack(combinations, phoneMap, digits, index + 1, combination);</span><br><span class="line">               &#x2F;&#x2F; 当前节点处理完成，往上回溯</span><br><span class="line">               combination.deleteCharAt(index);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-22-括号生成"><a href="#LeetCode-22-括号生成" class="headerlink" title="(LeetCode- 22) 括号生成"></a><strong>(LeetCode-</strong> <strong>22</strong>) <strong>括号生成</strong></h2><h3 id="题目-4"><a href="#题目-4" class="headerlink" title="题目"></a>题目</h3><p>数字 <code>n</code> 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 <strong>有效的</strong> 括号组合。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：n &#x3D; 3</span><br><span class="line">输出：[&quot;((()))&quot;,&quot;(()())&quot;,&quot;(())()&quot;,&quot;()(())&quot;,&quot;()()()&quot;]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：n &#x3D; 1</span><br><span class="line">输出：[&quot;()&quot;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-5"><a href="#分析-5" class="headerlink" title="分析"></a>分析</h3><h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a><strong>方法</strong></h4><p>这个题目我们依然可以先画出解空间树，再套用我们上个题目的代码模板来实现。我们用n=2来演示这个过程：</p>
+<p><img src="/images/Leetcode2/Leetcode2_20.png" alt="Leetcode2_20"></p>
+<p>这个题目相对于上一题《(LeetCode- 17) 电话号码的字母组合》，出现了剪枝的情况。因为根据题目要求，解空间树能出现右子树的情况，只有结果字符串中左括号的个数比右括号大的时候才可以。再结合回溯算法代码模板框架，这个题目就很容易处理了。我们依然直接使用LeetCode官方的代码。</p>
+<h3 id="代码-5"><a href="#代码-5" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;String&gt; generateParenthesis(int n) &#123;</span><br><span class="line">        List&lt;String&gt; ans &#x3D; new ArrayList&lt;String&gt;();</span><br><span class="line">        backtrack(ans, new StringBuilder(), 0, 0, n);</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * @param ans 结果集</span><br><span class="line">     * @param cur 结果字符串， 完成后会加入结果集</span><br><span class="line">     * @param open 左括号的已使用数量</span><br><span class="line">     * @param close 有括号的已使用数量</span><br><span class="line">     * @param max 最大数</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void backtrack(List&lt;String&gt; ans, StringBuilder cur, int open, int close, int max) &#123;</span><br><span class="line">        &#x2F;&#x2F; 左括号和有括号全部使用完毕， 递归终止，并将结果加入结果集中</span><br><span class="line">        if (cur.length() &#x3D;&#x3D; max * 2) &#123;</span><br><span class="line">            ans.add(cur.toString());</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 处理左子树</span><br><span class="line">        if (open &lt; max) &#123;</span><br><span class="line">            cur.append(&#39;(&#39;);</span><br><span class="line">            backtrack(ans, cur, open + 1, close, max);</span><br><span class="line">            cur.deleteCharAt(cur.length() - 1);</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 处理右子树</span><br><span class="line">        if (close &lt; open) &#123;</span><br><span class="line">            cur.append(&#39;)&#39;);</span><br><span class="line">            backtrack(ans, cur, open, close + 1, max);</span><br><span class="line">            cur.deleteCharAt(cur.length() - 1);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-39-组合总和"><a href="#LeetCode-39-组合总和" class="headerlink" title="(LeetCode- 39) 组合总和"></a><strong>(LeetCode-</strong> <strong>39</strong>) <strong>组合总和</strong></h2><h3 id="题目-5"><a href="#题目-5" class="headerlink" title="题目"></a>题目</h3><p>给你一个 <strong>无重复元素</strong> 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。</p>
+<p>candidates 中的 同一个 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的。 </p>
+<p>对于给定的输入，保证和为 target 的不同组合数少于 150 个。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：candidates &#x3D; [2,3,6,7], target &#x3D; 7</span><br><span class="line">输出：[[2,2,3],[7]]</span><br><span class="line">解释：</span><br><span class="line">2 和 3 可以形成一组候选，2 + 2 + 3 &#x3D; 7 。注意 2 可以使用多次。</span><br><span class="line">7 也是一个候选， 7 &#x3D; 7 。</span><br><span class="line">仅有这两种组合。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: candidates &#x3D; [2,3,5], target &#x3D; 8</span><br><span class="line">输出: [[2,2,2,2],[2,3,3],[3,5]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: candidates &#x3D; [2], target &#x3D; 1</span><br><span class="line">输出: []</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-6"><a href="#分析-6" class="headerlink" title="分析"></a>分析</h3><h4 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a><strong>方法</strong></h4><p>这个题目看起来比前面的17和22两个题都要复杂些，因为17和22两个题中备选元素只能选择一次，这里元素是可以重复选择的，但是其实对解题并没有影响。</p>
+<p>同样的，我们可以先整理出解空间树再套用代码模板，不过这里的解空间树有两种处理方式，加减两种。</p>
+<p>第一种，加法类型，我们以示例2，candidates = [2,3,5], target = 8来说明：</p>
+<p><img src="/images/Leetcode2/Leetcode2_21.png" alt="Leetcode2_21"></p>
+<p>通过上图我们可以看到，递归的终止条件就是累加和大于等于target ，大于的情况下，这个结果应该抛弃；等于的情况下则加入最终结果集，所以根据上图[2,2,2,2],[2,3,3],[3,5]，这三条路径就是我们需要的结果。</p>
+<p>同时要注意，在进行分支的时候，取2分支会在[2,3,5]中取数，而取3分支则是在[3,5]中取数，取5分支则是在[5]中取，这是为了避免重复计算，如果取3或者取5分支下加入取2的选项，必然会和取2分支下的取3和取5选项出现重复。取5分支下没有取3的选项也是一样的道理。这同样是一种剪枝。具体的代码我们就不实现了。</p>
+<p>第二种，减法类型，我们以示例1，candidates = [2,3,6,7], target = 7来说明：</p>
+<p><img src="/images/Leetcode2/Leetcode2_22.png" alt="Leetcode2_22"></p>
+<p>我们以需要的target = 7为根结点，创建分支做减法操作；每一个箭头表示：从父亲结点的数值减去边上的数值，得到孩子结点的数值。边的值就是题目中给出的 candidate 数组的每个元素的值；</p>
+<p>减到0或者负数的时候停止，也就是递归的终止条件，而减到0则是我们需要的结果。所以，根据上图可以得到的结果集有[2, 2, 3], [2, 3, 2], [3, 2, 2], [7]，但是和示例1的答案[7], [2, 2, 3]比较，很明显我们的结果集里有重复的，因为题目中要求每一个符合要求的解是组合，也就是不计算顺序的。</p>
+<p>所以我们在减法类型的处理里，需要和加法类型一样，去除重复计算，比如减2操作，就应该只在减2分支中出现，在减3、6、7分支中都不应该出现。</p>
+<p><img src="/images/Leetcode2/Leetcode2_23.png" alt="Leetcode2_23"></p>
+<h3 id="代码-6"><a href="#代码-6" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">       int[] candidates &#x3D; &#123;1,2,3,6,7&#125;;</span><br><span class="line">       List&lt;List&lt;Integer&gt;&gt; result &#x3D; new CombinationSum().combinationSum( candidates,  7);</span><br><span class="line">       System.out.println(&quot;&quot;);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public List&lt;List&lt;Integer&gt;&gt; combinationSum(int[] candidates, int target) &#123;</span><br><span class="line">       List&lt;List&lt;Integer&gt;&gt; ans &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">       backtrack(ans, new ArrayList&lt;Integer&gt;(), candidates, target,  0);</span><br><span class="line">       return ans;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   private void backtrack(List&lt;List&lt;Integer&gt;&gt; ans, ArrayList&lt;Integer&gt; integers, int[] candidates, int target,  int start) &#123;</span><br><span class="line">       if(start &#x3D;&#x3D; candidates.length) &#123;</span><br><span class="line">           return;</span><br><span class="line">       &#125;</span><br><span class="line">       if(target &#x3D;&#x3D; 0)&#123;</span><br><span class="line">           ans.add(new ArrayList&lt;Integer&gt;(integers));</span><br><span class="line">           return;</span><br><span class="line">       &#125;</span><br><span class="line">       &#x2F;&#x2F; 直接跳过</span><br><span class="line">       backtrack(  ans, integers,candidates, target,start + 1);</span><br><span class="line">       &#x2F;&#x2F; 选择当前数</span><br><span class="line">       if((target - candidates[start]) &gt;&#x3D; 0)&#123;</span><br><span class="line">           integers.add(candidates[start]);</span><br><span class="line">           backtrack( ans,  integers,  candidates,  target - candidates[start],  start);</span><br><span class="line">           integers.remove(integers.size() -1);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-46-全排列"><a href="#LeetCode-46-全排列" class="headerlink" title="(LeetCode- 46) 全排列"></a><strong>(LeetCode-</strong> <strong>46</strong>) <strong>全排列</strong></h2><h3 id="题目-6"><a href="#题目-6" class="headerlink" title="题目"></a>题目</h3><p>给定一个不含重复数字的数组 <code>nums</code> ，返回其 <em>所有可能的全排列</em> 。你可以 <strong>按任意顺序</strong> 返回答案。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1,2,3]</span><br><span class="line">输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [0,1]</span><br><span class="line">输出：[[0,1],[1,0]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1]</span><br><span class="line">输出：[[1]]</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-7"><a href="#分析-7" class="headerlink" title="分析"></a>分析</h3><h3 id="代码-7"><a href="#代码-7" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public class Permute &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int[] nums &#x3D; &#123;1,2,3&#125;;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result &#x3D; new Permute().permute( nums);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public List&lt;List&lt;Integer&gt;&gt; permute(int[] nums) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; ans &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        int[] used &#x3D; new int[nums.length];</span><br><span class="line">        backtrack(ans, nums, new ArrayList&lt;Integer&gt;(),used );</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void backtrack(List&lt;List&lt;Integer&gt;&gt; ans, int[] nums, ArrayList&lt;Integer&gt; integers, int[] used ) &#123;</span><br><span class="line">        if(integers.size() &#x3D;&#x3D; nums.length)&#123;</span><br><span class="line">            ans.add(new ArrayList&lt;&gt;(integers));</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i &#x3D; 0; i &lt; nums.length; i++)&#123;</span><br><span class="line">               &#x2F;&#x2F; 当前节点在祖先节点已经使用过， 不再参与子孙节点的处理</span><br><span class="line">            if(used[i] &#x3D;&#x3D; 1) continue;</span><br><span class="line">            &#x2F;&#x2F;标识当前元素已经使用</span><br><span class="line">            used[i] &#x3D; 1;</span><br><span class="line">            integers.add(nums[i]);</span><br><span class="line">            backtrack(ans, nums, integers, used);</span><br><span class="line">            &#x2F;&#x2F;回溯</span><br><span class="line">            used[i] &#x3D; 0;</span><br><span class="line">            integers.remove(integers.size()-1);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-47-全排列-II"><a href="#LeetCode-47-全排列-II" class="headerlink" title="(LeetCode- 47) 全排列 II"></a><strong>(LeetCode-</strong> <strong>47</strong>) <strong>全排列 II</strong></h2><h3 id="题目-7"><a href="#题目-7" class="headerlink" title="题目"></a>题目</h3><p>给定一个可包含重复数字的序列 <code>nums</code> ，**<em>按任意顺序**</em> 返回所有不重复的全排列。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1,1,2]</span><br><span class="line">输出：</span><br><span class="line">[[1,1,2],</span><br><span class="line"> [1,2,1],</span><br><span class="line"> [2,1,1]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1,2,3]</span><br><span class="line">输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码-8"><a href="#代码-8" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">       int[] nums &#x3D; &#123;1,1,2&#125;;</span><br><span class="line">       List&lt;List&lt;Integer&gt;&gt; result &#x3D; new Permute().permuteUnique( nums);</span><br><span class="line">       System.out.println(&quot;&quot;);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public List&lt;List&lt;Integer&gt;&gt; permuteUnique(int[] nums) &#123;</span><br><span class="line">       List&lt;List&lt;Integer&gt;&gt; ans &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">       int[] used &#x3D; new int[nums.length];</span><br><span class="line">       Arrays.sort(nums);</span><br><span class="line">       backtrack(ans, nums, new ArrayList&lt;Integer&gt;(),used );</span><br><span class="line">       return ans;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   private void backtrack(List&lt;List&lt;Integer&gt;&gt; ans, int[] nums, ArrayList&lt;Integer&gt; integers, int[] used ) &#123;</span><br><span class="line">       if(integers.size() &#x3D;&#x3D; nums.length)&#123;</span><br><span class="line">           ans.add(new ArrayList&lt;&gt;(integers));</span><br><span class="line">           return;</span><br><span class="line">       &#125;</span><br><span class="line">       for(int i &#x3D; 0; i &lt; nums.length; i++)&#123;</span><br><span class="line">              &#x2F;&#x2F; 当前节点在祖先节点已经使用过， 不再参与子孙节点的处理</span><br><span class="line">           if(used[i] &#x3D;&#x3D; 1) continue;</span><br><span class="line">           &#x2F;&#x2F; 判断是否重复处理了， !(used[i-1]&#x3D;&#x3D;1) 用来保证这个判断是同层判定， 而不是子节点判定</span><br><span class="line">           if((i &gt; 0) &amp;&amp; nums[i] &#x3D;&#x3D; nums[i-1] &amp;&amp; !(used[i-1] &#x3D;&#x3D; 1)) continue;</span><br><span class="line">           &#x2F;&#x2F;标识当前元素已经使用</span><br><span class="line">           used[i] &#x3D; 1;</span><br><span class="line">           integers.add(nums[i]);</span><br><span class="line">           backtrack(ans, nums, integers, used);</span><br><span class="line">           &#x2F;&#x2F;回溯</span><br><span class="line">           used[i] &#x3D; 0;</span><br><span class="line">           integers.remove(integers.size()-1);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-78-子集"><a href="#LeetCode-78-子集" class="headerlink" title="(LeetCode- 78) 子集"></a><strong>(LeetCode-</strong> <strong>78</strong>) <strong>子集</strong></h2><h3 id="题目-8"><a href="#题目-8" class="headerlink" title="题目"></a>题目</h3><p>给你一个整数数组 <code>nums</code> ，数组中的元素 <strong>互不相同</strong> 。返回该数组所有可能的子集（幂集）。</p>
+<p>解集 <strong>不能</strong> 包含重复的子集。你可以按 <strong>任意顺序</strong> 返回解集。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1,2,3]</span><br><span class="line">输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [0]</span><br><span class="line">输出：[[],[0]]</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码-9"><a href="#代码-9" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class Subsets &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">      &#x2F;&#x2F;  int[] nums &#x3D; &#123;1,2,3&#125;;</span><br><span class="line">        int[] nums &#x3D; &#123;0&#125;;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; list &#x3D; new Subsets().subsets(nums);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public List&lt;List&lt;Integer&gt;&gt; subsets(int[] nums) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; ans &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        backtrack( ans,   new ArrayList&lt;Integer&gt;(),  nums, 0);</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void backtrack(List&lt;List&lt;Integer&gt;&gt; ans, ArrayList&lt;Integer&gt; integers, int[] candidates, int index) &#123;</span><br><span class="line">        ans.add(new ArrayList&lt;Integer&gt;(integers));</span><br><span class="line"></span><br><span class="line">        for(int i &#x3D; index; i &lt; candidates.length; i++)&#123;</span><br><span class="line">            integers.add(candidates[i]);</span><br><span class="line">            backtrack(ans,  integers,  candidates, i + 1);</span><br><span class="line">            integers.remove(integers.size()-1);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-79-单词搜索"><a href="#LeetCode-79-单词搜索" class="headerlink" title="(LeetCode- 79) 单词搜索"></a><strong>(LeetCode-</strong> <strong>79</strong>) <strong>单词搜索</strong></h2><h3 id="题目-9"><a href="#题目-9" class="headerlink" title="题目"></a>题目</h3><p>给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。</p>
+<p>单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。</p>
+<p><strong>示例 1：</strong></p>
+<p><img src="/images/Leetcode2/Leetcode2_24.png" alt="Leetcode2_24"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：board &#x3D; [[&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;E&quot;],[&quot;S&quot;,&quot;F&quot;,&quot;C&quot;,&quot;S&quot;],[&quot;A&quot;,&quot;D&quot;,&quot;E&quot;,&quot;E&quot;]], word &#x3D; &quot;ABCCED&quot;</span><br><span class="line">输出：true</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<p><img src="/images/Leetcode2/Leetcode2_25.png" alt="Leetcode2_25"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：board &#x3D; [[&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;E&quot;],[&quot;S&quot;,&quot;F&quot;,&quot;C&quot;,&quot;S&quot;],[&quot;A&quot;,&quot;D&quot;,&quot;E&quot;,&quot;E&quot;]], word &#x3D; &quot;SEE&quot;</span><br><span class="line">输出：true</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<p><img src="/images/Leetcode2/Leetcode2_26.png" alt="Leetcode2_26"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：board &#x3D; [[&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;E&quot;],[&quot;S&quot;,&quot;F&quot;,&quot;C&quot;,&quot;S&quot;],[&quot;A&quot;,&quot;D&quot;,&quot;E&quot;,&quot;E&quot;]], word &#x3D; &quot;ABCB&quot;</span><br><span class="line">输出：false</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="代码-10"><a href="#代码-10" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public class Exist &#123;</span><br><span class="line">    public boolean exist(char[][] board, String word) &#123;</span><br><span class="line">        char[] w &#x3D; word.toCharArray();</span><br><span class="line">        for (int x&#x3D;0; x&lt;board.length; x++) &#123;</span><br><span class="line">            for (int y&#x3D;0; y&lt;board[x].length; y++) &#123;</span><br><span class="line">                if (backTrack(board, x, y, w, 0)) return true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private boolean backTrack(char[][] board, int x, int y, char[] word, int currLength) &#123;</span><br><span class="line">        if (currLength &#x3D;&#x3D; word.length) return true;</span><br><span class="line">        &#x2F;*矩阵越界检查*&#x2F;</span><br><span class="line">        if (x&lt;0 || y&lt;0 || x &#x3D;&#x3D; board.length || y &#x3D;&#x3D; board[x].length) return false;</span><br><span class="line">        if (board[x][y] !&#x3D; word[currLength]) return false;</span><br><span class="line">        &#x2F;*当前元素进行异或用来标识已经访问过</span><br><span class="line">         * char在Java中默认是两个字节，所以不会有位溢出风险*&#x2F;</span><br><span class="line">        board[x][y] ^&#x3D; 256;</span><br><span class="line">        &#x2F;*按照右、下、左、上的顺序进行试探*&#x2F;</span><br><span class="line">        boolean exist &#x3D; backTrack(board, x, y+1, word, currLength+1)</span><br><span class="line">                || backTrack(board, x-1, y, word, currLength+1)</span><br><span class="line">                || backTrack(board, x+1, y, word, currLength+1)</span><br><span class="line">                || backTrack(board, x, y-1, word, currLength+1);</span><br><span class="line">        &#x2F;*回溯，再次异或,复原原来的元素值*&#x2F;</span><br><span class="line">        board[x][y] ^&#x3D; 256;</span><br><span class="line">        return exist;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="贪心算法"><a href="#贪心算法" class="headerlink" title="贪心算法"></a>贪心算法</h2><h2 id="什么是贪心算法"><a href="#什么是贪心算法" class="headerlink" title="什么是贪心算法"></a><strong>什么是贪心算法</strong></h2><p>贪心算法顾名思义在一个贪字上面，它在解决某个问题的时候，总是先从眼前利益出发。也就是说只顾眼前，不顾大局，所以它是局部最优解。它的核心的就是局部最优推出全局最优。</p>
+<p>例如，有一堆钞票，你可以拿走十张，如果想达到最大的金额，你要怎么拿?指定每次拿最大的，最终结果就是拿走最大数额的钱。</p>
+<p>每次拿最大的就是局部最优，最后拿走最大数额的钱就是推出全局最优。</p>
+<p>很明显在我们上面拿钞票的过程中，总是做出在当前看来是最好的选择并没有从整体钱最多上加以考虑。</p>
+<p>贪心算法和我们前面的曾经学习过的动态规划非常的相似，但是两者还是有不同的，比如动态规划里常见的背包问题有一堆盒子，你有一个背包体积为n，如何把背包尽可能装满，如果还每次选最大的盒子，就不一定行了。</p>
+<p>动态规划和贪心算法都是一种递推算法，均有局部最优解来推导全局最优解，也都有最优子结构的说法，但是贪心策略是由上一步的最优解推导下一步的最优解，而上一部之前的最优解则不作保留，每一步的最优解一定包含上一步的最优解。动态规划里的全局最优解中一定包含某个局部最优解，但不一定包含前一个局部最优解，因此需要记录之前的所有最优解。有时候我们也会把贪心算法视为动态规划算法的一种特例。</p>
+<p>总的来说贪心算法不能对所有问题都得到整体最优解，但对许多问题它能产生整体最优解。如单源最短路经问题，最小生成树问题等。在一些情况下，即使贪心算法不能得到整体最优解，其最终结果却是最优解的很好近似。</p>
+<p>贪心算法一般分为如下四步︰</p>
+<p>将问题分解为若干个子问题；</p>
+<p>找出适合的贪心策略</p>
+<p>求解每一个子问题的最优解；</p>
+<p>将局部最优解堆叠成全局最优解</p>
+<p>但是真正做题的时候很难分出这么详细的解题步骤，而且贪心算法的问题简单题的甚至感觉不到贪心，但贪心的难题其实可以非常难。而且贪心算法不像回溯算法，贪心算法没有套路，也没有框架之类的，需要同学们多看多练培养感觉才能想到贪心的思路。</p>
+<h2 id="LeetCode-621-任务调度器"><a href="#LeetCode-621-任务调度器" class="headerlink" title="(LeetCode-621)任务调度器"></a>(LeetCode-621)任务调度器</h2><h3 id="题目-10"><a href="#题目-10" class="headerlink" title="题目"></a>题目</h3><p>给你一个用字符数组 tasks 表示的 CPU 需要执行的任务列表。其中每个字母表示一种不同种类的任务。任务可以以任意顺序执行，并且每个任务都可以在 1 个单位时间内执行完。在任何一个单位时间，CPU 可以完成一个任务，或者处于待命状态。</p>
+<p>然而，两个 相同种类 的任务之间必须有长度为整数 n 的冷却时间，因此至少有连续 n 个单位时间内 CPU 在执行不同的任务，或者在待命状态。</p>
+<p>你需要计算完成所有任务所需要的 最短时间 。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：tasks &#x3D; [&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;B&quot;,&quot;B&quot;,&quot;B&quot;], n &#x3D; 2</span><br><span class="line">输出：8</span><br><span class="line">解释：A -&gt; B -&gt; (待命) -&gt; A -&gt; B -&gt; (待命) -&gt; A -&gt; B</span><br><span class="line">     在本示例中，两个相同类型任务之间必须间隔长度为 n &#x3D; 2 的冷却时间，而执行一个任务只需要一个单位时间，所以中间出现了（待命）状态。 </span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：tasks &#x3D; [&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;B&quot;,&quot;B&quot;,&quot;B&quot;], n &#x3D; 0</span><br><span class="line">输出：6</span><br><span class="line">解释：在这种情况下，任何大小为 6 的排列都可以满足要求，因为 n &#x3D; 0</span><br><span class="line">[&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;B&quot;,&quot;B&quot;,&quot;B&quot;]</span><br><span class="line">[&quot;A&quot;,&quot;B&quot;,&quot;A&quot;,&quot;B&quot;,&quot;A&quot;,&quot;B&quot;]</span><br><span class="line">[&quot;B&quot;,&quot;B&quot;,&quot;B&quot;,&quot;A&quot;,&quot;A&quot;,&quot;A&quot;]</span><br><span class="line">...</span><br><span class="line">诸如此类</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：tasks &#x3D; [&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;], n &#x3D; 2</span><br><span class="line">输出：16</span><br><span class="line">解释：一种可能的解决方案是：</span><br><span class="line">     A -&gt; B -&gt; C -&gt; A -&gt; D -&gt; E -&gt; A -&gt; F -&gt; G -&gt; A -&gt; (待命) -&gt; (待命) -&gt; A -&gt; (待命) -&gt; (待命) -&gt; A</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码-11"><a href="#代码-11" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class LeastInterval &#123;</span><br><span class="line"></span><br><span class="line">    public int leastInterval(char[] tasks, int n) &#123;</span><br><span class="line">        int[] arr &#x3D; new int[26];</span><br><span class="line">        &#x2F;&#x2F; 统计各个字母出现的次数</span><br><span class="line">        for(char c : tasks)&#123;</span><br><span class="line">            arr[c - &#39;A&#39;]++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int max &#x3D; 0;</span><br><span class="line">        &#x2F;&#x2F; 找到最大次数</span><br><span class="line">        for(int i &#x3D; 0; i &lt; 26; i++)&#123;</span><br><span class="line">            max &#x3D; Math.max(max, arr[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        int ret &#x3D; (max - 1) * (n + 1);</span><br><span class="line">        &#x2F;&#x2F; 寻找最大次数相同的字母个数，然后累加进ret</span><br><span class="line">        for(int i &#x3D; 0; i &lt; 26; i++)&#123;</span><br><span class="line">            if(arr[i] &#x3D;&#x3D; max)&#123;</span><br><span class="line">                ret++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return Math.max(ret, tasks.length);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-62-不同路径"><a href="#LeetCode-62-不同路径" class="headerlink" title="(LeetCode- 62) 不同路径"></a><strong>(LeetCode-</strong> <strong>62</strong>) <strong>不同路径</strong></h2><h3 id="题目-11"><a href="#题目-11" class="headerlink" title="题目"></a>题目</h3><p>一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。</p>
+<p>机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。</p>
+<p>问总共有多少条不同的路径？</p>
+<p><strong>示例 1：</strong></p>
+<p><img src="/images/Leetcode2/Leetcode2_27.png" alt="Leetcode2_27"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：m &#x3D; 3, n &#x3D; 7</span><br><span class="line">输出：28</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：m &#x3D; 3, n &#x3D; 2</span><br><span class="line">输出：3</span><br><span class="line">解释：</span><br><span class="line">从左上角开始，总共有 3 条路径可以到达右下角。</span><br><span class="line">1. 向右 -&gt; 向下 -&gt; 向下</span><br><span class="line">2. 向下 -&gt; 向下 -&gt; 向右</span><br><span class="line">3. 向下 -&gt; 向右 -&gt; 向下</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：m &#x3D; 7, n &#x3D; 3</span><br><span class="line">输出：28</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 4：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：m &#x3D; 3, n &#x3D; 3</span><br><span class="line">输出：6</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-8"><a href="#分析-8" class="headerlink" title="分析"></a>分析</h3><h4 id="方法-2"><a href="#方法-2" class="headerlink" title="方法"></a>方法</h4><p>这个题目看起来好像很麻烦，但是仔细想想，假设机器人已经到达了Finish位置，那么机器人怎么到达这个位置呢？因为题目规定“机器人每次只能向下或者向右移动一步”，所以只能从Finish位置的上面a或者左边b。</p>
+<p><img src="/images/Leetcode2/Leetcode2_28.png" alt="Leetcode2_28"></p>
+<p>自然，到达Finish位置的路径数=“到达a的路径数”+到达b的路径数”。在这个m x n 网格中，a和b的位置和Finish位置的关系是什么？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a的位置坐标 &#x3D; [Finish位置行数-1，Finish位置列数]</span><br><span class="line">b的位置坐标 &#x3D; [Finish位置行数，Finish位置列数-1]</span><br></pre></td></tr></table></figure>
+
+<p>想明白这点，DP数组就已经出来了，我们定义DP数组为dp[i][j]，i和j表示当前元素在网格中的坐标，dp[i][j]表示到达当前元素的的路径数，状态转移公式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] &#x3D; dp[i-1][j] + dp[i][j-1]</span><br></pre></td></tr></table></figure>
+
+<p>DP数组的初始值呢？<code>dp[0][0]=0</code>，这是毫无疑问的，不过要注意，当i=0以及j=0时，到达的路径有几条？因为题目规定“每次只能向下或者向右移动”，所以这些单元格的路径只有一条，这些元素也可以作为DP数组的初始值。</p>
+<p>具体实现看代码，这种实现，很明显，时间复杂度和空间复杂度都是O(m*n)。不过考察具体的过程，可以发现空间复杂度可以降低，因为从状态转移公式<code>dp[i][j] = dp[i-1][j] + dp[i][j-1]</code>，我们可以知道，<code>dp[i][j-1]</code>属于本行的数据，<code>dp[i-1][j]</code>是上一行的数据，我们完全可以利用一个一维数组来作为DP数组，比如示例1里，i=1，得到的dp一维数组值为：</p>
+<p><img src="/images/Leetcode2/Leetcode2_29.png" alt="Leetcode2_29"></p>
+<p>当我们要计算二维数组里i=2，j=4元素的值时，它的值放在一维数组里其实就是：<code>dp[j]=dp[j]+dp[j-1]</code>这样的话，空间复杂度就降为O(n)。</p>
+<p><img src="/images/Leetcode2/Leetcode2_30.png" alt="Leetcode2_30"></p>
+<h3 id="代码-12"><a href="#代码-12" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class UniquePaths &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int m &#x3D; 3, n &#x3D; 7;</span><br><span class="line">        int i &#x3D; new UniquePaths().uniquePaths(m, n);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public int uniquePaths(int m, int n) &#123;</span><br><span class="line">        int[][] dp &#x3D; new int[m][n];</span><br><span class="line">        &#x2F;&#x2F; 填充i 为0 的行</span><br><span class="line">        for(int i &#x3D; 0; i &lt; m; i++)&#123;</span><br><span class="line">            dp[i][0] &#x3D; 1;</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i &#x3D; 0; i &lt; n; i++)&#123;</span><br><span class="line">            dp[0][i] &#x3D; 1;</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i &#x3D; 1; i &lt; m; i++)&#123;</span><br><span class="line">            for(int j &#x3D; 1; j &lt; n; j++)&#123;</span><br><span class="line">                dp[i][j] &#x3D; dp[i - 1][j] + dp[i][j - 1];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return dp[m-1][n-1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-64-最小路径和"><a href="#LeetCode-64-最小路径和" class="headerlink" title="(LeetCode- **64) **最小路径和"></a><strong>(LeetCode-</strong> **64) **最小路径和</h2><h3 id="题目-12"><a href="#题目-12" class="headerlink" title="题目"></a>题目</h3><p>给定一个包含非负整数的 <code>*m* x *n*</code> 网格 <code>grid</code> ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。</p>
+<p><strong>说明：</strong>每次只能向下或者向右移动一步。</p>
+<p><strong>示例 1：</strong></p>
+<p><img src="/images/Leetcode2/Leetcode2_31.png" alt="Leetcode2_31"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：grid &#x3D; [[1,3,1],[1,5,1],[4,2,1]]</span><br><span class="line">输出：7</span><br><span class="line">解释：因为路径 1→3→1→1→1 的总和最小。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：grid &#x3D; [[1,2,3],[4,5,6]]</span><br><span class="line">输出：12</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-9"><a href="#分析-9" class="headerlink" title="分析"></a>分析</h3><h4 id="方法-3"><a href="#方法-3" class="headerlink" title="方法"></a><strong>方法</strong></h4><p>这个题目和《(LeetCode- 62) 不同路径》有非常大的相似之处，思考的思路也非常相似，考虑当前到达右下角，哪条路径数字最小？只有两个选择，a和b：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a的位置坐标 &#x3D; [右下角元素位置行数-1，右下角元素位置列数]</span><br><span class="line">b的位置坐标 &#x3D; [右下角元素位置行数，右下角元素位置列数-1]</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Leetcode2/Leetcode2_32.png" alt="Leetcode2_32"></p>
+<p>a和b选择谁呢？当然是a和b两者中路径数字最小的那个，注意，这里说“a和b两者中路径数字”并不是指a和b本身的值1和2，而是指到达a和b的路径和，只不过在示例1里恰好a本身的值比b本身的值小而已。右边的结果推导图已经说明了这一点。<br>很明显，我们定义DP数组为<code>dp[i][j]</code>, i和j表示当前元素在网格中的坐标，<code>dp[i][j]</code> 表示到达当前元素的的最小路径数，状态转移公式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] &#x3D; 原始数组[i][j]+min(dp[i-1][j],dp[i][j-1])</span><br></pre></td></tr></table></figure>
+
+<p>DP数组的初始值呢？<code>dp[0][0]=grid[0][0] </code>这是毫无疑问的，而且当i=0时，数组的值只能从左边元素获得；j=0时，数组的值只能从上边元素获得，这些元素都可以作为DP数组的初始值。时间复杂度和空间复杂度都是O(m*n)</p>
+<p>与《(LeetCode- 62) 不同路径》类似，考察具体的过程，可以发现空间复杂度可以降低，因为从状态转移公式原始数组<code>[i][j]+min(dp[i-1][j],dp[i][j-1])</code>，我们可以知道，<code>dp[i][j-1]</code>属于本行的数据，<code>dp[i-1][j]</code>是上一行的数据，我们完全可以利用一个一维数组来作为DP数组，比如示例1里，i=1，得到的dp一维数组值为：</p>
+<p><img src="/images/Leetcode2/Leetcode2_33.png" alt="Leetcode2_33"></p>
+<p>当我们要计算二维数组里i=2，j=2元素的值时，它的值放在一维数组里其实就是：原始数组<code>[i][j]+min(dp[j],dp[j-1])</code>。这样的话，空间复杂度就降为O(n)。</p>
+<p><img src="/images/Leetcode2/Leetcode2_34.png" alt="Leetcode2_34"></p>
+<h3 id="代码-13"><a href="#代码-13" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class MinPathSum &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int[][] grid &#x3D; &#123;&#123;1,3,1&#125;, &#123;1,5,1&#125;, &#123;4,2,1&#125;&#125;;</span><br><span class="line">        new MinPathSum().minPathSum(grid);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int minPathSum(int[][] dp) &#123;</span><br><span class="line">        int m &#x3D; dp.length, n &#x3D; dp[0].length;</span><br><span class="line">        &#x2F;&#x2F; 填充i 为0 的行</span><br><span class="line">        for(int i &#x3D; 1; i &lt; m; i++)&#123;</span><br><span class="line">            dp[i][0] &#x3D; dp[i][0] + dp[i-1][0];</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i &#x3D; 1; i &lt; n; i++)&#123;</span><br><span class="line">            dp[0][i] &#x3D; dp[0][i] + dp[0][i - 1];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for(int i &#x3D; 1; i &lt; m; i++)&#123;</span><br><span class="line">            for(int j &#x3D; 1; j &lt; n; j++)&#123;</span><br><span class="line">                dp[i][j] &#x3D; dp[i][j] + Math.min(dp[i-1][j], dp[i][j-1]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return dp[m - 1][n-1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-91-解码方法"><a href="#LeetCode-91-解码方法" class="headerlink" title="(LeetCode- **91) **解码方法"></a><strong>(LeetCode-</strong> **91) **解码方法</h2><h3 id="题目-13"><a href="#题目-13" class="headerlink" title="题目"></a>题目</h3><p>一条包含字母 <code>A-Z</code> 的消息通过以下映射进行了 <strong>编码</strong> ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#39;A&#39; -&gt; &quot;1&quot;</span><br><span class="line">&#39;B&#39; -&gt; &quot;2&quot;</span><br><span class="line">...</span><br><span class="line">&#39;Z&#39; -&gt; &quot;26&quot;</span><br></pre></td></tr></table></figure>
+
+<p>要 <strong>解码</strong> 已编码的消息，所有数字必须基于上述映射的方法，反向映射回字母（可能有多种方法）。例如，<code>&quot;11106&quot;</code> 可以映射为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;AAJF&quot; ，将消息分组为 (1 1 10 6)</span><br><span class="line">&quot;KJF&quot; ，将消息分组为 (11 10 6)</span><br></pre></td></tr></table></figure>
+
+<p>注意，消息不能分组为  <code>(1 11 06)</code> ，因为 <code>&quot;06&quot;</code> 不能映射为 <code>&quot;F&quot;</code> ，这是由于 <code>&quot;6&quot;</code> 和 <code>&quot;06&quot;</code> 在映射中并不等价。</p>
+<p>给你一个只含数字的 <strong>非空</strong> 字符串 <code>s</code> ，请计算并返回 <strong>解码</strong> 方法的 <strong>总数</strong> 。</p>
+<p>题目数据保证答案肯定是一个 <strong>32 位</strong> 的整数。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;12&quot;</span><br><span class="line">输出：2</span><br><span class="line">解释：它可以解码为 &quot;AB&quot;（1 2）或者 &quot;L&quot;（12）。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;226&quot;</span><br><span class="line">输出：3</span><br><span class="line">解释：它可以解码为 &quot;BZ&quot; (2 26), &quot;VF&quot; (22 6), 或者 &quot;BBF&quot; (2 2 6) 。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;0&quot;</span><br><span class="line">输出：0</span><br><span class="line">解释：没有字符映射到以 0 开头的数字。</span><br><span class="line">含有 0 的有效映射是 &#39;J&#39; -&gt; &quot;10&quot; 和 &#39;T&#39;-&gt; &quot;20&quot; 。</span><br><span class="line">由于没有字符，因此没有有效的方法对此进行解码，因为所有数字都需要映射。</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-10"><a href="#分析-10" class="headerlink" title="分析"></a>分析</h3><h4 id="方法-4"><a href="#方法-4" class="headerlink" title="方法"></a><strong>方法</strong></h4><p>我们用示例2来看看：226解码为 “BZ” (2 26), “VF” (22 6), 或者 “BBF” (2 2 6) </p>
+<p><img src="/images/Leetcode2/Leetcode2_35.png" alt="Leetcode2_35"></p>
+<p>可以看到，在遍历原始字符串的过程中，除了需要考虑当前字符能否满足映射关系，往往还需要考虑当前字符能否前面的字符组合并且满足映射关系。</p>
+<p>我们用动态规划来解决这个问题，首先对DP数组来说，我们定义数组为dp[i]，i表示了当前已经遍历了几个原始字符串中的字符，这就是说i是从1开始的，通过i定位原始字符串中的字符时，对应的下标就需要减1，dp[i]表示到达DP数组当前元素时的解码总数，那状态转移公式呢？这个就需要仔细想想了。</p>
+<p>如果当前字符不等于字符’0’，当前字符本身是能满足映射关系的，这属于一种解码方式（可以理解为所有字符都能单独解码）这种情况下，解码i个字符和解码i-1个字符的解码数是一样的，也就是<code>dp[i] = dp[i-1]</code></p>
+<p><img src="/images/Leetcode2/Leetcode2_36.png" alt="Leetcode2_36"></p>
+<p>除此之外，当前字符还能和前面的字符组合起来满足映射关系，但是有限制条件，就是组成的数字在10~26之间，这种情况下，解码i个字符和解码i-2个字符的解码数是一样的，也就是dp[i] = dp[i-2]。</p>
+<p><img src="/images/Leetcode2/Leetcode2_37.png" alt="Leetcode2_37"></p>
+<p>所以，完全的状态转移公式是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i] &#x3D; dp[i-1] + dp[i-2]</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Leetcode2/Leetcode2_38.png" alt="Leetcode2_38"></p>
+<p>这个DP数组的初始值呢？我们前面说过“i表示了当前已经遍历了几个原始字符串中的字符，i是从1开始的”，i=0则表示前0个数字的方案数，这个没有任何实际的意义，但是dp[0]的值需要保证边界是对的，即dp[1]和dp[2]是对的。</p>
+<p>比如说，第一个数不为0，那么解码前1个数只有一种方法，将其单独解码，即dp[1] = dp[1 - 1] = 1。解码前两个数，如果第1个数和第2个数可以组合起来解码，那么dp[2] = dp[1] + dp[0] = 2 ，否则只能单独解码第2个数，即dp[2] = dp[1] = 1。因此，在任何情况下dp[0]取1都可以保证dp[1]和dp[2]是正确的，所以初始值我们设置dp[0]=1。</p>
+<h3 id="代码-14"><a href="#代码-14" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public class NumDecodings &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String s &#x3D; &quot;291&quot;;</span><br><span class="line">        int i &#x3D; new NumDecodings().numDecodings(s);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int numDecodings(String s) &#123;</span><br><span class="line">        int n &#x3D; s.length();</span><br><span class="line">        &#x2F;*取代DP数组的变量，类似于滚动数组</span><br><span class="line">         * pre &#x3D; 1 起到了类似DP数组初始化的作用*&#x2F;</span><br><span class="line">        int prePre &#x3D; 0, pre &#x3D; 1, curr &#x3D; 0;</span><br><span class="line">        &#x2F;*DP数组中i是从1开始的，通过i定位原始字符串中的字符时，对应的下标就需要减1*&#x2F;</span><br><span class="line">        for (int i &#x3D; 1; i &lt;&#x3D; n; ++i) &#123;</span><br><span class="line">            curr &#x3D; 0;</span><br><span class="line">            &#x2F;*当前字符单独映射*&#x2F;</span><br><span class="line">            if (s.charAt(i - 1) !&#x3D; &#39;0&#39;)   curr +&#x3D; pre;</span><br><span class="line">            &#x2F;*原始字符串当前元素i-1可以和前面的元素i-2组合满足映射关系*&#x2F;</span><br><span class="line">            if (i &gt;&#x3D; 2) &#123;</span><br><span class="line">                &#x2F;*元素的组合转为数字*&#x2F;</span><br><span class="line">                int num &#x3D; (s.charAt(i - 2) - &#39;0&#39;) * 10 + s.charAt(i - 1) - &#39;0&#39;;</span><br><span class="line">                if (num &gt;&#x3D; 10 &amp;&amp; num &lt;&#x3D; 26) curr +&#x3D; prePre;;</span><br><span class="line">            &#125;</span><br><span class="line">            &#x2F;*更新变量的值，为下个元素做准备*&#x2F;</span><br><span class="line">            prePre &#x3D; pre;</span><br><span class="line">            pre &#x3D; curr;</span><br><span class="line">        &#125;</span><br><span class="line">        return curr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-198-打家劫舍"><a href="#LeetCode-198-打家劫舍" class="headerlink" title="(LeetCode- 198) 打家劫舍"></a>(LeetCode- 198) 打家劫舍</h2><h3 id="题目-14"><a href="#题目-14" class="headerlink" title="题目"></a>题目</h3><p>你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。</p>
+<p>给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：[1,2,3,1]</span><br><span class="line">输出：4</span><br><span class="line">解释：偷窃 1 号房屋 (金额 &#x3D; 1) ，然后偷窃 3 号房屋 (金额 &#x3D; 3)。</span><br><span class="line">     偷窃到的最高金额 &#x3D; 1 + 3 &#x3D; 4 。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：[2,7,9,3,1]</span><br><span class="line">输出：12</span><br><span class="line">解释：偷窃 1 号房屋 (金额 &#x3D; 2), 偷窃 3 号房屋 (金额 &#x3D; 9)，接着偷窃 5 号房屋 (金额 &#x3D; 1)。</span><br><span class="line">     偷窃到的最高金额 &#x3D; 2 + 9 + 1 &#x3D; 12 。</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-11"><a href="#分析-11" class="headerlink" title="分析"></a>分析</h3><p>状态转移公式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i] &#x3D; max(nums[i] + dp[i-2],dp[i-1])</span><br></pre></td></tr></table></figure>
+
+<p>初始化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[0] &#x3D; 数组第一个</span><br><span class="line">dp[1] &#x3D; 数组第一个 与数组第二个的最大值</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码-15"><a href="#代码-15" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class Rob &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">       &#x2F;&#x2F; int[] nums &#x3D; &#123;1,2,3,1&#125;;</span><br><span class="line">        int[] nums &#x3D; &#123;2,7,9,3,1&#125;;</span><br><span class="line">        int i &#x3D; new Rob().rob(nums);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public int rob(int[] nums) &#123;</span><br><span class="line">        int max &#x3D; 0;</span><br><span class="line">        int[]  dp &#x3D; new int[nums.length];</span><br><span class="line">        if(nums.length &#x3D;&#x3D; 1)&#123;</span><br><span class="line">            return nums[0];</span><br><span class="line">        &#125;</span><br><span class="line">        dp[0] &#x3D; nums[0];</span><br><span class="line">        max &#x3D; Math.max(nums[0], nums[1]);</span><br><span class="line">        if(nums.length &#x3D;&#x3D; 2)&#123;</span><br><span class="line">            return max;</span><br><span class="line">        &#125;</span><br><span class="line">        dp[1] &#x3D; max;</span><br><span class="line"></span><br><span class="line">        for(int i &#x3D; 2; i &lt; nums.length; i++)&#123;</span><br><span class="line">            dp[i] &#x3D; Math.max(dp[i - 1] , nums[i] + dp[i - 2]);</span><br><span class="line">        &#125;</span><br><span class="line">        return dp[nums.length-1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-300-最长递增子序列"><a href="#LeetCode-300-最长递增子序列" class="headerlink" title="(LeetCode- 300) 最长递增子序列"></a><strong>(LeetCode-</strong> <strong>300</strong>) <strong>最长递增子序列</strong></h2><h3 id="题目-15"><a href="#题目-15" class="headerlink" title="题目"></a>题目</h3><p>给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。</p>
+<p>子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [10,9,2,5,3,7,101,18]</span><br><span class="line">输出：4</span><br><span class="line">解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [0,1,0,3,2,3]</span><br><span class="line">输出：4</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [7,7,7,7,7,7,7]</span><br><span class="line">输出：1</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="代码-16"><a href="#代码-16" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">public class LongestIncrSubseq_300 &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;*标准DP实现*&#x2F;</span><br><span class="line">    public int lengthOfLIS(int[] nums) &#123;</span><br><span class="line">        int[] dp &#x3D; new int[nums.length];</span><br><span class="line">        Arrays.fill(dp, 1);</span><br><span class="line">        for (int i &#x3D; 0; i &lt; nums.length; i++) &#123;</span><br><span class="line">            for (int j &#x3D; 0; j &lt; i; j++) &#123;</span><br><span class="line">                if (nums[i] &gt; nums[j])</span><br><span class="line">                    dp[i] &#x3D; Math.max(dp[i], dp[j] + 1);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        int res &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; dp.length; i++) &#123;</span><br><span class="line">            res &#x3D; Math.max(res, dp[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;*二分查找+DP实现*&#x2F;</span><br><span class="line">    public int lengthOfLIS3(int[] nums) &#123;</span><br><span class="line">        int length &#x3D; nums.length;</span><br><span class="line">        int[] dp &#x3D; new int[length];</span><br><span class="line">        &#x2F;*因为dp数组中没有存放子序列的长度，需要我们单独统计</span><br><span class="line">         * 用变量记录当前dp数组包含有效元素的实际长度*&#x2F;</span><br><span class="line">        int result &#x3D; 1;</span><br><span class="line">        dp[0] &#x3D; nums[0];</span><br><span class="line">        for(int i &#x3D; 1 ;i &lt; length;i++)&#123;</span><br><span class="line">            if(nums[i] &gt; dp[result-1])&#123;</span><br><span class="line">                dp[result] &#x3D; nums[i];</span><br><span class="line">                result++;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                &#x2F;*start和end指明了当前dp数组有效元素的起止位置*&#x2F;</span><br><span class="line">                int start &#x3D; 0, end &#x3D; result;</span><br><span class="line">                &#x2F;*以二分查找在dp数组中寻找第1个大于number的元素*&#x2F;</span><br><span class="line">                while(start &lt; end) &#123;</span><br><span class="line">                    int m &#x3D; (start + end) &#x2F; 2;</span><br><span class="line">                    if(dp[m] &lt; nums[i])</span><br><span class="line">                        start &#x3D; m + 1;</span><br><span class="line">                    else</span><br><span class="line">                        end &#x3D; m;</span><br><span class="line">                &#125;</span><br><span class="line">                &#x2F;*替换dp数组中的元素*&#x2F;</span><br><span class="line">                dp[start] &#x3D; nums[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        new LongestIncrSubseq_300().lengthOfLIS3(new int[]&#123;10,9,2,5,3,7,101,18&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-309-最佳买卖股票时机含冷冻期"><a href="#LeetCode-309-最佳买卖股票时机含冷冻期" class="headerlink" title="(LeetCode- 309) 最佳买卖股票时机含冷冻期"></a><strong>(LeetCode-</strong> <strong>309)</strong> <strong>最佳买卖股票时机含冷冻期</strong></h2><h3 id="题目-16"><a href="#题目-16" class="headerlink" title="题目"></a>题目</h3><p>给定一个整数数组prices，其中第  prices[i] 表示第 i 天的股票价格 。</p>
+<p>设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:</p>
+<p>卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。<br>注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。</p>
+<p><strong>示例 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入: prices &#x3D; [1,2,3,0,2]</span><br><span class="line">输出: 3 </span><br><span class="line">解释: 对应的交易状态为: [买入, 卖出, 冷冻期, 买入, 卖出]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: prices &#x3D; [1]</span><br><span class="line">输出: 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-12"><a href="#分析-12" class="headerlink" title="分析"></a>分析</h3><h4 id="方法-5"><a href="#方法-5" class="headerlink" title="方法"></a><strong>方法</strong></h4><p>我们曾在第二期中分析过《(LeetCode-121) 买卖股票的最佳时机》，这个题目相对121，新增了一个冷冻期，但是基本的处理思想并没有变。</p>
+<p>仔细思考一下，对某天来说，可能存在的状态以及对应的动作，无非就是下面几种：</p>
+<p><img src="/images/Leetcode2/Leetcode2_39.png" alt="Leetcode2_39"></p>
+<p>比如“未动作/不持有”，说明当天没做任何买卖股票的动作，而且也不持有股票。</p>
+<p>从第i-1天到第i天的变化的可能性有哪些呢？</p>
+<p><img src="/images/Leetcode2/Leetcode2_40.png" alt="Leetcode2_40"></p>
+<p>比如第i-1天是因为买入而持有的状态，到了第i天只能变为卖出/不持有和(曾经)买入/持有，因为1、从“买入/持有到”到“未动作/不持有”这是不可能的变化，2、从“买入/持有”到“冷冻期/不持有”，这也是不可能的变化。</p>
+<p>理清了上面的状态变化关系，我们就可以定义一个二维DP数组dp[i][j=4]，对于某个确定的dp[i][j]元素来说，下标i表示第i天能获得的最大利润，可正可负；下标j表示当天持有股票的状态，0表示卖出/不持有，1表示未动作/不持有，2表示(曾经)买入/持有，3表示冷冻期/不持有。状态转移公式呢？其实从上图就能看出来了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dp[i][0] &#x3D; prices[i]+dp[i-1][2]</span><br><span class="line">dp[i][1] &#x3D; max(dp[i-1][1],dp[i-1][3])</span><br><span class="line">dp[i][2] &#x3D; max(dp[i-1][1]-prices[i],dp[i-1][2],dp[i-1][3]-prices[i])</span><br><span class="line">dp[i][3] &#x3D; dp[i-1][0]</span><br></pre></td></tr></table></figure>
+
+<p>在我们遍历完原始数组，并填充完dp数组后，最终的结果就应该选取3个不持有的最大值。</p>
+<p>dp数组的初始值，就只需要考虑第0天的情况，很明显：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dp[0][2] &#x3D; -nums[0]</span><br><span class="line">dp[0][1] &#x3D; 0</span><br><span class="line">dp[0][0] &#x3D; 0</span><br><span class="line">dp[0][3] &#x3D; 0</span><br></pre></td></tr></table></figure>
+
+<p>很明显，这种方法的时间复杂度和空间复杂度都是O(n)，当然从我们前面的描述和代码实现来看，其实dp[i]之和dp[i-1]有关，所以可以将空间复杂度降为O(1)，这个就作为思考题，大家自行实现，提示：将dp数组声明为dp[2][4]大小是一种解决方案。</p>
+<h3 id="代码-17"><a href="#代码-17" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public int maxProfit(int[] prices) &#123;</span><br><span class="line">        int length &#x3D; prices.length;</span><br><span class="line">        int[][] dp &#x3D; new int[length][4];</span><br><span class="line">        dp[0][2] &#x3D; -prices[0];</span><br><span class="line">        for(int i &#x3D; 1; i &lt; length; i++)&#123;</span><br><span class="line">            dp[i][0] &#x3D; prices[i]+dp[i-1][2];</span><br><span class="line">            dp[i][1] &#x3D; Math.max(dp[i-1][1],dp[i-1][3]);</span><br><span class="line">            dp[i][2] &#x3D; Math.max(dp[i-1][1]-prices[i],Math.max(dp[i-1][2],dp[i-1][3]-prices[i]));</span><br><span class="line">            dp[i][3] &#x3D; dp[i-1][0];</span><br><span class="line">        &#125;</span><br><span class="line">        return Math.max(dp[length-1][0],Math.max(dp[length-1][1],dp[length-1][3]));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        new BuyStockWithCooldown_309().maxProfit(new int[]&#123;1,2,3,0,2&#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-322-零钱兑换"><a href="#LeetCode-322-零钱兑换" class="headerlink" title="(LeetCode- **322) **零钱兑换"></a><strong>(LeetCode-</strong> **322) **零钱兑换</h2><h3 id="题目-17"><a href="#题目-17" class="headerlink" title="题目"></a>题目</h3><p>给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。</p>
+<p>计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。</p>
+<p>你可以认为每种硬币的数量是无限的。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：coins &#x3D; [1, 2, 5], amount &#x3D; 11</span><br><span class="line">输出：3 </span><br><span class="line">解释：11 &#x3D; 5 + 5 + 1</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：coins &#x3D; [2], amount &#x3D; 3</span><br><span class="line">输出：-1</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：coins &#x3D; [1], amount &#x3D; 0</span><br><span class="line">输出：0</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-13"><a href="#分析-13" class="headerlink" title="分析"></a>分析</h3><h4 id="方法二：动态规划"><a href="#方法二：动态规划" class="headerlink" title="方法二：动态规划"></a>方法二：动态规划</h4><p>算法</p>
+<p>我们采用自下而上的方式进行思考。仍定义 F(i) 为组成金额 ii 所需最少的硬币数量，假设在计算 F(i) 之前，我们已经计算出 F(0)−F(i−1) 的答案。 则 F(i) 对应的转移方程应为</p>
+<p><img src="/images/Leetcode2/Leetcode2_41.png" alt="Leetcode2_41"></p>
+<p>其中 cj 代表的是第 j 枚硬币的面值，即我们枚举最后一枚硬币面额是 cj ，那么需要从 i−cj 这个金额的状态 F(i−cj) 转移过来，再算上枚举的这枚硬币数量 1 的贡献，由于要硬币数量最少，所以 F(i) 为前面能转移过来的状态的最小值加上枚举的硬币数量 1 。</p>
+<p>例子1：假设</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">coins &#x3D; [1, 2, 5], amount &#x3D; 11</span><br></pre></td></tr></table></figure>
+
+<p>则，当 i*==0 时无法用硬币组成，为 0 。当 <em>i</em>&lt;0 时，忽略 F(i)</p>
+<table>
+<thead>
+<tr>
+<th><strong>F(i)</strong></th>
+<th><strong>最小硬币数量</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F(0)</td>
+<td>0 //金额为0不能由硬币组成</td>
+</tr>
+<tr>
+<td>F(1)</td>
+<td>1 //F(1)=min(F(1-1),F(1-2),F(1-5))+1=1</td>
+</tr>
+<tr>
+<td>F(2)</td>
+<td>1 //F(2)=min(F(2-1),F(2-2),F(2-5))+1=1</td>
+</tr>
+<tr>
+<td>F(3)</td>
+<td>2 //F(3)=min(F(3-1),F(3-2),F(3-5))+1=2</td>
+</tr>
+<tr>
+<td>F(4)</td>
+<td>2 //F(4)=min(F(4-1),F(4-2),F(4-5))+1=2</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>F(11)</td>
+<td>3 //F(11)=min(F(11-1),F(11-2),F(11-5))+1=3</td>
+</tr>
+</tbody></table>
+<p>我们可以看到问题的答案是通过子问题的最优解得到的。</p>
+<p>例子2：假设</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">coins &#x3D; [1, 2, 3], amount &#x3D; 6</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Leetcode2/Leetcode2_42.png" alt="Leetcode2_42"></p>
+<p>在上图中，可以看到：</p>
+<p><img src="/images/Leetcode2/Leetcode2_43.png" alt="Leetcode2_43"></p>
+<h3 id="代码-18"><a href="#代码-18" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public int coinChange(int[] coins, int amount) &#123;</span><br><span class="line">      int max &#x3D; amount + 1;</span><br><span class="line">      int[] dp &#x3D; new int[amount + 1];</span><br><span class="line">      Arrays.fill(dp, max);</span><br><span class="line">      dp[0] &#x3D; 0;</span><br><span class="line">      for (int i &#x3D; 1; i &lt;&#x3D; amount; i++) &#123;</span><br><span class="line">          for (int j &#x3D; 0; j &lt; coins.length; j++) &#123;</span><br><span class="line">              if (coins[j] &lt;&#x3D; i) &#123;</span><br><span class="line">                  dp[i] &#x3D; Math.min(dp[i], dp[i - coins[j]] + 1);</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      return dp[amount] &gt; amount ? -1 : dp[amount];</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-406-根据身高重建队列"><a href="#LeetCode-406-根据身高重建队列" class="headerlink" title="(LeetCode-406) 根据身高重建队列"></a>(LeetCode-406) <strong>根据身高重建队列</strong></h2><h3 id="题目-18"><a href="#题目-18" class="headerlink" title="题目"></a>题目</h3><p>假设有打乱顺序的一群人站成一个队列，数组 people 表示队列中一些人的属性（不一定按顺序）。每个 people[i] = [hi, ki] 表示第 i 个人的身高为 hi ，前面 正好 有 ki 个身高大于或等于 hi 的人。</p>
+<p>请你重新构造并返回输入数组 people 所表示的队列。返回的队列应该格式化为数组 queue ，其中 queue[j] = [hj, kj] 是队列中第 j 个人的属性（queue[0] 是排在队列前面的人）。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">输入：people &#x3D; [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]</span><br><span class="line">输出：[[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]]</span><br><span class="line">解释：</span><br><span class="line">编号为 0 的人身高为 5 ，没有身高更高或者相同的人排在他前面。</span><br><span class="line">编号为 1 的人身高为 7 ，没有身高更高或者相同的人排在他前面。</span><br><span class="line">编号为 2 的人身高为 5 ，有 2 个身高更高或者相同的人排在他前面，即编号为 0 和 1 的人。</span><br><span class="line">编号为 3 的人身高为 6 ，有 1 个身高更高或者相同的人排在他前面，即编号为 1 的人。</span><br><span class="line">编号为 4 的人身高为 4 ，有 4 个身高更高或者相同的人排在他前面，即编号为 0、1、2、3 的人。</span><br><span class="line">编号为 5 的人身高为 7 ，有 1 个身高更高或者相同的人排在他前面，即编号为 1 的人。</span><br><span class="line">因此 [[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]] 是重新构造后的队列。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：people &#x3D; [[6,0],[5,0],[4,0],[3,2],[2,2],[1,4]]</span><br><span class="line">输出：[[4,0],[5,0],[2,2],[3,2],[1,4],[6,0]]</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-14"><a href="#分析-14" class="headerlink" title="分析"></a>分析</h3><h4 id="方法二：从高到低考虑"><a href="#方法二：从高到低考虑" class="headerlink" title="方法二：从高到低考虑"></a>方法二：从高到低考虑</h4><p>思路与算法</p>
+<p>我们可以将每个人按照身高从大到小进行排序，处理身高相同的人使用的方法类似，即：按照 hi 为第一关键字降序，ki 为第二关键字升序进行排序。如果我们按照排完序后的顺序，依次将每个人放入队列中，那么当我们放入第 i 个人时：</p>
+<ul>
+<li><p>第 0,  i−1 个人已经在队列中被安排了位置，他们只要站在第 i 个人的前面，就会对第 i 个人产生影响，因为他们都比第 i 个人高；</p>
+</li>
+<li><p>而第 i+1, n−1 个人还没有被放入队列中，并且他们无论站在哪里，对第 i 个人都没有任何影响，因为他们都比第 i 个人矮。</p>
+</li>
+</ul>
+<p>在这种情况下，我们无从得知应该给后面的人安排多少个「空」位置，因此就不能沿用方法一。但我们可以发现，后面的人既然不会对第 i 个人造成影响，我们可以采用「插空」的方法，依次给每一个人在当前的队列中选择一个插入的位置。也就是说，当我们放入第 i 个人时，只需要将其插入队列中，使得他的前面恰好有 ki 个人即可。</p>
+<h3 id="代码-19"><a href="#代码-19" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public int[][] reconstructQueue(int[][] people) &#123;</span><br><span class="line">       Arrays.sort(people, (o1, o2) -&gt; &#123;</span><br><span class="line">           if(o1[0] !&#x3D; o2[0])&#123;</span><br><span class="line">               return o2[0] - o1[0];</span><br><span class="line">           &#125;else &#123;</span><br><span class="line">               return  o1[1] - o2[1];</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line"></span><br><span class="line">       List&lt;int[]&gt; answer &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">       for(int[] element : people)&#123;</span><br><span class="line">           answer.add(element[1], element);</span><br><span class="line">       &#125;</span><br><span class="line">       return answer.toArray(new int[answer.size()][]);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-337-打家劫舍Ⅲ"><a href="#LeetCode-337-打家劫舍Ⅲ" class="headerlink" title="(LeetCode- **337) **打家劫舍Ⅲ"></a><strong>(LeetCode-</strong> **337) **打家劫舍Ⅲ</h2><h3 id="题目-19"><a href="#题目-19" class="headerlink" title="题目"></a>题目</h3><p>小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。</p>
+<p>除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。</p>
+<p>给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额 。</p>
+<p><strong>示例 1:</strong></p>
+<p><img src="/images/Leetcode2/Leetcode2_44.png" alt="Leetcode2_44"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入: root &#x3D; [3,2,3,null,3,null,1]</span><br><span class="line">输出: 7 </span><br><span class="line">解释: 小偷一晚能够盗取的最高金额 3 + 3 + 1 &#x3D; 7</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2:</strong></p>
+<p><img src="/images/Leetcode2/Leetcode2_45.png" alt="Leetcode2_45"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入: root &#x3D; [3,4,5,1,3,null,1]</span><br><span class="line">输出: 9</span><br><span class="line">解释: 小偷一晚能够盗取的最高金额 4 + 5 &#x3D; 9</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-15"><a href="#分析-15" class="headerlink" title="分析"></a>分析</h3><h4 id="方法-6"><a href="#方法-6" class="headerlink" title="方法"></a><strong>方法</strong></h4><p>在前面我们已经分析过《(LeetCode- 198) 打家劫舍》，这个题目和198的差别在哪里？198中需要处理的数据是数组的形式呈现的，而这个题目的数据是个二叉树的数据结构。这个题目就是个典型的树形DP的问题。</p>
+<p>我们来分析下这个题目的解题思路，使用下图所示的二叉树来说明，为了方便说明我们给每个节点加上了诸如a,b，c之类的标识。</p>
+<p><img src="/images/Leetcode2/Leetcode2_46.png" alt="Leetcode2_46"></p>
+<p>可以确定的是，对这个树一定要遍历，对树的遍历用递归比较方便，但是树的遍历有前、中、后、层至少四种遍历方式（不记得怎么遍历的同学，应该回过头去看看一期里的相关知识），应该用哪种呢？我们现在无法确定，先不急，后面随着分析的深入，也许我们就知道答案了。</p>
+<p>按照题目要求“两个直接相连的房子不能在同一天晚上被打劫”，在树里面什么节点是直接相连的？父节点和它的两个左右子节点，这就是说在遍历树的时候，访问节点的值，偷了父节点就不能偷它的两个左右子节点，反过来说也成立，偷了节点的左右子节点就不能偷这个节点本身。但是偷了左节点，右节点还是可以继续偷，这个要注意。</p>
+<p>我们先不要看整颗树，只看由b、d、e三个节点组成的子树：</p>
+<p><img src="/images/Leetcode2/Leetcode2_47.png" alt="Leetcode2_47"></p>
+<p>按照我们上面的说明，b、d、e三者之中，要么偷b，要么不偷b而是偷d和e，到底偷谁呢？当然是谁大偷谁。按照树的遍历，如果是前序和中序，都会出现不知道子节点值是多少的问题，只有后序遍历是先访问完两个左右子树再访问根结点的，所以这里我们确定了，对树的遍历用后序遍历会更方便。</p>
+<p>现在问题来了，偷b的时候，怎么知道b能不能偷，值不值的偷呢？因为偷b不仅取决于d和e的值，还取决于d和e有无子树，同时偷b也会影响节点a的处理。这个时候我们就要站在整树的角度来考虑这个问题了。</p>
+<p>对于树中的任何一个节点X，对它的访问应该返回一个复合结果，包含两种结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a.偷X时以X为根结点的子树返回的最大值</span><br><span class="line">b.不偷X时以X为根结点的子树返回的最大值</span><br></pre></td></tr></table></figure>
+
+<p>这样的话，我们可以使用一个长度为2的数组dp表示节点X的返回值，dp[0]表示偷X时的最大值，dp[1]表示不偷X时的最大值。更具体点，我们用节点b来说明。</p>
+<p>后序遍历了b的d和e两个子节点后，d和e各返回一个结果数组dp_d和dp_e，对于节点b来说，它的结果数组dp_b的值如下图所示：</p>
+<p><img src="/images/Leetcode2/Leetcode2_48.png" alt="Leetcode2_48"></p>
+<p>也就是偷b时的值是 b本身的值+不偷d的最大值（dp_d[1]）+不偷e的最大值（dp_e[1]）；如果不偷b，则值为max(dp_d[0],dp_d[1]) + max(dp_e[0],dp_e[1])。</p>
+<p>然后，我们将b结果数组dp_b，作为b节点的结果返回供节点a的进行处理。</p>
+<h3 id="代码-20"><a href="#代码-20" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public int rob(TreeNode root) &#123;</span><br><span class="line">       int[] result &#x3D; robNode(root);</span><br><span class="line">       return Math.max(result[0], result[1]);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; 返回值表示当前节点root的结果， 用长度为2的数组表示</span><br><span class="line">   &#x2F;&#x2F; 下标[0] 表示偷 root时的最大值， 下标[1]表示不偷root时的最大值</span><br><span class="line">   private int[] robNode(TreeNode root) &#123;</span><br><span class="line">       &#x2F;&#x2F; 已经处理到了叶子节点的下层， 递归终止</span><br><span class="line">       if(root &#x3D;&#x3D; null) return new int[]&#123;0,0&#125;;</span><br><span class="line">       &#x2F;&#x2F; 当前root节点的左子节点处理结果</span><br><span class="line">       int[] left &#x3D; robNode(root.left);</span><br><span class="line">       &#x2F;&#x2F; 当前root节点的右子节点处理结果</span><br><span class="line">       int[] right &#x3D; robNode(root.right);</span><br><span class="line">       &#x2F;&#x2F; 偷当前节点root时的值是</span><br><span class="line">       &#x2F;&#x2F; root 本身 + 不偷左子节点的最大值 + 不偷右子节点的最大值</span><br><span class="line">       int stealCurr &#x3D; root.val + left[1] + right[1];</span><br><span class="line">       &#x2F;&#x2F;不偷当前节点root的值是</span><br><span class="line">       &#x2F;&#x2F; 偷左子节点 和不偷左子节点的值 两者的最大值 + 偷右子节点和不偷右子节点的值 两者的最大值</span><br><span class="line">       int noStealCurr &#x3D; Math.max(left[0] , left[1]) + Math.max(right[0], right[1]);</span><br><span class="line">       return  new int[]&#123;stealCurr, noStealCurr&#125;;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-416-分割等和子集"><a href="#LeetCode-416-分割等和子集" class="headerlink" title="(LeetCode- **416) **分割等和子集"></a><strong>(LeetCode-</strong> **416) **分割等和子集</h2><h3 id="题目-20"><a href="#题目-20" class="headerlink" title="题目"></a>题目</h3><p>给你一个 <strong>只包含正整数</strong> 的 <strong>非空</strong> 数组 <code>nums</code> 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1,5,11,5]</span><br><span class="line">输出：true</span><br><span class="line">解释：数组可以分割成 [1, 5, 5] 和 [11] 。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1,2,3,5]</span><br><span class="line">输出：false</span><br><span class="line">解释：数组不能分割成两个元素和相等的子集。</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-16"><a href="#分析-16" class="headerlink" title="分析"></a>分析</h3><p>方法一：动态规划<br>思路与算法</p>
+<p>这道题可以换一种表述：给定一个只包含正整数的非空数组 \textit{nums}[0]nums[0]，判断是否可以从数组中选出一些数字，使得这些数字的和等于整个数组的元素和的一半。因此这个问题可以转换成「0-10−1 背包问题」。这道题与传统的「0-10−1 背包问题」的区别在于，传统的「0-10−1 背包问题」要求选取的物品的重量之和不能超过背包的总容量，这道题则要求选取的数字的和恰好等于整个数组的元素和的一半。类似于传统的「0-10−1 背包问题」，可以使用动态规划求解。</p>
+<p>在使用动态规划求解之前，首先需要进行以下判断。</p>
+<ul>
+<li>根据数组的长度 <em>n</em> 判断数组是否可以被划分。如果 n&lt;2，则不可能将数组分割成元素和相等的两个子集，因此直接返回 false。</li>
+<li>计算整个数组的元素和 sum 以及最大元素 maxNum。如果 sum 是奇数，则不可能将数组分割成元素和相等的两个子集，因此直接返回 false。如果 sum 是偶数，则令 target= sum / 2，需要判断是否可以从数组中选出一些数字，使得这些数字的和等于 target。如果 maxNum&gt;target，则除了 maxNum 以外的所有元素之和一定小于 target，因此不可能将数组分割成元素和相等的两个子集，直接返回 false。</li>
+</ul>
+<p>创建二维数组 dp，包含 n 行 target+1 列，其中<code>dp[i][j]</code>表示从数组的[0, i]下标范围内选取若干个正整数（可以是 0 个），<strong>是否存在一种选取方案使得被选取的正整数的和等于 j</strong>。初始时，dp 中的全部元素都是 false。</p>
+<p>在定义状态之后，需要考虑边界情况。以下两种情况都属于边界情况。</p>
+<ul>
+<li>如果不选取任何正整数，则被选取的正整数等于 0。因此对于所有 0≤i&lt;n，都有 <code>dp[i][0] = true</code></li>
+<li>当 i==0 时，只有一个正整数 nums[0] 可以被选取，因此 <code>dp[0][nums[0]] = true</code></li>
+</ul>
+<p>对于 i&gt;0 且  <em>j</em>&gt;0 的情况，如何确定<code>dp[i][j]</code>的值？需要分别考虑以下两种情况。</p>
+<ul>
+<li><p>如果 j≥nums[i]，则对于当前的数字 nums[i]，可以选取也可以不选取，两种情况只要有一个为 true，就有 <code>dp[i][j] = true</code></p>
+<ul>
+<li>如果不选取 nums[i]，则 <code>dp[i][j] = dp[i - 1][j]</code></li>
+<li>如果选取nums[i]，则 <code>dp[i][j] = dp[i - 1][j - nums[i]]</code></li>
+</ul>
+</li>
+<li><p>如果 j&lt;nums[i]，则在选取的数字的和等于 j 的情况下无法选取当前的数字 nums[i]，因此有 <code>dp[i][j] = dp[i - 1][j]</code></p>
+</li>
+</ul>
+<p>状态转移方程如下：</p>
+<p><img src="/images/Leetcode2/Leetcode2_49.png" alt="Leetcode2_49"></p>
+<p>上述代码的空间复杂度是 O(n×target)。但是可以发现在计算 dp 的过程中，每一行的 dp 值都只与上一行的 dp 值有关，因此只需要一个一维数组即可将空间复杂度降到 O(target)。此时的转移方程为：</p>
+<p><img src="/images/Leetcode2/Leetcode2_50.png" alt="Leetcode2_50"></p>
+<p>且需要注意的是第二层的循环我们需要<strong>从大到小计算</strong>，因为如果我们从小到大更新 dp 值，那么在计算 dp[j] 值的时候，dp[j−nums[i]] 已经是被更新过的状态，不再是上一行的 dp 值。</p>
+<h3 id="代码-21"><a href="#代码-21" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">public class CanPartition &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int[] nums &#x3D; &#123;1,5,11,5&#125;;</span><br><span class="line">        boolean b &#x3D; new CanPartition().canPartition(nums);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 一维数组</span><br><span class="line">    public boolean canPartition(int[] nums) &#123;</span><br><span class="line">        int n &#x3D; nums.length;</span><br><span class="line">        if (n &lt; 2) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        int sum &#x3D; 0, maxNum &#x3D; 0;</span><br><span class="line">        for (int num : nums) &#123;</span><br><span class="line">            sum +&#x3D; num;</span><br><span class="line">            maxNum &#x3D; Math.max(maxNum, num);</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 !&#x3D; 0) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        int target &#x3D; sum &#x2F; 2;</span><br><span class="line">        if (maxNum &gt; target) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        boolean[] dp &#x3D; new boolean[target + 1];</span><br><span class="line">        dp[0] &#x3D; true;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            int num &#x3D; nums[i];</span><br><span class="line">            for (int j &#x3D; target; j &gt;&#x3D; num; --j) &#123;</span><br><span class="line">                dp[j] |&#x3D; dp[j - num];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return dp[target];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 二维数组</span><br><span class="line">    public boolean canPartition3(int[] nums) &#123;</span><br><span class="line">        int n &#x3D; nums.length;</span><br><span class="line">        if (n &lt; 2) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        int sum &#x3D; 0, maxNum &#x3D; 0;</span><br><span class="line">        for (int num : nums) &#123;</span><br><span class="line">            sum +&#x3D; num;</span><br><span class="line">            maxNum &#x3D; Math.max(maxNum, num);</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 !&#x3D; 0) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        int target &#x3D; sum &#x2F; 2;</span><br><span class="line">        if (maxNum &gt; target) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        boolean[][] dp &#x3D; new boolean[n][target + 1];</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            dp[i][0] &#x3D; true;</span><br><span class="line">        &#125;</span><br><span class="line">        dp[0][nums[0]] &#x3D; true;</span><br><span class="line">        for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">            int num &#x3D; nums[i];</span><br><span class="line">            for (int j &#x3D; 1; j &lt;&#x3D; target; j++) &#123;</span><br><span class="line">                if (j &gt;&#x3D; num) &#123;</span><br><span class="line">                    dp[i][j] &#x3D; dp[i - 1][j] | dp[i - 1][j - num];</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    dp[i][j] &#x3D; dp[i - 1][j];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return dp[n - 1][target];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-494-目标和"><a href="#LeetCode-494-目标和" class="headerlink" title="(LeetCode- 494)目标和"></a><strong>(LeetCode-</strong> 494)目标和</h2><h3 id="题目-21"><a href="#题目-21" class="headerlink" title="题目"></a>题目</h3><p>给你一个整数数组 nums 和一个整数 target 。</p>
+<p>向数组中的每个整数前添加 ‘+’ 或 ‘-‘ ，然后串联起所有整数，可以构造一个 表达式 ：</p>
+<ul>
+<li>例如，nums = [2, 1] ，可以在 2 之前添加 ‘+’ ，在 1 之前添加 ‘-‘ ，然后串联起来得到表达式 “+2-1” 。<br>返回可以通过上述方法构造的、运算结果等于 target 的不同 表达式 的数目。</li>
+</ul>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1,1,1,1,1], target &#x3D; 3</span><br><span class="line">输出：5</span><br><span class="line">解释：一共有 5 种方法让最终目标和为 3 。</span><br><span class="line">-1 + 1 + 1 + 1 + 1 &#x3D; 3</span><br><span class="line">+1 - 1 + 1 + 1 + 1 &#x3D; 3</span><br><span class="line">+1 + 1 - 1 + 1 + 1 &#x3D; 3</span><br><span class="line">+1 + 1 + 1 - 1 + 1 &#x3D; 3</span><br><span class="line">+1 + 1 + 1 + 1 - 1 &#x3D; 3</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1], target &#x3D; 1</span><br><span class="line">输出：1</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-17"><a href="#分析-17" class="headerlink" title="分析"></a>分析</h3><p>方法二：动态规划<br>记数组的元素和为 sum，添加 - 号的元素之和为 neg，则其余添加 + 的元素之和为 sum−neg，得到的表达式的结果为</p>
+<p><img src="/images/Leetcode2/Leetcode2_51.png" alt="Leetcode2_51"></p>
+<p>由于数组 nums 中的元素都是非负整数，neg 也必须是非负整数，所以上式成立的前提是 sum−target 是<strong>非负偶数</strong>。若不符合该条件可直接返回 0。</p>
+<p>若上式成立，问题转化成在数组nums 中选取若干元素，使得这些元素之和等于 neg，计算选取元素的方案数。我们可以使用动态规划的方法求解。</p>
+<p>定义二维数组 dp，其中<code>dp[i][j]</code>表示在数组nums 的前 i 个数中选取元素，使得这些元素之和等于 j 的方案数。假设数组nums 的长度为 n，则最终答案为 <code>dp[n][neg]</code></p>
+<p>当没有任何元素可以选取时，元素和只能是 0，对应的方案数是 1，因此动态规划的边界条件是：</p>
+<p><img src="/images/Leetcode2/Leetcode2_52.png" alt="Leetcode2_52"></p>
+<p><img src="/images/Leetcode2/Leetcode2_53.png" alt="Leetcode2_53"></p>
+<p>由于dp 的每一行的计算只和上一行有关，因此可以使用滚动数组的方式，去掉 dp 的第一个维度，将空间复杂度优化到 O(neg)。</p>
+<p>实现时，内层循环需采用倒序遍历的方式，这种方式保证转移来的是<code>dp[i - 1][]</code>中的元素值。</p>
+<h3 id="代码-22"><a href="#代码-22" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">public class FindTargetSumWays &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int[] nums &#x3D; &#123;1,1,1,1,1&#125;;</span><br><span class="line">        int targetSumWays &#x3D; new FindTargetSumWays().findTargetSumWays2(nums, 3);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 一维数组</span><br><span class="line">    public int findTargetSumWays2(int[] nums, int target) &#123;</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for(int num : nums)&#123;</span><br><span class="line">            sum +&#x3D; num;</span><br><span class="line">        &#125;</span><br><span class="line">        int diff &#x3D; sum - target;</span><br><span class="line">        if(diff &lt; 0 || diff % 2 !&#x3D; 0)&#123;</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line">        int n &#x3D; nums.length, neg &#x3D; diff &#x2F; 2;</span><br><span class="line">        int[] dp &#x3D; new int[neg + 1];</span><br><span class="line">        dp[0] &#x3D; 1;</span><br><span class="line">        for(int num : nums)&#123;</span><br><span class="line">            for(int j &#x3D; neg; j &gt;&#x3D; num; j--)&#123;</span><br><span class="line">                dp[j] &#x3D; + dp[j] + dp[j-num];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return dp[neg];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 二维数组</span><br><span class="line">    public int findTargetSumWays(int[] nums, int target) &#123;</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for(int num : nums)&#123;</span><br><span class="line">            sum +&#x3D; num;</span><br><span class="line">        &#125;</span><br><span class="line">        int diff &#x3D; sum - target;</span><br><span class="line">        if(diff &lt; 0 || diff % 2 !&#x3D; 0)&#123;</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line">        int n &#x3D; nums.length, neg &#x3D; diff &#x2F; 2;</span><br><span class="line">        int[][] dp &#x3D; new int[n + 1][neg + 1];</span><br><span class="line">        dp[0][0] &#x3D; 1;</span><br><span class="line">        for(int i &#x3D; 1; i &lt;&#x3D; n; i++)&#123;</span><br><span class="line">            int num &#x3D; nums[i-1];</span><br><span class="line">            for(int j &#x3D; 0; j &lt;&#x3D; neg; j++)&#123;</span><br><span class="line">                dp[i][j] &#x3D; dp[i-1][j];</span><br><span class="line">                if(j &gt;&#x3D; num)&#123;</span><br><span class="line">                    dp[i][j] +&#x3D; dp[i-1][j-num];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return dp[n][neg];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-718-最长重复子数组"><a href="#LeetCode-718-最长重复子数组" class="headerlink" title="(LeetCode- **718) **最长重复子数组"></a><strong>(LeetCode-</strong> **718) **最长重复子数组</h2><h3 id="题目-22"><a href="#题目-22" class="headerlink" title="题目"></a>题目</h3><p>给两个整数数组 <code>nums1</code> 和 <code>nums2</code> ，返回 <em>两个数组中 <strong>公共的</strong> 、长度最长的子数组的长度</em> 。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums1 &#x3D; [1,2,3,2,1], nums2 &#x3D; [3,2,1,4,7]</span><br><span class="line">输出：3</span><br><span class="line">解释：长度最长的公共子数组是 [3,2,1] 。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums1 &#x3D; [0,0,0,0,0], nums2 &#x3D; [0,0,0,0,0]</span><br><span class="line">输出：5</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-18"><a href="#分析-18" class="headerlink" title="分析"></a>分析</h3><h4 id="方法一：动态规划"><a href="#方法一：动态规划" class="headerlink" title="方法一：动态规划"></a>方法一：动态规划</h4><p>对这个题目，我们可以定义DP数组为二维的，也就是<code>dp[i][j]</code>其中的每个元素<code>dp[i][j]</code>表示，以下标i-1为结尾的数组nums1 ，和以下标j-1为结尾的数组nums2，当前的最长重复子数组长度填充在这个元素<code>dp[i][j]</code>中。</p>
+<p>状态转移公式呢？如果nums1[i-1]和nums2[j-1]的数字相等，dp[i][j]的值就要在前一dp元素的基础上加1，表示最长重复子数组长度要加1。问题是和谁相加呢？我们用示例1：nums1 = [1,2,3,2,1], nums2 = [3,2,1,4,7]来说说明。</p>
+<p><img src="/images/Leetcode2/Leetcode2_54.png" alt="Leetcode2_54"></p>
+<p>现在，nums1[3] = nums2[1]，那就是<code>dp[4][2]</code>需要在前一dp元素的基础上加1，从图上我们可以看出，<code>dp[4][2]</code>的前一元素应该是<code>dp[3][1]</code>。对应着nums1[2] = nums2[0]=3</p>
+<p>所以状态转移公式就是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">如果(nums1[i-1] &#x3D; nums2[j-1]) 那么dp[i][j] &#x3D; dp[i-1][j-1] + 1</span><br></pre></td></tr></table></figure>
+
+<p>dp数组的初始值应该设定为<code>dp[0][0] = dp[i][0] = dp[0][j] = 0</code>，这个并没有什么实际意义，只是为了满足我们上面的状态转移公式。</p>
+<p>当然，从状态转移公式可以看出，其实<code>dp[i][j]</code>只和<code>dp[i-1][j-1]</code>相关，所以可以使用一维数组，在处理dp[i]时直接使用上一次循环中填充在dp数组的dp[i-1]相关的值，将空间复杂度降为O(m)，但是在具体实现时要记得j要变成倒序遍历，以及当nums1[i-1] &lt;&gt; nums2[j-1]时，dp[i][j]要置为0（避免<code>dp[i][j]</code>的值影响<code>dp[i+1][j+1]</code>）。</p>
+<h3 id="代码-23"><a href="#代码-23" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">public class FindLength &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int[] num1 &#x3D; &#123;1,2,3,2,1&#125;;</span><br><span class="line">        int[] num2 &#x3D; &#123;3,2,1,4,7&#125;;</span><br><span class="line">        int length2 &#x3D; new FindLength().findLength(num1, num2);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 一维数组</span><br><span class="line">    public int findLength(int[] nums1, int[] nums2) &#123;</span><br><span class="line">        int len1 &#x3D; nums1.length, len2 &#x3D; nums2.length;</span><br><span class="line">        int[] dp &#x3D; new int[len2 + 1];</span><br><span class="line">        int max &#x3D; 0;</span><br><span class="line">        &#x2F;&#x2F; 初始化</span><br><span class="line">        dp[0] &#x3D; 0;</span><br><span class="line">        for(int i &#x3D; 1; i &lt;&#x3D; len1; i++)&#123;</span><br><span class="line">            int num1 &#x3D; nums1[i-1];</span><br><span class="line">            for(int j &#x3D; len2; j &gt;&#x3D; 1; j--)&#123;</span><br><span class="line">                int num2 &#x3D; nums2[j-1];</span><br><span class="line">                if(num1 &#x3D;&#x3D; num2)&#123;</span><br><span class="line">                    dp[j] &#x3D; dp[j-1] + 1;</span><br><span class="line">                &#125;else &#123;</span><br><span class="line">                    dp[j] &#x3D; 0;</span><br><span class="line">                &#125;</span><br><span class="line">                max &#x3D; Math.max(max, dp[j]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return max;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 二维数组</span><br><span class="line">    public int findLength2(int[] nums1, int[] nums2) &#123;</span><br><span class="line">        int len1 &#x3D; nums1.length, len2 &#x3D; nums2.length;</span><br><span class="line">        int[][] dp &#x3D; new int[len1 + 1][len2 + 1];</span><br><span class="line">        int max &#x3D; 0;</span><br><span class="line">        &#x2F;&#x2F; 初始化</span><br><span class="line">        for(int i &#x3D; 0; i &lt;&#x3D; len1; i++)&#123;</span><br><span class="line">            dp[len1][0] &#x3D; 0;</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i &#x3D; 0; i &lt;&#x3D; len2; i++)&#123;</span><br><span class="line">            dp[0][len2] &#x3D; 0;</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i &#x3D; 1; i &lt;&#x3D; len1; i++)&#123;</span><br><span class="line">            int num1 &#x3D; nums1[i-1];</span><br><span class="line">            for(int j &#x3D; 1; j &lt;&#x3D; len2; j++)&#123;</span><br><span class="line">                int num2 &#x3D; nums2[j-1];</span><br><span class="line">                if(num1 &#x3D;&#x3D; num2)&#123;</span><br><span class="line">                    dp[i][j] &#x3D; dp[i-1][j-1] + 1;</span><br><span class="line">                &#125;else &#123;</span><br><span class="line">                    dp[i][j] &#x3D; 0;</span><br><span class="line">                &#125;</span><br><span class="line">                max &#x3D; Math.max(max, dp[i][j]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return max;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-42-接雨水"><a href="#LeetCode-42-接雨水" class="headerlink" title="(LeetCode- **42) **接雨水"></a><strong>(LeetCode-</strong> **42) **接雨水</h2><h3 id="题目-23"><a href="#题目-23" class="headerlink" title="题目"></a>题目</h3><p>给定 <code>n</code> 个非负整数表示每个宽度为 <code>1</code> 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。</p>
+<p><strong>示例 1：</strong></p>
+<p><img src="/images/Leetcode2/Leetcode2_55.png" alt="Leetcode2_55"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：height &#x3D; [0,1,0,2,1,0,1,3,2,1,2,1]</span><br><span class="line">输出：6</span><br><span class="line">解释：上面是由数组 [0,1,0,2,1,0,1,3,2,1,2,1] 表示的高度图，在这种情况下，可以接 6 个单位的雨水（蓝色部分表示雨水）。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：height &#x3D; [4,2,0,3,2,5]</span><br><span class="line">输出：9</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-19"><a href="#分析-19" class="headerlink" title="分析"></a>分析</h3><h4 id="方法一：动态规划-1"><a href="#方法一：动态规划-1" class="headerlink" title="方法一：动态规划"></a>方法一：动态规划</h4><p><img src="/images/Leetcode2/Leetcode2_56.png" alt="Leetcode2_56"></p>
+<p><img src="/images/Leetcode2/Leetcode2_57.png" alt="Leetcode2_57"></p>
+<h3 id="代码-24"><a href="#代码-24" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public class Trap &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int[] height &#x3D; &#123;0,1,0,2,1,0,1,3,2,1,2,1&#125;;</span><br><span class="line">        int trap &#x3D; new Trap().trap(height);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int trap(int[] height) &#123;</span><br><span class="line">        int n &#x3D; height.length;</span><br><span class="line">        if (n &#x3D;&#x3D; 0) &#123;</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int[] leftMax &#x3D; new int[n];</span><br><span class="line">        leftMax[0] &#x3D; height[0];</span><br><span class="line">        for (int i &#x3D; 1; i &lt; n; ++i) &#123;</span><br><span class="line">            leftMax[i] &#x3D; Math.max(leftMax[i - 1], height[i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int[] rightMax &#x3D; new int[n];</span><br><span class="line">        rightMax[n - 1] &#x3D; height[n - 1];</span><br><span class="line">        for (int i &#x3D; n - 2; i &gt;&#x3D; 0; --i) &#123;</span><br><span class="line">            rightMax[i] &#x3D; Math.max(rightMax[i + 1], height[i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int ans &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; ++i) &#123;</span><br><span class="line">            ans +&#x3D; Math.min(leftMax[i], rightMax[i]) - height[i];</span><br><span class="line">        &#125;</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LeetCode/" rel="tag"># LeetCode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/16/LeetCode/2022-10-09%20leetcode%E7%AE%97%E6%B3%95-%E5%B9%B6%E6%9F%A5%E9%9B%86/" rel="prev" title="leetcode算法-并查集">
+      <i class="fa fa-chevron-left"></i> leetcode算法-并查集
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/10/09/LeetCode/2022-10-10%20leetcode%E7%AE%97%E6%B3%95-%E5%9B%BE%E8%AE%BA/" rel="next" title="leetcode算法-图论">
+      leetcode算法-图论 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">1.</span> <span class="nav-text">动态规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA-%E5%85%AC%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">图示(公式)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E9%98%B6%E6%A2%AF%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.4.</span> <span class="nav-text">动态规划的阶梯步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.5.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-53-%E6%9C%80%E5%A4%A7%E5%AD%90%E5%BA%8F%E5%92%8C"><span class="nav-number">2.</span> <span class="nav-text">**(LeetCode-53) **最大子序和</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-1"><span class="nav-number">2.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%951"><span class="nav-number">2.2.1.</span> <span class="nav-text">方法1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%952"><span class="nav-number">2.2.2.</span> <span class="nav-text">方法2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-number">2.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-121-%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA"><span class="nav-number">3.</span> <span class="nav-text">(LeetCode-121)买卖股票的最佳时机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">3.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-2"><span class="nav-number">3.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%951-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">方法1</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="nav-number">3.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-470-%E7%94%A8-Rand7-%E5%AE%9E%E7%8E%B0-Rand10"><span class="nav-number">4.</span> <span class="nav-text">(LeetCode-470)用 Rand7() 实现 Rand10()</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">4.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-3"><span class="nav-number">4.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80"><span class="nav-number">4.2.1.</span> <span class="nav-text">方法一</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-3"><span class="nav-number">4.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF"><span class="nav-number">5.</span> <span class="nav-text">回溯</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-17-%E7%94%B5%E8%AF%9D%E5%8F%B7%E7%A0%81%E7%9A%84%E5%AD%97%E6%AF%8D%E7%BB%84%E5%90%88"><span class="nav-number">6.</span> <span class="nav-text">(LeetCode- 17) 电话号码的字母组合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-3"><span class="nav-number">6.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-4"><span class="nav-number">6.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-4"><span class="nav-number">6.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-22-%E6%8B%AC%E5%8F%B7%E7%94%9F%E6%88%90"><span class="nav-number">7.</span> <span class="nav-text">(LeetCode- 22) 括号生成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-4"><span class="nav-number">7.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-5"><span class="nav-number">7.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">7.2.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-5"><span class="nav-number">7.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-39-%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C"><span class="nav-number">8.</span> <span class="nav-text">(LeetCode- 39) 组合总和</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-5"><span class="nav-number">8.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-6"><span class="nav-number">8.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-1"><span class="nav-number">8.2.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-6"><span class="nav-number">8.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-46-%E5%85%A8%E6%8E%92%E5%88%97"><span class="nav-number">9.</span> <span class="nav-text">(LeetCode- 46) 全排列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-6"><span class="nav-number">9.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-7"><span class="nav-number">9.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-7"><span class="nav-number">9.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-47-%E5%85%A8%E6%8E%92%E5%88%97-II"><span class="nav-number">10.</span> <span class="nav-text">(LeetCode- 47) 全排列 II</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-7"><span class="nav-number">10.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-8"><span class="nav-number">10.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-78-%E5%AD%90%E9%9B%86"><span class="nav-number">11.</span> <span class="nav-text">(LeetCode- 78) 子集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-8"><span class="nav-number">11.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-9"><span class="nav-number">11.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-79-%E5%8D%95%E8%AF%8D%E6%90%9C%E7%B4%A2"><span class="nav-number">12.</span> <span class="nav-text">(LeetCode- 79) 单词搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-9"><span class="nav-number">12.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-10"><span class="nav-number">12.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95"><span class="nav-number">13.</span> <span class="nav-text">贪心算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95"><span class="nav-number">14.</span> <span class="nav-text">什么是贪心算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-621-%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%99%A8"><span class="nav-number">15.</span> <span class="nav-text">(LeetCode-621)任务调度器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-10"><span class="nav-number">15.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-11"><span class="nav-number">15.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-62-%E4%B8%8D%E5%90%8C%E8%B7%AF%E5%BE%84"><span class="nav-number">16.</span> <span class="nav-text">(LeetCode- 62) 不同路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-11"><span class="nav-number">16.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-8"><span class="nav-number">16.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-2"><span class="nav-number">16.2.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-12"><span class="nav-number">16.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-64-%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C"><span class="nav-number">17.</span> <span class="nav-text">(LeetCode- **64) **最小路径和</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-12"><span class="nav-number">17.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-9"><span class="nav-number">17.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-3"><span class="nav-number">17.2.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-13"><span class="nav-number">17.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-91-%E8%A7%A3%E7%A0%81%E6%96%B9%E6%B3%95"><span class="nav-number">18.</span> <span class="nav-text">(LeetCode- **91) **解码方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-13"><span class="nav-number">18.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-10"><span class="nav-number">18.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-4"><span class="nav-number">18.2.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-14"><span class="nav-number">18.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-198-%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D"><span class="nav-number">19.</span> <span class="nav-text">(LeetCode- 198) 打家劫舍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-14"><span class="nav-number">19.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-11"><span class="nav-number">19.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-15"><span class="nav-number">19.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-300-%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97"><span class="nav-number">20.</span> <span class="nav-text">(LeetCode- 300) 最长递增子序列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-15"><span class="nav-number">20.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-16"><span class="nav-number">20.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-309-%E6%9C%80%E4%BD%B3%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E6%97%B6%E6%9C%BA%E5%90%AB%E5%86%B7%E5%86%BB%E6%9C%9F"><span class="nav-number">21.</span> <span class="nav-text">(LeetCode- 309) 最佳买卖股票时机含冷冻期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-16"><span class="nav-number">21.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-12"><span class="nav-number">21.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-5"><span class="nav-number">21.2.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-17"><span class="nav-number">21.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-322-%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2"><span class="nav-number">22.</span> <span class="nav-text">(LeetCode- **322) **零钱兑换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-17"><span class="nav-number">22.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-13"><span class="nav-number">22.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">22.2.1.</span> <span class="nav-text">方法二：动态规划</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-18"><span class="nav-number">22.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-406-%E6%A0%B9%E6%8D%AE%E8%BA%AB%E9%AB%98%E9%87%8D%E5%BB%BA%E9%98%9F%E5%88%97"><span class="nav-number">23.</span> <span class="nav-text">(LeetCode-406) 根据身高重建队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-18"><span class="nav-number">23.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-14"><span class="nav-number">23.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E4%BB%8E%E9%AB%98%E5%88%B0%E4%BD%8E%E8%80%83%E8%99%91"><span class="nav-number">23.2.1.</span> <span class="nav-text">方法二：从高到低考虑</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-19"><span class="nav-number">23.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-337-%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D%E2%85%A2"><span class="nav-number">24.</span> <span class="nav-text">(LeetCode- **337) **打家劫舍Ⅲ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-19"><span class="nav-number">24.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-15"><span class="nav-number">24.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-6"><span class="nav-number">24.2.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-20"><span class="nav-number">24.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-416-%E5%88%86%E5%89%B2%E7%AD%89%E5%92%8C%E5%AD%90%E9%9B%86"><span class="nav-number">25.</span> <span class="nav-text">(LeetCode- **416) **分割等和子集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-20"><span class="nav-number">25.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-16"><span class="nav-number">25.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-21"><span class="nav-number">25.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-494-%E7%9B%AE%E6%A0%87%E5%92%8C"><span class="nav-number">26.</span> <span class="nav-text">(LeetCode- 494)目标和</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-21"><span class="nav-number">26.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-17"><span class="nav-number">26.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-22"><span class="nav-number">26.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-718-%E6%9C%80%E9%95%BF%E9%87%8D%E5%A4%8D%E5%AD%90%E6%95%B0%E7%BB%84"><span class="nav-number">27.</span> <span class="nav-text">(LeetCode- **718) **最长重复子数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-22"><span class="nav-number">27.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-18"><span class="nav-number">27.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">27.2.1.</span> <span class="nav-text">方法一：动态规划</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-23"><span class="nav-number">27.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-42-%E6%8E%A5%E9%9B%A8%E6%B0%B4"><span class="nav-number">28.</span> <span class="nav-text">(LeetCode- **42) **接雨水</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-23"><span class="nav-number">28.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-19"><span class="nav-number">28.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-1"><span class="nav-number">28.2.1.</span> <span class="nav-text">方法一：动态规划</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-24"><span class="nav-number">28.3.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">198</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

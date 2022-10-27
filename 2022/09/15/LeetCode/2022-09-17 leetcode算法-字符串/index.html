@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="LeetCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode算法-字符串">
+<meta property="og:url" content="http://example.com/2022/09/15/LeetCode/2022-09-17%20leetcode%E7%AE%97%E6%B3%95-%E5%AD%97%E7%AC%A6%E4%B8%B2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="LeetCode">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_96.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_97.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_98.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_99.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_100.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_101.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_102.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_103.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_104.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_105.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_106.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_107.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_108.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_109.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_110.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_111.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_112.png">
+<meta property="og:image" content="http://example.com/images/Leetcode/Leetcode_113.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_17.png">
+<meta property="og:image" content="http://example.com/images/Leetcode2/Leetcode2_18.png">
+<meta property="article:published_time" content="2022-09-15T07:29:35.599Z">
+<meta property="article:modified_time" content="2022-09-29T05:52:23.801Z">
+<meta property="article:author" content="QingSong">
+<meta property="article:tag" content="LeetCode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Leetcode/Leetcode_96.png">
+
+<link rel="canonical" href="http://example.com/2022/09/15/LeetCode/2022-09-17%20leetcode%E7%AE%97%E6%B3%95-%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>leetcode算法-字符串 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">点滴积累 豁达处之</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/15/LeetCode/2022-09-17%20leetcode%E7%AE%97%E6%B3%95-%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="QingSong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          leetcode算法-字符串
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-15 15:29:35" itemprop="dateCreated datePublished" datetime="2022-09-15T15:29:35+08:00">2022-09-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-29 13:52:23" itemprop="dateModified" datetime="2022-09-29T13:52:23+08:00">2022-09-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LeetCode/" itemprop="url" rel="index"><span itemprop="name">LeetCode</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">LeetCode</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p> leetcode算法</p>
+<a id="more"></a> 
+
+<h2 id="LeetCode-20-有效的括号"><a href="#LeetCode-20-有效的括号" class="headerlink" title="(LeetCode-20) 有效的括号"></a>(LeetCode-20) 有效的括号</h2><h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p>给定一个只包括 ‘(‘，’)’，’{‘，’}’，’[‘，’]’ 的字符串 s ，判断字符串是否有效。</p>
+<p>有效字符串需满足：</p>
+<ul>
+<li>左括号必须用相同类型的右括号闭合。</li>
+<li>左括号必须以正确的顺序闭合。</li>
+<li>每个右括号都有一个对应的相同类型的左括号。</li>
+</ul>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;()&quot;</span><br><span class="line">输出：true</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;()[]&#123;&#125;&quot;</span><br><span class="line">输出：true</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;(]&quot;</span><br><span class="line">输出：false</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a><strong>方法</strong></h4><p>仔细分析，可以看到，每当遇到一个右括号，不管是’)’，’}’，’]’ ，表示需要前面一个有匹配的左括号，而且如果左右括号没有相邻在一起，就需要左右括号之间的其他括号也符合上一个原则。</p>
+<p>通过分析过程，我们是否可以得到什么提示？需要按顺序往前回溯曾经处理的数据，是不是有点先进后出的感觉。所以可以利用栈来处理这个题目。这个题目其实和我们一期——栈与队列——(LeetCode-394)字符串解码这个题目有非常大的相似之处，只是这个题目更简单。</p>
+<p><img src="/images/Leetcode/Leetcode_96.png" alt="Leetcode_96"></p>
+<p>在具体的代码实现上，是入栈左括号还是右括号都是可以的，这个没有什么区别。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public class IsValidStr &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String s &#x3D; &quot;(]&quot;;</span><br><span class="line">        System.out.println(isValid(s));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static boolean isValid(String s) &#123;</span><br><span class="line">        Stack&lt;Character&gt; stack &#x3D; new Stack&lt;&gt;();</span><br><span class="line">        for(char c : s.toCharArray())&#123;</span><br><span class="line">            if(c &#x3D;&#x3D; &#39;(&#39;  )&#123;</span><br><span class="line">                stack.push(&#39;)&#39;);</span><br><span class="line">            &#125;else if (c &#x3D;&#x3D; &#39;&#123;&#39;)&#123;</span><br><span class="line">                stack.push(&#39;&#125;&#39;);</span><br><span class="line">            &#125;else if(c &#x3D;&#x3D; &#39;[&#39;)&#123;</span><br><span class="line">                stack.push(&#39;]&#39;);</span><br><span class="line">            &#125;else if(c &#x3D;&#x3D; &#39;)&#39; || c &#x3D;&#x3D; &#39;]&#39; || c &#x3D;&#x3D; &#39;&#125;&#39; ) &#123;</span><br><span class="line">                if(stack.isEmpty() || !stack.pop().equals(c))&#123;</span><br><span class="line">                    return false;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return stack.isEmpty();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-415-字符串相加"><a href="#LeetCode-415-字符串相加" class="headerlink" title="**(LeetCode-415) **字符串相加"></a>**(LeetCode-415) **字符串相加</h2><h3 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h3><p>给定两个字符串形式的非负整数 num1 和num2 ，计算它们的和并同样以字符串形式返回。</p>
+<p>你不能使用任何內建的用于处理大整数的库（比如 BigInteger）， 也不能直接将输入的字符串转换为整数形式。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：num1 &#x3D; &quot;11&quot;, num2 &#x3D; &quot;123&quot;</span><br><span class="line">输出：&quot;134&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：num1 &#x3D; &quot;456&quot;, num2 &#x3D; &quot;77&quot;</span><br><span class="line">输出：&quot;533&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：num1 &#x3D; &quot;0&quot;, num2 &#x3D; &quot;0&quot;</span><br><span class="line">输出：&quot;0&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><h4 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a><strong>方法</strong></h4><p>这个问题虽然题目要求不能直接将输入的字符串转换为整数形式，但是并没有禁止把字符串拆开成一个个的字符后，我们手动累加。</p>
+<p>所以我们可以仿照小时候学习整数相加列竖式的办法，一个个字符对齐位以后再相加，同时在相加的顺序上注意需要逆序处理，因为我们整数的相加就是从个十百位这样的顺序相加的。因为可能有进位的情况，所以我们还需要一个变量专门用来记录是否进位以及进位的数量。理解上面的意思，这个代码就很简单了。</p>
+<p><img src="/images/Leetcode/Leetcode_97.png" alt="Leetcode_97"></p>
+<p>至于获得字符串中每个字符，怎么把他转为数字呢？可以利用acsii码表，将字符减去’0’，就是这个字符所代表的数字</p>
+<p><img src="/images/Leetcode/Leetcode_98.png" alt="Leetcode_98"></p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class AddStrings &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String num1 &#x3D; &quot;456&quot;, num2 &#x3D; &quot;77&quot;;</span><br><span class="line">        System.out.println(addStrings(num1, num2));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static String addStrings(String num1, String num2) &#123;</span><br><span class="line">        StringBuilder sb &#x3D; new StringBuilder();</span><br><span class="line">        &#x2F;&#x2F; 记录进位的变量</span><br><span class="line">        int carry &#x3D; 0;</span><br><span class="line">        for(int i &#x3D; num1.length() - 1, j &#x3D; num2.length() -1;</span><br><span class="line">            i &gt;&#x3D; 0 || j &gt;&#x3D; 0 || carry &#x3D;&#x3D; 1; i--, j--)&#123;</span><br><span class="line">            int x &#x3D; i &lt; 0 ? 0 : num1.charAt(i) - &#39;0&#39;;</span><br><span class="line">            int y &#x3D; j &lt; 0 ? 0 : num2.charAt(j) - &#39;0&#39;;</span><br><span class="line">            sb.append((x + y + carry) % 10);</span><br><span class="line">            carry &#x3D; (x + y + carry) &#x2F; 10;</span><br><span class="line">        &#125;</span><br><span class="line">        return sb.reverse().toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="字符串匹配之BF算法"><a href="#字符串匹配之BF算法" class="headerlink" title="字符串匹配之BF算法"></a>字符串匹配之BF算法</h2><p>在一个字符串中寻找另一字符串，最容易想到的，也是最简单的办法是：取主串和模式串/搜索串中的每一位依次比较，如果匹配则同时后移一位继续比较，直至匹配到模式串的最后一位；如果出现不匹配的字符，则模式串向后移动一位，继续比较。这种解决问题的思路简单暴力，也是这个算法被叫做BF（Brute Force）的原因。</p>
+<p>整个匹配的过程可以参考下图，我们假设主串为“abdea”，搜索串为“dea”：</p>
+<p><img src="/images/Leetcode/Leetcode_99.png" alt="Leetcode_99"></p>
+<p>这个算法的复杂度还是比较好分析的，我们假设主串的长度是 m，模式串的长度是 n，在最好的情况下，在第一个字符处的匹配就能够成功，例如主串是 a b c d ，模式串是a b c，这时只遍历了模式串的长度，因为时间复杂度是 O(n)；</p>
+<p>在最坏的情况下，每次都需要遍历整个模式串，但是又未能匹配成功，例如主串是 a a a a a …a，模式串是 a a a a b，所以需要遍历 m - n + 1 次，时间复杂度是 O(m * n) 。</p>
+<p>BF算法的最坏时间复杂度虽然不好，但它易于理解和编程，在实际应用中，一般还能达到近似于O(m+n)的时间度（最坏情况不是那么容易出现的），因此，还在被大量使用。</p>
+<h2 id="字符串匹配之BM算法"><a href="#字符串匹配之BM算法" class="headerlink" title="字符串匹配之BM算法"></a><strong>字符串匹配之BM算法</strong></h2><p>各种文本编辑器的”查找”功能（Ctrl+F），大多采用Boyer[ˈbɔɪə]-Moore[mʊə]算法。</p>
+<p>Boyer-Moore算法不仅效率高，而且构思巧妙，容易理解。1977年，德克萨斯大学的Robert S. Boyer教授和J Strother Moore教授发明了这种算法。BM算法里的总体思路是：对于每一次失败的匹配尝试，算法都能够使用这些信息来排除尽可能多的无法匹配的位置。</p>
+<p>下面根据Moore教授自己的例子来解释这种算法。</p>
+<p>假定字符串为”HERE IS A SIMPLE EXAMPLE”，搜索词为”EXAMPLE”。</p>
+<p><img src="/images/Leetcode/Leetcode_100.png" alt="Leetcode_100"></p>
+<p>首先，”字符串”与”搜索词”头部对齐，从尾部开始比较。</p>
+<p>这是一个很聪明的想法，因为如果尾部字符不匹配，那么只要一次比较，就可以知道前7个字符（整体上）肯定不是要找的结果。</p>
+<p>我们看到，”S”与”E”不匹配。这时，”S”就被称为”坏字符”（bad character），即不匹配的字符。我们还发现，”S”不包含在搜索词”EXAMPLE”之中，这意味着可以把搜索词直接移到”S”的后一位。</p>
+<p><img src="/images/Leetcode/Leetcode_101.png" alt="Leetcode_101"></p>
+<p>依然从尾部开始比较，发现”P”与”E”不匹配，所以”P”是”坏字符”。但是，”P”包含在搜索词”EXAMPLE”之中。所以，将搜索词后移两位，两个”P”对齐。</p>
+<p><img src="/images/Leetcode/Leetcode_102.png" alt="Leetcode_102"></p>
+<p>我们由此总结出”坏字符规则”：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">后移位数 &#x3D; 坏字符的位置 – 模式串中的上一次出现位置</span><br></pre></td></tr></table></figure>
+
+<p>如果”坏字符”不包含在搜索词之中，则上一次出现位置为 -1。</p>
+<p>以”P”为例，它作为”坏字符”，出现在主串的第6位（从0开始编号），也就是“空格，A，空格，S，I，M，P”，在模式串中的上一次出现位置为4，所以后移 6 - 4 = 2位。</p>
+<p><img src="/images/Leetcode/Leetcode_103.png" alt="Leetcode_103"></p>
+<p>再以前面第二步的”S”为例，它出现在第6位，上一次出现位置是 -1（即未出现），则整个模式串后移 6 - (-1) = 7位。</p>
+<p><img src="/images/Leetcode/Leetcode_104.png" alt="Leetcode_104"></p>
+<p>依然从尾部开始比较，”E”与”E”匹配。</p>
+<p><img src="/images/Leetcode/Leetcode_105.png" alt="Leetcode_105"></p>
+<p>比较前面一位，”LE”与”LE”匹配。</p>
+<p><img src="/images/Leetcode/Leetcode_106.png" alt="Leetcode_106"></p>
+<p>比较前面一位，”PLE”与”PLE”匹配。</p>
+<p><img src="/images/Leetcode/Leetcode_107.png" alt="Leetcode_107"></p>
+<p>比较前面一位，”MPLE”与”MPLE”匹配。我们把这种情况称为”好后缀”（good suffix），即所有尾部匹配的字符串。注意，”MPLE”、”PLE”、”LE”、”E”都是好后缀。</p>
+<p><img src="/images/Leetcode/Leetcode_108.png" alt="Leetcode_108"></p>
+<p>比较前一位，发现”I”与”A”不匹配。所以，”I”是”坏字符”。</p>
+<p><img src="/images/Leetcode/Leetcode_109.png" alt="Leetcode_109"></p>
+<p>根据”坏字符规则”，此时模式串应该后移 2 - （-1）= 3 位。问题是，此时有没有更好的移法？</p>
+<p><img src="/images/Leetcode/Leetcode_110.png" alt="Leetcode_110"></p>
+<p>我们知道，此时存在”好后缀”。所以，可以采用”好后缀规则”：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">后移位数 &#x3D; 好后缀的位置 – 模式串中的上一次出现位置</span><br></pre></td></tr></table></figure>
+
+<p>举例来说，如果字符串”ABCDAB”的后一个”AB”是”好后缀”。那么它的位置是5（从0开始计算，取最后的”B”的值），在模式串中的上一次出现位置是1（第一个”B”的位置），所以后移 5 - 1 = 4位，前一个”AB”移到后一个”AB”的位置。</p>
+<p>再举一个例子，如果字符串”ABCDEF”的”EF”是好后缀，则”EF”的位置是5 ，上一次出现的位置是 -1（即未出现），所以后移 5 - (-1) = 6位，即整个模式串移到”F”的后一位。</p>
+<p>这个规则有三个注意点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">（1）&quot;好后缀&quot;的位置以最后一个字符为准。假定&quot;ABCDEF&quot;的&quot;EF&quot;是好后缀，则它的位置以&quot;F&quot;为准，即5（从0开始计算）。</span><br><span class="line">（2）如果&quot;好后缀&quot;在模式串中只出现一次，则它的上一次出现位置为 -1。比如，&quot;EF&quot;在&quot;ABCDEF&quot;之中只出现一次，则它的上一次出现位置为-1（即未出现）。</span><br><span class="line">（3）如果&quot;好后缀&quot;有多个，如果最长的那个&quot;好后缀&quot;在模式串中只出现一次，其他&quot;好后缀&quot;的上一次出现位置必须在头部。比如我们的例子中所有的&quot;好后缀&quot;（MPLE、PLE、LE、E）之中，只有&quot;E&quot;在&quot;EXAMPLE&quot;还出现在头部，所以后移 6 - 0 &#x3D; 6位。</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Leetcode/Leetcode_111.png" alt="Leetcode_111"></p>
+<p>可以看到，”坏字符规则”只能移3位，”好后缀规则”可以移6位。所以，Boyer-Moore算法的基本思想是，每次后移这两个规则之中的较大值。</p>
+<p>更巧妙的是，这两个规则的移动位数，只与模式串有关，与原字符串无关。因此，可以预先计算生成《坏字符规则表》和《好后缀规则表》。使用时，只要查表比较一下就可以了</p>
+<p><img src="/images/Leetcode/Leetcode_112.png" alt="Leetcode_112"></p>
+<p>继续从尾部开始比较，”P”与”E”不匹配，因此”P”是”坏字符”。根据”坏字符规则”，后移 6 - 4 = 2位。</p>
+<p><img src="/images/Leetcode/Leetcode_113.png" alt="Leetcode_113"></p>
+<p>从尾部开始逐位比较，发现全部匹配，于是搜索结束。如果还要继续查找（即找出全部匹配），则根据”好后缀规则”，后移 6 - 0 = 6位，即头部的”E”移到尾部的”E”的位置。</p>
+<p>最坏情况下找到模式所有出现的时间复杂度为O(mn)，在最好情况下执行匹配找到模式所有出现的时间复杂度为O(n/m)。</p>
+<p>所以，BM算法里的总体思路就是：对于每一次失败的匹配尝试，算法都能够使用这些信息来排除尽可能多的无法匹配的位置。同时可以预先计算生成《坏字符规则表》和《好后缀规则表》，大大加快查找匹配的速度。</p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">public class BMStr &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String main &#x3D; &quot;HERE IS A SIMPLE EXAMPLE&quot;;</span><br><span class="line">       &#x2F;&#x2F; String main &#x3D; &quot;HEREXAMPLE&quot;;</span><br><span class="line">        String ptn &#x3D; &quot;EXAMPLE&quot;;</span><br><span class="line">       &#x2F;&#x2F; String ptn &#x3D; &quot;abcab&quot;;</span><br><span class="line">        System.out.println(bm(main, ptn));</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 生成好后缀数组</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private static void goodSuffixRule(String str, int[] suffix, boolean[] prefix)&#123;</span><br><span class="line">        Arrays.fill(suffix, -1);</span><br><span class="line">        Arrays.fill(prefix, false);</span><br><span class="line"></span><br><span class="line">        int n &#x3D; str.length();</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n - 1; i++)&#123;</span><br><span class="line">            int j &#x3D; i;</span><br><span class="line">            int k &#x3D; 0;</span><br><span class="line"></span><br><span class="line">            while (j &gt;&#x3D; 0 &amp;&amp; str.charAt(j) &#x3D;&#x3D; str.charAt(n - k - 1))&#123;</span><br><span class="line">                --j;</span><br><span class="line">                ++k;</span><br><span class="line">                suffix[k] &#x3D; j + 1;</span><br><span class="line">            &#125;</span><br><span class="line">            if (j &#x3D;&#x3D; -1)&#123;</span><br><span class="line">                prefix[k] &#x3D; true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static final int[] badChar &#x3D; new int[256];</span><br><span class="line"></span><br><span class="line">    public static int bm(String main, String ptn)&#123;</span><br><span class="line">        if (main &#x3D;&#x3D; null || ptn &#x3D;&#x3D; null)&#123;</span><br><span class="line">            return -1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int m &#x3D; main.length();</span><br><span class="line">        int n &#x3D; ptn.length();</span><br><span class="line">        badCharRule(ptn, badChar);</span><br><span class="line"></span><br><span class="line">        int[] suffix &#x3D; new int[n];</span><br><span class="line">        boolean[] prefix &#x3D; new boolean[n];</span><br><span class="line">        goodSuffixRule(ptn, suffix, prefix);</span><br><span class="line"></span><br><span class="line">        int i &#x3D; n - 1;</span><br><span class="line">        while (i &lt;&#x3D; m - 1) &#123;</span><br><span class="line">            int j &#x3D; n - 1;</span><br><span class="line">            while (j &gt;&#x3D; 0 &amp;&amp; main.charAt(i) &#x3D;&#x3D; ptn.charAt(j))&#123;</span><br><span class="line">                --i;</span><br><span class="line">                if (--j &#x3D;&#x3D; -1)&#123;</span><br><span class="line">                    return i + 1;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;计算坏字符规则下移动的位数</span><br><span class="line">            int moveWithBC &#x3D; j - badChar[main.charAt(i)];</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;计算好后缀规则下移动的位数</span><br><span class="line">            int moveWithGS &#x3D; Integer.MIN_VALUE;</span><br><span class="line">            if (j &lt; n - 1)&#123;</span><br><span class="line">                moveWithGS &#x3D; moveWithGS(n, j, suffix, prefix);</span><br><span class="line">            &#125;</span><br><span class="line">            i +&#x3D; Math.max(moveWithBC, moveWithGS);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 生成坏字符数组</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private static void badCharRule(String str, int[] badChar)&#123;</span><br><span class="line">        Arrays.fill(badChar, -1);</span><br><span class="line">        for (int i &#x3D; 0; i &lt; str.length(); i++) &#123;</span><br><span class="line">            badChar[str.charAt(i)] &#x3D; i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 计算好后缀情况下的移动位数</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private static int moveWithGS(int n, int j, int[] suffix, boolean[] prefix)&#123;</span><br><span class="line">        int k &#x3D; n - j - 1;</span><br><span class="line">        if (suffix[k] !&#x3D; -1)&#123;</span><br><span class="line">            return j - suffix[k] + 1;</span><br><span class="line">        &#125;</span><br><span class="line">        for (int i &#x3D; k - 1; i &gt;&#x3D; 0; i--) &#123;</span><br><span class="line">            if (prefix[i])&#123;</span><br><span class="line">                return n - i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-3-无重复字符的最长子串"><a href="#LeetCode-3-无重复字符的最长子串" class="headerlink" title="(LeetCode- 3) 无重复字符的最长子串"></a><strong>(LeetCode- 3) 无重复字符的最长子串</strong></h2><h3 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h3><p>给定一个字符串 <code>s</code> ，请你找出其中不含有重复字符的 <strong>最长子串</strong> 的长度。</p>
+<p><strong>示例 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入: s &#x3D; &quot;abcabcbb&quot;</span><br><span class="line">输出: 3 </span><br><span class="line">解释: 因为无重复字符的最长子串是 &quot;abc&quot;，所以其长度为 3。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入: s &#x3D; &quot;bbbbb&quot;</span><br><span class="line">输出: 1</span><br><span class="line">解释: 因为无重复字符的最长子串是 &quot;b&quot;，所以其长度为 1。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入: s &#x3D; &quot;pwwkew&quot;</span><br><span class="line">输出: 3</span><br><span class="line">解释: 因为无重复字符的最长子串是 &quot;wke&quot;，所以其长度为 3。</span><br><span class="line">     请注意，你的答案必须是 子串 的长度，&quot;pwke&quot; 是一个子序列，不是子串。</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h3><p>思路：<br>这道题主要用到思路是：滑动窗口</p>
+<p>什么是滑动窗口？</p>
+<p>其实就是一个队列,比如例题中的 abcabcbb，进入这个队列（窗口）为 abc 满足题目要求，当再进入 a，队列变成了 abca，这时候不满足要求。所以，我们要移动这个队列！</p>
+<p>如何移动？</p>
+<p>我们只要把队列的左边的元素移出就行了，直到满足题目要求！</p>
+<p>一直维持这样的队列，找出队列出现最长的长度时候，求出解！</p>
+<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">public class LengthOfLongestSubstring &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String str &#x3D; &quot;pwwkew&quot;;</span><br><span class="line">        int max &#x3D; new LengthOfLongestSubstring().lengthOfLongestSubstring(str);</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">     public int lengthOfLongestSubstring(String s) &#123;</span><br><span class="line">        Map&lt;Character, Integer&gt; map &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">        int start &#x3D; 0, max &#x3D; 0;</span><br><span class="line">        for(int end &#x3D; 0; end &lt; s.length(); end++)&#123;</span><br><span class="line">            Integer index &#x3D; map.get(s.charAt(end));</span><br><span class="line">            if(index !&#x3D; null)&#123;</span><br><span class="line">                start &#x3D; Math.max(index + 1, start);</span><br><span class="line">            &#125;</span><br><span class="line">            map.put(s.charAt(end), end);</span><br><span class="line">            max &#x3D; Math.max(max, end - start + 1);</span><br><span class="line">        &#125;</span><br><span class="line">        return max;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 从头开始判断当前最多有几个不重复串</span><br><span class="line">    public int lengthOfLongestSubstring(String s) &#123;</span><br><span class="line">        &#x2F;&#x2F; 记录每个字符是否出现过</span><br><span class="line">        Set&lt;Character&gt; occ &#x3D; new HashSet&lt;Character&gt;();</span><br><span class="line">        int n &#x3D; s.length();</span><br><span class="line">        int rk &#x3D; -1, ans &#x3D; 0;</span><br><span class="line">        for(int i &#x3D; 0; i &lt; n; ++i)&#123;</span><br><span class="line">            if(i !&#x3D; 0)&#123;</span><br><span class="line">                occ.remove(s.charAt(i - 1));</span><br><span class="line">            &#125;</span><br><span class="line">            while (rk + 1 &lt; n &amp;&amp; !occ.contains(s.charAt(rk + 1)))&#123;</span><br><span class="line">                occ.add(s.charAt(rk + 1));</span><br><span class="line">                ++rk;</span><br><span class="line">            &#125;</span><br><span class="line">            ans &#x3D; Math.max(ans, rk - i + 1);</span><br><span class="line">        &#125;</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int lengthOfLongestSubstring1(String s) &#123;</span><br><span class="line">        if(s.length() &lt;&#x3D; 1) &#123;</span><br><span class="line">            return s.length();</span><br><span class="line">        &#125;</span><br><span class="line">        StringBuilder builder &#x3D; new StringBuilder();</span><br><span class="line">        int max &#x3D; 0;</span><br><span class="line">        int end &#x3D; 1;</span><br><span class="line">        builder.append(s.charAt(0));</span><br><span class="line">        while (end &lt; s.length())&#123;</span><br><span class="line">            int num &#x3D;  builder.indexOf(s.charAt(end) + &quot;&quot;);</span><br><span class="line">            if(num &#x3D;&#x3D; -1)&#123;</span><br><span class="line">                builder.append(s.charAt(end)) ;</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                &#x2F;&#x2F; 移动滑动窗口</span><br><span class="line">                builder.append(s.charAt(end));</span><br><span class="line">                builder.delete(0, num + 1);</span><br><span class="line">            &#125;</span><br><span class="line">            max &#x3D; Math.max(max, builder.length());</span><br><span class="line">            end++;</span><br><span class="line">        &#125;</span><br><span class="line">        return max;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-5-最长回文子串"><a href="#LeetCode-5-最长回文子串" class="headerlink" title="(LeetCode- 5) 最长回文子串"></a><strong>(LeetCode- 5) 最长回文子串</strong></h2><h3 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h3><p>给你一个字符串 <code>s</code>，找到 <code>s</code> 中最长的回文子串。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;babad&quot;</span><br><span class="line">输出：&quot;bab&quot;</span><br><span class="line">解释：&quot;aba&quot; 同样是符合题意的答案。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;cbbd&quot;</span><br><span class="line">输出：&quot;bb&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-3"><a href="#分析-3" class="headerlink" title="分析"></a>分析</h3><h4 id="方法二：中心扩展算法"><a href="#方法二：中心扩展算法" class="headerlink" title="方法二：中心扩展算法"></a>方法二：中心扩展算法</h4><p>我们仔细观察一下状态转移方程：</p>
+<p><img src="/images/Leetcode2/Leetcode2_17.png" alt="Leetcode2_17"></p>
+<p>找出其中的状态转移链</p>
+<p><img src="/images/Leetcode2/Leetcode2_18.png" alt="Leetcode2_18"></p>
+<p>可以发现，<strong>所有的状态在转移的时候的可能性都是唯一的</strong>。也就是说，我们可以从每一种边界情况开始「扩展」，也可以得出所有的状态对应的答案。</p>
+<p>边界情况即为子串长度为 1 或 2 的情况。我们枚举每一种边界情况，并从对应的子串开始不断地向两边扩展。如果两边的字母相同，我们就可以继续扩展，例如从 P(i+1,j−1) 扩展到 P(i,j)；如果两边的字母不同，我们就可以停止扩展，因为在这之后的子串都不能是回文串了。</p>
+<p>聪明的读者此时应该可以发现，「边界情况」对应的子串实际上就是我们「扩展」出的回文串的「回文中心」。方法二的本质即为：我们枚举所有的「回文中心」并尝试「扩展」，直到无法扩展为止，此时的回文串长度即为此「回文中心」下的最长回文串长度。我们对所有的长度求出最大值，即可得到最终的答案。</p>
+<h3 id="代码-4"><a href="#代码-4" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public class LongestPalindrome &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String s &#x3D; &quot;abcdefgfedcba&quot;;</span><br><span class="line">        String aa &#x3D; new LongestPalindrome().longestPalindrome( s);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String longestPalindrome(String s) &#123;</span><br><span class="line">        int maxStart &#x3D; 0, maxEnd &#x3D; 0;</span><br><span class="line">        for(int i &#x3D; 0; i &lt; s.length(); i++)&#123;</span><br><span class="line">            &#x2F;&#x2F; 以当前字母为中心，进行左右扩展</span><br><span class="line">            int charCenterLen &#x3D; expandAroundCenter( s,  i,  i);</span><br><span class="line">            int blackCenterLen &#x3D; expandAroundCenter( s,  i,  i + 1);</span><br><span class="line">            int len &#x3D; Math.max(charCenterLen, blackCenterLen);</span><br><span class="line">            if(len &gt; maxEnd - maxStart)&#123;</span><br><span class="line">                maxStart &#x3D; i - (len - 1) &#x2F; 2;</span><br><span class="line">                maxEnd &#x3D; i + len &#x2F; 2;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return s.substring(maxStart, maxEnd + 1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private int expandAroundCenter(String s, int left, int right)&#123;</span><br><span class="line">        while (left &gt;&#x3D; 0 &amp;&amp; right &lt; s.length() &amp;&amp; s.charAt(left) &#x3D;&#x3D; s.charAt(right)) &#123;</span><br><span class="line">            left--;</span><br><span class="line">            right++;</span><br><span class="line">        &#125;</span><br><span class="line">        return right - left - 1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-8-字符串转换整数-atoi"><a href="#LeetCode-8-字符串转换整数-atoi" class="headerlink" title="(LeetCode-8)  字符串转换整数 (atoi)"></a><strong>(LeetCode-8)  字符串转换整数 (atoi)</strong></h2><p>请你来实现一个 myAtoi(string s) 函数，使其能将字符串转换成一个 32 位有符号整数（类似 C/C++ 中的 atoi 函数）。</p>
+<p>函数 myAtoi(string s) 的算法如下：</p>
+<ul>
+<li>读入字符串并丢弃无用的前导空格</li>
+<li>检查下一个字符（假设还未到字符末尾）为正还是负号，读取该字符（如果有）。 确定最终结果是负数还是正数。 如果两者都不存在，则假定结果为正。</li>
+<li>读入下一个字符，直到到达下一个非数字字符或到达输入的结尾。字符串的其余部分将被忽略。</li>
+<li>将前面步骤读入的这些数字转换为整数（即，”123” -&gt; 123， “0032” -&gt; 32）。如果没有读入数字，则整数为 0 。必要时更改符号（从步骤 2 开始）。</li>
+<li>如果整数数超过 32 位有符号整数范围 [−231,  231 − 1] ，需要截断这个整数，使其保持在这个范围内。具体来说，小于 −231 的整数应该被固定为 −231 ，大于 231 − 1 的整数应该被固定为 231 − 1 。</li>
+<li>返回整数作为最终结果。</li>
+</ul>
+<p><strong>注意：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">本题中的空白字符只包括空格字符 &#96;&#39; &#39;&#96; 。</span><br><span class="line">除前导空格或数字后的其余字符串外，请勿忽略 任何其他字符。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;42&quot;</span><br><span class="line">输出：42</span><br><span class="line">解释：加粗的字符串为已经读入的字符，插入符号是当前读取的字符。</span><br><span class="line">第 1 步：&quot;42&quot;（当前没有读入字符，因为没有前导空格）</span><br><span class="line">         ^</span><br><span class="line">第 2 步：&quot;42&quot;（当前没有读入字符，因为这里不存在 &#39;-&#39; 或者 &#39;+&#39;）</span><br><span class="line">         ^</span><br><span class="line">第 3 步：&quot;42&quot;（读入 &quot;42&quot;）</span><br><span class="line">           ^</span><br><span class="line">解析得到整数 42 。</span><br><span class="line">由于 &quot;42&quot; 在范围 [-231, 231 - 1] 内，最终结果为 42 。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;   -42&quot;</span><br><span class="line">输出：-42</span><br><span class="line">解释：</span><br><span class="line">第 1 步：&quot;   -42&quot;（读入前导空格，但忽视掉）</span><br><span class="line">            ^</span><br><span class="line">第 2 步：&quot;   -42&quot;（读入 &#39;-&#39; 字符，所以结果应该是负数）</span><br><span class="line">             ^</span><br><span class="line">第 3 步：&quot;   -42&quot;（读入 &quot;42&quot;）</span><br><span class="line">               ^</span><br><span class="line">解析得到整数 -42 。</span><br><span class="line">由于 &quot;-42&quot; 在范围 [-231, 231 - 1] 内，最终结果为 -42 。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;4193 with words&quot;</span><br><span class="line">输出：4193</span><br><span class="line">解释：</span><br><span class="line">第 1 步：&quot;4193 with words&quot;（当前没有读入字符，因为没有前导空格）</span><br><span class="line">         ^</span><br><span class="line">第 2 步：&quot;4193 with words&quot;（当前没有读入字符，因为这里不存在 &#39;-&#39; 或者 &#39;+&#39;）</span><br><span class="line">         ^</span><br><span class="line">第 3 步：&quot;4193 with words&quot;（读入 &quot;4193&quot;；由于下一个字符不是一个数字，所以读入停止）</span><br><span class="line">             ^</span><br><span class="line">解析得到整数 4193 。</span><br><span class="line">由于 &quot;4193&quot; 在范围 [-231, 231 - 1] 内，最终结果为 4193 。</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-4"><a href="#分析-4" class="headerlink" title="分析"></a>分析</h3><h3 id="代码-5"><a href="#代码-5" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">public int myAtoi(String s) &#123;</span><br><span class="line">       int len &#x3D; s.length();</span><br><span class="line">       char[] charArray &#x3D; s.toCharArray();</span><br><span class="line">       int idx &#x3D; 0;</span><br><span class="line">       &#x2F;&#x2F; 检查是否有空格</span><br><span class="line">       while (idx &lt; len &amp;&amp; charArray[idx] &#x3D;&#x3D; &#39; &#39;)&#123;</span><br><span class="line">           idx++;</span><br><span class="line">       &#125;</span><br><span class="line">       &#x2F;&#x2F; idx 和字符串的长度相等， 说明全是空格</span><br><span class="line">       if(idx &#x3D;&#x3D; len)&#123;</span><br><span class="line">           return 0;</span><br><span class="line">       &#125;</span><br><span class="line">       &#x2F;&#x2F; 此时idx指向为第一个非空格字符，idx前面字符均可忽略 如果出现符号字符，用sign标记</span><br><span class="line">       int sign &#x3D; 1;</span><br><span class="line">       char firstChar &#x3D; charArray[idx];</span><br><span class="line">       if(firstChar &#x3D;&#x3D; &#39;+&#39;)&#123;</span><br><span class="line">           idx++;</span><br><span class="line">       &#125;else if(firstChar &#x3D;&#x3D; &#39;-&#39;) &#123;</span><br><span class="line">           sign &#x3D; -1;</span><br><span class="line">           idx++;</span><br><span class="line">       &#125;</span><br><span class="line">       int result &#x3D; 0;</span><br><span class="line">       while (idx &lt; len)&#123;</span><br><span class="line">           char currentChar &#x3D; charArray[idx];</span><br><span class="line">           &#x2F;&#x2F; 出现了 &#39;0&#39; -- &#39;9&#39; 之外的字符则终止</span><br><span class="line">           if(currentChar &gt; &#39;9&#39; || currentChar &lt; &#39;0&#39;)&#123;</span><br><span class="line">               break;</span><br><span class="line">           &#125;</span><br><span class="line">           &#x2F;&#x2F; 只能存储32位大小的有符号整数</span><br><span class="line">           if(result &gt; Integer.MAX_VALUE &#x2F; 10 || (result &#x3D;&#x3D; Integer.MAX_VALUE &#x2F; 10 &amp;&amp; (currentChar - &#39;0&#39;) &gt;</span><br><span class="line">                   (Integer.MAX_VALUE % 10) ))&#123;</span><br><span class="line">               return Integer.MAX_VALUE;</span><br><span class="line">           &#125;</span><br><span class="line">           if(result &lt; Integer.MIN_VALUE &#x2F; 10 || (result &#x3D;&#x3D; Integer.MIN_VALUE &#x2F; 10 &amp;&amp; (currentChar - &#39;0&#39;) &gt;</span><br><span class="line">                   -(Integer.MIN_VALUE % 10) ))&#123;</span><br><span class="line">               return Integer.MIN_VALUE;</span><br><span class="line">           &#125;</span><br><span class="line">           &#x2F;&#x2F; 转换</span><br><span class="line">           result &#x3D; result * 10 + sign * (currentChar - &#39;0&#39;);</span><br><span class="line">           idx++;</span><br><span class="line">       &#125;</span><br><span class="line">       return result;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-151-翻转字符串里的单词"><a href="#LeetCode-151-翻转字符串里的单词" class="headerlink" title="(LeetCode- 151) 翻转字符串里的单词"></a><strong>(LeetCode- 151) 翻转字符串里的单词</strong></h2><h3 id="题目-4"><a href="#题目-4" class="headerlink" title="题目"></a>题目</h3><p>给你一个字符串 s ，请你反转字符串中 单词 的顺序。</p>
+<p>单词 是由非空格字符组成的字符串。s 中使用至少一个空格将字符串中的 单词 分隔开。</p>
+<p>返回 单词 顺序颠倒且 单词 之间用单个空格连接的结果字符串。</p>
+<p><strong>注意</strong>：输入字符串 s中可能会存在前导空格、尾随空格或者单词间的多个空格。返回的结果字符串中，单词间应当仅用单个空格分隔，且不包含任何额外的空格。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;the sky is blue&quot;</span><br><span class="line">输出：&quot;blue is sky the&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;  hello world  &quot;</span><br><span class="line">输出：&quot;world hello&quot;</span><br><span class="line">解释：反转后的字符串中不能存在前导空格和尾随空格。</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;a good   example&quot;</span><br><span class="line">输出：&quot;example good a&quot;</span><br><span class="line">解释：如果两个单词间有多余的空格，反转后的字符串需要将单词间的空格减少到仅有一个。</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-5"><a href="#分析-5" class="headerlink" title="分析"></a>分析</h3><h4 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a><strong>方法1</strong></h4><p>这个问题可以偷懒取巧，使用JDK为我们提供的方法来实现，比如String类中的trim()、split()方法来去除空格和分解字符串，也可以使用Collections类中的reverse方法来反转。不过性能不是特别好，而且这种解法对不起题目的难度：中等，如果面试官不允许使用上面说的方法怎么办？</p>
+<p>其实，考察题目的示例，”the sky is blue”转换为”blue is sky the”，如果我们以单词来看，可以这样说，先读取到的单词最后出现，符合栈的定义，所以这个题目完全可以使用栈或者双端队列来实现，比如LeetCode的官方解法，时间复杂度：O(n)，空间复杂度：O(n)。</p>
+<h4 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a><strong>方法2</strong></h4><p>除此之外，我们还可以倒着遍历原始字符串s，用空格作为单词中间的分割，每遇到空格视为读完一个单词，然后将该单词输出。</p>
+<h3 id="代码-6"><a href="#代码-6" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">public class ReverseWords &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">&#x2F;&#x2F;         String s &#x3D; &quot;a good   example&quot;;</span><br><span class="line">&#x2F;&#x2F;       String s &#x3D; &quot;  hello world  &quot;;</span><br><span class="line">&#x2F;&#x2F;        String s &#x3D; &quot;the sky is blue&quot;;</span><br><span class="line">        String s &#x3D; &quot; hello world &quot;;</span><br><span class="line">        String result &#x3D; new ReverseWords().reverseWords(s);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String reverseWords(String s) &#123;</span><br><span class="line">        char[] charArr &#x3D; s.toCharArray();</span><br><span class="line">        int left &#x3D; 0, right &#x3D; s.length() - 1;</span><br><span class="line">        &#x2F;&#x2F; 排除字符串前后空格</span><br><span class="line">        while (charArr[left] &#x3D;&#x3D; &#39; &#39;)&#123;</span><br><span class="line">            left++;</span><br><span class="line">        &#125;</span><br><span class="line">        while (charArr[right] &#x3D;&#x3D; &#39; &#39;)&#123;</span><br><span class="line">            right--;</span><br><span class="line">        &#125;</span><br><span class="line">        StringBuilder sb &#x3D; new StringBuilder();</span><br><span class="line">        while (left &lt;&#x3D; right)&#123;</span><br><span class="line">            &#x2F;&#x2F; 倒序遍历</span><br><span class="line">            int index &#x3D; right;</span><br><span class="line">            while (index &gt;&#x3D; left &amp;&amp; charArr[index] !&#x3D; &#39; &#39;)&#123;</span><br><span class="line">                index--;</span><br><span class="line">            &#125;</span><br><span class="line">            &#x2F;&#x2F; 遇到单词前的空格， 取出单词，单词的范围就是index + 1 -- right</span><br><span class="line">            for(int i &#x3D; index + 1; i &lt;&#x3D; right; i++)&#123;</span><br><span class="line">                sb.append(charArr[i]);</span><br><span class="line">            &#125;</span><br><span class="line">            if(index &gt; left)&#123;</span><br><span class="line">                sb.append(&#39; &#39;);</span><br><span class="line">            &#125;</span><br><span class="line">            &#x2F;&#x2F; 单词之间可能有多个空格，排除</span><br><span class="line">            while (index &gt;&#x3D; left &amp;&amp; charArr[index] &#x3D;&#x3D; &#39; &#39;)&#123;</span><br><span class="line">                index--;</span><br><span class="line">            &#125;</span><br><span class="line">            &#x2F;&#x2F; 遇见了新单词，重复开始处理</span><br><span class="line">            right &#x3D; index;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;    public String reverseWords(String s) &#123;</span><br><span class="line">&#x2F;&#x2F;        StringBuilder result &#x3D; new StringBuilder();</span><br><span class="line">&#x2F;&#x2F;        Stack&lt;Character&gt; stack &#x3D; new Stack&lt;&gt;();</span><br><span class="line">&#x2F;&#x2F;        for(int i &#x3D; s.length()-1; i &gt;&#x3D; 0; i--)&#123;</span><br><span class="line">&#x2F;&#x2F;            char c &#x3D; s.charAt(i);</span><br><span class="line">&#x2F;&#x2F;            if(c &#x3D;&#x3D; &#39; &#39;)&#123;</span><br><span class="line">&#x2F;&#x2F;                if(!stack.isEmpty() )&#123;  &#x2F;&#x2F; 单词结束</span><br><span class="line">&#x2F;&#x2F;                    &#x2F;&#x2F; 清空栈</span><br><span class="line">&#x2F;&#x2F;                    clearnStack(result, stack);</span><br><span class="line">&#x2F;&#x2F;                &#125;</span><br><span class="line">&#x2F;&#x2F;            &#125;else &#123;</span><br><span class="line">&#x2F;&#x2F;                stack.push(c);</span><br><span class="line">&#x2F;&#x2F;            &#125;</span><br><span class="line">&#x2F;&#x2F;        &#125;</span><br><span class="line">&#x2F;&#x2F;        &#x2F;&#x2F; 清空栈</span><br><span class="line">&#x2F;&#x2F;        clearnStack(result, stack);</span><br><span class="line">&#x2F;&#x2F;        return result.toString();</span><br><span class="line">&#x2F;&#x2F;    &#125;</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F;    private void clearnStack(StringBuilder result, Stack&lt;Character&gt; stack) &#123;</span><br><span class="line">&#x2F;&#x2F;        if(stack.isEmpty())&#123;</span><br><span class="line">&#x2F;&#x2F;            return;</span><br><span class="line">&#x2F;&#x2F;        &#125;</span><br><span class="line">&#x2F;&#x2F;        if(result.length() &#x3D;&#x3D; 0)&#123;</span><br><span class="line">&#x2F;&#x2F;            while (!stack.isEmpty())&#123;</span><br><span class="line">&#x2F;&#x2F;                result.append(stack.pop());</span><br><span class="line">&#x2F;&#x2F;            &#125;</span><br><span class="line">&#x2F;&#x2F;        &#125;else &#123;</span><br><span class="line">&#x2F;&#x2F;            result.append(&#39; &#39;);</span><br><span class="line">&#x2F;&#x2F;            while (!stack.isEmpty())&#123;</span><br><span class="line">&#x2F;&#x2F;                result.append(stack.pop());</span><br><span class="line">&#x2F;&#x2F;            &#125;</span><br><span class="line">&#x2F;&#x2F;        &#125;</span><br><span class="line">&#x2F;&#x2F;    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-165-比较版本号"><a href="#LeetCode-165-比较版本号" class="headerlink" title="(LeetCode- 165) 比较版本号"></a><strong>(LeetCode- 165) 比较版本号</strong></h2><h3 id="题目-5"><a href="#题目-5" class="headerlink" title="题目"></a>题目</h3><p>给你两个版本号 version1 和 version2 ，请你比较它们。</p>
+<p>版本号由一个或多个修订号组成，各修订号由一个 ‘.’ 连接。每个修订号由 多位数字 组成，可能包含 前导零 。每个版本号至少包含一个字符。修订号从左到右编号，下标从 0 开始，最左边的修订号下标为 0 ，下一个修订号下标为 1 ，以此类推。例如，2.5.33 和 0.1 都是有效的版本号。</p>
+<p>比较版本号时，请按从左到右的顺序依次比较它们的修订号。比较修订号时，只需比较 忽略任何前导零后的整数值 。也就是说，修订号 1 和修订号 001 相等 。如果版本号没有指定某个下标处的修订号，则该修订号视为 0 。例如，版本 1.0 小于版本 1.1 ，因为它们下标为 0 的修订号相同，而下标为 1 的修订号分别为 0 和 1 ，0 &lt; 1 。</p>
+<p>返回规则如下：</p>
+<ul>
+<li>如果 version1 &gt; version2 返回 1，</li>
+<li>如果 version1 &lt; version2 返回 -1，</li>
+<li>除此之外返回 0。</li>
+</ul>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：version1 &#x3D; &quot;1.01&quot;, version2 &#x3D; &quot;1.001&quot;</span><br><span class="line">输出：0</span><br><span class="line">解释：忽略前导零，&quot;01&quot; 和 &quot;001&quot; 都表示相同的整数 &quot;1&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：version1 &#x3D; &quot;1.0&quot;, version2 &#x3D; &quot;1.0.0&quot;</span><br><span class="line">输出：0</span><br><span class="line">解释：version1 没有指定下标为 2 的修订号，即视为 &quot;0&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：version1 &#x3D; &quot;0.1&quot;, version2 &#x3D; &quot;1.1&quot;</span><br><span class="line">输出：-1</span><br><span class="line">解释：version1 中下标为 0 的修订号是 &quot;0&quot;，version2 中下标为 0 的修订号是 &quot;1&quot; 。0 &lt; 1，所以 version1 &lt; version2</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-6"><a href="#分析-6" class="headerlink" title="分析"></a>分析</h3><h4 id="方法1-1"><a href="#方法1-1" class="headerlink" title="方法1"></a><strong>方法1</strong></h4><p>这个问题也使用JDK为我们提供的方法来实现。具体看代码，性能也不算低。</p>
+<h4 id="方法2-1"><a href="#方法2-1" class="headerlink" title="方法2"></a><strong>方法2</strong></h4><p>既然是两个字符串需要比较，我们使用两个指针i和j分别指向两个字符串的开头，然后向后遍历，当遇到小数点’.’时停下来，并将每个小数点’.’分隔开的修订号解析成数字进行比较，越靠近前边，修订号的优先级越大。根据修订号大小关系，返回相应的数值。</p>
+<p>因此时间复杂度为 O(n + m)。</p>
+<h3 id="代码-7"><a href="#代码-7" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public class CompareVersion &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">       String version1 &#x3D; &quot;1.01&quot;, version2 &#x3D; &quot;1.001&quot;;</span><br><span class="line">        int a &#x3D; new CompareVersion().compareVersion( version1,  version2);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public int compareVersion(String version1, String version2) &#123;</span><br><span class="line">        int ii &#x3D; 0, j &#x3D; 0;</span><br><span class="line">        int n &#x3D; version1.length(), m &#x3D; version2.length();</span><br><span class="line">        while (ii &lt; n || j &lt; m)&#123;</span><br><span class="line">            int num1 &#x3D; 0, num2 &#x3D; 0;</span><br><span class="line">            while (ii &lt; n &amp;&amp; version1.charAt(ii) !&#x3D; &#39;.&#39;) &#123;</span><br><span class="line">                num1 &#x3D; num1 * 10 + version1.charAt(ii++) - &#39;0&#39;;</span><br><span class="line">            &#125;</span><br><span class="line">            while (j &lt; m &amp;&amp; version2.charAt(j) !&#x3D; &#39;.&#39;) &#123;</span><br><span class="line">                num2 &#x3D; num2 * 10 + version2.charAt(j++) - &#39;0&#39;;</span><br><span class="line">            &#125;</span><br><span class="line">            if(num1 &gt; num2 ) return 1;</span><br><span class="line">            else if(num1 &lt; num2) return -1;</span><br><span class="line">            ii++;j++;</span><br><span class="line">        &#125;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="LeetCode-76-最小覆盖子串"><a href="#LeetCode-76-最小覆盖子串" class="headerlink" title="(LeetCode- 76) 最小覆盖子串"></a><strong>(LeetCode- 76) 最小覆盖子串</strong></h2><h3 id="题目-6"><a href="#题目-6" class="headerlink" title="题目"></a>题目</h3><p>给你一个字符串 <code>s</code> 、一个字符串 <code>t</code> 。返回 <code>s</code> 中涵盖 <code>t</code> 所有字符的最小子串。如果 <code>s</code> 中不存在涵盖 <code>t</code> 所有字符的子串，则返回空字符串 <code>&quot;&quot;</code> 。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li>对于 <code>t</code> 中重复字符，我们寻找的子字符串中该字符数量必须不少于 <code>t</code> 中该字符数量。</li>
+<li>如果 <code>s</code> 中存在这样的子串，我们保证它是唯一的答案。</li>
+</ul>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;ADOBECODEBANC&quot;, t &#x3D; &quot;ABC&quot;</span><br><span class="line">输出：&quot;BANC&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：s &#x3D; &quot;a&quot;, t &#x3D; &quot;a&quot;</span><br><span class="line">输出：&quot;a&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 3:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入: s &#x3D; &quot;a&quot;, t &#x3D; &quot;aa&quot;</span><br><span class="line">输出: &quot;&quot;</span><br><span class="line">解释: t 中两个字符 &#39;a&#39; 均应包含在 s 的子串中，</span><br><span class="line">因此没有符合条件的子字符串，返回空字符串。</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-7"><a href="#分析-7" class="headerlink" title="分析"></a>分析</h3><h3 id="代码-8"><a href="#代码-8" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">public class MinWindow &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String s &#x3D; &quot;a&quot;, t &#x3D; &quot;b&quot;;</span><br><span class="line">        String s1 &#x3D; new MinWindow().minWindow(s, t);</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String minWindow(String s, String t) &#123;</span><br><span class="line">        String temp &#x3D; &quot;&quot;;</span><br><span class="line">        Map&lt;Character, Integer&gt; oci &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">        &#x2F;&#x2F; 滑动窗</span><br><span class="line">        Map&lt;Character, Integer&gt; oct &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">        &#x2F;&#x2F; 初始化</span><br><span class="line">        for(int i &#x3D; 0; i &lt; t.length(); i++)&#123;</span><br><span class="line">            Character c &#x3D; t.charAt(i);</span><br><span class="line">            oci.put(c, oci.getOrDefault(c, 0) + 1);</span><br><span class="line">        &#125;</span><br><span class="line">        int n &#x3D; s.length();</span><br><span class="line">        int left &#x3D; 0, right &#x3D; 0;</span><br><span class="line">        while (left &lt;&#x3D; right &amp;&amp; right &lt; n)&#123;</span><br><span class="line">            while (right &lt; n &amp;&amp; oci.get(s.charAt(right)) &#x3D;&#x3D; null)&#123;</span><br><span class="line">                right++;</span><br><span class="line">            &#125;</span><br><span class="line">            if(right &gt;&#x3D; n) return temp;</span><br><span class="line">            oct.put(s.charAt(right), oct.getOrDefault(s.charAt(right), 0) + 1);</span><br><span class="line">            &#x2F;&#x2F; 检查是否满足条件</span><br><span class="line">            while (check(oci, oct))&#123;</span><br><span class="line">                &#x2F;&#x2F; 满足条件</span><br><span class="line">                while (oci.get(s.charAt(left)) &#x3D;&#x3D; null)&#123;</span><br><span class="line">                    left++;</span><br><span class="line">                &#125;</span><br><span class="line">                if(temp &#x3D;&#x3D; &quot;&quot; || temp.length() &gt; right - left + 1)&#123;</span><br><span class="line">                    temp &#x3D; s.substring(left, right + 1);</span><br><span class="line">                &#125;</span><br><span class="line">                oct.put(s.charAt(left), oct.getOrDefault(s.charAt(left), 0) - 1);</span><br><span class="line">                left++;</span><br><span class="line">            &#125;</span><br><span class="line">            right++;</span><br><span class="line">        &#125;</span><br><span class="line">        return temp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private boolean check(Map&lt;Character, Integer&gt; oci, Map&lt;Character, Integer&gt; oct) &#123;</span><br><span class="line">        for (Map.Entry&lt;Character, Integer&gt; entry : oci.entrySet()) &#123;</span><br><span class="line">            if(oct.getOrDefault(entry.getKey(), 0) &lt; entry.getValue() )&#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public String minWindow1(String s, String t) &#123;</span><br><span class="line">        if (s &#x3D;&#x3D; null || s.length() &#x3D;&#x3D; 0 || t &#x3D;&#x3D; null || t.length() &#x3D;&#x3D; 0)&#123;</span><br><span class="line">            return &quot;&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;*s 和 t 由英文字母组成，所以128个够用了*&#x2F;</span><br><span class="line">        int[] tChars &#x3D; new int[128];</span><br><span class="line">        &#x2F;*用字符串t的字符初始化字典tChars，记录每个字符出现的次数*&#x2F;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; t.length(); i++) &#123;</span><br><span class="line">            tChars[t.charAt(i)]++;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;*left是窗口当前左边界，right是窗口当前右边界*&#x2F;</span><br><span class="line">        int left &#x3D; 0, right &#x3D; 0;</span><br><span class="line">        &#x2F;*size记录满足条件的窗口大小，count是需求的字符个数*&#x2F;</span><br><span class="line">        int size &#x3D; Integer.MAX_VALUE, count &#x3D; t.length();</span><br><span class="line">        &#x2F;*start是最小覆盖串开始的index*&#x2F;</span><br><span class="line">        int start &#x3D; 0;</span><br><span class="line">        &#x2F;*遍历所有字符*&#x2F;</span><br><span class="line">        while (right &lt; s.length()) &#123;</span><br><span class="line">            char c &#x3D; s.charAt(right);</span><br><span class="line">            if (tChars[c] &gt; 0) &#123;&#x2F;*需要当前字符c*&#x2F;</span><br><span class="line">                count--;</span><br><span class="line">            &#125;</span><br><span class="line">            &#x2F;*当前字符在tChars中的次数减一，这个次数可以为负数</span><br><span class="line">             * 比如当前字符在s中存在，在t中不存在</span><br><span class="line">             * 或者当前窗口范围内，在s中出现的次数大于t中出现的次数*&#x2F;</span><br><span class="line">            tChars[c]--;</span><br><span class="line">            &#x2F;*窗口中已经包含所有字符*&#x2F;</span><br><span class="line">            if (count &#x3D;&#x3D; 0) &#123;</span><br><span class="line">                &#x2F;*左边界向右递增，滑动窗口开始缩减,字典tChars要进行复原</span><br><span class="line">                 * 缩减的停止处就是窗口内的字符集合刚好包含了t的全部字符，类似于示例 1中窗口包含了&quot;BANC&quot;</span><br><span class="line">                 * 如果字典tChars的某个字符个数小于0，说明要么当前字符在s中存在，在t中不存在</span><br><span class="line">                 * 要么当前窗口范围内，在s中出现的次数大于t中出现的次数*&#x2F;</span><br><span class="line">                while (left &lt; right &amp;&amp; tChars[s.charAt(left)] &lt; 0) &#123;</span><br><span class="line">                    tChars[s.charAt(left)]++;</span><br><span class="line">                    left++;</span><br><span class="line">                &#125;</span><br><span class="line">                &#x2F;*更新size的最小值*&#x2F;</span><br><span class="line">                if (right - left + 1 &lt; size) &#123;</span><br><span class="line">                    size &#x3D; right - left + 1;</span><br><span class="line">                    start &#x3D; left;&#x2F;*记录下最小值时候的开始位置，最后返回覆盖串时候会用到*&#x2F;</span><br><span class="line">                &#125;</span><br><span class="line">                &#x2F;*left向右移动后窗口肯定不能满足了重新开始循环*&#x2F;</span><br><span class="line">                tChars[s.charAt(left)]++;</span><br><span class="line">                left++;</span><br><span class="line">                count++;</span><br><span class="line">            &#125;</span><br><span class="line">            right++;</span><br><span class="line">        &#125;</span><br><span class="line">        return size &#x3D;&#x3D; Integer.MAX_VALUE ? &quot;&quot; : s.substring(start, start + size);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LeetCode/" rel="tag"># LeetCode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/15/LeetCode/2022-09-16%20leetcode%E7%AE%97%E6%B3%95-%E4%BD%8D%E8%BF%90%E7%AE%97/" rel="prev" title="leetcode算法-位运算">
+      <i class="fa fa-chevron-left"></i> leetcode算法-位运算
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/09/16/LeetCode/2022-10-09%20leetcode%E7%AE%97%E6%B3%95-%E5%B9%B6%E6%9F%A5%E9%9B%86/" rel="next" title="leetcode算法-并查集">
+      leetcode算法-并查集 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-20-%E6%9C%89%E6%95%88%E7%9A%84%E6%8B%AC%E5%8F%B7"><span class="nav-number">1.</span> <span class="nav-text">(LeetCode-20) 有效的括号</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">1.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-415-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E5%8A%A0"><span class="nav-number">2.</span> <span class="nav-text">**(LeetCode-415) **字符串相加</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-1"><span class="nav-number">2.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-number">2.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D%E4%B9%8BBF%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">字符串匹配之BF算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D%E4%B9%8BBM%E7%AE%97%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">字符串匹配之BM算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="nav-number">4.1.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2"><span class="nav-number">5.</span> <span class="nav-text">(LeetCode- 3) 无重复字符的最长子串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">5.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-2"><span class="nav-number">5.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-3"><span class="nav-number">5.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-5-%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2"><span class="nav-number">6.</span> <span class="nav-text">(LeetCode- 5) 最长回文子串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-3"><span class="nav-number">6.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-3"><span class="nav-number">6.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E4%B8%AD%E5%BF%83%E6%89%A9%E5%B1%95%E7%AE%97%E6%B3%95"><span class="nav-number">6.2.1.</span> <span class="nav-text">方法二：中心扩展算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-4"><span class="nav-number">6.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-8-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%8D%A2%E6%95%B4%E6%95%B0-atoi"><span class="nav-number">7.</span> <span class="nav-text">(LeetCode-8)  字符串转换整数 (atoi)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-4"><span class="nav-number">7.1.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-5"><span class="nav-number">7.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-151-%E7%BF%BB%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%87%8C%E7%9A%84%E5%8D%95%E8%AF%8D"><span class="nav-number">8.</span> <span class="nav-text">(LeetCode- 151) 翻转字符串里的单词</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-4"><span class="nav-number">8.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-5"><span class="nav-number">8.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%951"><span class="nav-number">8.2.1.</span> <span class="nav-text">方法1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%952"><span class="nav-number">8.2.2.</span> <span class="nav-text">方法2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-6"><span class="nav-number">8.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-165-%E6%AF%94%E8%BE%83%E7%89%88%E6%9C%AC%E5%8F%B7"><span class="nav-number">9.</span> <span class="nav-text">(LeetCode- 165) 比较版本号</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-5"><span class="nav-number">9.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-6"><span class="nav-number">9.2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%951-1"><span class="nav-number">9.2.1.</span> <span class="nav-text">方法1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%952-1"><span class="nav-number">9.2.2.</span> <span class="nav-text">方法2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-7"><span class="nav-number">9.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-76-%E6%9C%80%E5%B0%8F%E8%A6%86%E7%9B%96%E5%AD%90%E4%B8%B2"><span class="nav-number">10.</span> <span class="nav-text">(LeetCode- 76) 最小覆盖子串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-6"><span class="nav-number">10.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-7"><span class="nav-number">10.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-8"><span class="nav-number">10.3.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingSong"
+      src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">QingSong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">198</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">QingSong</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
